@@ -1,80 +1,70 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter, useParams } from "next/navigation";
-import { useAuth } from "@/lib/hooks/useAuth";
-import { getAnimalById, updateAnimal, deleteAnimal, uploadAnimalPhoto, AnimalRow } from "@/lib/services/animals";
-import { BREEDS } from "@/lib/breeds";
+import { updateAnimal, getAnimalById, uploadAnimalPhoto } from "@/lib/services/animals";
 import { CANTONS } from "@/lib/cantons";
 import { CITIES } from "@/lib/cities";
+import { BREEDS } from "@/lib/breeds";
 import { TRAITS } from "@/lib/traits";
+import { useRouter, useParams } from "next/navigation";
 
-const SPECIES = ["chien", "chat", "lapin", "oiseau", "rongeur", "autre"];
-const GENDERS = ["male", "femelle", "inconnu"];
-const STATUSES = [
-  { value: "disponible", label: "Disponible" },
-  { value: "en_cours", label: "En cours" },
-  { value: "adopte", label: "Matche" },
+const SPECIES_LIST = [
+  { value: "chien", label: "🐕 Chien" },
+  { value: "chat", label: "🐱 Chat" },
+  { value: "lapin", label: "🐰 Lapin" },
+  { value: "oiseau", label: "🐦 Oiseau" },
+  { value: "rongeur", label: "🐹 Rongeur" },
+  { value: "autre", label: "🐾 Autre" },
 ];
 
 export default function EditAnimalPage() {
+  const [animal, setAnimal] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [animal, setAnimal] = useState<AnimalRow | null>(null);
-  const [selectedSpecies, setSelectedSpecies] = useState("chien");
+  const [species, setSpecies] = useState("chien");
   const [selectedCanton, setSelectedCanton] = useState("");
-  const [customBreed, setCustomBreed] = useState(false);
   const [customCity, setCustomCity] = useState(false);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [customBreed, setCustomBreed] = useState(false);
   const [selectedTraits, setSelectedTraits] = useState<string[]>([]);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const supabase = createClient();
   const router = useRouter();
   const params = useParams();
-  const supabase = createClient();
-  const { isAdmin, loading: authLoading } = useAuth();
 
   useEffect(() => {
-    async function fetchAnimal() {
-      const id = params.id as string;
-      const result = await getAnimalById(supabase, id);
+    async function load() {
+      const result = await getAnimalById(supabase, params.id as string);
       if (result.data) {
-        setAnimal(result.data);
-        setSelectedSpecies(result.data.species);
-        setSelectedCanton(result.data.canton || "");
-        if (result.data.photo_url) setPreview(result.data.photo_url);
-        if (result.data.traits) setSelectedTraits(result.data.traits);
-        const breedsList = BREEDS[result.data.species] || [];
-        if (result.data.breed && !breedsList.includes(result.data.breed)) {
-          setCustomBreed(true);
+        const a = result.data;
+        setAnimal(a);
+        setSpecies(a.species);
+        setSelectedTraits(a.traits || []);
+        setSelectedCanton(a.canton || "");
+        if (a.photo_url) setPhotoPreview(a.photo_url);
+        if (a.city && a.canton) {
+          const cities = CITIES[a.canton] || [];
+          if (!cities.includes(a.city)) setCustomCity(true);
         }
-        if (result.data.canton && result.data.city) {
-          const citiesList = CITIES[result.data.canton] || [];
-          if (!citiesList.includes(result.data.city)) {
-            setCustomCity(true);
-          }
+        if (a.breed) {
+          const breeds = BREEDS[a.species] || [];
+          if (!breeds.includes(a.breed)) setCustomBreed(true);
         }
-      } else {
-        setError(result.error);
       }
       setLoading(false);
     }
-    fetchAnimal();
+    load();
   }, [params.id]);
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    if (file) {
-      setPhotoFile(file);
-      setPreview(URL.createObjectURL(file));
-    }
+    if (file) { setPhotoFile(file); setPhotoPreview(URL.createObjectURL(file)); }
   }
 
   function toggleTrait(trait: string) {
-    setSelectedTraits((prev) =>
-      prev.includes(trait) ? prev.filter((t) => t !== trait) : [...prev, trait]
-    );
+    setSelectedTraits((prev) => prev.includes(trait) ? prev.filter((t) => t !== trait) : [...prev, trait]);
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -83,35 +73,23 @@ export default function EditAnimalPage() {
     setError(null);
 
     const form = new FormData(e.currentTarget);
-
     let photo_url = animal?.photo_url || null;
 
     if (photoFile) {
       const uploadResult = await uploadAnimalPhoto(supabase, photoFile);
-      if (uploadResult.error) {
-        setError(uploadResult.error);
-        setSaving(false);
-        return;
-      }
+      if (uploadResult.error) { setError(uploadResult.error); setSaving(false); return; }
       photo_url = uploadResult.data;
     }
 
-    const breed = customBreed
-      ? (form.get("breed_custom") as string) || null
-      : (form.get("breed") as string) || null;
+    const breed = customBreed ? (form.get("breed_custom") as string) || null : (form.get("breed") as string) || null;
+    const city = customCity ? (form.get("city_custom") as string) || null : (form.get("city") as string) || null;
 
-    const city = customCity
-      ? (form.get("city_custom") as string) || null
-      : (form.get("city") as string) || null;
-
-    const id = params.id as string;
-    const result = await updateAnimal(supabase, id, {
+    const result = await updateAnimal(supabase, params.id as string, {
       name: form.get("name") as string,
-      species: form.get("species") as string,
+      species,
       breed,
       age_months: form.get("age_months") ? Number(form.get("age_months")) : null,
       gender: form.get("gender") as string,
-      status: form.get("status") as string,
       description: (form.get("description") as string) || null,
       photo_url,
       city,
@@ -122,244 +100,178 @@ export default function EditAnimalPage() {
       traits: selectedTraits,
     });
 
-    if (result.error) {
-      setError(result.error);
-      setSaving(false);
-      return;
-    }
-
-    router.push("/animals/" + id);
+    if (result.error) { setError(result.error); setSaving(false); return; }
+    router.push("/animals/" + params.id);
   }
 
-  async function handleDelete() {
-    if (!confirm("Supprimer cet animal ? Cette action est irreversible.")) return;
+  if (loading) return <p className="text-center py-12 text-gray-500">Chargement...</p>;
+  if (!animal) return <p className="text-center py-12 text-gray-500">Animal introuvable</p>;
 
-    const id = params.id as string;
-    const result = await deleteAnimal(supabase, id);
-
-    if (result.error) {
-      setError(result.error);
-      return;
-    }
-
-    router.push("/animals");
-  }
-
-  if (authLoading || loading) {
-    return <p className="text-center py-12 text-gray-500">Chargement...</p>;
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-lg p-8 text-center max-w-md">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Acces refuse</h2>
-          <p className="text-gray-600">Seuls les administrateurs peuvent modifier les animaux.</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!animal) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-lg p-8 text-center max-w-md">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Animal introuvable</h2>
-          <p className="text-gray-600">Cet animal n'existe pas ou a ete supprime.</p>
-        </div>
-      </div>
-    );
-  }
-
-  const breedsList = BREEDS[selectedSpecies] || [];
-  const traitsList = TRAITS[selectedSpecies] || [];
-  const citiesList = selectedCanton ? (CITIES[selectedCanton] || []) : [];
+  const breedList = BREEDS[species] || [];
+  const traitList = TRAITS[species] || [];
+  const cantonCities = selectedCanton ? CITIES[selectedCanton] || [] : [];
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Modifier {animal.name}</h1>
+    <div className="min-h-screen px-4 py-8">
+      <div className="max-w-lg mx-auto">
+        <h1 className="text-2xl font-bold text-white mb-2">Modifier {animal.name}</h1>
+        <p className="text-gray-400 text-sm mb-6">Mets à jour le profil de ton compagnon</p>
 
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
-              {error}
-            </div>
-          )}
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+          {error && <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-sm">{error}</div>}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nom *</label>
-                <input name="name" type="text" required defaultValue={animal.name} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Espece *</label>
-                <select name="species" required value={selectedSpecies} onChange={(e) => { setSelectedSpecies(e.target.value); setCustomBreed(false); setSelectedTraits([]); }} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none">
-                  {SPECIES.map((s) => (
-                    <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
-                  ))}
-                </select>
+            {/* Photo */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Photo</label>
+              <div className="flex items-center gap-4">
+                <div className="w-20 h-20 rounded-2xl bg-[#2a1f3a] border-2 border-dashed border-white/10 flex items-center justify-center overflow-hidden">
+                  {photoPreview ? (
+                    <img src={photoPreview} alt="preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-2xl text-gray-600">📷</span>
+                  )}
+                </div>
+                <label className="px-4 py-2 bg-white/10 hover:bg-white/20 text-gray-300 text-sm rounded-xl transition cursor-pointer border border-white/10">
+                  Changer la photo
+                  <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
+                </label>
               </div>
             </div>
 
+            {/* Nom */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Race</label>
-              {!customBreed ? (
-                <div className="flex gap-2">
-                  <select name="breed" defaultValue={animal.breed || ""} className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none">
-                    <option value="">-- Selectionner une race --</option>
-                    {breedsList.map((b) => (
-                      <option key={b} value={b}>{b}</option>
-                    ))}
-                  </select>
-                  <button type="button" onClick={() => setCustomBreed(true)} className="px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition text-sm font-medium whitespace-nowrap">
-                    Autre
+              <label className="block text-sm font-medium text-gray-300 mb-1">Nom *</label>
+              <input name="name" type="text" required defaultValue={animal.name}
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition" />
+            </div>
+
+            {/* Espèce */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Espèce *</label>
+              <div className="grid grid-cols-3 gap-2">
+                {SPECIES_LIST.map((s) => (
+                  <button key={s.value} type="button" onClick={() => { setSpecies(s.value); setCustomBreed(false); setSelectedTraits([]); }}
+                    className={"px-3 py-2 rounded-xl text-sm font-medium transition border " +
+                      (species === s.value ? "bg-orange-500/20 border-orange-500/50 text-orange-300" : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10")}>
+                    {s.label}
                   </button>
-                </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Race */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Race</label>
+              {customBreed ? (
+                <input name="breed_custom" type="text" defaultValue={animal.breed || ""}
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition" />
               ) : (
-                <div className="flex gap-2">
-                  <input name="breed_custom" type="text" defaultValue={animal.breed || ""} className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none" placeholder="Saisir la race manuellement" />
-                  <button type="button" onClick={() => setCustomBreed(false)} className="px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition text-sm font-medium whitespace-nowrap">
-                    Liste
-                  </button>
-                </div>
+                <select name="breed" defaultValue={animal.breed || ""} onChange={(e) => { if (e.target.value === "__other") setCustomBreed(true); }}
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-gray-300 focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                  <option value="" className="bg-[#1a1225]">Sélectionner</option>
+                  {breedList.map((b: string) => (<option key={b} value={b} className="bg-[#1a1225]">{b}</option>))}
+                  <option value="__other" className="bg-[#1a1225]">Autre race...</option>
+                </select>
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            {/* Âge + Genre + Poids */}
+            <div className="grid grid-cols-3 gap-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Genre</label>
-                <select name="gender" defaultValue={animal.gender} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none">
-                  {GENDERS.map((g) => (
-                    <option key={g} value={g}>{g.charAt(0).toUpperCase() + g.slice(1)}</option>
-                  ))}
+                <label className="block text-sm font-medium text-gray-300 mb-1">Âge (mois)</label>
+                <input name="age_months" type="number" min="0" defaultValue={animal.age_months || ""}
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-orange-500 outline-none transition" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Genre</label>
+                <select name="gender" defaultValue={animal.gender}
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-gray-300 focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                  <option value="inconnu" className="bg-[#1a1225]">Inconnu</option>
+                  <option value="male" className="bg-[#1a1225]">Mâle</option>
+                  <option value="femelle" className="bg-[#1a1225]">Femelle</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Statut</label>
-                <select name="status" defaultValue={animal.status} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none">
-                  {STATUSES.map((s) => (
-                    <option key={s.value} value={s.value}>{s.label}</option>
-                  ))}
-                </select>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Poids (kg)</label>
+                <input name="weight_kg" type="number" step="0.1" min="0" defaultValue={animal.weight_kg || ""}
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-orange-500 outline-none transition" />
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            {/* Canton + Ville */}
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Canton</label>
-                <select name="canton" value={selectedCanton} onChange={(e) => { setSelectedCanton(e.target.value); setCustomCity(false); }} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none">
-                  <option value="">-- Selectionner --</option>
-                  {CANTONS.map((c) => (
-                    <option key={c.code} value={c.code}>{c.name} ({c.code})</option>
-                  ))}
+                <label className="block text-sm font-medium text-gray-300 mb-1">Canton</label>
+                <select name="canton" value={selectedCanton} onChange={(e) => { setSelectedCanton(e.target.value); setCustomCity(false); }}
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-gray-300 focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                  <option value="" className="bg-[#1a1225]">Canton</option>
+                  {CANTONS.map((c) => (<option key={c.code} value={c.code} className="bg-[#1a1225]">{c.name}</option>))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Ville</label>
-                {!selectedCanton ? (
-                  <p className="text-sm text-gray-400 px-4 py-3 border border-gray-200 rounded-xl bg-gray-50">Selectionnez un canton</p>
-                ) : !customCity ? (
-                  <div className="flex gap-2">
-                    <select name="city" defaultValue={animal.city || ""} className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none">
-                      <option value="">-- Selectionner --</option>
-                      {citiesList.map((c) => (
-                        <option key={c} value={c}>{c}</option>
-                      ))}
-                    </select>
-                    <button type="button" onClick={() => setCustomCity(true)} className="px-3 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition text-xs font-medium">
-                      Autre
-                    </button>
-                  </div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Ville</label>
+                {customCity ? (
+                  <input name="city_custom" type="text" defaultValue={animal.city || ""}
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-orange-500 outline-none transition" />
                 ) : (
-                  <div className="flex gap-2">
-                    <input name="city_custom" type="text" defaultValue={animal.city || ""} className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none" placeholder="Saisir la ville" />
-                    <button type="button" onClick={() => setCustomCity(false)} className="px-3 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition text-xs font-medium">
-                      Liste
-                    </button>
-                  </div>
+                  <select name="city" defaultValue={animal.city || ""} onChange={(e) => { if (e.target.value === "__other") setCustomCity(true); }}
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-gray-300 focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                    <option value="" className="bg-[#1a1225]">Ville</option>
+                    {cantonCities.map((c: string) => (<option key={c} value={c} className="bg-[#1a1225]">{c}</option>))}
+                    <option value="__other" className="bg-[#1a1225]">Autre...</option>
+                  </select>
                 )}
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Age (mois)</label>
-                <input name="age_months" type="number" min="0" defaultValue={animal.age_months || ""} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Poids (kg)</label>
-                <input name="weight_kg" type="number" step="0.1" min="0" defaultValue={animal.weight_kg || ""} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none" />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Traits de caractere</label>
-              <div className="flex flex-wrap gap-2">
-                {traitsList.map((trait) => (
-                  <button
-                    key={trait}
-                    type="button"
-                    onClick={() => toggleTrait(trait)}
-                    className={"px-3 py-1.5 rounded-full text-sm font-medium transition " + (selectedTraits.includes(trait) ? "bg-orange-500 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200")}
-                  >
-                    {trait}
-                  </button>
-                ))}
-              </div>
-              {selectedTraits.length > 0 && (
-                <p className="text-xs text-gray-400 mt-2">{selectedTraits.length} trait{selectedTraits.length > 1 ? "s" : ""} selectionne{selectedTraits.length > 1 ? "s" : ""}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Photo</label>
-              {preview ? (
-                <div className="relative">
-                  <img src={preview} alt="Preview" className="w-full max-h-64 object-cover rounded-xl" />
-                  <button type="button" onClick={() => { setPreview(null); setPhotoFile(null); }} className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition">✕</button>
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 gap-3">
-                  <button type="button" onClick={() => document.getElementById("photo-gallery")?.click()} className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-orange-400 transition cursor-pointer">
-                    <p className="text-3xl mb-2">🖼️</p>
-                    <p className="text-gray-600 text-sm font-medium">Galerie photo</p>
-                  </button>
-                  <button type="button" onClick={() => document.getElementById("photo-camera")?.click()} className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-orange-400 transition cursor-pointer">
-                    <p className="text-3xl mb-2">📸</p>
-                    <p className="text-gray-600 text-sm font-medium">Prendre une photo</p>
-                  </button>
-                </div>
-              )}
-              <input id="photo-gallery" type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFileChange} className="hidden" />
-              <input id="photo-camera" type="file" accept="image/*" capture="environment" onChange={handleFileChange} className="hidden" />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-              <textarea name="description" rows={4} defaultValue={animal.description || ""} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none resize-none" />
-            </div>
-
+            {/* Santé */}
             <div className="flex gap-6">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input name="vaccinated" type="checkbox" defaultChecked={animal.vaccinated} className="w-5 h-5 rounded text-orange-500 focus:ring-orange-500" />
-                <span className="text-sm text-gray-700">Vaccine</span>
+                <input type="checkbox" name="vaccinated" defaultChecked={animal.vaccinated} className="w-4 h-4 rounded bg-white/5 border-white/10 text-orange-500 focus:ring-orange-500" />
+                <span className="text-sm text-gray-300">Vacciné</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
-                <input name="sterilized" type="checkbox" defaultChecked={animal.sterilized} className="w-5 h-5 rounded text-orange-500 focus:ring-orange-500" />
-                <span className="text-sm text-gray-700">Sterilise</span>
+                <input type="checkbox" name="sterilized" defaultChecked={animal.sterilized} className="w-4 h-4 rounded bg-white/5 border-white/10 text-orange-500 focus:ring-orange-500" />
+                <span className="text-sm text-gray-300">Stérilisé</span>
               </label>
             </div>
 
-            <button type="submit" disabled={saving} className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition disabled:opacity-50">
-              {saving ? "Sauvegarde..." : "Sauvegarder les modifications"}
-            </button>
-          </form>
+            {/* Traits */}
+            {traitList.length > 0 && (
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Caractère</label>
+                <div className="flex flex-wrap gap-2">
+                  {traitList.map((trait: string) => (
+                    <button key={trait} type="button" onClick={() => toggleTrait(trait)}
+                      className={"px-3 py-1.5 rounded-full text-xs font-medium transition border " +
+                        (selectedTraits.includes(trait) ? "bg-orange-500/20 border-orange-500/50 text-orange-300" : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10")}>
+                      {trait}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
-          <button onClick={handleDelete} className="w-full mt-4 py-3 bg-red-50 hover:bg-red-100 text-red-600 font-semibold rounded-xl transition">
-            Supprimer cet animal
-          </button>
+            {/* Description */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Description</label>
+              <textarea name="description" rows={3} defaultValue={animal.description || ""}
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 outline-none transition resize-none" />
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-3">
+              <button type="submit" disabled={saving}
+                className="flex-1 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition disabled:opacity-50">
+                {saving ? "Sauvegarde..." : "Sauvegarder"}
+              </button>
+              <button type="button" onClick={() => router.push("/animals/" + params.id)}
+                className="px-6 py-3 bg-white/10 hover:bg-white/20 text-gray-300 font-medium rounded-xl transition border border-white/10">
+                Annuler
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
