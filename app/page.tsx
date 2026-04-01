@@ -59,7 +59,7 @@ export default async function HomePage() {
               <br />t'attend ici.
             </h1>
             <p className="mt-6 text-xl text-gray-600 leading-relaxed">
-              PawMatch connecte les propriétaires d'animaux de toute la Suisse.
+              Compaw connecte les propriétaires d'animaux de toute la Suisse.
               Trouvez des compagnons de jeu, des partenaires de balade
               ou simplement des amis qui partagent votre passion.
             </p>
@@ -81,7 +81,7 @@ export default async function HomePage() {
 
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/signup" className="px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-2xl text-lg transition shadow-lg shadow-orange-200">
-                Rejoindre PawMatch
+                Rejoindre Compaw
               </Link>
               <Link href="/animals" className="px-8 py-4 bg-white hover:bg-gray-50 text-gray-800 font-bold rounded-2xl text-lg transition border-2 border-gray-200">
                 Découvrir les profils
@@ -212,7 +212,7 @@ export default async function HomePage() {
         <div className="max-w-3xl mx-auto px-6 text-center">
           <h2 className="text-4xl font-bold text-white mb-4">Prêt à trouver ton pote ?</h2>
           <p className="text-xl text-orange-100 mb-8">
-            Rejoignez la communauté PawMatch et connectez vos compagnons
+            Rejoignez la communauté Compaw et connectez vos compagnons
             avec d'autres passionnés près de chez vous.
           </p>
           <Link href="/signup" className="inline-block px-10 py-4 bg-white hover:bg-gray-50 text-orange-600 font-bold rounded-2xl text-lg transition shadow-lg">
@@ -226,7 +226,7 @@ export default async function HomePage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div>
-              <p className="text-white font-bold text-xl">PawMatch</p>
+              <p className="text-white font-bold text-xl">Compaw</p>
               <p className="text-sm mt-1">Connecter les passionnés d'animaux en Suisse</p>
             </div>
             <div className="flex gap-6 text-sm">
@@ -236,7 +236,7 @@ export default async function HomePage() {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-800 text-center text-xs">
-            <p>© 2026 PawMatch. Fait avec amour en Suisse 🇨🇭</p>
+            <p>© 2026 Compaw. Fait avec amour en Suisse 🇨🇭</p>
           </div>
         </div>
       </footer>

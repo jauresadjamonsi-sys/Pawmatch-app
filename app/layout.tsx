@@ -6,8 +6,8 @@ import Navbar from "@/lib/components/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "PawMatch — Trouve ton pote",
-  description: "PawMatch connecte les propriétaires d'animaux de toute la Suisse.",
+  title: "Compaw — Ton compagnon de sortie en Suisse",
+  description: "Compaw connecte les propriétaires d'animaux de toute la Suisse.",
 };
 
 export default function RootLayout({

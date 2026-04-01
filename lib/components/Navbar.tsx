@@ -29,7 +29,7 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="font-bold text-xl text-orange-500">
-            PawMatch
+            Compaw
           </Link>
 
           <div className="hidden md:flex items-center gap-6">
