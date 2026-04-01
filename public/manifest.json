@@ -1,0 +1,12 @@
+{
+  "name": "Compaw",
+  "short_name": "Compaw",
+  "description": "Ton compagnon de sortie en Suisse",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1225",
+  "theme_color": "#1a1225",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
