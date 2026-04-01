@@ -2,64 +2,54 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-03-31.basil" as any,
-});
-
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
 export async function POST(request: Request) {
-  const body = await request.text();
-  const sig = request.headers.get("stripe-signature")!;
-
-  let event: Stripe.Event;
-
   try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET!
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+    const supabaseAdmin = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
-  } catch {
-    return NextResponse.json({ error: "Signature invalide" }, { status: 400 });
-  }
 
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object as Stripe.Checkout.Session;
-    const userId = session.metadata?.userId;
-    const subscriptionId = session.subscription as string;
+    const body = await request.text();
+    const sig = request.headers.get("stripe-signature")!;
 
-    if (userId && subscriptionId) {
-      const sub = await stripe.subscriptions.retrieve(subscriptionId);
-      const priceId = sub.items.data[0].price.id;
+    let event: Stripe.Event;
+    try {
+      event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET!);
+    } catch {
+      return NextResponse.json({ error: "Signature invalide" }, { status: 400 });
+    }
 
-      let plan = "free";
-      if (priceId === "price_1THU72EMj8OWJcwzCJdkKfSm") plan = "premium";
-      if (priceId === "price_1THU7nEMj8OWJcwz3jEa15py") plan = "pro";
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object as Stripe.Checkout.Session;
+      const userId = session.metadata?.userId;
+      const subscriptionId = session.subscription as string;
 
-      await supabaseAdmin
-        .from("profiles")
-        .update({
+      if (userId && subscriptionId) {
+        const sub = await stripe.subscriptions.retrieve(subscriptionId);
+        const priceId = sub.items.data[0].price.id;
+        let plan = "free";
+        if (priceId === "price_1THU72EMj8OWJcwzCJdkKfSm") plan = "premium";
+        if (priceId === "price_1THU7nEMj8OWJcwz3jEa15py") plan = "pro";
+
+        await supabaseAdmin.from("profiles").update({
           subscription: plan,
           stripe_customer_id: session.customer as string,
           subscription_end: new Date(sub.items.data[0].current_period_end * 1000).toISOString(),
-        })
-        .eq("id", userId);
+        }).eq("id", userId);
+      }
     }
+
+    if (event.type === "customer.subscription.deleted") {
+      const sub = event.data.object as Stripe.Subscription;
+      await supabaseAdmin.from("profiles").update({
+        subscription: "free",
+        subscription_end: null,
+      }).eq("stripe_customer_id", sub.customer as string);
+    }
+
+    return NextResponse.json({ received: true });
+  } catch {
+    return NextResponse.json({ error: "Erreur webhook" }, { status: 500 });
   }
-
-  if (event.type === "customer.subscription.deleted") {
-    const sub = event.data.object as Stripe.Subscription;
-    const customerId = sub.customer as string;
-
-    await supabaseAdmin
-      .from("profiles")
-      .update({ subscription: "free", subscription_end: null })
-      .eq("stripe_customer_id", customerId);
-  }
-
-  return NextResponse.json({ received: true });
 }

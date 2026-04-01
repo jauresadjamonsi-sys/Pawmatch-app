@@ -2,16 +2,15 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
 export async function POST(request: Request) {
   try {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
     const { priceId } = await request.json();
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: "Non connecté" }, { status: 401 });
+      return NextResponse.json({ error: "Non connecte" }, { status: 401 });
     }
 
     const session = await stripe.checkout.sessions.create({
