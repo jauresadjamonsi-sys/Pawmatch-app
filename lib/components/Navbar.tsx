@@ -33,7 +33,10 @@ export default function Navbar() {
           </Link>
 
           <div className="hidden md:flex items-center gap-6">
-            <Link href="/animals" className={"text-sm transition " + isActive("/animals")}>
+            <Link href="/pricing" className={"text-sm transition " + isActive("/pricing")}>
+                    Tarifs
+                  </Link>
+                  <Link href="/animals" className={"text-sm transition " + isActive("/animals")}>
               Catalogue
             </Link>
             {!loading && (
