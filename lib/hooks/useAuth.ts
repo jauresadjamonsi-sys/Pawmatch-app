@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 type UserProfile = {
+  city?: string | null;
+  phone?: string | null;
   id: string;
   email: string;
   full_name: string | null;
@@ -27,7 +29,7 @@ export function useAuth() {
 
         const { data } = await supabase
           .from("profiles")
-          .select("id, email, full_name, role")
+          .select("id, email, full_name, role, city, phone")
           .eq("id", user.id)
           .single();
 
