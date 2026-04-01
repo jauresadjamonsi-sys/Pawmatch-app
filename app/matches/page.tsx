@@ -48,10 +48,10 @@ export default function MatchesPage() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-lg p-8 text-center max-w-md">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Connexion requise</h2>
-          <p className="text-gray-600">Connectez-vous pour voir vos matchs.</p>
+      <div className="min-h-screen bg-[#1a1225] flex items-center justify-center">
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center max-w-md">
+          <h2 className="text-xl font-bold text-white mb-2">Connexion requise</h2>
+          <p className="text-gray-500">Connectez-vous pour voir vos matchs.</p>
         </div>
       </div>
     );
@@ -73,7 +73,7 @@ export default function MatchesPage() {
           )}
         </div>
         <div>
-          <p className="font-semibold text-gray-900 text-sm">{animal.name}</p>
+          <p className="font-semibold text-white text-sm">{animal.name}</p>
           <p className="text-xs text-gray-500">
             {animal.species.charAt(0).toUpperCase() + animal.species.slice(1)}
             {animal.breed ? " · " + animal.breed : ""}
@@ -84,9 +84,9 @@ export default function MatchesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-[#1a1225] p-8">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Mes matchs</h1>
+        <h1 className="text-3xl font-bold text-white mb-8">Mes matchs</h1>
 
         {error && (
           <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
@@ -97,13 +97,13 @@ export default function MatchesPage() {
         {/* Demandes reçues */}
         {pendingReceived.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-lg font-bold text-gray-800 mb-4">
+            <h2 className="text-lg font-bold text-white mb-4">
               Demandes reçues
-              <span className="ml-2 px-2 py-0.5 bg-orange-100 text-orange-600 rounded-full text-sm">{pendingReceived.length}</span>
+              <span className="ml-2 px-2 py-0.5 bg-orange-500/20 text-orange-300 rounded-full text-sm">{pendingReceived.length}</span>
             </h2>
             <div className="space-y-3">
               {pendingReceived.map((match) => (
-                <div key={match.id} className="bg-white rounded-2xl shadow-sm p-5 border border-orange-100">
+                <div key={match.id} className="bg-white/5 border border-white/10 rounded-2xl p-5 border border-orange-500/20">
                   <div className="flex items-center gap-3 mb-4">
                     <AnimalBadge animal={match.sender_animal} />
                     <span className="text-orange-500 font-bold text-lg">→</span>
@@ -115,13 +115,13 @@ export default function MatchesPage() {
                   <div className="flex gap-3">
                     <button
                       onClick={() => handleRespond(match.id, "accepted")}
-                      className="flex-1 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition text-sm"
+                      className="flex-1 py-2 bg-green-500/100 hover:bg-green-600 text-white font-semibold rounded-xl transition text-sm"
                     >
                       Accepter
                     </button>
                     <button
                       onClick={() => handleRespond(match.id, "rejected")}
-                      className="flex-1 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold rounded-xl transition text-sm"
+                      className="flex-1 py-2 bg-gray-100 hover:bg-gray-200 text-gray-500 font-semibold rounded-xl transition text-sm"
                     >
                       Décliner
                     </button>
@@ -135,9 +135,9 @@ export default function MatchesPage() {
         {/* Matchs acceptés */}
         {accepted.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-lg font-bold text-gray-800 mb-4">
+            <h2 className="text-lg font-bold text-white mb-4">
               Matchs confirmés
-              <span className="ml-2 px-2 py-0.5 bg-green-100 text-green-600 rounded-full text-sm">{accepted.length}</span>
+              <span className="ml-2 px-2 py-0.5 bg-green-100 text-green-400 rounded-full text-sm">{accepted.length}</span>
             </h2>
             <div className="space-y-3">
               {accepted.map((match) => {
@@ -147,15 +147,15 @@ export default function MatchesPage() {
                 const theirAnimal = isMe ? match.receiver_animal : match.sender_animal;
 
                 return (
-                  <div key={match.id} className="bg-white rounded-2xl shadow-sm p-5 border border-green-100">
+                  <div key={match.id} className="bg-white/5 border border-white/10 rounded-2xl p-5 border border-green-500/20">
                     <div className="flex items-center gap-3 mb-3">
                       <AnimalBadge animal={myAnimal} />
                       <span className="text-green-500 font-bold text-lg">♥</span>
                       <AnimalBadge animal={theirAnimal} />
                     </div>
-                    <div className="bg-green-50 rounded-xl p-4">
-                      <p className="text-sm font-medium text-green-800">C'est un match !</p>
-                      <Link href={"/matches/" + match.id} className="inline-block mt-2 px-5 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition text-sm">Discuter</Link>
+                    <div className="bg-green-500/10 rounded-xl p-4">
+                      <p className="text-sm font-medium text-green-300">C'est un match !</p>
+                      <Link href={"/matches/" + match.id} className="inline-block mt-2 px-5 py-2 bg-green-500/100 hover:bg-green-600 text-white font-semibold rounded-xl transition text-sm">Discuter</Link>
                       
                       
                     </div>
@@ -169,19 +169,19 @@ export default function MatchesPage() {
         {/* Demandes envoyées en attente */}
         {pendingSent.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-lg font-bold text-gray-800 mb-4">
+            <h2 className="text-lg font-bold text-white mb-4">
               En attente de réponse
               <span className="ml-2 px-2 py-0.5 bg-gray-100 text-gray-500 rounded-full text-sm">{pendingSent.length}</span>
             </h2>
             <div className="space-y-3">
               {pendingSent.map((match) => (
-                <div key={match.id} className="bg-white rounded-2xl shadow-sm p-5 border border-gray-100">
+                <div key={match.id} className="bg-white/5 border border-white/10 rounded-2xl p-5 border border-white/10">
                   <div className="flex items-center gap-3">
                     <AnimalBadge animal={match.sender_animal} />
-                    <span className="text-gray-400 font-bold text-lg">→</span>
+                    <span className="text-gray-500 font-bold text-lg">→</span>
                     <AnimalBadge animal={match.receiver_animal} />
                   </div>
-                  <p className="text-xs text-gray-400 mt-3">En attente de réponse de {match.receiver_profile.full_name || match.receiver_profile.email}</p>
+                  <p className="text-xs text-gray-500 mt-3">En attente de réponse de {match.receiver_profile.full_name || match.receiver_profile.email}</p>
                 </div>
               ))}
             </div>
@@ -192,8 +192,8 @@ export default function MatchesPage() {
         {matches.length === 0 && (
           <div className="text-center py-16">
             <p className="text-5xl mb-4">💕</p>
-            <p className="text-xl text-gray-600 font-medium">Aucun match pour l'instant</p>
-            <p className="text-gray-400 mt-2">Parcourez le catalogue et craquez pour un compagnon.</p>
+            <p className="text-xl text-gray-500 font-medium">Aucun match pour l'instant</p>
+            <p className="text-gray-500 mt-2">Parcourez le catalogue et craquez pour un compagnon.</p>
             <Link href="/animals" className="inline-block mt-6 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition">
               Découvrir les profils
             </Link>

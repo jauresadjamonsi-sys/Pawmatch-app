@@ -87,14 +87,14 @@ export default function ConversationPage() {
     setSending(false);
   }
 
-  if (loading) return <p className="text-center py-12 text-gray-500">Chargement...</p>;
+  if (loading) return <p className="text-center py-12 text-gray-400">Chargement...</p>;
 
   if (!match || match.status !== "accepted") {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-lg p-8 text-center max-w-md">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Conversation indisponible</h2>
-          <p className="text-gray-600">Ce match n'existe pas ou n'a pas encore été accepté.</p>
+      <div className="min-h-screen bg-[#1a1225] flex items-center justify-center">
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center max-w-md">
+          <h2 className="text-xl font-bold text-white mb-2">Conversation indisponible</h2>
+          <p className="text-gray-400">Ce match n'existe pas ou n'a pas encore été accepté.</p>
           <Link href="/matches" className="inline-block mt-4 text-orange-500 hover:underline font-medium">
             Retour aux matchs
           </Link>
@@ -119,11 +119,11 @@ export default function ConversationPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-[#1a1225] flex flex-col">
       {/* Header */}
-      <div className="bg-white border-b border-gray-100 px-6 py-4">
+      <div className="bg-[#1a1225] border-b border-white/5 px-6 py-4">
         <div className="max-w-3xl mx-auto flex items-center gap-4">
-          <Link href="/matches" className="text-gray-400 hover:text-gray-600 transition">
+          <Link href="/matches" className="text-gray-400 hover:text-gray-400 transition">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
@@ -137,10 +137,10 @@ export default function ConversationPage() {
               )}
             </div>
             <div>
-              <p className="font-semibold text-gray-900 text-sm">
+              <p className="font-semibold text-white text-sm">
                 {otherProfile.full_name || otherProfile.email}
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-400">
                 {theirAnimal.name} · {myAnimal.name}
               </p>
             </div>
@@ -154,7 +154,7 @@ export default function ConversationPage() {
           {messages.length === 0 && (
             <div className="text-center py-12">
               <p className="text-4xl mb-3">👋</p>
-              <p className="text-gray-500">Commencez la conversation !</p>
+              <p className="text-gray-400">Commencez la conversation !</p>
               <p className="text-gray-400 text-sm mt-1">
                 Présentez {myAnimal.name} à {otherProfile.full_name || "son propriétaire"}
               </p>
@@ -165,7 +165,7 @@ export default function ConversationPage() {
             const isMine = msg.sender_id === profile?.id;
             return (
               <div key={msg.id} className={"flex " + (isMine ? "justify-end" : "justify-start")}>
-                <div className={"max-w-xs lg:max-w-md px-4 py-2.5 rounded-2xl " + (isMine ? "bg-orange-500 text-white rounded-br-sm" : "bg-white text-gray-900 shadow-sm border border-gray-100 rounded-bl-sm")}>
+                <div className={"max-w-xs lg:max-w-md px-4 py-2.5 rounded-2xl " + (isMine ? "bg-orange-500 text-white rounded-br-sm" : "bg-white text-white shadow-sm border border-gray-100 rounded-bl-sm")}>
                   <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
                   <p className={"text-xs mt-1 " + (isMine ? "text-orange-200" : "text-gray-400")}>
                     {formatTime(msg.created_at)}
@@ -179,7 +179,7 @@ export default function ConversationPage() {
       </div>
 
       {/* Input */}
-      <div className="bg-white border-t border-gray-100 px-6 py-4">
+      <div className="bg-[#1a1225] border-t border-white/5 px-6 py-4">
         <div className="max-w-3xl mx-auto">
           {error && (
             <p className="text-red-500 text-xs mb-2">{error}</p>
@@ -191,7 +191,7 @@ export default function ConversationPage() {
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Écrire un message..."
               maxLength={2000}
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+              className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
             />
             <button
               type="submit"

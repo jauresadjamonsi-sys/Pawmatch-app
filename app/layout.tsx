@@ -10,14 +10,10 @@ export const metadata: Metadata = {
   description: "Compaw connecte les propriétaires d'animaux de toute la Suisse.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr">
-      <body className={inter.className}>
+      <body className={inter.className + " bg-[#1a1225] text-white min-h-screen"}>
         <Navbar />
         {children}
       </body>
