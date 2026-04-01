@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 
 type UserProfile = {
   city?: string | null;
+  subscription?: string;
   phone?: string | null;
   id: string;
   email: string;
@@ -29,7 +30,7 @@ export function useAuth() {
 
         const { data } = await supabase
           .from("profiles")
-          .select("id, email, full_name, role, city, phone")
+          .select("id, email, full_name, role, city, phone, subscription")
           .eq("id", user.id)
           .single();
 

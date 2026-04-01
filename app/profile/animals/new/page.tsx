@@ -266,7 +266,7 @@ export default function NewAnimalPage() {
             {/* Submit */}
             <button type="submit" disabled={loading}
               className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition disabled:opacity-50 text-lg">
-              {loading ? "Création..." : "🐾 Ajouter mon compagnon"}
+              {loading ? "Création..." : "Ajouter mon compagnon"}
             </button>
           </form>
         </div>

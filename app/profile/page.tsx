@@ -19,6 +19,12 @@ export default async function ProfilePage() {
     .eq("id", user.id)
     .single();
 
+  // Sync subscription from Stripe
+  if (profile && !profile.subscription || profile?.subscription === "free") {
+    const { data: freshProfile } = await supabase.from("profiles").select("subscription").eq("id", user.id).single();
+    if (freshProfile) profile.subscription = freshProfile.subscription;
+  }
+
   const { data: animals } = await supabase
     .from("animals")
     .select("*")
@@ -32,7 +38,7 @@ export default async function ProfilePage() {
     redirect("/");
   }
 
-  const subLabel = profile?.subscription === "premium" ? "⭐ PawPlus" : profile?.subscription === "pro" ? "🚀 PawPro" : "🐾 Gratuit";
+  const subLabel = profile?.subscription === "premium" ? "PawPlus" : profile?.subscription === "pro" ? "PawPro" : "Gratuit";
 
   return (
     <div className="min-h-screen px-6 py-8">
@@ -41,7 +47,7 @@ export default async function ProfilePage() {
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
           <div className="flex items-center gap-4 mb-4">
             <div className="w-16 h-16 rounded-full bg-orange-500/20 flex items-center justify-center">
-              <span className="text-2xl">🐾</span>
+              <span className="text-lg font-bold text-orange-400">C</span>
             </div>
             <div>
               <h1 className="text-2xl font-bold text-white">{profile?.full_name || "Utilisateur"}</h1>
