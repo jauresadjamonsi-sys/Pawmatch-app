@@ -169,6 +169,8 @@ export default async function HomePage() {
           <Link href="/pricing" className="text-xs text-gray-500 hover:text-orange-400 transition">Tarifs</Link>
           <Link href="/animals" className="text-xs text-gray-500 hover:text-orange-400 transition">Catalogue</Link>
           <Link href="/login" className="text-xs text-gray-500 hover:text-orange-400 transition">Connexion</Link>
+          <Link href="/legal/cgu" className="text-xs text-gray-500 hover:text-orange-400 transition">CGU</Link>
+          <Link href="/legal/privacy" className="text-xs text-gray-500 hover:text-orange-400 transition">Confidentialité</Link>
         </div>
       </div>
     </div>
