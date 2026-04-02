@@ -72,6 +72,12 @@ export default function NewAnimalPage() {
       : (form.get("city") as string) || null;
 
     const { data: { user } } = await supabase.auth.getUser();
+
+    // Check animal limit
+    const { data: profileData } = await supabase.from("profiles").select("subscription").eq("id", user?.id).single();
+    const { checkAnimalLimit } = await import("@/lib/services/limits");
+    const limitCheck = await checkAnimalLimit(supabase, user?.id || "", profileData?.subscription || "free");
+    if (!limitCheck.allowed) { setError(limitCheck.error || "Limite atteinte"); setLoading(false); return; }
     const result = await createAnimal(supabase, {
       name: form.get("name") as string,
       species,

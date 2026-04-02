@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { getAnimalById, AnimalRow } from "@/lib/services/animals";
-import { sendMatch } from "@/lib/services/matches";
+import { sendMatchWithLimit } from "@/lib/services/matches";
 import { CANTONS } from "@/lib/cantons";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -44,7 +44,7 @@ export default function AnimalDetailPage() {
     if (!animal || !profile) return;
     setMatchSending(true);
     setMatchError(null);
-    const result = await sendMatch(supabase, myAnimalId, animal.id, profile.id, animal.created_by || "NONE");
+    const result = await sendMatchWithLimit(supabase, myAnimalId, animal.id, profile.id, animal.created_by || "NONE", profile.subscription || "free");
     if (result.error) { setMatchError(result.error); } else { setMatchSuccess(true); setShowMatchModal(false); }
     setMatchSending(false);
   }

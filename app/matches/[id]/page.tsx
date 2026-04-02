@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/hooks/useAuth";
-import { getMessages, sendMessage, markAsRead, MessageRow } from "@/lib/services/messages";
+import { getMessages, sendMessageWithLimit, markAsRead, MessageRow } from "@/lib/services/messages";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 
@@ -71,11 +71,12 @@ export default function ConversationPage() {
     setSending(true);
     setError(null);
 
-    const result = await sendMessage(
+    const result = await sendMessageWithLimit(
       supabase,
       params.id as string,
       profile.id,
-      newMessage
+      newMessage,
+      profile.subscription || "free"
     );
 
     if (result.error) {

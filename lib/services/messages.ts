@@ -1,3 +1,4 @@
+import { checkMessageLimit } from "@/lib/services/limits";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 export type MessageRow = {
@@ -105,4 +106,17 @@ export async function getUnreadCount(
   } catch {
     return 0;
   }
+}
+
+
+export async function sendMessageWithLimit(
+  supabase: SupabaseClient,
+  matchId: string,
+  senderId: string,
+  content: string,
+  subscription: string
+) {
+  const limit = await checkMessageLimit(supabase, senderId, subscription);
+  if (!limit.allowed) return { data: null, error: limit.error };
+  return sendMessage(supabase, matchId, senderId, content);
 }

@@ -1,3 +1,4 @@
+import { checkMatchLimit } from "@/lib/services/limits";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 export type MatchRow = {
@@ -22,6 +23,20 @@ type ServiceResult<T> = {
   data: T | null;
   error: string | null;
 };
+
+
+export async function sendMatchWithLimit(
+  supabase: any,
+  senderAnimalId: string,
+  receiverAnimalId: string,
+  senderUserId: string,
+  receiverUserId: string,
+  subscription: string
+) {
+  const limit = await checkMatchLimit(supabase, senderUserId, subscription);
+  if (!limit.allowed) return { data: null, error: limit.error };
+  return sendMatch(supabase, senderAnimalId, receiverAnimalId, senderUserId, receiverUserId);
+}
 
 export async function sendMatch(
   supabase: SupabaseClient,
@@ -117,3 +132,4 @@ export async function getMyMatches(
     return { data: null, error: "Erreur inattendue." };
   }
 }
+
