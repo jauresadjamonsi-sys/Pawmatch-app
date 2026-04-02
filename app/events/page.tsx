@@ -195,7 +195,7 @@ export default function EventsPage() {
               (!filterCanton ? "bg-orange-500/20 border border-orange-500/40 text-orange-300" : "bg-white/5 border border-white/10 text-gray-400 hover:border-orange-500/30")}>
             Toute la Suisse 🇨🇭
           </button>
-          {CANTONS.slice(0, 10).map(c => (
+          {CANTONS.map(c => (
             <button key={c.code} onClick={() => setFilterCanton(filterCanton === c.code ? "" : c.code)}
               className={"flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition " +
                 (filterCanton === c.code ? "bg-orange-500/20 border border-orange-500/40 text-orange-300" : "bg-white/5 border border-white/10 text-gray-400 hover:border-orange-500/30")}>
