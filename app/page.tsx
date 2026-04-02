@@ -37,10 +37,6 @@ export default async function HomePage() {
           0%, 100% { transform: scale(1); }
           50% { transform: scale(1.05); }
         }
-        @keyframes slideIn {
-          from { opacity: 0; transform: translateX(-10px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
         .paw-left { animation: pawBounceLeft 2s ease-in-out infinite; }
         .paw-right { animation: pawBounceRight 2s ease-in-out infinite; }
         .fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
@@ -48,7 +44,6 @@ export default async function HomePage() {
         .fade-in-up-delay-2 { animation: fadeInUp 0.8s ease-out 0.3s forwards; opacity: 0; }
         .fade-in-up-delay-3 { animation: fadeInUp 0.8s ease-out 0.45s forwards; opacity: 0; }
         .pulse-slow { animation: pulse 3s ease-in-out infinite; }
-        .slide-in { animation: slideIn 0.6s ease-out forwards; }
         .glow-orange { box-shadow: 0 0 30px rgba(249,115,22,0.15); }
         .card-hover { transition: transform 0.2s ease, box-shadow 0.2s ease; }
         .card-hover:active { transform: scale(0.97); }
@@ -61,12 +56,10 @@ export default async function HomePage() {
 
       {/* Hero */}
       <div className="relative text-center pt-10 pb-8 px-4">
-        <div className="flex justify-center gap-2 mb-6 fade-in-up">
-          <span className="px-3 py-1.5 bg-[#1a1225] border border-orange-500/20 rounded-full text-xs text-orange-300 font-medium">🇫🇷 Français</span>
-          <span className="px-3 py-1.5 bg-[#1a1225] border border-[#2a1f3a] rounded-full text-xs text-gray-400">🇩🇪</span>
-          <span className="px-3 py-1.5 bg-[#1a1225] border border-[#2a1f3a] rounded-full text-xs text-gray-400">🇮🇹</span>
-          <span className="px-3 py-1.5 bg-[#1a1225] border border-[#2a1f3a] rounded-full text-xs text-gray-400">🇬🇧</span>
-          <span className="px-3 py-1.5 bg-[#1a1225] border border-[#2a1f3a] rounded-full text-xs text-gray-400">🏔️</span>
+        <div className="flex justify-center mb-6 fade-in-up">
+          <span className="px-4 py-1.5 bg-[#1a1225] border border-[#2a1f3a] rounded-full text-xs text-gray-400 font-medium">
+            🇫🇷 🇩🇪 🇮🇹 🇬🇧 — Bientot en 5 langues
+          </span>
         </div>
 
         {/* Animated paws */}
@@ -83,7 +76,7 @@ export default async function HomePage() {
         </p>
 
         {/* Stats */}
-        <div className="flex justify-center gap-6 mb-6 fade-in-up-delay-2">
+        <div className="flex justify-center gap-8 mb-6 fade-in-up-delay-2">
           <div className="text-center">
             <p className="text-2xl font-bold text-orange-400">{totalProfiles || 0}</p>
             <p className="text-[10px] text-gray-500 uppercase tracking-wider">Membres</p>
@@ -92,11 +85,6 @@ export default async function HomePage() {
           <div className="text-center">
             <p className="text-2xl font-bold text-orange-400">{totalAnimals || 0}</p>
             <p className="text-[10px] text-gray-500 uppercase tracking-wider">Compagnons</p>
-          </div>
-          <div className="w-px h-10 bg-[#2a1f3a]" />
-          <div className="text-center">
-            <p className="text-2xl font-bold text-orange-400">26</p>
-            <p className="text-[10px] text-gray-500 uppercase tracking-wider">Cantons</p>
           </div>
         </div>
 
@@ -118,7 +106,7 @@ export default async function HomePage() {
             <h2 className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest">Recemment actifs</h2>
             <Link href="/animals" className="text-[11px] text-orange-400 font-semibold">Voir tout →</Link>
           </div>
-          <div className="flex gap-5 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex gap-5 overflow-x-auto pb-2">
             {animals.map((animal) => (
               <Link href={"/animals/" + animal.id} key={animal.id} className="flex flex-col items-center flex-shrink-0 group">
                 <div className="relative">
@@ -171,7 +159,7 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* Coup de Truffe - Unique Feature Highlight */}
+      {/* Coup de Truffe */}
       <div className="px-6 mb-8">
         <div className="bg-gradient-to-r from-orange-500/10 via-pink-500/5 to-purple-500/10 border border-orange-500/20 rounded-2xl p-6 relative overflow-hidden glow-orange">
           <div className="absolute -top-10 -right-10 w-32 h-32 bg-orange-500/10 rounded-full blur-2xl" />
@@ -179,7 +167,7 @@ export default async function HomePage() {
             <span className="text-3xl">💥</span>
             <div>
               <h3 className="font-bold text-white">Coup de Truffe</h3>
-              <p className="text-xs text-gray-400">L'animation exclusive quand c'est un match !</p>
+              <p className="text-xs text-gray-400">{"L'animation exclusive quand c'est un match !"}</p>
             </div>
           </div>
           <div className="flex items-center gap-4 bg-[#0d0a14]/50 rounded-xl p-4">
@@ -201,22 +189,30 @@ export default async function HomePage() {
       <div className="px-6 mb-8">
         <h2 className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest mb-4">Comment ca marche</h2>
         <div className="space-y-3">
-          {[
-            { step: "1", icon: "📝", title: "Cree ton profil", desc: "Ajoute ton compagnon avec sa race, son caractere et une photo" },
-            { step: "2", icon: "👃", title: "Flaire les profils", desc: "Notre IA te propose les compagnons les plus compatibles" },
-            { step: "3", icon: "🤝", title: "Rencontre et sors", desc: "Organisez votre premiere balade ou rejoignez un evenement" },
-          ].map((item, i) => (
-            <div key={i} className="bg-[#1a1225] border border-[#2a1f3a] rounded-2xl p-4 flex items-center gap-4 card-hover">
-              <div className="w-11 h-11 rounded-full bg-gradient-to-br from-orange-500/20 to-orange-600/10 flex items-center justify-center text-orange-400 font-bold text-sm flex-shrink-0 border border-orange-500/20">
-                {item.step}
-              </div>
-              <div className="flex-1">
-                <h3 className="font-semibold text-white text-sm">{item.title}</h3>
-                <p className="text-xs text-gray-500">{item.desc}</p>
-              </div>
-              <span className="text-xl">{item.icon}</span>
+          <div className="bg-[#1a1225] border border-[#2a1f3a] rounded-2xl p-4 flex items-center gap-4 card-hover">
+            <div className="w-11 h-11 rounded-full bg-gradient-to-br from-orange-500/20 to-orange-600/10 flex items-center justify-center text-orange-400 font-bold text-sm flex-shrink-0 border border-orange-500/20">1</div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-white text-sm">Cree ton profil</h3>
+              <p className="text-xs text-gray-500">Ajoute ton compagnon avec sa race, son caractere et une photo</p>
             </div>
-          ))}
+            <span className="text-xl">📝</span>
+          </div>
+          <div className="bg-[#1a1225] border border-[#2a1f3a] rounded-2xl p-4 flex items-center gap-4 card-hover">
+            <div className="w-11 h-11 rounded-full bg-gradient-to-br from-orange-500/20 to-orange-600/10 flex items-center justify-center text-orange-400 font-bold text-sm flex-shrink-0 border border-orange-500/20">2</div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-white text-sm">Flaire les profils</h3>
+              <p className="text-xs text-gray-500">Notre IA te propose les compagnons les plus compatibles</p>
+            </div>
+            <span className="text-xl">👃</span>
+          </div>
+          <div className="bg-[#1a1225] border border-[#2a1f3a] rounded-2xl p-4 flex items-center gap-4 card-hover">
+            <div className="w-11 h-11 rounded-full bg-gradient-to-br from-orange-500/20 to-orange-600/10 flex items-center justify-center text-orange-400 font-bold text-sm flex-shrink-0 border border-orange-500/20">3</div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-white text-sm">Rencontre et sors</h3>
+              <p className="text-xs text-gray-500">Organisez votre premiere balade ou rejoignez un evenement</p>
+            </div>
+            <span className="text-xl">🤝</span>
+          </div>
         </div>
       </div>
 
@@ -225,7 +221,7 @@ export default async function HomePage() {
         <div className="bg-gradient-to-br from-orange-500/15 via-orange-600/10 to-[#1a1225] border border-orange-500/25 rounded-2xl p-8 text-center relative overflow-hidden glow-orange">
           <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-orange-500/5 rounded-full blur-2xl" />
           <h2 className="text-xl font-bold text-white mb-2">Pret a trouver ton pote ?</h2>
-          <p className="text-xs text-gray-400 mb-5">Gratuit pour commencer. 26 cantons. Toutes les especes.</p>
+          <p className="text-xs text-gray-400 mb-5">Gratuit pour commencer. Toutes les especes. Toute la Suisse.</p>
           <Link href="/signup" className="inline-block px-8 py-3.5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold rounded-full transition text-sm glow-orange">
             Commencer maintenant
           </Link>
