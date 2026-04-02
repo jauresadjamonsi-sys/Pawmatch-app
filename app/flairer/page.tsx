@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { sendMatch } from "@/lib/services/matches";
@@ -19,6 +19,52 @@ type Animal = {
   traits: string[]; created_by: string | null;
 };
 
+type Particle = { id: number; x: number; y: number; vx: number; vy: number; color: string; size: number; life: number; emoji?: string };
+
+// Web Audio sound generator
+function playSound(type: "like" | "pass" | "superlike" | "streak") {
+  try {
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    if (type === "like") {
+      osc.frequency.setValueAtTime(520, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(780, ctx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+      osc.start(); osc.stop(ctx.currentTime + 0.2);
+    } else if (type === "pass") {
+      osc.frequency.setValueAtTime(300, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(180, ctx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+      osc.start(); osc.stop(ctx.currentTime + 0.15);
+    } else if (type === "superlike") {
+      [0, 0.08, 0.16].forEach((delay, i) => {
+        const o = ctx.createOscillator(); const g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.frequency.setValueAtTime([520, 660, 780][i], ctx.currentTime + delay);
+        g.gain.setValueAtTime(0.15, ctx.currentTime + delay);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.15);
+        o.start(ctx.currentTime + delay); o.stop(ctx.currentTime + delay + 0.15);
+      });
+    } else if (type === "streak") {
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(440, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.3);
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      osc.start(); osc.stop(ctx.currentTime + 0.3);
+    }
+  } catch {}
+}
+
+function vibrate(pattern: number[]) {
+  try { navigator.vibrate?.(pattern); } catch {}
+}
+
 export default function FlairerPage() {
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -27,10 +73,19 @@ export default function FlairerPage() {
   const [showMatchModal, setShowMatchModal] = useState(false);
   const [matchSuccess, setMatchSuccess] = useState(false);
   const [matchError, setMatchError] = useState<string | null>(null);
-  const [swipeDirection, setSwipeDirection] = useState<"left" | "right" | null>(null);
+  const [swipeDirection, setSwipeDirection] = useState<"left" | "right" | "super" | null>(null);
   const [dragX, setDragX] = useState(0);
+  const [dragY, setDragY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [particles, setParticles] = useState<Particle[]>([]);
+  const [streak, setStreak] = useState(0);
+  const [showStreak, setShowStreak] = useState(false);
+  const [streakLabel, setStreakLabel] = useState("");
+  const [isSuperLike, setIsSuperLike] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
   const startX = useRef(0);
+  const startY = useRef(0);
+  const cardRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
   const { profile, isAuthenticated, loading: authLoading } = useAuth();
 
@@ -50,6 +105,126 @@ export default function FlairerPage() {
     setLoading(false);
   }
 
+  function spawnParticles(x: number, y: number, type: "like" | "super" | "pass") {
+    const colors = type === "like"
+      ? ["#f97316","#fb923c","#fbbf24","#f472b6","#ef4444"]
+      : type === "super"
+      ? ["#60a5fa","#a78bfa","#34d399","#fbbf24","#f97316"]
+      : ["#6b7280","#9ca3af"];
+    const emojis = type === "like" ? ["❤️","🐾","✨","💛","🧡"] : type === "super" ? ["⚡","💙","🌟","💫","🔥"] : [];
+    const count = type === "pass" ? 8 : 20;
+    const newParticles: Particle[] = Array.from({ length: count }, (_, i) => ({
+      id: Date.now() + i,
+      x, y,
+      vx: (Math.random() - 0.5) * (type === "super" ? 16 : 12),
+      vy: -(Math.random() * (type === "super" ? 14 : 10) + 4),
+      color: colors[Math.floor(Math.random() * colors.length)],
+      size: Math.random() * (type === "super" ? 20 : 14) + 8,
+      life: 1,
+      emoji: emojis.length > 0 && Math.random() > 0.4 ? emojis[Math.floor(Math.random() * emojis.length)] : undefined,
+    }));
+    setParticles(prev => [...prev, ...newParticles]);
+    setTimeout(() => setParticles(prev => prev.filter(p => !newParticles.find(np => np.id === p.id))), 900);
+  }
+
+  function triggerStreak(count: number) {
+    const labels: Record<number, string> = {
+      3: "🔥 x3 En feu !",
+      5: "⚡ x5 Instinct !",
+      7: "🌟 x7 Magnétique !",
+      10: "💥 x10 LÉGENDAIRE !",
+    };
+    if (labels[count]) {
+      setStreakLabel(labels[count]);
+      setShowStreak(true);
+      playSound("streak");
+      vibrate([50, 30, 50]);
+      setTimeout(() => setShowStreak(false), 1800);
+    }
+  }
+
+  function handlePass() {
+    if (cardRef.current) {
+      const rect = cardRef.current.getBoundingClientRect();
+      spawnParticles(rect.left + 60, rect.top + 60, "pass");
+    }
+    playSound("pass");
+    vibrate([30]);
+    setStreak(0);
+    setSwipeDirection("left");
+    setTimeout(() => { setSwipeDirection(null); setDragX(0); setDragY(0); setCurrentIndex(i => i + 1); }, 320);
+  }
+
+  function handleLike(isSuper = false) {
+    if (!isAuthenticated) { window.location.href = "/login"; return; }
+    if (myAnimals.length === 0) { window.location.href = "/profile/animals/new"; return; }
+    setIsSuperLike(isSuper);
+    setShowMatchModal(true);
+  }
+
+  function handleSuperLike() { handleLike(true); }
+
+  async function handleMatch(myAnimalId: string) {
+    const animal = animals[currentIndex];
+    if (!animal || !profile) return;
+    setMatchError(null);
+    const result = await sendMatch(supabase, myAnimalId, animal.id, profile.id, animal.created_by || "NONE");
+    if (result.error) { setMatchError(result.error); return; }
+
+    const newStreak = streak + 1;
+    const newLikeCount = likeCount + 1;
+    setStreak(newStreak);
+    setLikeCount(newLikeCount);
+    triggerStreak(newStreak);
+
+    if (cardRef.current) {
+      const rect = cardRef.current.getBoundingClientRect();
+      spawnParticles(rect.left + rect.width / 2, rect.top + rect.height / 3, isSuperLike ? "super" : "like");
+    }
+    playSound(isSuperLike ? "superlike" : "like");
+    vibrate(isSuperLike ? [40, 20, 40, 20, 80] : [40, 20, 40]);
+
+    setMatchSuccess(true);
+    setTimeout(() => {
+      setMatchSuccess(false);
+      setShowMatchModal(false);
+      setIsSuperLike(false);
+      setSwipeDirection(isSuperLike ? "super" : "right");
+      setTimeout(() => { setSwipeDirection(null); setDragX(0); setDragY(0); setCurrentIndex(i => i + 1); }, 320);
+    }, 1200);
+  }
+
+  function onTouchStart(e: React.TouchEvent) {
+    startX.current = e.touches[0].clientX;
+    startY.current = e.touches[0].clientY;
+    setIsDragging(true);
+  }
+  function onTouchMove(e: React.TouchEvent) {
+    if (!isDragging) return;
+    setDragX(e.touches[0].clientX - startX.current);
+    setDragY(e.touches[0].clientY - startY.current);
+  }
+  function onTouchEnd() {
+    setIsDragging(false);
+    if (dragY < -80 && Math.abs(dragX) < 60) { handleSuperLike(); setDragX(0); setDragY(0); }
+    else if (dragX > 100) { handleLike(); if (!isAuthenticated || myAnimals.length === 0) { setDragX(0); setDragY(0); } }
+    else if (dragX < -100) { handlePass(); }
+    else { setDragX(0); setDragY(0); }
+  }
+  function onMouseDown(e: React.MouseEvent) { startX.current = e.clientX; startY.current = e.clientY; setIsDragging(true); }
+  function onMouseMove(e: React.MouseEvent) {
+    if (!isDragging) return;
+    setDragX(e.clientX - startX.current);
+    setDragY(e.clientY - startY.current);
+  }
+  function onMouseUp() {
+    setIsDragging(false);
+    if (dragY < -80 && Math.abs(dragX) < 60) { handleSuperLike(); setDragX(0); setDragY(0); }
+    else if (dragX > 100) { handleLike(); if (!isAuthenticated || myAnimals.length === 0) { setDragX(0); setDragY(0); } }
+    else if (dragX < -100) { handlePass(); }
+    else { setDragX(0); setDragY(0); }
+  }
+
   function formatAge(months: number | null) {
     if (!months) return "Age inconnu";
     if (months < 12) return months + " mois";
@@ -57,44 +232,11 @@ export default function FlairerPage() {
     return y + " an" + (y > 1 ? "s" : "");
   }
 
-  function handlePass() {
-    setSwipeDirection("left");
-    setTimeout(() => { setSwipeDirection(null); setDragX(0); setCurrentIndex((i) => i + 1); }, 300);
-  }
-
-  function handleLike() {
-    if (!isAuthenticated) { window.location.href = "/login"; return; }
-    if (myAnimals.length === 0) { window.location.href = "/profile/animals/new"; return; }
-    setShowMatchModal(true);
-  }
-
-  async function handleMatch(myAnimalId: string) {
-    const animal = animals[currentIndex];
-    if (!animal || !profile) return;
-    setMatchError(null);
-    const result = await sendMatch(supabase, myAnimalId, animal.id, profile.id, animal.created_by || "NONE");
-    if (result.error) { setMatchError(result.error); }
-    else {
-      setMatchSuccess(true);
-      setTimeout(() => {
-        setMatchSuccess(false); setShowMatchModal(false); setSwipeDirection("right");
-        setTimeout(() => { setSwipeDirection(null); setDragX(0); setCurrentIndex((i) => i + 1); }, 300);
-      }, 1500);
-    }
-  }
-
-  function onTouchStart(e: React.TouchEvent) { startX.current = e.touches[0].clientX; setIsDragging(true); }
-  function onTouchMove(e: React.TouchEvent) { if (isDragging) setDragX(e.touches[0].clientX - startX.current); }
-  function onTouchEnd() { setIsDragging(false); if (dragX > 100) { handleLike(); if (!isAuthenticated || myAnimals.length === 0) setDragX(0); } else if (dragX < -100) { handlePass(); } else { setDragX(0); } }
-  function onMouseDown(e: React.MouseEvent) { startX.current = e.clientX; setIsDragging(true); }
-  function onMouseMove(e: React.MouseEvent) { if (isDragging) setDragX(e.clientX - startX.current); }
-  function onMouseUp() { setIsDragging(false); if (dragX > 100) { handleLike(); if (!isAuthenticated || myAnimals.length === 0) setDragX(0); } else if (dragX < -100) { handlePass(); } else { setDragX(0); } }
-
   if (loading || authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-[#1a1225]">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-orange-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="text-5xl mb-4 animate-bounce">🐾</div>
           <p className="text-gray-500 text-sm">Chargement des profils...</p>
         </div>
       </div>
@@ -102,140 +244,326 @@ export default function FlairerPage() {
   }
 
   const animal = animals[currentIndex];
+  const nextAnimal = animals[currentIndex + 1];
 
   if (!animal) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="min-h-screen flex items-center justify-center px-4 bg-[#1a1225]">
         <div className="text-center max-w-sm">
-          <div className="w-16 h-16 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-400 font-bold text-2xl mx-auto mb-4">?</div>
-          <h2 className="text-2xl font-bold text-white mb-2">Plus personne a flairer</h2>
-          <p className="text-gray-400 mb-6 text-sm">Tu as vu tous les profils disponibles. Reviens plus tard ou invite des amis.</p>
-          <div className="flex gap-3 justify-center">
-            <Link href="/animals" className="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition text-sm">Explorer le catalogue</Link>
-            <button onClick={() => { setCurrentIndex(0); }} className="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition text-sm border border-white/10">Recommencer</button>
+          <div className="text-6xl mb-4">🐾</div>
+          <h2 className="text-2xl font-bold text-white mb-2">Plus personne à flairer !</h2>
+          <p className="text-gray-400 mb-2 text-sm">Tu as flairé <span className="text-orange-400 font-bold">{likeCount}</span> compagnons.</p>
+          {streak >= 3 && <p className="text-orange-400 text-sm font-semibold mb-4">🔥 Streak max : {streak} !</p>}
+          <div className="flex gap-3 justify-center mt-4">
+            <Link href="/animals" className="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition text-sm">Explorer</Link>
+            <button onClick={() => { setCurrentIndex(0); setStreak(0); setLikeCount(0); }}
+              className="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition text-sm border border-white/10">
+              Recommencer
+            </button>
           </div>
         </div>
       </div>
     );
   }
 
-  const cantonName = animal.canton ? CANTONS.find((c) => c.code === animal.canton)?.name : null;
-  const rotation = dragX * 0.1;
+  const cantonName = animal.canton ? CANTONS.find(c => c.code === animal.canton)?.name : null;
+  const rotation = dragX * 0.08;
+  const likeOpacity = Math.min(Math.max(dragX / 80, 0), 1);
+  const passOpacity = Math.min(Math.max(-dragX / 80, 0), 1);
+  const superOpacity = Math.min(Math.max(-dragY / 60, 0), 1);
+
   const cardStyle = swipeDirection
-    ? { transform: `translateX(${swipeDirection === "left" ? "-120%" : "120%"}) rotate(${swipeDirection === "left" ? "-30" : "30"}deg)`, transition: "transform 0.3s ease-out", opacity: 0 }
-    : { transform: `translateX(${dragX}px) rotate(${rotation}deg)`, transition: isDragging ? "none" : "transform 0.3s ease-out" };
+    ? {
+        transform: swipeDirection === "left"
+          ? "translateX(-130%) rotate(-25deg)"
+          : swipeDirection === "super"
+          ? "translateY(-130%) scale(1.05)"
+          : "translateX(130%) rotate(25deg)",
+        transition: "transform 0.32s cubic-bezier(0.25,0.46,0.45,0.94)",
+        opacity: 0,
+      }
+    : {
+        transform: `translateX(${dragX}px) translateY(${dragY}px) rotate(${rotation}deg)`,
+        transition: isDragging ? "none" : "transform 0.4s cubic-bezier(0.34,1.56,0.64,1)",
+        boxShadow: likeOpacity > 0
+          ? `0 0 ${40 * likeOpacity}px rgba(249,115,22,${0.4 * likeOpacity})`
+          : passOpacity > 0
+          ? `0 0 ${40 * passOpacity}px rgba(239,68,68,${0.3 * passOpacity})`
+          : superOpacity > 0
+          ? `0 0 ${40 * superOpacity}px rgba(96,165,250,${0.4 * superOpacity})`
+          : "0 20px 60px rgba(0,0,0,0.4)",
+      };
+
+  const nextCardScale = 0.93 + (Math.abs(dragX) / 1000) * 0.07;
 
   return (
-    <div className="min-h-screen flex flex-col items-center px-4 py-6">
-      <div className="w-full max-w-md flex items-center justify-between mb-6">
-        <h1 className="text-lg font-bold text-white">Flairer</h1>
-        <span className="text-xs text-gray-500 bg-white/5 px-3 py-1 rounded-full">{animals.length - currentIndex} profils</span>
+    <div className="min-h-screen flex flex-col items-center px-4 py-4 bg-[#1a1225] select-none overflow-hidden">
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes particleFly {
+          0% { transform: translate(0,0) scale(1); opacity: 1; }
+          100% { transform: translate(var(--vx), var(--vy)) scale(0); opacity: 0; }
+        }
+        @keyframes streakPop {
+          0% { transform: scale(0.5) translateY(20px); opacity: 0; }
+          30% { transform: scale(1.2) translateY(-5px); opacity: 1; }
+          70% { transform: scale(1) translateY(0); opacity: 1; }
+          100% { transform: scale(0.8) translateY(-10px); opacity: 0; }
+        }
+        @keyframes labelPop {
+          0% { transform: scale(0) rotate(-12deg); opacity: 0; }
+          50% { transform: scale(1.1) rotate(-12deg); opacity: 1; }
+          100% { transform: scale(1) rotate(-12deg); opacity: 1; }
+        }
+        @keyframes labelPopRight {
+          0% { transform: scale(0) rotate(12deg); opacity: 0; }
+          50% { transform: scale(1.1) rotate(12deg); opacity: 1; }
+          100% { transform: scale(1) rotate(12deg); opacity: 1; }
+        }
+        @keyframes superPop {
+          0% { transform: scale(0) translateY(10px); opacity: 0; }
+          60% { transform: scale(1.15) translateY(-5px); opacity: 1; }
+          100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        @keyframes pulse-orange {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(249,115,22,0.4); }
+          50% { box-shadow: 0 0 0 12px rgba(249,115,22,0); }
+        }
+        .particle { animation: particleFly 0.8s ease-out forwards; }
+        .streak-pop { animation: streakPop 1.8s ease-in-out forwards; }
+        .label-like { animation: labelPop 0.2s ease-out forwards; }
+        .label-pass { animation: labelPopRight 0.2s ease-out forwards; }
+        .label-super { animation: superPop 0.2s ease-out forwards; }
+        .like-btn-pulse { animation: pulse-orange 1.5s infinite; }
+      `}} />
+
+      {/* Particules */}
+      <div className="fixed inset-0 pointer-events-none z-[200]">
+        {particles.map(p => (
+          <div key={p.id} className="particle absolute flex items-center justify-center"
+            style={{
+              left: p.x, top: p.y,
+              "--vx": p.vx * 60 + "px",
+              "--vy": p.vy * 60 + "px",
+              width: p.size, height: p.size,
+              fontSize: p.emoji ? p.size * 1.2 : undefined,
+              backgroundColor: p.emoji ? "transparent" : p.color,
+              borderRadius: p.emoji ? 0 : "50%",
+            } as any}>
+            {p.emoji}
+          </div>
+        ))}
       </div>
 
-      <div className="w-full max-w-md relative" style={{ height: "65vh" }}>
-        {dragX > 50 && (
-          <div className="absolute top-8 left-6 z-20 bg-green-500/90 text-white font-bold text-sm px-5 py-2 rounded-xl rotate-[-12deg]">INTERESSANT</div>
-        )}
-        {dragX < -50 && (
-          <div className="absolute top-8 right-6 z-20 bg-red-500/90 text-white font-bold text-sm px-5 py-2 rounded-xl rotate-[12deg]">SUIVANT</div>
-        )}
-
-        <div className="w-full h-full bg-white/5 border border-white/10 rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing select-none"
-          style={cardStyle}
-          onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
-          onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}
-          onMouseLeave={() => { if (isDragging) { setIsDragging(false); setDragX(0); } }}>
-
-          <div className="h-[55%] bg-[#2a1f3a] flex items-center justify-center overflow-hidden relative">
-            {animal.photo_url ? (
-              <img src={animal.photo_url} alt={animal.name} className="w-full h-full object-cover" draggable={false} />
-            ) : (
-              <span className="text-lg font-bold text-gray-500">{animal.name?.charAt(0)}</span>
-            )}
-            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#1a1225] to-transparent"></div>
-            <div className="absolute bottom-4 left-5">
-              <h2 className="text-2xl font-bold text-white">{animal.name}</h2>
-              <p className="text-sm text-gray-300">{SPECIES[animal.species] || animal.species}{animal.breed ? " · " + animal.breed : ""}</p>
-            </div>
+      {/* Streak */}
+      {showStreak && (
+        <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[150] streak-pop">
+          <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white font-extrabold text-xl px-6 py-3 rounded-2xl shadow-2xl shadow-orange-500/40">
+            {streakLabel}
           </div>
+        </div>
+      )}
 
-          <div className="h-[45%] p-5 overflow-y-auto">
-            <div className="flex flex-wrap gap-2 mb-3">
-              {animal.canton && <span className="px-3 py-1 bg-orange-500/20 text-orange-300 rounded-full text-xs font-medium">{cantonName || animal.canton}</span>}
-              {animal.city && <span className="px-3 py-1 bg-white/10 text-gray-300 rounded-full text-xs">{animal.city}</span>}
-              <span className="px-3 py-1 bg-white/10 text-gray-300 rounded-full text-xs">{formatAge(animal.age_months)}</span>
-              <span className="px-3 py-1 bg-white/10 text-gray-300 rounded-full text-xs">{animal.gender === "male" ? "Male" : animal.gender === "femelle" ? "Femelle" : "Inconnu"}</span>
-            </div>
-            {animal.traits && animal.traits.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mb-3">
-                {animal.traits.map((trait: string) => (
-                  <span key={trait} className="px-2 py-1 bg-purple-500/10 text-purple-300 rounded-full text-[11px]">{trait}</span>
-                ))}
-              </div>
-            )}
-            {animal.description && <p className="text-gray-400 text-sm leading-relaxed">{animal.description}</p>}
+      {/* Header */}
+      <div className="w-full max-w-md flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <h1 className="text-lg font-bold text-white">Flairer</h1>
+          {streak >= 3 && (
+            <span className="px-2 py-0.5 bg-orange-500/20 border border-orange-500/30 text-orange-300 rounded-full text-xs font-bold">
+              🔥 ×{streak}
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-gray-500">{animals.length - currentIndex} restants</span>
+          <div className="w-20 h-1.5 bg-white/10 rounded-full overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full transition-all duration-300"
+              style={{ width: (currentIndex / Math.max(animals.length, 1)) * 100 + "%" }} />
           </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-6 mt-6">
-        <button onClick={handlePass} className="w-14 h-14 bg-white/5 border border-white/10 rounded-full flex items-center justify-center hover:bg-red-500/20 hover:border-red-500/50 transition">
-          <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      {/* Card stack */}
+      <div className="w-full max-w-md relative" style={{ height: "62vh" }}>
+
+        {/* Next card (behind) */}
+        {nextAnimal && (
+          <div className="absolute inset-0 rounded-3xl overflow-hidden border border-white/5"
+            style={{
+              transform: `scale(${nextCardScale}) translateY(${(1 - nextCardScale) * 30}px)`,
+              transition: isDragging ? "none" : "transform 0.4s ease",
+              zIndex: 1,
+              opacity: 0.7,
+            }}>
+            <div className="w-full h-full bg-[#241d33] flex items-center justify-center">
+              {nextAnimal.photo_url
+                ? <img src={nextAnimal.photo_url} alt={nextAnimal.name} className="w-full h-full object-cover opacity-60" draggable={false} />
+                : <span className="text-gray-600 text-4xl font-bold">{nextAnimal.name?.charAt(0)}</span>}
+            </div>
+          </div>
+        )}
+
+        {/* Labels overlay */}
+        {likeOpacity > 0.2 && (
+          <div className="label-like absolute top-8 left-6 z-20 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black text-base px-5 py-2 rounded-2xl border-2 border-orange-400/50"
+            style={{ opacity: likeOpacity }}>
+            ❤️ FLAIRER !
+          </div>
+        )}
+        {passOpacity > 0.2 && (
+          <div className="label-pass absolute top-8 right-6 z-20 bg-gradient-to-r from-red-500 to-red-600 text-white font-black text-base px-5 py-2 rounded-2xl border-2 border-red-400/50"
+            style={{ opacity: passOpacity }}>
+            PASSER ✕
+          </div>
+        )}
+        {superOpacity > 0.2 && (
+          <div className="label-super absolute top-1/3 left-1/2 -translate-x-1/2 z-20 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-black text-base px-5 py-2 rounded-2xl border-2 border-blue-400/50"
+            style={{ opacity: superOpacity }}>
+            ⚡ SUPER FLAIR !
+          </div>
+        )}
+
+        {/* Main card */}
+        <div ref={cardRef}
+          className="absolute inset-0 bg-[#241d33] border border-white/10 rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing z-10"
+          style={cardStyle}
+          onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
+          onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}
+          onMouseLeave={() => { if (isDragging) { setIsDragging(false); setDragX(0); setDragY(0); } }}>
+
+          {/* Photo */}
+          <div className="h-[58%] relative overflow-hidden bg-[#1a1225]">
+            {animal.photo_url
+              ? <img src={animal.photo_url} alt={animal.name} className="w-full h-full object-cover" draggable={false} />
+              : <div className="w-full h-full flex items-center justify-center text-6xl font-bold text-gray-600">{animal.name?.charAt(0)}</div>}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#241d33] via-transparent to-transparent" />
+
+            {/* Name overlay */}
+            <div className="absolute bottom-4 left-5 right-5">
+              <h2 className="text-2xl font-extrabold text-white drop-shadow-lg">{animal.name}</h2>
+              <p className="text-sm text-gray-300">{SPECIES[animal.species] || animal.species}{animal.breed ? " · " + animal.breed : ""}</p>
+            </div>
+
+            {/* Like glow overlay */}
+            {likeOpacity > 0 && (
+              <div className="absolute inset-0 bg-orange-500/10 mix-blend-overlay"
+                style={{ opacity: likeOpacity }} />
+            )}
+            {passOpacity > 0 && (
+              <div className="absolute inset-0 bg-red-500/10 mix-blend-overlay"
+                style={{ opacity: passOpacity }} />
+            )}
+            {superOpacity > 0 && (
+              <div className="absolute inset-0 bg-blue-500/15 mix-blend-overlay"
+                style={{ opacity: superOpacity }} />
+            )}
+          </div>
+
+          {/* Info */}
+          <div className="h-[42%] p-4 overflow-y-auto">
+            <div className="flex flex-wrap gap-1.5 mb-2">
+              {animal.canton && (
+                <span className="px-2.5 py-1 bg-orange-500/20 text-orange-300 rounded-full text-xs font-medium">{cantonName || animal.canton}</span>
+              )}
+              {animal.city && (
+                <span className="px-2.5 py-1 bg-white/8 text-gray-300 rounded-full text-xs">{animal.city}</span>
+              )}
+              <span className="px-2.5 py-1 bg-white/8 text-gray-300 rounded-full text-xs">{formatAge(animal.age_months)}</span>
+              <span className="px-2.5 py-1 bg-white/8 text-gray-300 rounded-full text-xs">
+                {animal.gender === "male" ? "Mâle" : animal.gender === "femelle" ? "Femelle" : "Inconnu"}
+              </span>
+            </div>
+            {animal.traits?.length > 0 && (
+              <div className="flex flex-wrap gap-1 mb-2">
+                {animal.traits.map(t => (
+                  <span key={t} className="px-2 py-0.5 bg-purple-500/15 text-purple-300 rounded-full text-[11px]">{t}</span>
+                ))}
+              </div>
+            )}
+            {animal.description && (
+              <p className="text-gray-400 text-xs leading-relaxed line-clamp-3">{animal.description}</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Action buttons */}
+      <div className="flex items-center gap-5 mt-5">
+        {/* Pass */}
+        <button onClick={handlePass}
+          className="w-14 h-14 bg-white/5 border border-white/10 rounded-full flex items-center justify-center hover:bg-red-500/20 hover:border-red-500/40 hover:scale-110 active:scale-95 transition-all duration-150">
+          <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-        <button onClick={() => setCurrentIndex((i) => Math.max(0, i - 1))} className="w-10 h-10 bg-white/5 border border-white/10 rounded-full flex items-center justify-center hover:bg-white/10 transition">
-          <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+
+        {/* Super flair */}
+        <button onClick={handleSuperLike}
+          className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full flex items-center justify-center hover:from-blue-500/40 hover:to-purple-500/40 hover:scale-110 active:scale-95 transition-all duration-150">
+          <span className="text-xl">⚡</span>
+        </button>
+
+        {/* Like */}
+        <button onClick={() => handleLike()}
+          className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-150 like-btn-pulse">
+          <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
           </svg>
         </button>
-        <button onClick={handleLike} className="w-14 h-14 bg-orange-500 border-2 border-orange-400 rounded-full flex items-center justify-center hover:bg-orange-600 transition shadow-lg shadow-orange-500/30">
-          <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+
+        {/* Undo */}
+        <button onClick={() => { if (currentIndex > 0) { setCurrentIndex(i => i - 1); setStreak(0); } }}
+          className="w-12 h-12 bg-white/5 border border-white/10 rounded-full flex items-center justify-center hover:bg-white/10 hover:scale-110 active:scale-95 transition-all duration-150">
+          <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
           </svg>
         </button>
       </div>
 
-      <p className="text-gray-600 text-xs mt-4">Swipe droite pour flairer, gauche pour passer</p>
+      <p className="text-gray-600 text-[10px] mt-3">← Passer · ❤️ Flairer · ⚡ Super Flair (swipe haut)</p>
 
+      {/* Match modal */}
       {showMatchModal && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-[#2a1f3a] border border-white/10 rounded-2xl max-w-md w-full p-6">
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-gradient-to-br from-[#241d33] to-[#1a1225] border border-white/10 rounded-3xl max-w-md w-full p-6 shadow-2xl">
             {matchSuccess ? (
               <div className="text-center py-4">
-                <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-3">
-                  <svg className="w-8 h-8 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-white mb-2">Demande envoyee</h3>
-                <p className="text-gray-400 text-sm">{animal.name} sera bientot prevenu</p>
+                <div className="text-5xl mb-3 animate-bounce">{isSuperLike ? "⚡" : "❤️"}</div>
+                <h3 className="text-xl font-bold text-white mb-1">{isSuperLike ? "Super Flair envoyé !" : "Demande envoyée !"}</h3>
+                <p className="text-gray-400 text-sm">{animal.name} sera bientôt prévenu</p>
+                {streak >= 3 && <p className="text-orange-400 text-sm font-bold mt-2">🔥 Streak ×{streak} !</p>}
               </div>
             ) : (
               <>
-                <h3 className="text-lg font-bold text-white mb-2">Avec quel compagnon ?</h3>
-                <p className="text-sm text-gray-400 mb-4">Qui va rencontrer {animal.name} ?</p>
-                {matchError && <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-sm">{matchError}</div>}
-                <div className="space-y-2 mb-4">
-                  {myAnimals.map((myAnimal) => (
+                <div className="flex items-center gap-3 mb-4">
+                  {isSuperLike && <span className="text-2xl">⚡</span>}
+                  <div>
+                    <h3 className="text-lg font-bold text-white">Avec quel compagnon ?</h3>
+                    <p className="text-sm text-gray-400">Qui va rencontrer {animal.name} ?</p>
+                  </div>
+                </div>
+                {matchError && (
+                  <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-sm">{matchError}</div>
+                )}
+                <div className="space-y-2 mb-4 max-h-60 overflow-y-auto">
+                  {myAnimals.map(myAnimal => (
                     <button key={myAnimal.id} onClick={() => handleMatch(myAnimal.id)}
-                      className="w-full flex items-center gap-3 p-3 bg-white/5 hover:bg-orange-500/10 rounded-xl transition text-left border border-white/5">
-                      <div className="w-12 h-12 rounded-full bg-[#1a1225] border-2 border-orange-400/60 flex items-center justify-center overflow-hidden flex-shrink-0">
-                        {myAnimal.photo_url ? (
-                          <img src={myAnimal.photo_url} alt={myAnimal.name} className="w-full h-full object-cover" />
-                        ) : (
-                          <span className="text-xs font-bold text-gray-500">{myAnimal.name?.charAt(0)}</span>
-                        )}
+                      className="w-full flex items-center gap-3 p-3 bg-white/5 hover:bg-orange-500/10 rounded-2xl transition text-left border border-white/5 hover:border-orange-500/20 active:scale-98">
+                      <div className="w-12 h-12 rounded-full bg-[#1a1225] border-2 border-orange-400/50 flex items-center justify-center overflow-hidden flex-shrink-0">
+                        {myAnimal.photo_url
+                          ? <img src={myAnimal.photo_url} alt={myAnimal.name} className="w-full h-full object-cover" />
+                          : <span className="text-sm font-bold text-gray-500">{myAnimal.name?.charAt(0)}</span>}
                       </div>
-                      <div>
+                      <div className="flex-1">
                         <p className="font-semibold text-white text-sm">{myAnimal.name}</p>
                         <p className="text-xs text-gray-500">{SPECIES[myAnimal.species]}{myAnimal.breed ? " · " + myAnimal.breed : ""}</p>
                       </div>
+                      <span className="text-orange-400 text-lg">→</span>
                     </button>
                   ))}
                 </div>
-                <button onClick={() => { setShowMatchModal(false); setMatchError(null); setDragX(0); }}
-                  className="w-full py-2 bg-white/10 hover:bg-white/20 text-gray-300 font-medium rounded-xl transition text-sm">
+                <button onClick={() => { setShowMatchModal(false); setMatchError(null); setIsSuperLike(false); setDragX(0); setDragY(0); }}
+                  className="w-full py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 font-medium rounded-2xl transition text-sm">
                   Annuler
                 </button>
               </>
