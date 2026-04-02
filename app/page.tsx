@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { useAppContext } from "@/lib/contexts/AppContext";
-import { LANGS, THEMES } from "@/lib/i18n";
 
 const EMOJI_MAP: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
@@ -12,7 +11,7 @@ const EMOJI_MAP: Record<string, string> = {
 };
 
 export default function HomePage() {
-  const { lang, setLang, theme, setTheme, t } = useAppContext();
+  const { t } = useAppContext();
   const [animals, setAnimals] = useState<any[]>([]);
   const [totalAnimals, setTotalAnimals] = useState(0);
   const [totalProfiles, setTotalProfiles] = useState(0);
@@ -63,30 +62,6 @@ export default function HomePage() {
       </div>
 
       <div className="relative text-center pt-10 pb-8 px-4">
-        <div className="flex justify-center items-center gap-4 mb-6 fade-in-up">
-          <div className="flex gap-2">
-            {LANGS.map((l) => (
-              <button key={l.code} onClick={() => setLang(l.code as any)}
-                className={"px-3 py-1.5 rounded-full text-sm transition-all " + (lang === l.code
-                  ? "bg-orange-500/20 border border-orange-500/40 shadow-lg shadow-orange-500/10"
-                  : "bg-[var(--c-card)] border border-[var(--c-border)] hover:border-orange-500/30")}>
-                {l.flag}
-              </button>
-            ))}
-          </div>
-          <div className="w-px h-6 bg-white/10" />
-          <div className="flex gap-2">
-            {THEMES.map((th) => (
-              <button key={th.code} onClick={() => setTheme(th.code as any)} title={th.name}
-                className={"px-3 py-1.5 rounded-full text-sm transition-all " + (theme === th.code
-                  ? "bg-orange-500/20 border border-orange-500/40 shadow-lg shadow-orange-500/10"
-                  : "bg-[var(--c-card)] border border-[var(--c-border)] hover:border-orange-500/30")}>
-                {th.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
         <div className="flex justify-center gap-4 mb-5">
           <span className="paw-left text-5xl drop-shadow-lg">🐾</span>
           <span className="paw-right text-5xl drop-shadow-lg">🐾</span>
