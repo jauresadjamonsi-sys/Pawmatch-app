@@ -14,12 +14,14 @@ interface AppContextType {
   t: Record<string, string>;
 }
 
+const THEME_VARS: Record<Theme, Record<string, string>> = {
+  nuit:   { "--c-deep": "#1a1528", "--c-nav": "#1a1225", "--c-card": "#241d33", "--c-border": "#342a4a" },
+  aurore: { "--c-deep": "#1c1108", "--c-nav": "#1a1008", "--c-card": "#271808", "--c-border": "#3d2a10" },
+  ocean:  { "--c-deep": "#0d1520", "--c-nav": "#0b1320", "--c-card": "#132030", "--c-border": "#1e3048" },
+};
+
 const AppContext = createContext<AppContextType>({
-  lang: "fr",
-  setLang: () => {},
-  theme: "nuit",
-  setTheme: () => {},
-  t: TRANSLATIONS.fr,
+  lang: "fr", setLang: () => {}, theme: "nuit", setTheme: () => {}, t: TRANSLATIONS.fr,
 });
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
@@ -34,18 +36,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
+    const vars = THEME_VARS[theme];
+    const root = document.documentElement;
+    Object.entries(vars).forEach(([key, val]) => root.style.setProperty(key, val));
   }, [theme]);
 
-  const setLang = (l: Lang) => {
-    setLangState(l);
-    localStorage.setItem("compaw_lang", l);
-  };
-
-  const setTheme = (t: Theme) => {
-    setThemeState(t);
-    localStorage.setItem("compaw_theme", t);
-  };
+  const setLang = (l: Lang) => { setLangState(l); localStorage.setItem("compaw_lang", l); };
+  const setTheme = (t: Theme) => { setThemeState(t); localStorage.setItem("compaw_theme", t); };
 
   return (
     <AppContext.Provider value={{ lang, setLang, theme, setTheme, t: TRANSLATIONS[lang] }}>

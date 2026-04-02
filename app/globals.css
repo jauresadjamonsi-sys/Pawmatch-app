@@ -1,27 +1,5 @@
 @import "tailwindcss";
 
-/* ===== COMPAW THEME SYSTEM ===== */
-:root,
-[data-theme="nuit"] {
-  --c-deep:   #1a1528;
-  --c-nav:    #1a1225;
-  --c-card:   #241d33;
-  --c-border: #342a4a;
-}
-[data-theme="aurore"] {
-  --c-deep:   #1c1108;
-  --c-nav:    #1a1008;
-  --c-card:   #271808;
-  --c-border: #3d2a10;
-}
-[data-theme="ocean"] {
-  --c-deep:   #0d1520;
-  --c-nav:    #0b1320;
-  --c-card:   #132030;
-  --c-border: #1e3048;
-}
-/* ================================ */
-
 @theme {
   --color-orange-50: #FFF7ED;
   --color-orange-100: #FFEDD5;
