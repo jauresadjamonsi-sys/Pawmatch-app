@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Compaw — Ton compagnon de sortie en Suisse",
     description: "Connecte-toi avec des proprietaires d'animaux pres de chez toi. Gratuit.",
-    url: "https://pawmatch-app-7ukn-beta.vercel.app",
+    url: "https://compaw.ch",
     siteName: "Compaw",
     locale: "fr_CH",
     type: "website",
@@ -40,7 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
-      <body className={inter.className + " bg-[#1a1225] text-white min-h-screen"}>
+      <body className={inter.className + " bg-[#0d0a14] text-white min-h-screen"}>
         <Navbar />
         {children}
       </body>
