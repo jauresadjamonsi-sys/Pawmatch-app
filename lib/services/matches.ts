@@ -22,8 +22,8 @@ export type MatchWithAnimals = MatchRow & {
 type ServiceResult<T> = {
   data: T | null;
   error: string | null;
+  mutualMatch?: boolean;
 };
-
 
 export async function sendMatchWithLimit(
   supabase: any,
@@ -34,7 +34,7 @@ export async function sendMatchWithLimit(
   subscription: string
 ) {
   const limit = await checkMatchLimit(supabase, senderUserId, subscription);
-  if (!limit.allowed) return { data: null, error: limit.error };
+  if (!limit.allowed) return { data: null, error: limit.error, mutualMatch: false };
   return sendMatch(supabase, senderAnimalId, receiverAnimalId, senderUserId, receiverUserId);
 }
 
@@ -46,22 +46,55 @@ export async function sendMatch(
   receiverUserId: string
 ): Promise<ServiceResult<MatchRow>> {
   try {
-    const { data: existing } = await supabase
+    if (!receiverUserId || receiverUserId === "NONE") {
+      return { data: null, error: "Cet animal n'a pas de propriétaire identifié.", mutualMatch: false };
+    }
+
+    // Vérifier si j'ai déjà liké cet animal
+    const { data: alreadySent } = await supabase
       .from("matches")
-      .select("id, status")
-      .or(
-        `and(sender_animal_id.eq.${senderAnimalId},receiver_animal_id.eq.${receiverAnimalId}),and(sender_animal_id.eq.${receiverAnimalId},receiver_animal_id.eq.${senderAnimalId})`
-      )
+      .select("id")
+      .eq("sender_animal_id", senderAnimalId)
+      .eq("receiver_animal_id", receiverAnimalId)
       .maybeSingle();
 
-    if (!receiverUserId || receiverUserId === "NONE") {
-      return { data: null, error: "Cet animal n'a pas de propriétaire identifié." };
+    if (alreadySent) {
+      return { data: null, error: "Tu as déjà flairé ce compagnon.", mutualMatch: false };
     }
 
-    if (existing) {
-      return { data: null, error: "Une demande existe déjà entre ces deux compagnons." };
+    // Vérifier si l'autre a déjà liké mon animal (match inverse = match mutuel !)
+    const { data: reverseMatch } = await supabase
+      .from("matches")
+      .select("id, status")
+      .eq("sender_animal_id", receiverAnimalId)
+      .eq("receiver_animal_id", senderAnimalId)
+      .eq("status", "pending")
+      .maybeSingle();
+
+    if (reverseMatch) {
+      // MATCH MUTUEL — on accepte les deux côtés automatiquement
+      await supabase
+        .from("matches")
+        .update({ status: "accepted" })
+        .eq("id", reverseMatch.id);
+
+      const { data, error } = await supabase
+        .from("matches")
+        .insert({
+          sender_animal_id: senderAnimalId,
+          receiver_animal_id: receiverAnimalId,
+          sender_user_id: senderUserId,
+          receiver_user_id: receiverUserId,
+          status: "accepted",
+        })
+        .select()
+        .single();
+
+      if (error) return { data: null, error: "Erreur: " + error.message, mutualMatch: false };
+      return { data, error: null, mutualMatch: true };
     }
 
+    // Pas de match inverse — on enregistre silencieusement en pending
     const { data, error } = await supabase
       .from("matches")
       .insert({
@@ -69,17 +102,16 @@ export async function sendMatch(
         receiver_animal_id: receiverAnimalId,
         sender_user_id: senderUserId,
         receiver_user_id: receiverUserId,
+        status: "pending",
       })
       .select()
       .single();
 
-    if (error) {
-      return { data: null, error: "Erreur: " + error.message };
-    }
+    if (error) return { data: null, error: "Erreur: " + error.message, mutualMatch: false };
+    return { data, error: null, mutualMatch: false };
 
-    return { data, error: null };
   } catch {
-    return { data: null, error: "Erreur inattendue." };
+    return { data: null, error: "Erreur inattendue.", mutualMatch: false };
   }
 }
 
@@ -96,10 +128,7 @@ export async function respondToMatch(
       .select()
       .single();
 
-    if (error) {
-      return { data: null, error: "Erreur: " + error.message };
-    }
-
+    if (error) return { data: null, error: "Erreur: " + error.message };
     return { data, error: null };
   } catch {
     return { data: null, error: "Erreur inattendue." };
@@ -123,13 +152,9 @@ export async function getMyMatches(
       .or(`sender_user_id.eq.${userId},receiver_user_id.eq.${userId}`)
       .order("created_at", { ascending: false });
 
-    if (error) {
-      return { data: null, error: "Erreur: " + error.message };
-    }
-
+    if (error) return { data: null, error: "Erreur: " + error.message };
     return { data: data as MatchWithAnimals[], error: null };
   } catch {
     return { data: null, error: "Erreur inattendue." };
   }
 }
-

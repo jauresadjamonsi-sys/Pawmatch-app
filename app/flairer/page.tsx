@@ -82,6 +82,8 @@ export default function FlairerPage() {
   const [showStreak, setShowStreak] = useState(false);
   const [streakLabel, setStreakLabel] = useState("");
   const [isSuperLike, setIsSuperLike] = useState(false);
+  const [showCoupDeTruffe, setShowCoupDeTruffe] = useState(false);
+  const [mutualMatchData, setMutualMatchData] = useState<any>(null);
   const [likeCount, setLikeCount] = useState(0);
   const startX = useRef(0);
   const startY = useRef(0);
@@ -168,7 +170,12 @@ export default function FlairerPage() {
     const animal = animals[currentIndex];
     if (!animal || !profile) return;
     setMatchError(null);
-    const result = await sendMatch(supabase, myAnimalId, animal.id, profile.id, animal.created_by || "NONE");
+    const result = await sendMatch(supabase, myAnimalId, animal.id, profile.id, animal.created_by || 'NONE');
+    if (result.mutualMatch && result.data) {
+      setMutualMatchData(result.data);
+      setShowCoupDeTruffe(true);
+    }
+    if (result.mutualMatch) { setShowCoupDeTruffe(true); }
     if (result.error) { setMatchError(result.error); return; }
 
     const newStreak = streak + 1;
@@ -521,6 +528,20 @@ export default function FlairerPage() {
       </div>
 
       <p className="text-gray-600 text-[10px] mt-3">← Passer · ❤️ Flairer · ⚡ Super Flair (swipe haut)</p>
+
+
+      {showCoupDeTruffe && mutualMatchData && (
+        <div className='fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm' onClick={() => setShowCoupDeTruffe(false)}>
+          <div className='relative bg-gradient-to-br from-[#241d33] to-[#1a1225] border border-orange-500/30 rounded-3xl p-10 text-center max-w-sm mx-4 shadow-2xl' onClick={e => e.stopPropagation()}>
+            <div className='text-7xl mb-4 animate-bounce'>🐾</div>
+            <p className='text-gray-400 text-sm mb-6'>Match mutuel avec {animal?.name} 🎉</p>
+            <div className='flex gap-3'>
+              <Link href={'/matches/' + mutualMatchData.id} className='flex-1 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-2xl text-sm'>💬 Discuter</Link>
+              <button onClick={() => setShowCoupDeTruffe(false)} className='px-4 py-3 bg-white/5 border border-white/10 text-gray-400 rounded-2xl text-sm'>Plus tard</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Match modal */}
       {showMatchModal && (
