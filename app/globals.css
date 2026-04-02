@@ -1,6 +1,8 @@
-@import "tailwindcss"
+@import "tailwindcss";
+
 /* ===== COMPAW THEME SYSTEM ===== */
-:root, [data-theme="nuit"] {
+:root,
+[data-theme="nuit"] {
   --c-deep:   #1a1528;
   --c-nav:    #1a1225;
   --c-card:   #241d33;
@@ -19,7 +21,6 @@
   --c-border: #1e3048;
 }
 /* ================================ */
-;
 
 @theme {
   --color-orange-50: #FFF7ED;
