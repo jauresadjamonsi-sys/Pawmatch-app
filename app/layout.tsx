@@ -1,3 +1,4 @@
+import { AppProvider } from "@/lib/contexts/AppContext";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -41,9 +42,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
       <body className={inter.className + " bg-[#0d0a14] text-white min-h-screen"}>
+<AppProvider>
         <Navbar />
         {children}
-      </body>
+      </AppProvider>
+</body>
     </html>
   );
 }
