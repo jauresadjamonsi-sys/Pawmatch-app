@@ -13,7 +13,7 @@ export const THEMES = [
 
 export const TRANSLATIONS: Record<string, Record<string, string>> = {
   fr: {
-    navHome: "Accueil", navFlairer: "Flairer", navExplorer: "Explorer",
+    navHome: "Accueil", navEvents: "Événements", navEvents: "Événements", navFlairer: "Flairer", navExplorer: "Explorer",
     navMatches: "Matchs", navProfil: "Profil", navPricing: "Tarifs",
     navLogin: "Connexion", navJoin: "Rejoindre",
     tagline: "Ton compagnon de sortie en Suisse",
@@ -32,7 +32,7 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     ctaButton: "Commencer maintenant", pricing: "Tarifs", catalog: "Catalogue",
   },
   de: {
-    navHome: "Startseite", navFlairer: "Schnuffeln", navExplorer: "Entdecken",
+    navHome: "Startseite", navEvents: "Veranstaltungen", navEvents: "Veranstaltungen", navFlairer: "Schnuffeln", navExplorer: "Entdecken",
     navMatches: "Matches", navProfil: "Profil", navPricing: "Preise",
     navLogin: "Anmelden", navJoin: "Beitreten",
     tagline: "Dein Begleiter fur Ausfluge in der Schweiz",
@@ -51,7 +51,7 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     ctaButton: "Jetzt starten", pricing: "Preise", catalog: "Katalog",
   },
   it: {
-    navHome: "Home", navFlairer: "Annusa", navExplorer: "Esplora",
+    navHome: "Home", navEvents: "Eventi", navFlairer: "Annusa", navExplorer: "Esplora",
     navMatches: "Match", navProfil: "Profilo", navPricing: "Prezzi",
     navLogin: "Accedi", navJoin: "Iscriviti",
     tagline: "Il tuo compagno di uscite in Svizzera",
@@ -70,7 +70,7 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     ctaButton: "Inizia ora", pricing: "Prezzi", catalog: "Catalogo",
   },
   en: {
-    navHome: "Home", navFlairer: "Sniff", navExplorer: "Explore",
+    navHome: "Home", navEvents: "Events", navFlairer: "Sniff", navExplorer: "Explore",
     navMatches: "Matches", navProfil: "Profile", navPricing: "Pricing",
     navLogin: "Login", navJoin: "Join",
     tagline: "Your outdoor companion in Switzerland",
