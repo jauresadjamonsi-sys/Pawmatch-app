@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { TRANSLATIONS } from "@/lib/i18n";
 
-type Theme = "nuit" | "aurore" | "ocean" | "foret";
+type Theme = "nuit" | "aurore" | "ocean" | "clair";
 type Lang = "fr" | "de" | "it" | "en";
 
 interface AppContextType {
@@ -19,7 +19,7 @@ const THEME_VARS: Record<Theme, Record<string, string>> = {
   aurore: { "--c-deep": "#1a0f05", "--c-nav": "#150c04", "--c-card": "#261508", "--c-border": "#3d2510", "--c-text": "#fff0e0", "--c-text-muted": "#b89070" },
   ocean:  { "--c-deep": "#080f1a", "--c-nav": "#060d18", "--c-card": "#0d1a2e", "--c-border": "#152840", "--c-text": "#e0f0ff", "--c-text-muted": "#7099bb" },
   clair:  { "--c-deep": "#f8f6f2", "--c-nav": "#ffffff", "--c-card": "#ffffff", "--c-border": "#e5e0d8", "--c-text": "#1a1714", "--c-text-muted": "#7a736b" },
-  foret:  { "--c-deep": "#060f08", "--c-nav": "#050d07", "--c-card": "#0d1f10", "--c-border": "#163019" },
+
 };
 
 const AppContext = createContext<AppContextType>({
@@ -34,7 +34,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const savedLang = localStorage.getItem("compaw_lang") as Lang;
     const savedTheme = localStorage.getItem("compaw_theme") as Theme;
     if (savedLang && ["fr","de","it","en"].includes(savedLang)) setLangState(savedLang);
-    if (savedTheme && ["nuit","aurore","ocean","foret"].includes(savedTheme)) setThemeState(savedTheme);
+    if (savedTheme && ["nuit","aurore","ocean","clair"].includes(savedTheme)) setThemeState(savedTheme);
   }, []);
 
   useEffect(() => {
