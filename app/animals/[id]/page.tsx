@@ -7,6 +7,7 @@ import { getAnimalById, AnimalRow } from "@/lib/services/animals";
 import { sendMatchWithLimit } from "@/lib/services/matches";
 import { CANTONS } from "@/lib/cantons";
 import { computeCompatibility } from "@/lib/services/compatibility";
+import { detectPersonality } from "@/lib/services/personality";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -24,6 +25,7 @@ export default function AnimalDetailPage() {
   const [matchSuccess, setMatchSuccess] = useState(false);
   const [showMatchModal, setShowMatchModal] = useState(false);
   const [compatibility, setCompatibility] = useState<any>(null);
+  const personality = listing ? detectPersonality(listing.traits || []) : null;
   const params = useParams();
   const supabase = createClient();
   const { profile, isAuthenticated } = useAuth();
