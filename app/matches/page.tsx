@@ -143,7 +143,8 @@ export default function MatchesPage() {
 
   useEffect(() => {
     if (profile) fetchMatches();
-  }, [profile]);
+    else if (!authLoading) setLoading(false);
+  }, [profile, authLoading]);
 
   async function fetchMatches() {
     setLoading(true);
