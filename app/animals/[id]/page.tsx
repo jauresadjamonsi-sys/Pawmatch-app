@@ -138,6 +138,7 @@ export default function AnimalDetailPage() {
           <div className="p-8">
             <div className="flex items-center justify-between mb-6">
               <h1 className="text-3xl font-bold text-white">{animal.name}</h1>
+              {personality && <a href={"/animals/" + animal.id + "/personality"} style={{ display:"inline-block", marginTop:8, background: personality.bgColor, color: personality.color, border: "1px solid " + personality.color + "40", fontSize: 12, fontWeight: 800, padding: "4px 14px", borderRadius: 50, textDecoration: "none" }}>{personality.emoji} {personality.name}</a>}
               <span className="bg-green-500/20 text-green-300 px-3 py-1 rounded-full text-sm font-medium">
                 {animal.status === "disponible" ? "Disponible" : animal.status === "en_cours" ? "En cours" : "Matché"}
               </span>
