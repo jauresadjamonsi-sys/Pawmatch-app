@@ -25,7 +25,7 @@ export default function AnimalDetailPage() {
   const [matchSuccess, setMatchSuccess] = useState(false);
   const [showMatchModal, setShowMatchModal] = useState(false);
   const [compatibility, setCompatibility] = useState<any>(null);
-  const personality = listing ? detectPersonality(listing.traits || []) : null;
+  const personality = animal ? detectPersonality(animal.traits || []) : null;
   const params = useParams();
   const supabase = createClient();
   const { profile, isAuthenticated } = useAuth();
