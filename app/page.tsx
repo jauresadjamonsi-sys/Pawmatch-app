@@ -47,7 +47,7 @@ export default function HomePage() {
   const story = STORIES[storyIdx];
 
   return (
-    <div className="min-h-screen bg-[var(--c-deep)] text-white overflow-hidden">
+    <div className="min-h-screen bg-[var(--c-deep)] text-[var(--c-text)] overflow-hidden">
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes pawBounceLeft {
           0%, 100% { transform: rotate(-15deg) translateY(0); opacity: 0.4; }
@@ -90,10 +90,10 @@ export default function HomePage() {
         </h1>
 
         {/* Proposition de valeur CLAIRE */}
-        <p className="text-white font-bold text-lg mb-2">
+        <p className="text-[var(--c-text)] font-bold text-lg mb-2">
           Trouve le compagnon parfait pour ton animal 🐶❤️
         </p>
-        <p className="text-gray-400 text-sm mb-4 max-w-xs mx-auto">
+        <p className="text-[var(--c-text-muted)] text-sm mb-4 max-w-xs mx-auto">
           Notre IA analyse la personnalité de ton animal pour lui trouver son match idéal en Suisse
         </p>
 
@@ -104,7 +104,7 @@ export default function HomePage() {
             "🐾 Organise des rencontres près de chez toi",
             "💖 Améliore le bien-être de ton animal"
           ].map((b, i) => (
-            <div key={i} className="flex items-center gap-2 text-sm text-gray-300">
+            <div key={i} className="flex items-center gap-2 text-sm text-[var(--c-text-muted)]">
               <span>{b}</span>
             </div>
           ))}
@@ -116,21 +116,21 @@ export default function HomePage() {
             <span className="text-3xl">{story.emoji}</span>
             <div className="flex-1 text-left">
               <p className="text-xs text-orange-400 font-bold mb-1">{story.name}</p>
-              <p className="text-xs text-gray-300 italic">"{story.name} {story.story}"</p>
+              <p className="text-xs text-[var(--c-text-muted)] italic">"{story.name} {story.story}"</p>
             </div>
             <div className="text-right">
               <div className="text-lg font-black text-green-400">{story.score}%</div>
-              <div className="text-[9px] text-gray-500">compatible</div>
+              <div className="text-[9px] text-[var(--c-text-muted)]">compatible</div>
             </div>
           </div>
         </div>
 
         {/* CTAs */}
         <div className="flex gap-3 justify-center mb-4">
-          <Link href="/onboarding" className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-full text-sm pulse-slow glow-orange">
+          <Link href="/onboarding" className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-[var(--c-text)] font-bold rounded-full text-sm pulse-slow glow-orange">
             🐾 Trouver un match
           </Link>
-          <Link href="/flairer" className="px-6 py-3 bg-[var(--c-card)] border border-[var(--c-border)] text-gray-300 font-medium rounded-full text-sm card-hover">
+          <Link href="/flairer" className="px-6 py-3 bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text-muted)] font-medium rounded-full text-sm card-hover">
             Explorer
           </Link>
         </div>
@@ -144,24 +144,24 @@ export default function HomePage() {
         <div className="flex justify-center gap-8 mt-6">
           <div className="text-center">
             <p className="text-2xl font-bold text-orange-400">{totalProfiles}+</p>
-            <p className="text-[10px] text-gray-500 uppercase tracking-wider">Propriétaires</p>
+            <p className="text-[10px] text-[var(--c-text-muted)] uppercase tracking-wider">Propriétaires</p>
           </div>
           <div className="w-px h-10 bg-[var(--c-border)]" />
           <div className="text-center">
             <p className="text-2xl font-bold text-orange-400">{totalAnimals}+</p>
-            <p className="text-[10px] text-gray-500 uppercase tracking-wider">Animaux</p>
+            <p className="text-[10px] text-[var(--c-text-muted)] uppercase tracking-wider">Animaux</p>
           </div>
           <div className="w-px h-10 bg-[var(--c-border)]" />
           <div className="text-center">
             <p className="text-2xl font-bold text-orange-400">92%</p>
-            <p className="text-[10px] text-gray-500 uppercase tracking-wider">Taux match</p>
+            <p className="text-[10px] text-[var(--c-text-muted)] uppercase tracking-wider">Taux match</p>
           </div>
         </div>
       </div>
 
       {/* COMMENT ÇA MARCHE */}
       <div className="px-6 mb-8">
-        <h2 className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest mb-4 text-center">Comment ça marche</h2>
+        <h2 className="text-[11px] font-semibold text-[var(--c-text-muted)] uppercase tracking-widest mb-4 text-center">Comment ça marche</h2>
         <div className="flex flex-col gap-3">
           {HOW_IT_WORKS.map((step, i) => (
             <div key={i} className="flex items-start gap-4 bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-4">
@@ -171,9 +171,9 @@ export default function HomePage() {
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-lg">{step.emoji}</span>
-                  <h3 className="font-bold text-white text-sm">{step.title}</h3>
+                  <h3 className="font-bold text-[var(--c-text)] text-sm">{step.title}</h3>
                 </div>
-                <p className="text-xs text-gray-500">{step.desc}</p>
+                <p className="text-xs text-[var(--c-text-muted)]">{step.desc}</p>
               </div>
             </div>
           ))}
@@ -184,7 +184,7 @@ export default function HomePage() {
       {animals.length > 0 && (
         <div className="px-6 mb-8">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest">Récemment actifs</h2>
+            <h2 className="text-[11px] font-semibold text-[var(--c-text-muted)] uppercase tracking-widest">Récemment actifs</h2>
             <Link href="/animals" className="text-[11px] text-orange-400 font-semibold">Voir tout</Link>
           </div>
           <div className="flex gap-5 overflow-x-auto pb-2">
@@ -198,7 +198,7 @@ export default function HomePage() {
                   </div>
                   <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-2 border-[var(--c-deep)]" />
                 </div>
-                <p className="text-xs text-white font-medium">{animal.name}</p>
+                <p className="text-xs text-[var(--c-text)] font-medium">{animal.name}</p>
                 {animal.canton && (
                   <span className="text-[10px] px-2 py-0.5 bg-orange-500/15 text-orange-300 rounded-full mt-1">{animal.canton}</span>
                 )}
@@ -214,12 +214,12 @@ export default function HomePage() {
           <div className="flex items-center gap-2 mb-4">
             <span className="text-2xl">🤖</span>
             <div>
-              <h3 className="font-bold text-white text-sm">Analyse IA — exemple</h3>
-              <p className="text-[10px] text-gray-500">Voici pourquoi Max et Luna sont compatibles</p>
+              <h3 className="font-bold text-[var(--c-text)] text-sm">Analyse IA — exemple</h3>
+              <p className="text-[10px] text-[var(--c-text-muted)]">Voici pourquoi Max et Luna sont compatibles</p>
             </div>
             <div className="ml-auto text-right">
               <div className="text-2xl font-black text-green-400">94%</div>
-              <div className="text-[9px] text-gray-500">compatible</div>
+              <div className="text-[9px] text-[var(--c-text-muted)]">compatible</div>
             </div>
           </div>
           <div className="flex flex-col gap-2">
@@ -231,7 +231,7 @@ export default function HomePage() {
             ].map((trait, i) => (
               <div key={i}>
                 <div className="flex justify-between text-[10px] mb-1">
-                  <span className="text-gray-400">{trait.label}</span>
+                  <span className="text-[var(--c-text-muted)]">{trait.label}</span>
                   <span className="text-orange-400 font-bold">{trait.score}%</span>
                 </div>
                 <div className="h-1.5 bg-[var(--c-border)] rounded-full overflow-hidden">
@@ -240,7 +240,7 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-          <p className="text-[10px] text-gray-500 mt-4 text-center italic">
+          <p className="text-[10px] text-[var(--c-text-muted)] mt-4 text-center italic">
             "Même niveau d'énergie, tous deux adorent les balades en nature 🌲"
           </p>
         </div>
@@ -251,18 +251,18 @@ export default function HomePage() {
         <div className="grid grid-cols-2 gap-3">
           <Link href="/flairer" className="bg-gradient-to-br from-[var(--c-card)] to-[var(--c-deep)] border border-orange-500/15 rounded-2xl p-5 card-hover">
             <span className="text-2xl mb-2 block">👃</span>
-            <h3 className="font-bold text-white text-sm">Flairer</h3>
-            <p className="text-xs text-gray-500 mt-1">Swipe et trouve des matchs</p>
+            <h3 className="font-bold text-[var(--c-text)] text-sm">Flairer</h3>
+            <p className="text-xs text-[var(--c-text-muted)] mt-1">Swipe et trouve des matchs</p>
           </Link>
           <Link href="/events" className="bg-gradient-to-br from-[var(--c-card)] to-[var(--c-deep)] border border-[var(--c-border)] rounded-2xl p-5 card-hover">
             <span className="text-2xl mb-2 block">📅</span>
-            <h3 className="font-bold text-white text-sm">Événements</h3>
-            <p className="text-xs text-gray-500 mt-1">Rencontres près de toi</p>
+            <h3 className="font-bold text-[var(--c-text)] text-sm">Événements</h3>
+            <p className="text-xs text-[var(--c-text-muted)] mt-1">Rencontres près de toi</p>
           </Link>
           <Link href="/pricing" className="bg-gradient-to-br from-[var(--c-card)] to-[var(--c-deep)] border border-purple-500/20 rounded-2xl p-5 card-hover">
             <span className="text-2xl mb-2 block">✨</span>
-            <h3 className="font-bold text-white text-sm">Premium</h3>
-            <p className="text-xs text-gray-500 mt-1">Matchs illimités + IA avancée</p>
+            <h3 className="font-bold text-[var(--c-text)] text-sm">Premium</h3>
+            <p className="text-xs text-[var(--c-text-muted)] mt-1">Matchs illimités + IA avancée</p>
           </Link>
           <Link href="/onboarding" className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/25 rounded-2xl p-5 card-hover">
             <span className="text-2xl mb-2 block">🚀</span>
@@ -278,14 +278,14 @@ export default function HomePage() {
           <div className="flex items-center gap-3 mb-3">
             <span className="text-3xl">💥</span>
             <div>
-              <h3 className="font-bold text-white">Coup de Truffe</h3>
-              <p className="text-xs text-gray-400">Quand les deux aiment — c'est un match !</p>
+              <h3 className="font-bold text-[var(--c-text)]">Coup de Truffe</h3>
+              <p className="text-xs text-[var(--c-text-muted)]">Quand les deux aiment — c'est un match !</p>
             </div>
           </div>
           <div className="flex items-center justify-center gap-4 bg-[var(--c-deep)]/50 rounded-xl p-4">
             <div className="text-center">
               <div className="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center text-2xl mb-1">🐕</div>
-              <p className="text-[10px] text-gray-400">Max</p>
+              <p className="text-[10px] text-[var(--c-text-muted)]">Max</p>
             </div>
             <div className="text-center">
               <div className="text-2xl font-black text-orange-400">❤️</div>
@@ -293,7 +293,7 @@ export default function HomePage() {
             </div>
             <div className="text-center">
               <div className="w-12 h-12 rounded-full bg-pink-500/20 flex items-center justify-center text-2xl mb-1">🐕</div>
-              <p className="text-[10px] text-gray-400">Luna</p>
+              <p className="text-[10px] text-[var(--c-text-muted)]">Luna</p>
             </div>
           </div>
         </div>
@@ -303,12 +303,12 @@ export default function HomePage() {
       <div className="px-6 mb-12">
         <div className="text-center bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/20 rounded-2xl p-8">
           <p className="text-2xl mb-3">🐾</p>
-          <h2 className="font-bold text-white text-lg mb-2">Ton animal mérite des amis</h2>
-          <p className="text-xs text-gray-400 mb-6">Rejoins des milliers de propriétaires en Suisse</p>
-          <Link href="/onboarding" className="inline-block px-8 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-full pulse-slow glow-orange">
+          <h2 className="font-bold text-[var(--c-text)] text-lg mb-2">Ton animal mérite des amis</h2>
+          <p className="text-xs text-[var(--c-text-muted)] mb-6">Rejoins des milliers de propriétaires en Suisse</p>
+          <Link href="/onboarding" className="inline-block px-8 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-[var(--c-text)] font-bold rounded-full pulse-slow glow-orange">
             Commencer gratuitement 🚀
           </Link>
-          <p className="text-[10px] text-gray-600 mt-3">3 matchs gratuits · Sans carte de crédit</p>
+          <p className="text-[10px] text-[var(--c-text-muted)] mt-3">3 matchs gratuits · Sans carte de crédit</p>
         </div>
       </div>
     </div>

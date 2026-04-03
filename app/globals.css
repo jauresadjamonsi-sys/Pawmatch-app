@@ -20,3 +20,9 @@
 ::selection {
   background: rgba(249, 115, 22, 0.3);
 }
+
+/* Thème clair — forcer lisibilité */
+.theme-clair,
+[data-theme="clair"] {
+  color-scheme: light;
+}
