@@ -26,3 +26,8 @@
 [data-theme="clair"] {
   color-scheme: light;
 }
+
+/* Force texte foncé thème clair */
+.bg-\[var\(--c-deep\)\] {
+  color: var(--c-text);
+}
