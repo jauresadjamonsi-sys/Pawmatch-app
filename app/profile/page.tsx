@@ -29,6 +29,17 @@ export default async function ProfilePage() {
           </div>
           <div className="flex flex-wrap gap-3">
             <Link href="/profile/edit" className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm font-medium rounded-xl transition border border-white/10">Modifier mon profil</Link>
+            {permission !== 'granted' && (
+              <button onClick={subscribe}
+                className="px-4 py-2 bg-green-500/10 hover:bg-green-500/20 text-green-400 text-sm font-medium rounded-xl transition border border-green-500/20">
+                🔔 Activer notifications
+              </button>
+            )}
+            {subscribed && (
+              <span className="px-4 py-2 bg-green-500/10 text-green-400 text-sm font-medium rounded-xl border border-green-500/20">
+                🔔 Notifications activées
+              </span>
+            )}
             <Link href="/pricing" className="px-4 py-2 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 text-sm font-medium rounded-xl transition border border-orange-500/20">{profile?.subscription === "free" ? "Passer Premium" : "Gerer mon plan"}</Link>
             <form action={logout}><button className="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-sm font-medium rounded-xl transition border border-red-500/20">Deconnexion</button></form>
           </div>
