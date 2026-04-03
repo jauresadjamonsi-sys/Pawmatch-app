@@ -166,3 +166,28 @@ export function sortByCompatibility(myAnimal: Animal, others: Animal[]): Array<A
     .map(other => ({ ...other, compatibility: computeCompatibility(myAnimal, other) }))
     .sort((a, b) => b.compatibility.score - a.compatibility.score);
 }
+
+// Distance approximative entre cantons suisses (en km)
+const CANTON_DISTANCES: Record<string, Record<string, number>> = {
+  VD: { GE: 50, FR: 40, NE: 50, VS: 80, BE: 90 },
+  GE: { VD: 50, FR: 80, VS: 110 },
+  ZH: { AG: 30, SG: 60, SZ: 40, ZG: 25, TG: 45, SH: 45 },
+  BE: { FR: 35, SO: 40, AG: 70, VD: 90, VS: 100, NE: 60, LU: 75 },
+  BS: { BL: 10, AG: 40, SO: 35 },
+  LU: { AG: 30, ZG: 20, NW: 35, OW: 40, BE: 75 },
+  TI: { GR: 100, VS: 130 },
+};
+
+export function getCantonDistance(c1: string, c2: string): number {
+  if (c1 === c2) return 0;
+  return CANTON_DISTANCES[c1]?.[c2] || CANTON_DISTANCES[c2]?.[c1] || 150;
+}
+
+export function getProximityLabel(c1: string | null, c2: string | null): string {
+  if (!c1 || !c2) return "";
+  if (c1 === c2) return "📍 Même canton";
+  const dist = getCantonDistance(c1, c2);
+  if (dist <= 30) return `📍 ~${dist} km`;
+  if (dist <= 80) return `📍 ~${dist} km`;
+  return `📍 ~${dist} km`;
+}

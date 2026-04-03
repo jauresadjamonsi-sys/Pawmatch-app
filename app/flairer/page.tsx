@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { sendMatch } from "@/lib/services/matches";
-import { computeCompatibility, sortByCompatibility } from "@/lib/services/compatibility";
+import { computeCompatibility, sortByCompatibility, getProximityLabel } from "@/lib/services/compatibility";
 import { CANTONS } from "@/lib/cantons";
 import Link from "next/link";
 
@@ -89,6 +89,7 @@ export default function FlairerPage() {
   const [likeCount, setLikeCount] = useState(0);
   const [showPaywall, setShowPaywall] = useState(false);
   const FREE_LIMIT = 3;
+  const [userCanton, setUserCanton] = useState(null);
   const [showCoupDeTruffe, setShowCoupDeTruffe] = useState(false);
   const [mutualMatchData, setMutualMatchData] = useState<any>(null);
   const startX = useRef(0);
@@ -97,7 +98,30 @@ export default function FlairerPage() {
   const supabase = createClient();
   const { profile, isAuthenticated, loading: authLoading } = useAuth();
 
-  useEffect(() => { if (!authLoading) fetchData(); }, [authLoading]);
+  useEffect(() => { if (!authLoading) { fetchData(); detectCanton(); } }, [authLoading]);
+
+  
+  async function detectCanton() {
+    if (typeof navigator === 'undefined' || !navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      try {
+        const url = 'https://nominatim.openstreetmap.org/reverse?lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude + '&format=json';
+        const res = await fetch(url);
+        const data = await res.json();
+        const state = data.address && data.address.state ? data.address.state : '';
+        let detected = null;
+        if (state.includes('Vaud')) detected = 'VD';
+        else if (state.includes('Gen')) detected = 'GE';
+        else if (state.includes('Bern')) detected = 'BE';
+        else if (state.includes('rich')) detected = 'ZH';
+        else if (state.includes('Fribourg')) detected = 'FR';
+        else if (state.includes('Valais')) detected = 'VS';
+        else if (state.includes('Neuch')) detected = 'NE';
+        else if (state.includes('Ticino') || state.includes('Tessin')) detected = 'TI';
+        if (detected) setUserCanton(detected);
+      } catch(e) {}
+    }, function() {});
+  }
 
   async function fetchData() {
     const { data: allAnimals } = await supabase
@@ -467,6 +491,7 @@ export default function FlairerPage() {
 
             <div className="flex flex-wrap gap-1.5 mb-2">
               {animal.canton && <span className="px-2.5 py-1 bg-orange-500/20 text-orange-300 rounded-full text-xs font-medium">{cantonName || animal.canton}</span>}
+              {userCanton && animal.canton && <span className="px-2.5 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-bold">{getProximityLabel(userCanton, animal.canton)}</span>}
               {animal.city && <span className="px-2.5 py-1 bg-white/8 text-gray-300 rounded-full text-xs">{animal.city}</span>}
               <span className="px-2.5 py-1 bg-white/8 text-gray-300 rounded-full text-xs">{formatAge(animal.age_months)}</span>
               <span className="px-2.5 py-1 bg-white/8 text-gray-300 rounded-full text-xs">{animal.gender === "male" ? "Mâle" : animal.gender === "femelle" ? "Femelle" : "Inconnu"}</span>
