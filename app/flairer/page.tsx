@@ -87,6 +87,8 @@ export default function FlairerPage() {
   const [streakLabel, setStreakLabel] = useState("");
   const [isSuperLike, setIsSuperLike] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
+  const [showPaywall, setShowPaywall] = useState(false);
+  const FREE_LIMIT = 3;
   const [showCoupDeTruffe, setShowCoupDeTruffe] = useState(false);
   const [mutualMatchData, setMutualMatchData] = useState<any>(null);
   const startX = useRef(0);
@@ -178,6 +180,8 @@ export default function FlairerPage() {
   async function handleMatch(myAnimalId: string) {
     const animal = animals[currentIndex];
     if (!animal || !profile) return;
+    // Freemium — bloquer après FREE_LIMIT likes si non premium
+    if (!isAuthenticated && likeCount >= FREE_LIMIT) { setShowPaywall(true); return; }
     setMatchError(null);
     const result = await sendMatch(supabase, myAnimalId, animal.id, profile.id, animal.created_by || "NONE");
     if (result.error) { setMatchError(result.error); return; }
@@ -506,6 +510,29 @@ export default function FlairerPage() {
       </div>
 
       <p className="text-gray-600 text-[10px] mt-3">← Passer · ❤️ Flairer · ⚡ Super Flair (swipe haut)</p>
+
+      {/* Paywall modal */}
+      {showPaywall && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
+          <div className="bg-[var(--c-card)] border border-orange-500/30 rounded-3xl p-8 max-w-sm w-full text-center">
+            <div className="text-5xl mb-4">🐾</div>
+            <h2 className="text-xl font-extrabold text-[var(--c-text)] mb-2">3 matchs gratuits utilisés !</h2>
+            <p className="text-sm text-[var(--c-text-muted)] mb-6">Crée un compte gratuit pour continuer à flairer sans limite.</p>
+            <div className="flex flex-col gap-3">
+              <a href="/signup" className="w-full py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-2xl text-sm">
+                🚀 Créer un compte gratuit
+              </a>
+              <a href="/login" className="w-full py-3 bg-white/5 border border-white/10 text-[var(--c-text-muted)] font-bold rounded-2xl text-sm">
+                Déjà un compte ? Se connecter
+              </a>
+              <button onClick={() => setShowPaywall(false)} className="text-xs text-[var(--c-text-muted)] mt-2">
+                Continuer sans compte (limité)
+              </button>
+            </div>
+            <p className="text-[10px] text-[var(--c-text-muted)] mt-4">✓ Gratuit · ✓ Sans carte · ✓ Matchs illimités</p>
+          </div>
+        </div>
+      )}
 
       {/* Match modal */}
       {showMatchModal && (
