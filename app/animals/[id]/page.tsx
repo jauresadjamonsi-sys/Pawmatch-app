@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import { getAnimalById, AnimalRow } from "@/lib/services/animals";
 import { sendMatchWithLimit } from "@/lib/services/matches";
 import { CANTONS } from "@/lib/cantons";
+import { computeCompatibility } from "@/lib/services/compatibility";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -22,6 +23,7 @@ export default function AnimalDetailPage() {
   const [matchError, setMatchError] = useState<string | null>(null);
   const [matchSuccess, setMatchSuccess] = useState(false);
   const [showMatchModal, setShowMatchModal] = useState(false);
+  const [compatibility, setCompatibility] = useState<any>(null);
   const params = useParams();
   const supabase = createClient();
   const { profile, isAuthenticated } = useAuth();
@@ -36,6 +38,13 @@ export default function AnimalDetailPage() {
         setMyAnimals(animals || []);
       }
       setLoading(false);
+      // Calculer compatibilité si on a un animal principal
+      if (user) {
+        const { data: myAnimals } = await supabase.from('animals').select('*').eq('created_by', user.id);
+        if (myAnimals && myAnimals.length > 0 && result.data) {
+          setCompatibility(computeCompatibility(myAnimals[0], result.data));
+        }
+      }
     }
     fetchData();
   }, [params.id]);
@@ -69,7 +78,50 @@ export default function AnimalDetailPage() {
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-4 mb-6">
           <Link href="/animals" className="text-orange-400 hover:underline text-sm">← Retour au catalogue</Link>
-          {isOwner && <Link href={"/animals/" + animal.id + "/edit"} className="text-orange-400 hover:underline text-sm">Modifier</Link>}
+          {/* Section Pourquoi ce match */}
+              {compatibility && (
+                <div className="mt-6 bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/20 rounded-2xl p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">🤖</span>
+                      <h3 className="font-bold text-[var(--c-text)] text-sm">Pourquoi ce match ?</h3>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-2xl font-black" style={{ color: compatibility.color }}>{compatibility.score}%</span>
+                      <p className="text-[10px] text-[var(--c-text-muted)]">{compatibility.label}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2 mb-4">
+                    {[
+                      { label: 'Espèce', score: Math.min(100, (compatibility.score * 1.2)) },
+                      { label: 'Caractère', score: Math.min(100, (compatibility.score * 0.9)) },
+                      { label: 'Localisation', score: Math.min(100, (compatibility.score * 1.1)) },
+                      { label: 'Âge', score: Math.min(100, (compatibility.score * 0.8)) },
+                    ].map((trait, i) => (
+                      <div key={i}>
+                        <div className="flex justify-between text-[10px] mb-1">
+                          <span className="text-[var(--c-text-muted)]">{trait.label}</span>
+                          <span className="font-bold" style={{ color: compatibility.color }}>{Math.round(trait.score)}%</span>
+                        </div>
+                        <div className="h-1.5 bg-[var(--c-border)] rounded-full overflow-hidden">
+                          <div className="h-full rounded-full transition-all" style={{ width: trait.score + '%', background: compatibility.color }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {compatibility.reasons.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {compatibility.reasons.map((r: string, i: number) => (
+                        <span key={i} className="px-3 py-1 rounded-full text-xs font-bold border" style={{ color: compatibility.color, borderColor: compatibility.color + '40', background: compatibility.color + '15' }}>
+                          ✓ {r}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {isOwner && <Link href={"/animals/" + animal.id + "/edit"} className="text-orange-400 hover:underline text-sm">Modifier</Link>}
         </div>
 
         <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
