@@ -9,6 +9,7 @@ export const THEMES = [
   { code: "nuit",   label: "🌑", name: "Nuit"   },
   { code: "aurore", label: "🌅", name: "Aurore" },
   { code: "ocean",  label: "🌊", name: "Océan"  },
+  { code: "clair",  label: "☀️", name: "Clair"  },
 ];
 
 export const TRANSLATIONS: Record<string, Record<string, string>> = {

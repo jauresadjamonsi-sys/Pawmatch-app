@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { TRANSLATIONS } from "@/lib/i18n";
 
-type Theme = "nuit" | "aurore" | "ocean";
+type Theme = "nuit" | "aurore" | "ocean" | "foret";
 type Lang = "fr" | "de" | "it" | "en";
 
 interface AppContextType {
@@ -15,9 +15,11 @@ interface AppContextType {
 }
 
 const THEME_VARS: Record<Theme, Record<string, string>> = {
-  nuit:   { "--c-deep": "#1a1528", "--c-nav": "#1a1225", "--c-card": "#241d33", "--c-border": "#342a4a" },
-  aurore: { "--c-deep": "#1c1108", "--c-nav": "#1a1008", "--c-card": "#271808", "--c-border": "#3d2a10" },
-  ocean:  { "--c-deep": "#0d1520", "--c-nav": "#0b1320", "--c-card": "#132030", "--c-border": "#1e3048" },
+    nuit:   { "--c-deep": "#0f0c1a", "--c-nav": "#130f22", "--c-card": "#1e1830", "--c-border": "#2d2545", "--c-text": "#f0eeff", "--c-text-muted": "#9b93b8" },
+  aurore: { "--c-deep": "#1a0f05", "--c-nav": "#150c04", "--c-card": "#261508", "--c-border": "#3d2510", "--c-text": "#fff0e0", "--c-text-muted": "#b89070" },
+  ocean:  { "--c-deep": "#080f1a", "--c-nav": "#060d18", "--c-card": "#0d1a2e", "--c-border": "#152840", "--c-text": "#e0f0ff", "--c-text-muted": "#7099bb" },
+  clair:  { "--c-deep": "#f8f6f2", "--c-nav": "#ffffff", "--c-card": "#ffffff", "--c-border": "#e5e0d8", "--c-text": "#1a1714", "--c-text-muted": "#7a736b" },
+  foret:  { "--c-deep": "#060f08", "--c-nav": "#050d07", "--c-card": "#0d1f10", "--c-border": "#163019" },
 };
 
 const AppContext = createContext<AppContextType>({
@@ -32,7 +34,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const savedLang = localStorage.getItem("compaw_lang") as Lang;
     const savedTheme = localStorage.getItem("compaw_theme") as Theme;
     if (savedLang && ["fr","de","it","en"].includes(savedLang)) setLangState(savedLang);
-    if (savedTheme && ["nuit","aurore","ocean"].includes(savedTheme)) setThemeState(savedTheme);
+    if (savedTheme && ["nuit","aurore","ocean","foret"].includes(savedTheme)) setThemeState(savedTheme);
   }, []);
 
   useEffect(() => {
