@@ -80,8 +80,8 @@ export default function AnimalDetailPage() {
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-4 mb-6">
           <Link href="/animals" className="text-orange-400 hover:underline text-sm">← Retour au catalogue</Link>
-          {/* Section Pourquoi ce match */}
-              {compatibility && (
+          {/* compatibility moved */}
+              {false && (
                 <div className="mt-6 bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/20 rounded-2xl p-5">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
@@ -124,6 +124,47 @@ export default function AnimalDetailPage() {
               )}
 
               {isOwner && <Link href={"/animals/" + animal.id + "/edit"} className="text-orange-400 hover:underline text-sm">Modifier</Link>}
+            {compatibility && (
+              <div className="mt-6 bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/20 rounded-2xl p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">🤖</span>
+                    <h3 className="font-bold text-[var(--c-text)] text-sm">Pourquoi ce match ?</h3>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-2xl font-black" style={{ color: compatibility.color }}>{compatibility.score}%</span>
+                    <p className="text-[10px] text-[var(--c-text-muted)]">{compatibility.label}</p>
+                  </div>
+                </div>
+                <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:16 }}>
+                  {[
+                    { label: 'Espèce', score: Math.min(100, (compatibility.score * 1.2)) },
+                    { label: 'Caractère', score: Math.min(100, (compatibility.score * 0.9)) },
+                    { label: 'Localisation', score: Math.min(100, (compatibility.score * 1.1)) },
+                    { label: 'Âge', score: Math.min(100, (compatibility.score * 0.8)) },
+                  ].map((trait, i) => (
+                    <div key={i}>
+                      <div style={{ display:"flex", justifyContent:"space-between", fontSize:10, marginBottom:3 }}>
+                        <span className="text-[var(--c-text-muted)]">{trait.label}</span>
+                        <span className="font-bold" style={{ color: compatibility.color }}>{Math.round(trait.score)}%</span>
+                      </div>
+                      <div className="h-1.5 bg-[var(--c-border)] rounded-full overflow-hidden">
+                        <div className="h-full rounded-full transition-all" style={{ width: trait.score + '%', background: compatibility.color }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {compatibility.reasons.length > 0 && (
+                  <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
+                    {compatibility.reasons.map((r, i) => (
+                      <span key={i} className="px-3 py-1 rounded-full text-xs font-bold border" style={{ color: compatibility.color, borderColor: compatibility.color + '40', background: compatibility.bgColor || compatibility.color + '15' }}>
+                        ✓ {r}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
         </div>
 
         <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
