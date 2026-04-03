@@ -23,7 +23,7 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-orange-400">Compaw</h1>
+          <h1 className="text-4xl font-bold text-orange-400">Pawly</h1>
           <p className="text-gray-400 mt-2">Réinitialiser le mot de passe</p>
         </div>
         <div className="bg-white/5 border border-white/10 rounded-2xl p-8">

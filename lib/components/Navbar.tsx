@@ -30,7 +30,7 @@ export default function Navbar() {
       <nav className="bg-[var(--c-nav)]/80 backdrop-blur-xl border-b border-white/5 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex items-center justify-between h-12">
-            <Link href="/" className="font-bold text-lg text-orange-400">Compaw</Link>
+            <Link href="/" className="font-bold text-lg text-orange-400">Pawly</Link>
 
             <div className="hidden md:flex items-center gap-1">
               {!loading && (user ? (

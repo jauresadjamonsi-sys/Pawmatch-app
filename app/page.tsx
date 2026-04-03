@@ -72,7 +72,7 @@ export default function HomePage() {
           <span className="paw-right text-5xl drop-shadow-lg">🐾</span>
         </div>
         <h1 className="text-4xl font-extrabold mb-2">
-          <span className="bg-gradient-to-r from-orange-400 via-orange-300 to-orange-500 bg-clip-text text-transparent">Compaw</span>
+          <span className="bg-gradient-to-r from-orange-400 via-orange-300 to-orange-500 bg-clip-text text-transparent">Pawly</span>
         </h1>
         <p className="font-bold text-lg mb-2 text-[var(--c-text)]">{t.heroTitle}</p>
         <p className="text-sm mb-4 max-w-xs mx-auto text-[var(--c-text-muted)]">{t.heroSub}</p>

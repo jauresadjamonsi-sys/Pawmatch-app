@@ -7,7 +7,7 @@ export default function CGUPage() {
         <div className="space-y-6 text-gray-300 text-sm leading-relaxed">
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">1. Objet</h2>
-            <p>Les presentes CGU regissent l utilisation de Compaw, plateforme de mise en relation entre proprietaires d animaux en Suisse, editee par Compaw, Canton de Vaud, Suisse.</p>
+            <p>Les presentes CGU regissent l utilisation de Pawly, plateforme de mise en relation entre proprietaires d animaux en Suisse, editee par Pawly, Canton de Vaud, Suisse.</p>
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">2. Acceptation</h2>
@@ -19,7 +19,7 @@ export default function CGUPage() {
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">4. Services</h2>
-            <p>Compaw propose la creation de profils animaux, un systeme de matching, une messagerie entre utilisateurs matches, un catalogue avec filtres, et des abonnements premium.</p>
+            <p>Pawly propose la creation de profils animaux, un systeme de matching, une messagerie entre utilisateurs matches, un catalogue avec filtres, et des abonnements premium.</p>
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">5. Abonnements</h2>
@@ -31,11 +31,11 @@ export default function CGUPage() {
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">7. Responsabilite</h2>
-            <p>Compaw est un service de mise en relation et ne peut etre tenu responsable des interactions entre utilisateurs ni des dommages lors de rencontres.</p>
+            <p>Pawly est un service de mise en relation et ne peut etre tenu responsable des interactions entre utilisateurs ni des dommages lors de rencontres.</p>
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">8. Moderation</h2>
-            <p>Compaw se reserve le droit de suspendre tout compte en cas de violation des CGU.</p>
+            <p>Pawly se reserve le droit de suspendre tout compte en cas de violation des CGU.</p>
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">9. Droit applicable</h2>
@@ -43,7 +43,7 @@ export default function CGUPage() {
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">10. Contact</h2>
-            <p>contact@compaw.ch</p>
+            <p>contact@pawly.ch</p>
           </section>
         </div>
       </div>

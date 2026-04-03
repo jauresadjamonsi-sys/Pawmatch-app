@@ -7,7 +7,7 @@ export default function PrivacyPage() {
         <div className="space-y-6 text-gray-300 text-sm leading-relaxed">
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">1. Responsable</h2>
-            <p>Compaw, Canton de Vaud, Suisse. Conforme a la LPD suisse et au RGPD.</p>
+            <p>Pawly, Canton de Vaud, Suisse. Conforme a la LPD suisse et au RGPD.</p>
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">2. Donnees collectees</h2>
@@ -27,7 +27,7 @@ export default function PrivacyPage() {
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">6. Vos droits</h2>
-            <p>Droit d acces, de rectification, d effacement, de portabilite, d opposition. Contactez privacy@compaw.ch. Reponse sous 30 jours.</p>
+            <p>Droit d acces, de rectification, d effacement, de portabilite, d opposition. Contactez privacy@pawly.ch. Reponse sous 30 jours.</p>
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">7. Securite</h2>
@@ -43,7 +43,7 @@ export default function PrivacyPage() {
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">10. Contact</h2>
-            <p>privacy@compaw.ch</p>
+            <p>privacy@pawly.ch</p>
           </section>
         </div>
       </div>

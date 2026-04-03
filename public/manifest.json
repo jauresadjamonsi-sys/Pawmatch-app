@@ -1,6 +1,6 @@
 {
-  "name": "Compaw",
-  "short_name": "Compaw",
+  "name": "Pawly",
+  "short_name": "Pawly",
   "description": "Ton compagnon de sortie en Suisse",
   "start_url": "/",
   "display": "standalone",

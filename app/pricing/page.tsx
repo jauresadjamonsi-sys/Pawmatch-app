@@ -115,7 +115,7 @@ export default function PricingPage() {
             Choisis ton plan
           </h1>
           <p className="text-gray-500 text-lg max-w-md mx-auto">
-            Débloque toutes les fonctionnalités de Compaw et connecte-toi avec
+            Débloque toutes les fonctionnalités de Pawly et connecte-toi avec
             encore plus de compagnons.
           </p>
         </div>

@@ -31,8 +31,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("nuit");
 
   useEffect(() => {
-    const savedLang = localStorage.getItem("compaw_lang") as Lang;
-    const savedTheme = localStorage.getItem("compaw_theme") as Theme;
+    const savedLang = localStorage.getItem("pawly_lang") as Lang;
+    const savedTheme = localStorage.getItem("pawly_theme") as Theme;
     if (savedLang && ["fr","de","it","en"].includes(savedLang)) setLangState(savedLang);
     if (savedTheme && ["nuit","aurore","ocean","clair"].includes(savedTheme)) setThemeState(savedTheme);
   }, []);
@@ -43,8 +43,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     Object.entries(vars).forEach(([key, val]) => root.style.setProperty(key, val));
   }, [theme]);
 
-  const setLang = (l: Lang) => { setLangState(l); localStorage.setItem("compaw_lang", l); };
-  const setTheme = (t: Theme) => { setThemeState(t); localStorage.setItem("compaw_theme", t); };
+  const setLang = (l: Lang) => { setLangState(l); localStorage.setItem("pawly_lang", l); };
+  const setTheme = (t: Theme) => { setThemeState(t); localStorage.setItem("pawly_theme", t); };
 
   return (
     <AppContext.Provider value={{ lang, setLang, theme, setTheme, t: TRANSLATIONS[lang] }}>

@@ -7,20 +7,20 @@ import Navbar from "@/lib/components/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Compaw — Ton compagnon de sortie en Suisse",
+  title: "Pawly — Ton compagnon de sortie en Suisse",
   description: "La premiere app qui connecte les proprietaires d'animaux en Suisse. Matching par compatibilite, 26 cantons, toutes les especes.",
-  keywords: ["animaux", "suisse", "chien", "chat", "matching", "balade", "compaw"],
+  keywords: ["animaux", "suisse", "chien", "chat", "matching", "balade", "pawly"],
   openGraph: {
-    title: "Compaw — Ton compagnon de sortie en Suisse",
+    title: "Pawly — Ton compagnon de sortie en Suisse",
     description: "Connecte-toi avec des proprietaires d'animaux pres de chez toi. Gratuit.",
-    url: "https://compaw.ch",
-    siteName: "Compaw",
+    url: "https://pawly.ch",
+    siteName: "Pawly",
     locale: "fr_CH",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Compaw — Ton compagnon de sortie en Suisse",
+    title: "Pawly — Ton compagnon de sortie en Suisse",
     description: "Connecte-toi avec des proprietaires d'animaux pres de chez toi.",
   },
   manifest: "/manifest.json",
