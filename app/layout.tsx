@@ -1,7 +1,8 @@
 import { AppProvider } from "@/lib/contexts/AppContext";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "./globals.css"
+import { CookieBanner } from "@/lib/components/CookieBanner";
 import Navbar from "@/lib/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -44,7 +45,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Navbar />
         {children}
       </AppProvider>
-</body>
+  <CookieBanner />
+      </body>
     </html>
   );
 }
