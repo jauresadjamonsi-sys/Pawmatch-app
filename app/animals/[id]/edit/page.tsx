@@ -30,6 +30,9 @@ export default function EditAnimalPage() {
   const [selectedTraits, setSelectedTraits] = useState<string[]>([]);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [additionalPhotos, setAdditionalPhotos] = useState<File[]>([]);
+  const [additionalPreviews, setAdditionalPreviews] = useState<string[]>([]);
+  const [existingPhotos, setExistingPhotos] = useState<string[]>([]);
   const supabase = createClient();
   const router = useRouter();
   const params = useParams();
@@ -84,6 +87,13 @@ export default function EditAnimalPage() {
     const breed = customBreed ? (form.get("breed_custom") as string) || null : (form.get("breed") as string) || null;
     const city = customCity ? (form.get("city_custom") as string) || null : (form.get("city") as string) || null;
 
+    // Upload additional photos
+    const newPhotoUrls = [...existingPhotos];
+    for (const file of additionalPhotos) {
+      const uploadResult = await uploadAnimalPhoto(supabase, file);
+      if (uploadResult.data) newPhotoUrls.push(uploadResult.data);
+    }
+
     const result = await updateAnimal(supabase, params.id as string, {
       name: form.get("name") as string,
       species,
@@ -98,6 +108,7 @@ export default function EditAnimalPage() {
       vaccinated: form.get("vaccinated") === "on",
       sterilized: form.get("sterilized") === "on",
       traits: selectedTraits,
+      photos: newPhotoUrls,
     });
 
     if (result.error) { setError(result.error); setSaving(false); return; }
@@ -235,6 +246,44 @@ export default function EditAnimalPage() {
                 <input type="checkbox" name="sterilized" defaultChecked={animal.sterilized} className="w-4 h-4 rounded bg-white/5 border-white/10 text-orange-500 focus:ring-orange-500" />
                 <span className="text-sm text-gray-300">Stérilisé</span>
               </label>
+            </div>
+
+            
+            {/* Photos supplémentaires */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Photos supplémentaires</label>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {existingPhotos.map((url, i) => (
+                  <div key={i} className="relative w-16 h-16 rounded-xl overflow-hidden border border-white/10">
+                    <img src={url} alt="" className="w-full h-full object-cover" />
+                    <button type="button" onClick={() => setExistingPhotos(prev => prev.filter((_, idx) => idx !== i))}
+                      className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">✕</button>
+                  </div>
+                ))}
+                {additionalPreviews.map((url, i) => (
+                  <div key={"new" + i} className="relative w-16 h-16 rounded-xl overflow-hidden border border-orange-500/30">
+                    <img src={url} alt="" className="w-full h-full object-cover" />
+                    <button type="button" onClick={() => {
+                      setAdditionalPhotos(prev => prev.filter((_, idx) => idx !== i));
+                      setAdditionalPreviews(prev => prev.filter((_, idx) => idx !== i));
+                    }}
+                      className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">✕</button>
+                  </div>
+                ))}
+                <label className="w-16 h-16 rounded-xl border-2 border-dashed border-white/10 flex items-center justify-center cursor-pointer hover:border-orange-500/30">
+                  <span className="text-xl text-gray-600">+</span>
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setAdditionalPhotos(prev => [...prev, file]);
+                      const reader = new FileReader();
+                      reader.onloadend = () => setAdditionalPreviews(prev => [...prev, reader.result as string]);
+                      reader.readAsDataURL(file);
+                    }
+                  }} />
+                </label>
+              </div>
+              <p className="text-xs text-gray-500">Ajoutez jusqu'à 5 photos de votre animal</p>
             </div>
 
             {/* Traits */}

@@ -192,11 +192,29 @@ export default function AnimalDetailPage() {
 
         <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
           <div className="h-72 bg-[#2a1f3a] flex items-center justify-center overflow-hidden">
-            {animal.photo_url ? (
-              <img src={animal.photo_url} alt={animal.name} className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-8xl">{EMOJI_MAP[animal.species] || "🐾"}</span>
-            )}
+            {(() => {
+              const photos = [animal.photo_url, ...(animal.photos || [])].filter(Boolean);
+              if (photos.length === 0) return <span className="text-8xl">{EMOJI_MAP[animal.species] || "🐾"}</span>;
+              return (
+                <div className="relative w-full h-full">
+                  <img src={photos[activePhoto] || photos[0]} alt={animal.name} className="w-full h-full object-cover" />
+                  {photos.length > 1 && (
+                    <>
+                      <button onClick={() => setActivePhoto(p => (p - 1 + photos.length) % photos.length)}
+                        className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center text-sm">‹</button>
+                      <button onClick={() => setActivePhoto(p => (p + 1) % photos.length)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center text-sm">›</button>
+                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                        {photos.map((_: any, i: number) => (
+                          <button key={i} onClick={() => setActivePhoto(i)}
+                            className={"w-2 h-2 rounded-full transition-all " + (i === activePhoto ? "bg-white scale-125" : "bg-white/50")} />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })()}
           </div>
 
           <div className="p-8">
