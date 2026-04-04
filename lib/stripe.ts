@@ -15,7 +15,7 @@ export const PLANS = {
   premium: {
     name: "PawPlus",
     price: 490,
-    priceId: process.env.STRIPE_PREMIUM_PRICE_ID,
+    priceId: process.env.NEXT_PUBLIC_STRIPE_PREMIUM_PRICE_ID,
     animals: 3,
     matchesPerDay: -1,
     messagesPerDay: -1,
@@ -23,7 +23,7 @@ export const PLANS = {
   pro: {
     name: "PawPro",
     price: 990,
-    priceId: process.env.STRIPE_PRO_PRICE_ID,
+    priceId: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID,
     animals: -1,
     matchesPerDay: -1,
     messagesPerDay: -1,
