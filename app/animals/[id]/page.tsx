@@ -14,6 +14,7 @@ import { useAppContext } from "@/lib/contexts/AppContext";
 import { SimulationRencontre } from "@/lib/components/SimulationRencontre";
 import { HealthDashboard } from "@/lib/components/HealthDashboard";
 import { HealthScore } from "@/lib/components/HealthScore";
+import { DailyTip } from "@/lib/components/DailyTip";
 import { QRIdentity } from "@/lib/components/QRIdentity";
 import { AIRecommendations } from "@/lib/components/AIRecommendations";
 import { MoodTracker } from "@/lib/components/MoodTracker";
@@ -302,6 +303,11 @@ export default function AnimalDetailPage() {
                 userId={profile.id}
                 isOwner={isOwner}
               />
+            )}
+
+            {/* Conseil quotidien */}
+            {animal && (
+              <DailyTip animal={animal} />
             )}
 
             {/* Recommandations IA */}
