@@ -102,7 +102,7 @@ export default function HomePage() {
 
         {/* CTAs */}
         <div className="flex gap-3 justify-center mb-4">
-          <Link href="/onboarding" className="px-6 py-3 font-bold rounded-full text-sm text-white pulse-slow glow-accent" style={{background:"var(--c-accent, linear-gradient(to right, #f97316, #ea580c))"}}>
+          <Link href="/signup" className="px-6 py-3 font-bold rounded-full text-sm text-white pulse-slow glow-accent" style={{background:"var(--c-accent, linear-gradient(to right, #f97316, #ea580c))"}}>
             {t.findMatch}
           </Link>
           <Link href="/flairer" className="px-6 py-3 bg-[var(--c-card)] border border-[var(--c-border)] font-medium rounded-full text-sm card-hover text-[var(--c-text-muted)]">
@@ -169,7 +169,7 @@ export default function HomePage() {
           <span className="text-4xl block mb-3">🧠</span>
           <h2 className="font-extrabold text-lg mb-2 text-[var(--c-text)]">{t.personalityTitle}</h2>
           <p className="text-xs text-[var(--c-text-muted)] mb-4 max-w-xs mx-auto leading-relaxed">{t.personalitySub}</p>
-          <Link href="/onboarding" className="inline-block px-6 py-3 text-white font-bold rounded-full text-sm pulse-slow glow-accent" style={{background:"var(--c-accent, #f97316)"}}>
+          <Link href="/signup" className="inline-block px-6 py-3 text-white font-bold rounded-full text-sm pulse-slow glow-accent" style={{background:"var(--c-accent, #f97316)"}}>
             {t.personalityCta}
           </Link>
           <p className="text-[10px] mt-3 text-[var(--c-text-muted)]">{t.personalityTypes}</p>
@@ -291,7 +291,7 @@ export default function HomePage() {
             { href: "/flairer", emoji: "👃", key: "sniff", subKey: "sniffSub", accent: false },
             { href: "/events", emoji: "📅", key: "events", subKey: "eventsSub", accent: false },
             { href: "/pricing", emoji: "✨", key: "premium", subKey: "premiumSub", accent: false },
-            { href: "/onboarding", emoji: "🚀", key: "joinCard", subKey: "joinCardSub", accent: true },
+            { href: "/signup", emoji: "🚀", key: "joinCard", subKey: "joinCardSub", accent: true },
           ].map((item, i) => (
             <Link key={i} href={item.href} className={`bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-5 card-hover ${item.accent ? "border-2" : ""}`} style={item.accent ? {borderColor:"var(--c-accent, #f97316)"} : {}}>
               <span className="text-2xl mb-2 block">{item.emoji}</span>
@@ -337,7 +337,7 @@ export default function HomePage() {
           <p className="text-3xl mb-3">🐾</p>
           <h2 className="font-extrabold text-xl mb-2 text-[var(--c-text)]">{t.ctaTitle}</h2>
           <p className="text-xs mb-6 text-[var(--c-text-muted)] max-w-xs mx-auto">{t.ctaDesc}</p>
-          <Link href="/onboarding" className="inline-block px-8 py-3 text-white font-bold rounded-full pulse-slow glow-accent" style={{background:"var(--c-accent, #f97316)"}}>
+          <Link href="/signup" className="inline-block px-8 py-3 text-white font-bold rounded-full pulse-slow glow-accent" style={{background:"var(--c-accent, #f97316)"}}>
             {t.ctaButton}
           </Link>
           <p className="text-[10px] mt-3 text-[var(--c-text-muted)]">{t.ctaFree}</p>
