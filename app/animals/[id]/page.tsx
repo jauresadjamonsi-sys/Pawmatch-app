@@ -27,6 +27,7 @@ export default function AnimalDetailPage() {
   const [matchSuccess, setMatchSuccess] = useState(false);
   const [showMatchModal, setShowMatchModal] = useState(false);
   const [showSimulation, setShowSimulation] = useState(false);
+  const [hasCoupDeTruffe, setHasCoupDeTruffe] = useState(false);
   const [compatibility, setCompatibility] = useState<any>(null);
   const personality = animal ? detectPersonality(animal.traits || []) : null;
   const { lang } = useAppContext();
@@ -44,6 +45,21 @@ export default function AnimalDetailPage() {
         setMyAnimals(animals || []);
       }
       setLoading(false);
+      // Vérifier si Coup de Truffe existe
+      if (user && result.data) {
+        const { data: myAnimalsList } = await supabase.from("animals").select("id").eq("created_by", user.id);
+        if (myAnimalsList) {
+          const myIds = myAnimalsList.map(a => a.id);
+          const { data: coupMatch } = await supabase
+            .from("matches")
+            .select("id")
+            .eq("status", "accepted")
+            .or(myIds.map(id => `sender_animal_id.eq.${id},receiver_animal_id.eq.${id}`).join(","))
+            .or(`sender_animal_id.eq.${result.data.id},receiver_animal_id.eq.${result.data.id}`)
+            .limit(1);
+          if (coupMatch && coupMatch.length > 0) setHasCoupDeTruffe(true);
+        }
+      }
       // Calculer compatibilité si on a un animal principal
       if (user) {
         const { data: myAnimals } = await supabase.from('animals').select('*').eq('created_by', user.id);
@@ -184,6 +200,11 @@ export default function AnimalDetailPage() {
             <div className="flex items-center justify-between mb-6">
               <h1 className="text-3xl font-bold text-white">{animal.name}</h1>
               {personality && <a href={"/animals/" + animal.id + "/personality"} style={{ display:"inline-block", marginTop:8, background: personality.bgColor, color: personality.color, border: "1px solid " + personality.color + "40", fontSize: 12, fontWeight: 800, padding: "4px 14px", borderRadius: 50, textDecoration: "none" }}>{personality.emoji} {personality.name}</a>}
+              {hasCoupDeTruffe && (
+                <span className="bg-pink-500/20 text-pink-400 px-3 py-1.5 rounded-full text-xs font-bold border border-pink-500/30 animate-pulse">
+                  💥 Coup de Truffe
+                </span>
+              )}
               <span className="bg-green-500/20 text-green-300 px-3 py-1 rounded-full text-sm font-medium">
                 {animal.status === "disponible" ? "Disponible" : animal.status === "en_cours" ? "En cours" : "Matché"}
               </span>

@@ -12,9 +12,9 @@ const EMOJI_MAP: Record<string, string> = {
 };
 
 const STORY_KEYS = [
-  { name: "storyName1", breed: "storyBreed1", story: "story1", emoji: "🐕", score: 94 },
-  { name: "storyName2", breed: "storyBreed2", story: "story2", emoji: "🐶", score: 89 },
-  { name: "storyName3", breed: "storyBreed3", story: "story3", emoji: "🐱", score: 91 },
+  { name: "storyName1", breed: "storyBreed1", story: "story1", photo: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=120&h=120&fit=crop&crop=face", score: 94 },
+  { name: "storyName2", breed: "storyBreed2", story: "story2", photo: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=120&h=120&fit=crop&crop=face", score: 89 },
+  { name: "storyName3", breed: "storyBreed3", story: "story3", photo: "https://images.unsplash.com/photo-1615497001839-b0a0eac3274c?w=120&h=120&fit=crop&crop=face", score: 91 },
 ];
 
 const HOW_STEPS = [
@@ -116,8 +116,8 @@ export default function HomePage() {
         {/* Stats */}
         <div className="flex justify-center gap-8 mt-6">
           {[
-            [totalProfiles + "+", t.owners],
-            [totalAnimals + "+", t.animals],
+            [totalProfiles < 10 ? "🇨🇭" : totalProfiles + "+", totalProfiles < 10 ? t.tagline : t.owners],
+            [totalAnimals < 10 ? "26" : totalAnimals + "+", totalAnimals < 10 ? "cantons couverts" : t.animals],
             ["92%", t.matchRate],
           ].map(([val, label]) => (
             <div key={String(label)} className="text-center">
@@ -133,8 +133,8 @@ export default function HomePage() {
         <h2 className="text-[11px] font-semibold uppercase tracking-widest mb-4 text-center text-[var(--c-text-muted)]">{t.storiesTitle}</h2>
         <div key={storyIdx} className="slide-in bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-5">
           <div className="flex items-start gap-3">
-            <div className="w-12 h-12 rounded-full flex items-center justify-center text-2xl flex-shrink-0" style={{background:"var(--c-accent, rgba(249,115,22,.15))",opacity:0.9}}>
-              {currentStory.emoji}
+            <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border-2" style={{borderColor:"var(--c-accent, #f97316)"}}>
+              <img src={currentStory.photo} alt={t[currentStory.name]} className="w-full h-full object-cover" />
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
