@@ -102,7 +102,7 @@ export default function HomePage() {
 
         {/* CTAs */}
         <div className="flex gap-3 justify-center mb-4">
-          <Link href="/signup" className="px-6 py-3 font-bold rounded-full text-sm text-white pulse-slow glow-accent" style={{background:"var(--c-accent, #f97316)"}}>
+          <Link href="/signup" className="px-6 py-3 font-bold rounded-full text-sm text-white pulse-slow" style={{background:"#f97316",boxShadow:"0 0 30px rgba(249,115,22,0.3)"}}>
             {t.findMatch}
           </Link>
           <Link href="/flairer" className="px-6 py-3 bg-[var(--c-card)] border border-[var(--c-border)] font-medium rounded-full text-sm card-hover text-[var(--c-text-muted)]">
@@ -169,7 +169,7 @@ export default function HomePage() {
           <span className="text-4xl block mb-3">🧠</span>
           <h2 className="font-extrabold text-lg mb-2 text-[var(--c-text)]">{t.personalityTitle}</h2>
           <p className="text-xs text-[var(--c-text-muted)] mb-4 max-w-xs mx-auto leading-relaxed">{t.personalitySub}</p>
-          <Link href="/signup" className="inline-block px-6 py-3 text-white font-bold rounded-full text-sm pulse-slow glow-accent" style={{background:"var(--c-accent, #f97316)"}}>
+          <Link href="/signup" className="inline-block px-6 py-3 text-white font-bold rounded-full text-sm pulse-slow" style={{background:"#f97316",boxShadow:"0 0 30px rgba(249,115,22,0.3)"}}>
             {t.personalityCta}
           </Link>
           <p className="text-[10px] mt-3 text-[var(--c-text-muted)]">{t.personalityTypes}</p>
