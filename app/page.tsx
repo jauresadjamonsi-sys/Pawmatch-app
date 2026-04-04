@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { useAppContext } from "@/lib/contexts/AppContext";
 import { MatchDuJour } from "@/lib/components/MatchDuJour";
+import { PersonalityHook } from "@/lib/components/PersonalityHook";
 
 const EMOJI_MAP: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
@@ -160,6 +161,9 @@ export default function HomePage() {
       {/* ═══════════════ MATCH DU JOUR ═══════════════ */}
       <div className="px-5 mb-8">
         <MatchDuJour lang={lang} />
+
+        {/* Test personnalité hook */}
+        <PersonalityHook lang={lang} />
       </div>
 
       {/* ═══════════════ TEST PERSONNALITÉ — HOOK VIRAL ═══════════════ */}
