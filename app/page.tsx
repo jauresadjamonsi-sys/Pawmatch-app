@@ -102,7 +102,7 @@ export default function HomePage() {
 
         {/* CTAs */}
         <div className="flex gap-3 justify-center mb-4">
-          <Link href="/signup" className="px-6 py-3 font-bold rounded-full text-sm text-white pulse-slow glow-accent" style={{background:"var(--c-accent, linear-gradient(to right, #f97316, #ea580c))"}}>
+          <Link href="/signup" className="px-6 py-3 font-bold rounded-full text-sm text-white pulse-slow glow-accent" style={{background:"var(--c-accent, #f97316)"}}>
             {t.findMatch}
           </Link>
           <Link href="/flairer" className="px-6 py-3 bg-[var(--c-card)] border border-[var(--c-border)] font-medium rounded-full text-sm card-hover text-[var(--c-text-muted)]">

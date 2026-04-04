@@ -24,15 +24,13 @@ export const metadata: Metadata = {
     description: "Connecte-toi avec des proprietaires d'animaux pres de chez toi.",
   },
   manifest: "/manifest.json",
-  themeColor: "#1a1225",
-};
+  };
 
 export const viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#1a1225",
-};
+  };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
