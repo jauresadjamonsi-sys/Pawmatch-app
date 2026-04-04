@@ -190,7 +190,7 @@ export default function HomePage() {
         <div className="flex flex-col gap-3">
           {HOW_STEPS.map((step, i) => (
             <div key={i} className="flex items-start gap-4 bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-4">
-              <div className="w-9 h-9 rounded-full flex items-center justify-center font-black text-sm flex-shrink-0 text-white" style={{background:"var(--c-accent, #f97316)"}}>
+              <div className="w-9 h-9 rounded-full flex items-center justify-center font-black text-sm flex-shrink-0 text-white" style={{background:"#f97316",boxShadow:"0 0 30px rgba(249,115,22,0.3)"}}>
                 {step.num}
               </div>
               <div>
@@ -363,7 +363,7 @@ export default function HomePage() {
           <p className="text-3xl mb-3">🐾</p>
           <h2 className="font-extrabold text-xl mb-2 text-[var(--c-text)]">{t.ctaTitle}</h2>
           <p className="text-xs mb-6 text-[var(--c-text-muted)] max-w-xs mx-auto">{t.ctaDesc}</p>
-          <Link href="/signup" className="inline-block px-8 py-3 text-white font-bold rounded-full pulse-slow glow-accent" style={{background:"var(--c-accent, #f97316)"}}>
+          <Link href="/signup" className="inline-block px-8 py-3 text-white font-bold rounded-full pulse-slow glow-accent" style={{background:"#f97316",boxShadow:"0 0 30px rgba(249,115,22,0.3)"}}>
             {t.ctaButton}
           </Link>
           <p className="text-[10px] mt-3 text-[var(--c-text-muted)]">{t.ctaFree}</p>
