@@ -2,20 +2,20 @@ export default function CGUPage() {
   return (
     <div className="min-h-screen px-6 py-12">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-2">Conditions Generales d Utilisation</h1>
-        <p className="text-gray-500 text-sm mb-8">Derniere mise a jour : 1er avril 2026</p>
+        <h1 className="text-3xl font-bold text-white mb-2">Conditions Générales d'Utilisation</h1>
+        <p className="text-gray-500 text-sm mb-8">Dernière mise à jour : 1er avril 2026</p>
         <div className="space-y-6 text-gray-300 text-sm leading-relaxed">
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">1. Objet</h2>
-            <p>Les presentes CGU regissent l utilisation de Pawly, plateforme de mise en relation entre proprietaires d animaux en Suisse, editee par Pawly, Canton de Vaud, Suisse.</p>
+            <p>Les présentes CGU régissent l'utilisation de Pawly, plateforme de mise en relation entre proprietaires d animaux en Suisse, éditée par Pawly, Canton de Vaud, Suisse.</p>
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">2. Acceptation</h2>
-            <p>L inscription implique l acceptation pleine des presentes CGU.</p>
+            <p>L'inscription implique l'acceptation pleine des présentes CGU.</p>
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">3. Inscription</h2>
-            <p>L utilisateur doit fournir des informations exactes, etre age d au moins 18 ans, et ne posseder qu un seul compte.</p>
+            <p>L'utilisateur doit fournir des informations exactes, être âgé d'au moins 18 ans, et ne posséder qu'un seul compte.</p>
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">4. Services</h2>
@@ -27,7 +27,7 @@ export default function CGUPage() {
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">6. Obligations</h2>
-            <p>L utilisateur s engage a fournir des informations exactes, ne pas publier de contenu illicite, respecter les autres utilisateurs et leurs animaux.</p>
+            <p>L'utilisateur s'engage à fournir des informations exactes, ne pas publier de contenu illicite, respecter les autres utilisateurs et leurs animaux.</p>
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">7. Responsabilite</h2>
