@@ -131,27 +131,7 @@ export default function Navbar() {
             </>
           )}
         </div>
-        <div className="flex items-center justify-center gap-4 pb-2">
-          <div className="flex items-center gap-1.5">
-            {LANGS.map((l) => (
-              <button key={l.code} onClick={() => setLang(l.code as any)}
-                className={"w-6 h-6 rounded-full text-xs transition-all flex items-center justify-center " +
-                  (lang === l.code ? "bg-orange-500/20 border border-orange-500/50 scale-110" : "opacity-50 hover:opacity-100")}>
-                {l.flag}
-              </button>
-            ))}
-          </div>
-          <div className="w-px h-4 bg-white/10" />
-          <div className="flex items-center gap-1.5">
-            {THEMES.map((th) => (
-              <button key={th.code} onClick={() => setTheme(th.code as any)} title={th.name}
-                className={"w-6 h-6 rounded-full text-xs transition-all flex items-center justify-center " +
-                  (theme === th.code ? "bg-orange-500/20 border border-orange-500/50 scale-110" : "opacity-50 hover:opacity-100")}>
-                {th.label}
-              </button>
-            ))}
-          </div>
-        </div>
+
       </div>
       <div className="md:hidden h-16"></div>
     </>
