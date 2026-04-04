@@ -39,7 +39,7 @@ export async function POST(request: Request) {
         .eq("id", user.id);
     }
 
-    const origin = request.headers.get("origin") || "http://localhost:3000";
+    const origin = request.headers.get("origin") || "https://pawlyapp.ch";
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
