@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAppContext } from "@/lib/contexts/AppContext";
 import { MatchDuJour } from "@/lib/components/MatchDuJour";
 import { PersonalityHook } from "@/lib/components/PersonalityHook";
+import { InviteFriendCard } from "@/lib/components/InviteFriendCard";
 
 const EMOJI_MAP: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
@@ -164,6 +165,9 @@ export default function HomePage() {
 
         {/* Test personnalité hook */}
         <PersonalityHook lang={lang} />
+
+        {/* Invitation WhatsApp */}
+        <InviteFriendCard />
       </div>
 
       {/* ═══════════════ TEST PERSONNALITÉ — HOOK VIRAL ═══════════════ */}
