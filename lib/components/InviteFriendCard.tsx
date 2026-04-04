@@ -49,8 +49,8 @@ export function InviteFriendCard({ animalName, lang }: InviteProps) {
   const [copied, setCopied] = useState(false);
   const labels = INVITE_LABELS[lang] || INVITE_LABELS.fr;
   const inviteUrl = typeof window !== "undefined"
-    ? `${window.location.origin}/onboarding`
-    : "https://pawmatch-app-7ukn-beta.vercel.app/onboarding";
+    ? `${window.location.origin}/signup`
+    : "https://pawmatch-app-7ukn-beta.vercel.app/signup";
 
   const msg = (INVITE_MSG[lang] || INVITE_MSG.fr).replace("{name}", animalName);
 
