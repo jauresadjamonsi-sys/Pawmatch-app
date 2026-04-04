@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useAppContext } from "@/lib/contexts/AppContext";
 import { SimulationRencontre } from "@/lib/components/SimulationRencontre";
+import { HealthDashboard } from "@/lib/components/HealthDashboard";
 
 const EMOJI_MAP: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
@@ -270,6 +271,16 @@ export default function AnimalDetailPage() {
             )}
 
             
+            {/* Dashboard santé */}
+            {animal && (
+              <HealthDashboard
+                animal={animal}
+                isOwner={isOwner}
+                editUrl={"/animals/" + animal.id + "/edit"}
+                lang={typeof lang !== "undefined" ? lang : "fr"}
+              />
+            )}
+
             {/* Services recommandés — pont vers PawDirectory */}
             <div style={{ marginTop: 16, background: "linear-gradient(135deg, rgba(13,148,136,0.08), rgba(6,95,70,0.04))", border: "1.5px solid rgba(13,148,136,0.15)", borderRadius: 16, padding: 20 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
