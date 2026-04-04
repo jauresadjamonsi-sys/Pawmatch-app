@@ -269,6 +269,41 @@ export default function AnimalDetailPage() {
               </button>
             )}
 
+            
+            {/* Services recommandés — pont vers PawDirectory */}
+            <div style={{ marginTop: 16, background: "linear-gradient(135deg, rgba(13,148,136,0.08), rgba(6,95,70,0.04))", border: "1.5px solid rgba(13,148,136,0.15)", borderRadius: 16, padding: 20 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                <span style={{ fontSize: 20 }}>🏥</span>
+                <h3 className="font-bold text-sm text-[var(--c-text)]">Services pour {animal.name}</h3>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                <a href={"https://pawdirectory.ch/annuaire?cat=" + encodeURIComponent("Vétérinaire") + (animal.canton ? "&cn=" + animal.canton : "")}
+                  target="_blank" rel="noopener"
+                  style={{ padding: "10px 12px", background: "rgba(255,255,255,0.6)", borderRadius: 10, textDecoration: "none", textAlign: "center", fontSize: 12, fontWeight: 700, color: "#0D9488", border: "1px solid rgba(13,148,136,0.15)" }}>
+                  🏥 Véto
+                </a>
+                <a href={"https://pawdirectory.ch/annuaire?cat=" + encodeURIComponent("Toiletteur") + (animal.canton ? "&cn=" + animal.canton : "")}
+                  target="_blank" rel="noopener"
+                  style={{ padding: "10px 12px", background: "rgba(255,255,255,0.6)", borderRadius: 10, textDecoration: "none", textAlign: "center", fontSize: 12, fontWeight: 700, color: "#0D9488", border: "1px solid rgba(13,148,136,0.15)" }}>
+                  ✂️ Toiletteur
+                </a>
+                <a href={"https://pawdirectory.ch/annuaire?cat=" + encodeURIComponent("Garde & Promeneur") + (animal.canton ? "&cn=" + animal.canton : "")}
+                  target="_blank" rel="noopener"
+                  style={{ padding: "10px 12px", background: "rgba(255,255,255,0.6)", borderRadius: 10, textDecoration: "none", textAlign: "center", fontSize: 12, fontWeight: 700, color: "#0D9488", border: "1px solid rgba(13,148,136,0.15)" }}>
+                  🦮 Garde
+                </a>
+                <a href={"https://pawdirectory.ch/annuaire?cat=" + encodeURIComponent("Dresseur") + (animal.canton ? "&cn=" + animal.canton : "")}
+                  target="_blank" rel="noopener"
+                  style={{ padding: "10px 12px", background: "rgba(255,255,255,0.6)", borderRadius: 10, textDecoration: "none", textAlign: "center", fontSize: 12, fontWeight: 700, color: "#0D9488", border: "1px solid rgba(13,148,136,0.15)" }}>
+                  🎓 Éducateur
+                </a>
+              </div>
+              <a href="https://pawdirectory.ch" target="_blank" rel="noopener"
+                style={{ display: "block", marginTop: 10, textAlign: "center", fontSize: 11, color: "#0D9488", fontWeight: 700, textDecoration: "none" }}>
+                Voir tous les services sur PawDirectory →
+              </a>
+            </div>
+
             {/* Match section */}
             {!isOwner && (
               <>
