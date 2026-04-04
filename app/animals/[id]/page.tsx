@@ -361,6 +361,11 @@ export default function AnimalDetailPage() {
               lang={typeof lang !== "undefined" ? lang : "fr"}
             />
 
+            {/* Carte */}
+            <a href="/carte" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: 14, background: "linear-gradient(135deg, #3B82F6, #2563EB)", color: "#fff", borderRadius: 14, fontWeight: 700, fontSize: 13, textDecoration: "none", marginBottom: 16, boxShadow: "0 2px 8px rgba(59,130,246,0.3)" }}>
+              🗺️ Voir les copains sur la carte
+            </a>
+
             {/* Services recommandés — pont vers PawDirectory */}
             <div style={{ marginTop: 16, background: "linear-gradient(135deg, rgba(13,148,136,0.08), rgba(6,95,70,0.04))", border: "1.5px solid rgba(13,148,136,0.15)", borderRadius: 16, padding: 20 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
