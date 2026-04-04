@@ -49,6 +49,7 @@ export default function AnimalDetailPage() {
         setMyAnimals(animals || []);
       }
       setLoading(false);
+      if (animalData) document.title = animalData.name + " — Pawly";
       // Vérifier si Coup de Truffe existe
       if (user && result.data) {
         const { data: myAnimalsList } = await supabase.from("animals").select("id").eq("created_by", user.id);
