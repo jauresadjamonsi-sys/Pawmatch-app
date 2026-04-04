@@ -331,6 +331,24 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* ═══════════════ PAWDIRECTORY LINK ═══════════════ */}
+      <div className="px-5 mb-8">
+        <a href="https://pawdirectory.vercel.app" target="_blank" rel="noopener" className="block" style={{textDecoration:"none"}}>
+          <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-5" style={{background:"linear-gradient(135deg, rgba(13,148,136,0.08), rgba(6,95,70,0.05))"}}>
+            <div className="flex items-center gap-4">
+              <div className="text-3xl flex-shrink-0">🏥</div>
+              <div className="flex-1">
+                <div className="font-extrabold text-sm text-[var(--c-text)]">PawDirectory</div>
+                <p className="text-xs text-[var(--c-text-muted)] mt-0.5 leading-relaxed">
+                  {{fr:"Vétos, toiletteurs, pensions — 306+ services pour animaux en Suisse",de:"Tierärzte, Pfleger, Pensionen — 306+ Tierdienste in der Schweiz",it:"Veterinari, toelettatori, pensioni — 306+ servizi per animali in Svizzera",en:"Vets, groomers, boarding — 306+ pet services across Switzerland"}[lang]}
+                </p>
+              </div>
+              <span className="text-lg" style={{color:"#0D9488"}}>→</span>
+            </div>
+          </div>
+        </a>
+      </div>
+
       {/* ═══════════════ CTA FINAL ═══════════════ */}
       <div className="px-5 mb-12">
         <div className="text-center bg-[var(--c-card)] border-2 rounded-2xl p-8" style={{borderColor:"var(--c-accent, rgba(249,115,22,.2))"}}>
