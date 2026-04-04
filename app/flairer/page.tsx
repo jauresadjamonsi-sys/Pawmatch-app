@@ -109,18 +109,58 @@ export default function FlairerPage() {
         const res = await fetch(url);
         const data = await res.json();
         const state = data.address && data.address.state ? data.address.state : '';
-        let detected = null;
+        const postcode = data.address && data.address.postcode ? data.address.postcode : '';
+        let detected: string | null = null;
+        // Détection par nom de canton
         if (state.includes('Vaud')) detected = 'VD';
         else if (state.includes('Gen')) detected = 'GE';
         else if (state.includes('Bern')) detected = 'BE';
-        else if (state.includes('rich')) detected = 'ZH';
-        else if (state.includes('Fribourg')) detected = 'FR';
-        else if (state.includes('Valais')) detected = 'VS';
+        else if (state.includes('Zürich') || state.includes('Zurich')) detected = 'ZH';
+        else if (state.includes('Fribourg') || state.includes('Freiburg')) detected = 'FR';
+        else if (state.includes('Valais') || state.includes('Wallis')) detected = 'VS';
         else if (state.includes('Neuch')) detected = 'NE';
         else if (state.includes('Ticino') || state.includes('Tessin')) detected = 'TI';
+        else if (state.includes('Basel-Stadt')) detected = 'BS';
+        else if (state.includes('Basel-Land')) detected = 'BL';
+        else if (state.includes('Luzern') || state.includes('Lucerne')) detected = 'LU';
+        else if (state.includes('St. Gallen') || state.includes('Saint-Gall')) detected = 'SG';
+        else if (state.includes('Aargau') || state.includes('Argovie')) detected = 'AG';
+        else if (state.includes('Graubünden') || state.includes('Grisons')) detected = 'GR';
+        else if (state.includes('Thurgau') || state.includes('Thurgovie')) detected = 'TG';
+        else if (state.includes('Solothurn') || state.includes('Soleure')) detected = 'SO';
+        else if (state.includes('Schwyz')) detected = 'SZ';
+        else if (state.includes('Zug') || state.includes('Zoug')) detected = 'ZG';
+        else if (state.includes('Schaffhausen') || state.includes('Schaffhouse')) detected = 'SH';
+        else if (state.includes('Jura')) detected = 'JU';
+        else if (state.includes('Appenzell')) detected = 'AR';
+        else if (state.includes('Glarus') || state.includes('Glaris')) detected = 'GL';
+        else if (state.includes('Nidwalden') || state.includes('Nidwald')) detected = 'NW';
+        else if (state.includes('Obwalden') || state.includes('Obwald')) detected = 'OW';
+        else if (state.includes('Uri')) detected = 'UR';
+        // Fallback par code postal
+        if (!detected && postcode) {
+          const pc = parseInt(postcode);
+          if (pc >= 1000 && pc <= 1899) detected = 'VD';
+          else if (pc >= 1200 && pc <= 1299) detected = 'GE';
+          else if (pc >= 1600 && pc <= 1799) detected = 'FR';
+          else if (pc >= 2000 && pc <= 2499) detected = 'NE';
+          else if (pc >= 3000 && pc <= 3999) detected = 'BE';
+          else if (pc >= 4000 && pc <= 4199) detected = 'BS';
+          else if (pc >= 5000 && pc <= 5699) detected = 'AG';
+          else if (pc >= 6000 && pc <= 6199) detected = 'LU';
+          else if (pc >= 6300 && pc <= 6399) detected = 'ZG';
+          else if (pc >= 6800 && pc <= 6999) detected = 'TI';
+          else if (pc >= 7000 && pc <= 7999) detected = 'GR';
+          else if (pc >= 8000 && pc <= 8499) detected = 'ZH';
+          else if (pc >= 9000 && pc <= 9499) detected = 'SG';
+        }
         if (detected) setUserCanton(detected);
-      } catch(e) {}
-    }, function() {});
+      } catch(e) {
+        console.log("[Géoloc] Erreur:", e);
+      }
+    }, function(err) {
+      console.log("[Géoloc] Permission refusée ou erreur:", err.message);
+    }, { enableHighAccuracy: false, timeout: 10000 });
   }
 
   async function fetchData() {
