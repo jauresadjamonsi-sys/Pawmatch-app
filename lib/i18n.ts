@@ -188,7 +188,7 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
 
     heroTitle: "Il tuo animale si annoia?",
     heroTitle2: "Trovagli amici per le passeggiate",
-    heroSub: "Pawly connette i proprietari di animali vicino a te per passeggiate, giochi e incontri tra compagni.",
+    heroSub: "Pawly collega i proprietari di animali vicino a te per passeggiate, giochi e incontri tra compagni.",
     bullet1: "🐕 Passeggiare in due è sempre meglio",
     bullet2: "📍 Trova amici nel tuo quartiere",
     bullet3: "🧠 Match di personalità per incontri riusciti",
@@ -209,7 +209,7 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     personalityTitle: "Che carattere ha il tuo animale?",
     personalitySub: "Scopri il suo profilo di personalità in 2 minuti. Risultato divertente, condivisibile e utile per il match perfetto.",
     personalityCta: "🧠 Fai il test gratuito",
-    personalityTypes: "6 profili: Energico Sociale · Dolce Sereno · Avventuriero · Giocherellone · Osservatore Zen · Coccola Continua",
+    personalityTypes: "6 profili: Energico Sociale · Dolce Sereno · Avventuriero · Giocherellone · Osservatore Zen · Coccolone",
 
     howItWorks: "Come funziona",
     step1: "Descrivi il tuo compagno",
