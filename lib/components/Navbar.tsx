@@ -105,7 +105,7 @@ export default function Navbar() {
       </nav>
 
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[var(--c-nav)]/95 backdrop-blur-xl border-t border-white/5 safe-area-bottom">
-        <div className="flex items-center justify-around h-16 px-2">
+        <div className="flex items-center justify-around h-12 px-2">
           <BottomTab href="/" active={isActive("/")} label={t.navHome}>
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive("/") ? 2.5 : 1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
@@ -151,7 +151,7 @@ export default function Navbar() {
         </div>
 
       </div>
-      <div className="md:hidden h-16"></div>
+      <div className="md:hidden h-12"></div>
     </>
   );
 }
@@ -170,19 +170,19 @@ function BottomTab({ href, active, label, featured, children }: {
 }) {
   if (featured) {
     return (
-      <Link href={href} className="flex flex-col items-center -mt-5">
-        <div className={"w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition " +
+      <Link href={href} className="flex flex-col items-center -mt-3">
+        <div className={"w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition " +
           (active ? "bg-orange-500 shadow-orange-500/40 scale-110 text-white" : "bg-orange-500/80 hover:bg-orange-500 shadow-orange-500/20 text-white")}>
           {children}
         </div>
-        <span className={"text-[10px] mt-1 " + (active ? "text-orange-400 font-semibold" : "text-gray-500")}>{label}</span>
+        <span className={"text-[8px] mt-0.5 " + (active ? "text-orange-400 font-semibold" : "text-gray-500")}>{label}</span>
       </Link>
     );
   }
   return (
     <Link href={href} className="flex flex-col items-center py-1 px-2">
       <span className={active ? "text-orange-400" : "text-gray-500"}>{children}</span>
-      <span className={"text-[10px] mt-0.5 " + (active ? "text-orange-400 font-semibold" : "text-gray-500")}>{label}</span>
+      <span className={"text-[8px] mt-0 " + (active ? "text-orange-400 font-semibold" : "text-gray-500")}>{label}</span>
     </Link>
   );
 }
