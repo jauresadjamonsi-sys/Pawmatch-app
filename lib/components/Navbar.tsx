@@ -75,9 +75,27 @@ export default function Navbar() {
               </div>
             </div>
 
-            <div className="md:hidden flex items-center gap-3">
+            <div className="md:hidden flex items-center gap-2">
+              <div className="flex items-center gap-0.5">
+                {LANGS.map((l) => (
+                  <button key={l.code} onClick={() => setLang(l.code as any)}
+                    className={"w-6 h-6 rounded-full text-[10px] transition-all flex items-center justify-center " +
+                      (lang === l.code ? "bg-orange-500/20 border border-orange-500/50" : "opacity-40")}>
+                    {l.flag}
+                  </button>
+                ))}
+              </div>
+              <div className="flex items-center gap-0.5">
+                {THEMES.map((th) => (
+                  <button key={th.code} onClick={() => setTheme(th.code as any)}
+                    className={"w-5 h-5 rounded-full text-[9px] transition-all flex items-center justify-center " +
+                      (theme === th.code ? "bg-orange-500/20 border border-orange-500/50" : "opacity-40")}>
+                    {th.label}
+                  </button>
+                ))}
+              </div>
               {!loading && !user && (
-                <Link href="/signup" className="px-4 py-1.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-full transition">
+                <Link href="/signup" className="px-3 py-1 bg-orange-500 text-white text-[10px] font-bold rounded-full">
                   {t.navJoin}
                 </Link>
               )}
