@@ -17,11 +17,12 @@ interface Props {
   animals: any[];
   user: { id: string; email: string };
   subLabel: string;
+  stats: { matches: number; messages: number; days: number; animals: number };
   initials: string;
   logout: () => Promise<void>;
 }
 
-export default function ProfileClient({ profile, animals: initialAnimals, user, subLabel, initials, logout }: Props) {
+export default function ProfileClient({ profile, animals: initialAnimals, user, subLabel, initials, logout, stats }: Props) {
   const { t } = useAppContext();
   const [animals, setAnimals] = useState(initialAnimals);
   const [showDeleteProfile, setShowDeleteProfile] = useState(false);
@@ -66,6 +67,26 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
               <h1 className="text-xl font-bold text-[var(--c-text)] truncate">{profile?.full_name || "Utilisateur"}</h1>
               <p className="text-sm text-[var(--c-text-muted)] truncate">{user.email}</p>
               <span className={"inline-block mt-1 text-xs px-3 py-1 rounded-full font-semibold " + subColor}>{subLabel}</span>
+            </div>
+          </div>
+
+          {/* Stats engagement */}
+          <div className="grid grid-cols-4 gap-2 mb-5">
+            <div className="bg-orange-500/10 rounded-xl p-3 text-center">
+              <p className="text-lg font-black text-orange-400">{stats.animals}</p>
+              <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Animaux</p>
+            </div>
+            <div className="bg-green-500/10 rounded-xl p-3 text-center">
+              <p className="text-lg font-black text-green-400">{stats.matches}</p>
+              <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Matchs</p>
+            </div>
+            <div className="bg-blue-500/10 rounded-xl p-3 text-center">
+              <p className="text-lg font-black text-blue-400">{stats.messages}</p>
+              <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Messages</p>
+            </div>
+            <div className="bg-purple-500/10 rounded-xl p-3 text-center">
+              <p className="text-lg font-black text-purple-400">{stats.days}j</p>
+              <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Membre</p>
             </div>
           </div>
 
