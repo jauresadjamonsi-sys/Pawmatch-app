@@ -38,6 +38,7 @@ export default function Navbar() {
                   <NavLink href="/flairer" active={isActive("/flairer")} label={t.navFlairer} />
                   <NavLink href="/events" active={isActive("/events")} label={t.navEvents} />
                     <NavLink href="/animals" active={isActive("/animals")} label={t.navExplorer} />
+                  <NavLink href="/carte" active={isActive("/carte")} label="🗺️" />
                   <NavLink href="/matches" active={isActive("/matches")} label={t.navMatches} />
                   <NavLink href="/profile" active={isActive("/profile")} label={t.navProfil} />
                 </>
