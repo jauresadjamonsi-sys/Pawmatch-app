@@ -13,6 +13,7 @@ import { useParams } from "next/navigation";
 import { useAppContext } from "@/lib/contexts/AppContext";
 import { SimulationRencontre } from "@/lib/components/SimulationRencontre";
 import { HealthDashboard } from "@/lib/components/HealthDashboard";
+import { HealthScore } from "@/lib/components/HealthScore";
 import { QRIdentity } from "@/lib/components/QRIdentity";
 import { AIRecommendations } from "@/lib/components/AIRecommendations";
 import { MoodTracker } from "@/lib/components/MoodTracker";
@@ -309,6 +310,11 @@ export default function AnimalDetailPage() {
                 animal={animal}
                 lang={typeof lang !== "undefined" ? lang : "fr"}
               />
+            )}
+
+            {/* Score santé instantané */}
+            {animal && (
+              <HealthScore animal={animal} />
             )}
 
             {/* Dashboard santé */}
