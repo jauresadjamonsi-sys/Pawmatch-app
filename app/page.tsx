@@ -361,6 +361,16 @@ export default function HomePage() {
           <p className="text-[10px] mt-3 text-[var(--c-text-muted)]">{t.ctaFree}</p>
         </div>
       </div>
+
+      {/* Footer légal */}
+      <div style={{ padding: "16px 0", textAlign: "center", borderTop: "1px solid var(--c-border)", marginTop: 24 }}>
+        <div style={{ display: "flex", gap: 16, justifyContent: "center" }}>
+          <a href="/legal/cgu" style={{ fontSize: 11, color: "var(--c-text-muted)", textDecoration: "none" }}>CGU</a>
+          <a href="/legal/privacy" style={{ fontSize: 11, color: "var(--c-text-muted)", textDecoration: "none" }}>Confidentialité</a>
+          <a href="https://pawdirectory.ch" target="_blank" rel="noopener" style={{ fontSize: 11, color: "var(--c-text-muted)", textDecoration: "none" }}>PawDirectory</a>
+        </div>
+        <p style={{ fontSize: 10, color: "var(--c-text-muted)", marginTop: 6, opacity: 0.6 }}>© 2026 Pawly · Canton de Vaud, Suisse</p>
+      </div>
     </div>
   );
 }
