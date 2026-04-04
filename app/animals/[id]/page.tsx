@@ -19,6 +19,7 @@ import { SmartServices } from "@/lib/components/SmartServices";
 import { QRIdentity } from "@/lib/components/QRIdentity";
 import { AIRecommendations } from "@/lib/components/AIRecommendations";
 import { MoodTracker } from "@/lib/components/MoodTracker";
+import { ActivityAlert } from "@/lib/components/ActivityAlert";
 
 const EMOJI_MAP: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
@@ -296,6 +297,16 @@ export default function AnimalDetailPage() {
             )}
 
             
+            {/* Alertes intelligentes */}
+            {animal && isOwner && profile && (
+              <ActivityAlert
+                animalId={animal.id}
+                animalName={animal.name}
+                species={animal.species}
+                userId={profile.id}
+              />
+            )}
+
             {/* Mood Tracker */}
             {animal && isOwner && profile && (
               <MoodTracker
