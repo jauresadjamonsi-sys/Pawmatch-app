@@ -14,6 +14,7 @@ import { useAppContext } from "@/lib/contexts/AppContext";
 import { SimulationRencontre } from "@/lib/components/SimulationRencontre";
 import { HealthDashboard } from "@/lib/components/HealthDashboard";
 import { QRIdentity } from "@/lib/components/QRIdentity";
+import { AIRecommendations } from "@/lib/components/AIRecommendations";
 
 const EMOJI_MAP: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
@@ -272,6 +273,14 @@ export default function AnimalDetailPage() {
             )}
 
             
+            {/* Recommandations IA */}
+            {animal && (
+              <AIRecommendations
+                animal={animal}
+                lang={typeof lang !== "undefined" ? lang : "fr"}
+              />
+            )}
+
             {/* Dashboard santé */}
             {animal && (
               <HealthDashboard
