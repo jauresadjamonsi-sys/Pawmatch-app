@@ -15,6 +15,7 @@ import { SimulationRencontre } from "@/lib/components/SimulationRencontre";
 import { HealthDashboard } from "@/lib/components/HealthDashboard";
 import { HealthScore } from "@/lib/components/HealthScore";
 import { DailyTip } from "@/lib/components/DailyTip";
+import { SmartServices } from "@/lib/components/SmartServices";
 import { QRIdentity } from "@/lib/components/QRIdentity";
 import { AIRecommendations } from "@/lib/components/AIRecommendations";
 import { MoodTracker } from "@/lib/components/MoodTracker";
@@ -308,6 +309,11 @@ export default function AnimalDetailPage() {
             {/* Conseil quotidien */}
             {animal && (
               <DailyTip animal={animal} />
+            )}
+
+            {/* Services intelligents */}
+            {animal && (
+              <SmartServices animal={animal} />
             )}
 
             {/* Recommandations IA */}
