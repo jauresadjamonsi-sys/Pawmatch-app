@@ -10,6 +10,8 @@ import { computeCompatibility } from "@/lib/services/compatibility";
 import { detectPersonality } from "@/lib/services/personality";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useAppContext } from "@/lib/contexts/AppContext";
+import { SimulationRencontre } from "@/lib/components/SimulationRencontre";
 
 const EMOJI_MAP: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
@@ -24,8 +26,10 @@ export default function AnimalDetailPage() {
   const [matchError, setMatchError] = useState<string | null>(null);
   const [matchSuccess, setMatchSuccess] = useState(false);
   const [showMatchModal, setShowMatchModal] = useState(false);
+  const [showSimulation, setShowSimulation] = useState(false);
   const [compatibility, setCompatibility] = useState<any>(null);
   const personality = animal ? detectPersonality(animal.traits || []) : null;
+  const { lang } = useAppContext();
   const params = useParams();
   const supabase = createClient();
   const { profile, isAuthenticated } = useAuth();
@@ -228,6 +232,22 @@ export default function AnimalDetailPage() {
               </div>
             )}
 
+            
+            {/* Simulation de rencontre */}
+            {!isOwner && compatibility && myAnimals.length > 0 && (
+              <button
+                onClick={() => setShowSimulation(true)}
+                className="w-full py-3 mb-3 border-2 font-bold rounded-xl transition text-sm"
+                style={{
+                  borderColor: "var(--c-accent, rgba(249,115,22,.4))",
+                  color: "var(--c-accent, #f97316)",
+                  background: "var(--c-accent, rgba(249,115,22,.05))"
+                }}
+              >
+                🎬 Simuler la rencontre
+              </button>
+            )}
+
             {/* Match section */}
             {!isOwner && (
               <>
@@ -288,6 +308,17 @@ export default function AnimalDetailPage() {
                   </button>
                 </div>
               </div>
+            )}
+
+            {/* Simulation modal */}
+            {showSimulation && compatibility && myAnimals.length > 0 && (
+              <SimulationRencontre
+                myAnimal={myAnimals[0]}
+                otherAnimal={animal}
+                compatibilityScore={compatibility.score}
+                onClose={() => setShowSimulation(false)}
+                lang={lang}
+              />
             )}
           </div>
         </div>
