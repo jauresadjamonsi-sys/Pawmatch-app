@@ -13,6 +13,7 @@ import { useParams } from "next/navigation";
 import { useAppContext } from "@/lib/contexts/AppContext";
 import { SimulationRencontre } from "@/lib/components/SimulationRencontre";
 import { HealthDashboard } from "@/lib/components/HealthDashboard";
+import { QRIdentity } from "@/lib/components/QRIdentity";
 
 const EMOJI_MAP: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
@@ -280,6 +281,17 @@ export default function AnimalDetailPage() {
                 lang={typeof lang !== "undefined" ? lang : "fr"}
               />
             )}
+
+            {/* QR Code identité */}
+            <QRIdentity
+              animalId={animal.id}
+              animalName={animal.name}
+              species={animal.species}
+              breed={animal.breed}
+              canton={animal.canton}
+              ownerName={profile?.full_name || null}
+              lang={typeof lang !== "undefined" ? lang : "fr"}
+            />
 
             {/* Services recommandés — pont vers PawDirectory */}
             <div style={{ marginTop: 16, background: "linear-gradient(135deg, rgba(13,148,136,0.08), rgba(6,95,70,0.04))", border: "1.5px solid rgba(13,148,136,0.15)", borderRadius: 16, padding: 20 }}>
