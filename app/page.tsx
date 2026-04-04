@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { useAppContext } from "@/lib/contexts/AppContext";
+import { MatchDuJour } from "@/lib/components/MatchDuJour";;
 
 const EMOJI_MAP: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
@@ -29,7 +30,7 @@ const TESTIMONIALS = [
 ];
 
 export default function HomePage() {
-  const { t } = useAppContext();
+  const { t, lang } = useAppContext();
   const [animals, setAnimals] = useState<any[]>([]);
   const [totalAnimals, setTotalAnimals] = useState(0);
   const [totalProfiles, setTotalProfiles] = useState(0);
@@ -154,6 +155,11 @@ export default function HomePage() {
             <button key={i} onClick={() => setStoryIdx(i)} className="w-2 h-2 rounded-full transition-all" style={{background: i === storyIdx ? "var(--c-accent, #f97316)" : "var(--c-border)"}} />
           ))}
         </div>
+      </div>
+
+      {/* ═══════════════ MATCH DU JOUR ═══════════════ */}
+      <div className="px-5 mb-8">
+        <MatchDuJour lang={lang} />
       </div>
 
       {/* ═══════════════ TEST PERSONNALITÉ — HOOK VIRAL ═══════════════ */}
