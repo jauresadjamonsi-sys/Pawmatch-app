@@ -333,7 +333,7 @@ export default function HomePage() {
 
       {/* ═══════════════ PAWDIRECTORY LINK ═══════════════ */}
       <div className="px-5 mb-8">
-        <a href="https://pawdirectory.vercel.app" target="_blank" rel="noopener" className="block" style={{textDecoration:"none"}}>
+        <a href="https://pawdirectory.ch" target="_blank" rel="noopener" className="block" style={{textDecoration:"none"}}>
           <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-5" style={{background:"linear-gradient(135deg, rgba(13,148,136,0.08), rgba(6,95,70,0.05))"}}>
             <div className="flex items-center gap-4">
               <div className="text-3xl flex-shrink-0">🏥</div>
