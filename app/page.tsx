@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { useAppContext } from "@/lib/contexts/AppContext";
-import { MatchDuJour } from "@/lib/components/MatchDuJour";;
+import { MatchDuJour } from "@/lib/components/MatchDuJour";
 
 const EMOJI_MAP: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
