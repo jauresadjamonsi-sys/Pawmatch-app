@@ -25,6 +25,19 @@ type ServiceResult<T> = {
   mutualMatch?: boolean;
 };
 
+// ═══ Push notification helper ═══
+async function sendPushNotification(userId: string, title: string, body: string, url: string) {
+  try {
+    await fetch("/api/push/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id: userId, title, body, url }),
+    });
+  } catch (err) {
+    console.error("[Push] Erreur envoi notification:", err);
+  }
+}
+
 export async function sendMatchWithLimit(
   supabase: any,
   senderAnimalId: string,
@@ -49,6 +62,14 @@ export async function sendMatch(
     if (!receiverUserId || receiverUserId === "NONE") {
       return { data: null, error: "Cet animal n'a pas de propriétaire identifié.", mutualMatch: false };
     }
+
+    // Récupérer les noms des animaux pour les notifications
+    const { data: senderAnimal } = await supabase
+      .from("animals").select("name").eq("id", senderAnimalId).single();
+    const { data: receiverAnimal } = await supabase
+      .from("animals").select("name").eq("id", receiverAnimalId).single();
+    const senderName = senderAnimal?.name || "Un animal";
+    const receiverName = receiverAnimal?.name || "ton animal";
 
     // Vérifier si j'ai déjà liké cet animal
     const { data: alreadySent } = await supabase
@@ -91,6 +112,21 @@ export async function sendMatch(
         .single();
 
       if (error) return { data: null, error: "Erreur: " + error.message, mutualMatch: false };
+
+      // ═══ NOTIFICATION MATCH MUTUEL — les deux propriétaires ═══
+      sendPushNotification(
+        receiverUserId,
+        "💥 Coup de Truffe !",
+        `${senderName} et ${receiverName} sont compatibles ! Organisez votre première balade.`,
+        "/matches"
+      );
+      sendPushNotification(
+        senderUserId,
+        "💥 Coup de Truffe !",
+        `${senderName} et ${receiverName} sont compatibles ! Organisez votre première balade.`,
+        "/matches"
+      );
+
       return { data, error: null, mutualMatch: true };
     }
 
@@ -108,6 +144,15 @@ export async function sendMatch(
       .single();
 
     if (error) return { data: null, error: "Erreur: " + error.message, mutualMatch: false };
+
+    // ═══ NOTIFICATION MATCH PENDING — le propriétaire de l'animal flairé ═══
+    sendPushNotification(
+      receiverUserId,
+      "🐾 Nouveau flairage !",
+      `${senderName} a flairé ${receiverName} ! Va voir son profil.`,
+      "/matches"
+    );
+
     return { data, error: null, mutualMatch: false };
 
   } catch {
