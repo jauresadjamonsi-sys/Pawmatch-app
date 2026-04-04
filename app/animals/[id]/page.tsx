@@ -15,6 +15,7 @@ import { SimulationRencontre } from "@/lib/components/SimulationRencontre";
 import { HealthDashboard } from "@/lib/components/HealthDashboard";
 import { QRIdentity } from "@/lib/components/QRIdentity";
 import { AIRecommendations } from "@/lib/components/AIRecommendations";
+import { MoodTracker } from "@/lib/components/MoodTracker";
 
 const EMOJI_MAP: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
@@ -291,6 +292,16 @@ export default function AnimalDetailPage() {
             )}
 
             
+            {/* Mood Tracker */}
+            {animal && isOwner && profile && (
+              <MoodTracker
+                animalId={animal.id}
+                animalName={animal.name}
+                userId={profile.id}
+                isOwner={isOwner}
+              />
+            )}
+
             {/* Recommandations IA */}
             {animal && (
               <AIRecommendations
