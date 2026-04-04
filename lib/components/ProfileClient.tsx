@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PushButton from "./PushButton";
 import { useAppContext } from "@/lib/contexts/AppContext";
+import { BadgesSection } from "./Badges";
 
 const EMOJI_MAP: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
@@ -89,6 +90,17 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
               <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Membre</p>
             </div>
           </div>
+
+          {/* Badges */}
+          <BadgesSection
+            matchCount={stats.matches}
+            messageCount={stats.messages}
+            animalCount={stats.animals}
+            daysMember={stats.days}
+            hasPhoto={animals.some((a: any) => a.photo_url)}
+            hasPremium={profile?.subscription === "premium" || profile?.subscription === "pro"}
+            lang="fr"
+          />
 
           {(profile?.city || profile?.phone) && (
             <div className="grid grid-cols-2 gap-3 mb-5">
