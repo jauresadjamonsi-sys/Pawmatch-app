@@ -20,6 +20,13 @@ export async function GET(request: Request) {
             body: JSON.stringify({ email: user.email, name: user.user_metadata?.full_name || "" }),
           }).catch(() => {});
         }
+        // Redirect to onboarding if user has no animals yet
+        if (user) {
+          const { count } = await supabase.from("animals").select("*", { count: "exact", head: true }).eq("created_by", user.id);
+          if (!count || count === 0) {
+            return NextResponse.redirect(origin + "/onboarding");
+          }
+        }
       } catch {}
       return NextResponse.redirect(origin + "/profile");
     }

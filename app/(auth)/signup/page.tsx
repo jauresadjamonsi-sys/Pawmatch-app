@@ -31,8 +31,10 @@ export default function SignupPage() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
+          <span className="text-4xl block mb-2">🐾</span>
           <h1 className="text-4xl font-bold text-orange-400">Pawly</h1>
-          <p className="text-gray-400 mt-2">Crée ton compte</p>
+          <p className="text-[var(--c-text)] mt-2 font-semibold">Cree ton compte gratuitement</p>
+          <p className="text-[var(--c-text-muted)] text-sm mt-1">Rejois des proprietaires en Suisse</p>
         </div>
 
         <div className="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">

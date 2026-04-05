@@ -95,7 +95,13 @@ export default function NewAnimalPage() {
     }, user?.id);
 
     if (result.error) { setError(result.error); setLoading(false); return; }
-    router.push("/profile");
+    // If this is the user's first animal, redirect to flairer for immediate engagement
+    const { count } = await supabase.from("animals").select("*", { count: "exact", head: true }).eq("created_by", user?.id);
+    if (count && count <= 1) {
+      router.push("/flairer");
+    } else {
+      router.push("/profile");
+    }
   }
 
   return (

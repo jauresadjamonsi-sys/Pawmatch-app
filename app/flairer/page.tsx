@@ -315,18 +315,54 @@ export default function FlairerPage() {
   const nextAnimal = animals[currentIndex + 1];
   const compat = animal?.compatibility;
 
+  // Show friendly prompt if authenticated user has no animals
+  if (isAuthenticated && myAnimals.length === 0 && !loading && !authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4 bg-[var(--c-deep,#1a1225)]">
+        <div className="text-center max-w-sm">
+          <div className="text-6xl mb-4 animate-bounce">🐾</div>
+          <h2 className="text-2xl font-bold text-[var(--c-text)] mb-2">Ajoute ton premier compagnon !</h2>
+          <p className="text-[var(--c-text-muted)] mb-6 text-sm leading-relaxed">
+            Pour commencer a flairer et trouver des compagnons compatibles, cree le profil de ton animal.
+          </p>
+          <Link href="/profile/animals/new" className="inline-block px-6 py-3 text-white font-bold rounded-xl transition text-sm" style={{background:"#f97316",boxShadow:"0 0 20px rgba(249,115,22,0.3)"}}>
+            Ajouter mon compagnon
+          </Link>
+          <p className="mt-4 text-xs text-[var(--c-text-muted)]">Ca prend moins de 30 secondes !</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!animal) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4 bg-[#1a1225]">
+      <div className="min-h-screen flex items-center justify-center px-4 bg-[var(--c-deep,#1a1225)]">
         <div className="text-center max-w-sm">
           <div className="text-6xl mb-4">🐾</div>
-          <h2 className="text-2xl font-bold text-white mb-2">Plus personne à flairer !</h2>
-          <p className="text-gray-400 mb-2 text-sm">Tu as flairé <span className="text-orange-400 font-bold">{likeCount}</span> compagnons.</p>
-          {streak >= 3 && <p className="text-orange-400 text-sm font-semibold mb-4">🔥 Streak max : {streak} !</p>}
-          <div className="flex gap-3 justify-center mt-4">
-            <Link href="/animals" className="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition text-sm">Explorer</Link>
+          <h2 className="text-2xl font-bold text-[var(--c-text)] mb-2">Tu as tout flaire !</h2>
+          <p className="text-[var(--c-text-muted)] mb-2 text-sm">Reviens demain pour de nouveaux profils.</p>
+          {likeCount > 0 && <p className="text-[var(--c-text-muted)] mb-2 text-sm">Tu as flaire <span style={{color:"var(--c-accent, #f97316)"}} className="font-bold">{likeCount}</span> compagnons.</p>}
+          {streak >= 3 && <p style={{color:"var(--c-accent, #f97316)"}} className="text-sm font-semibold mb-4">Streak max : {streak} !</p>}
+
+          <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-5 mt-6 mb-4 text-left">
+            <p className="text-xs font-semibold text-[var(--c-text-muted)] uppercase tracking-wider mb-3">En attendant...</p>
+            <div className="flex flex-col gap-3">
+              <Link href="/events" className="flex items-center gap-3 text-sm text-[var(--c-text)] hover:text-[var(--c-accent)]">
+                <span className="text-lg">📅</span> Decouvre les evenements pres de toi
+              </Link>
+              <Link href="/carte" className="flex items-center gap-3 text-sm text-[var(--c-text)] hover:text-[var(--c-accent)]">
+                <span className="text-lg">🗺️</span> Explore la carte des animaux
+              </Link>
+              <Link href="/matches" className="flex items-center gap-3 text-sm text-[var(--c-text)] hover:text-[var(--c-accent)]">
+                <span className="text-lg">💬</span> Consulte tes matchs
+              </Link>
+            </div>
+          </div>
+
+          <div className="flex gap-3 justify-center">
+            <Link href="/animals" className="px-5 py-2.5 text-white font-semibold rounded-xl transition text-sm" style={{background:"#f97316"}}>Explorer</Link>
             <button onClick={() => { setCurrentIndex(0); setStreak(0); setLikeCount(0); }}
-              className="px-5 py-2.5 bg-white/10 text-white rounded-xl transition text-sm border border-white/10">
+              className="px-5 py-2.5 bg-[var(--c-card)] text-[var(--c-text)] rounded-xl transition text-sm border border-[var(--c-border)]">
               Recommencer
             </button>
           </div>

@@ -10,6 +10,8 @@ import { LANGS, THEMES } from "@/lib/i18n";
 export default function Navbar() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [hasNewMatches, setHasNewMatches] = useState(false);
+  const [hasPendingSwipes, setHasPendingSwipes] = useState(false);
   const pathname = usePathname();
   const supabase = createClient();
   const { lang, setLang, theme, setTheme, t } = useAppContext();
@@ -19,6 +21,26 @@ export default function Navbar() {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
       setLoading(false);
+
+      if (user) {
+        // Check for unread matches (mutual matches with unread messages)
+        try {
+          const { count } = await supabase
+            .from("matches")
+            .select("*", { count: "exact", head: true })
+            .or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`)
+            .eq("is_mutual", true);
+          setHasNewMatches((count || 0) > 0);
+
+          // Check if there are animals to swipe
+          const { count: animalCount } = await supabase
+            .from("animals")
+            .select("*", { count: "exact", head: true })
+            .neq("created_by", user.id)
+            .eq("status", "disponible");
+          setHasPendingSwipes((animalCount || 0) > 0);
+        } catch {}
+      }
     }
     getUser();
   }, [pathname]);
@@ -27,6 +49,10 @@ export default function Navbar() {
 
   return (
     <>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes navPulse { 0%,100%{box-shadow:0 0 0 0 rgba(249,115,22,0.4)} 50%{box-shadow:0 0 0 8px rgba(249,115,22,0)} }
+        .nav-pulse{animation:navPulse 2s ease-in-out infinite}
+      `}} />
       <nav className="bg-[var(--c-nav)]/80 backdrop-blur-xl border-b border-white/5 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex items-center justify-between h-12">
@@ -112,7 +138,7 @@ export default function Navbar() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
             </svg>
           </BottomTab>
-          <BottomTab href="/flairer" active={isActive("/flairer")} label={t.navFlairer} featured>
+          <BottomTab href="/flairer" active={isActive("/flairer")} label={t.navFlairer} featured pulse={hasPendingSwipes && !isActive("/flairer")}>
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
             </svg>
@@ -124,7 +150,7 @@ export default function Navbar() {
           </BottomTab>
           {!loading && user ? (
             <>
-              <BottomTab href="/matches" active={isActive("/matches")} label={t.navMatches}>
+              <BottomTab href="/matches" active={isActive("/matches")} label={t.navMatches} badge={hasNewMatches}>
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive("/matches") ? 2.5 : 1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
                 </svg>
@@ -166,14 +192,15 @@ function NavLink({ href, active, label }: { href: string; active: boolean; label
   );
 }
 
-function BottomTab({ href, active, label, featured, children }: {
-  href: string; active: boolean; label: string; featured?: boolean; children: React.ReactNode
+function BottomTab({ href, active, label, featured, pulse, badge, children }: {
+  href: string; active: boolean; label: string; featured?: boolean; pulse?: boolean; badge?: boolean; children: React.ReactNode
 }) {
   if (featured) {
     return (
       <Link href={href} className="flex flex-col items-center -mt-3">
         <div className={"w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition " +
-          (active ? "bg-orange-500 shadow-orange-500/40 scale-110 text-white" : "bg-orange-500/80 hover:bg-orange-500 shadow-orange-500/20 text-white")}>
+          (active ? "bg-orange-500 shadow-orange-500/40 scale-110 text-white" : "bg-orange-500/80 hover:bg-orange-500 shadow-orange-500/20 text-white") +
+          (pulse ? " nav-pulse" : "")}>
           {children}
         </div>
         <span className={"text-[8px] mt-0.5 " + (active ? "text-orange-400 font-semibold" : "text-gray-500")}>{label}</span>
@@ -181,8 +208,11 @@ function BottomTab({ href, active, label, featured, children }: {
     );
   }
   return (
-    <Link href={href} className="flex flex-col items-center py-1 px-2">
+    <Link href={href} className="flex flex-col items-center py-1 px-2 relative">
       <span className={active ? "text-orange-400" : "text-gray-500"}>{children}</span>
+      {badge && !active && (
+        <span className="absolute top-0.5 right-0.5 w-2.5 h-2.5 bg-orange-500 rounded-full border-2 border-[var(--c-nav)]" />
+      )}
       <span className={"text-[8px] mt-0 " + (active ? "text-orange-400 font-semibold" : "text-gray-500")}>{label}</span>
     </Link>
   );

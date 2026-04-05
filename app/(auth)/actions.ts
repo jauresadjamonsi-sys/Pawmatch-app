@@ -15,6 +15,15 @@ export async function login(formData: FormData) {
     return { error: error.message };
   }
 
+  // Check if user has animals — if not, redirect to add first animal
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    const { count } = await supabase.from("animals").select("*", { count: "exact", head: true }).eq("created_by", user.id);
+    if (!count || count === 0) {
+      redirect("/onboarding");
+    }
+  }
+
   redirect("/profile");
 }
 

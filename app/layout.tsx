@@ -5,6 +5,7 @@ import "./globals.css"
 import { CookieBanner } from "@/lib/components/CookieBanner";
 import Navbar from "@/lib/components/Navbar";
 import Footer from "@/lib/components/Footer";
+import { WelcomeModal } from "@/lib/components/WelcomeModal";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Navbar />
         {children}
         <Footer />
+        <WelcomeModal />
       </AppProvider>
   <CookieBanner />
       </body>
