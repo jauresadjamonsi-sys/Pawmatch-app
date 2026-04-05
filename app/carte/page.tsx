@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import dynamic from "next/dynamic";
 import { useAppContext } from "@/lib/contexts/AppContext";
@@ -21,6 +21,7 @@ const CANTON_COORDS: Record<string, [number, number]> = {
 function MapInner({ animals, userPos }: { animals: any[]; userPos: [number, number] | null }) {
   const L = require("leaflet");
   const { MapContainer, TileLayer, Marker, Popup } = require("react-leaflet");
+  require("leaflet/dist/leaflet.css");
 
   useEffect(() => {
     delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -31,13 +32,19 @@ function MapInner({ animals, userPos }: { animals: any[]; userPos: [number, numb
     });
   }, []);
 
+  const offsets = useMemo(() => {
+    const map: Record<string, [number, number]> = {};
+    animals.forEach(a => { map[a.id] = [(Math.random() - 0.5) * 0.05, (Math.random() - 0.5) * 0.05]; });
+    return map;
+  }, [animals]);
+
   return (
     <MapContainer center={userPos || [46.8, 7.5]} zoom={8} style={{ width: "100%", height: "100%" }} scrollWheelZoom>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; OSM' />
       {animals.map((a: any) => {
         const coords = a.canton ? CANTON_COORDS[a.canton] : null;
         if (!coords) return null;
-        const off = [(Math.random() - 0.5) * 0.05, (Math.random() - 0.5) * 0.05];
+        const off = offsets[a.id] || [0, 0];
         return (
           <Marker key={a.id} position={[coords[0] + off[0], coords[1] + off[1]]}>
             <Popup>
@@ -81,8 +88,7 @@ export default function CartePage() {
   }, [filter]);
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <div style={{ height: "100dvh", display: "flex", flexDirection: "column" }}>
       <div style={{ padding: "10px 16px", background: "var(--c-nav)", borderBottom: "1px solid var(--c-border)", display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
         <span style={{ fontSize: 13, fontWeight: 800, color: "var(--c-text)" }}>🗺️ Carte des compagnons</span>
         <div style={{ display: "flex", gap: 4, marginLeft: "auto" }}>
@@ -95,7 +101,7 @@ export default function CartePage() {
           ))}
         </div>
       </div>
-      <div style={{ flex: 1, minHeight: "calc(100vh - 100px)" }}>
+      <div style={{ flex: 1, minHeight: 0 }}>
         {loading ? <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}><span style={{ fontSize: 40 }} className="animate-pulse">🗺️</span></div>
           : <MapComponent animals={animals} userPos={userPos} />}
       </div>
