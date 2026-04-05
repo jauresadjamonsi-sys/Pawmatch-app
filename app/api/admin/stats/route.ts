@@ -51,18 +51,43 @@ export async function GET() {
       return NextResponse.json({ error: "Acces refuse" }, { status: 403 });
     }
 
-    const db = getServiceClient();
-
-    // ── DEBUG: test direct query on profiles ──
+    // Try service client first, fallback to auth client for profiles
+    let db: any;
     const debugResult: any = {};
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+    debugResult.serviceKeyLength = serviceKey.length;
+    debugResult.serviceKeyPrefix = serviceKey.substring(0, 15) + "...";
+    debugResult.hasValidKey = serviceKey.length > 50 && serviceKey !== "COLLE_TA_SERVICE_ROLE_KEY_ICI";
+
+    if (serviceKey.length > 50 && serviceKey !== "COLLE_TA_SERVICE_ROLE_KEY_ICI") {
+      db = getServiceClient();
+    } else {
+      // Fallback: use authenticated client (works if RLS allows reads)
+      db = supabase;
+      debugResult.usingFallback = true;
+    }
+
+    // Test both clients
     try {
-      const testQuery = await db.from("profiles").select("*").limit(3);
-      debugResult.profilesError = testQuery.error?.message || null;
-      debugResult.profilesCount = testQuery.data?.length || 0;
-      debugResult.profilesSample = testQuery.data?.map((p: any) => ({ id: p.id, email: p.email, full_name: p.full_name })) || [];
-      debugResult.serviceKeyPrefix = (process.env.SUPABASE_SERVICE_ROLE_KEY || "").substring(0, 10) + "...";
+      const testService = serviceKey.length > 50 ? await getServiceClient().from("profiles").select("id").limit(1) : null;
+      const testAuth = await supabase.from("profiles").select("id").limit(1);
+      debugResult.serviceWorks = testService ? (!testService.error && (testService.data?.length || 0) > 0) : false;
+      debugResult.serviceError = testService?.error?.message || null;
+      debugResult.authWorks = !testAuth.error && (testAuth.data?.length || 0) > 0;
+      debugResult.authError = testAuth.error?.message || null;
+      debugResult.authDataCount = testAuth.data?.length || 0;
+
+      // Use whichever works
+      if (testService && !testService.error && (testService.data?.length || 0) > 0) {
+        db = getServiceClient();
+        debugResult.using = "service";
+      } else {
+        db = supabase;
+        debugResult.using = "auth";
+      }
     } catch (e: any) {
-      debugResult.profilesException = e.message;
+      debugResult.testException = e.message;
+      db = supabase;
     }
 
     const now = new Date();
@@ -148,18 +173,24 @@ export async function GET() {
       }
     }
 
-    // Last sign in from auth
+    // Last sign in from auth (requires service role)
     const authSignIns: Record<string, string | null> = {};
     try {
-      const { data: { users: authUsers } } = await db.auth.admin.listUsers({ page: 1, perPage: 1000 });
+      const svc = getServiceClient();
+      const { data: { users: authUsers } } = await svc.auth.admin.listUsers({ page: 1, perPage: 1000 });
       if (authUsers) {
         for (const au of authUsers) {
           authSignIns[au.id] = au.last_sign_in_at || null;
         }
       }
-    } catch {}
+      debugResult.authAdminWorks = true;
+    } catch (e: any) {
+      debugResult.authAdminError = e.message;
+    }
 
     // Enrich users
+    debugResult.allUsersResData = allUsersRes.data ? (allUsersRes.data as any[]).length : "null";
+    debugResult.allUsersResCount = allUsersRes.count;
     const allUsers = ((allUsersRes.data || []) as any[]).map(u => ({
       ...u,
       animal_count: animalsPerUser[u.id] || 0,
