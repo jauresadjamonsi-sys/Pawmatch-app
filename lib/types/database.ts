@@ -51,3 +51,9 @@ export interface Match {
   created_at: string;
   updated_at: string;
 }
+
+export interface UserPresence {
+  user_id: string;
+  last_seen: string;
+  is_online: boolean;
+}

@@ -21,6 +21,8 @@ import { AIRecommendations } from "@/lib/components/AIRecommendations";
 import { MoodTracker } from "@/lib/components/MoodTracker";
 import { ActivityAlert } from "@/lib/components/ActivityAlert";
 import BlockReportModal from "@/lib/components/BlockReportModal";
+import { useOnlineStatus } from "@/lib/hooks/useOnlineStatus";
+import PresenceDot from "@/lib/components/PresenceDot";
 
 const EMOJI_MAP: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
@@ -45,6 +47,10 @@ export default function AnimalDetailPage() {
   const params = useParams();
   const supabase = createClient();
   const { profile, isAuthenticated } = useAuth();
+
+  // Presence for the animal owner
+  const ownerPresenceIds = animal?.created_by ? [animal.created_by] : [];
+  const { onlineMap: ownerOnlineMap } = useOnlineStatus(ownerPresenceIds);
 
   useEffect(() => {
     if (animal) document.title = animal.name + " — Pawly";
@@ -245,7 +251,12 @@ export default function AnimalDetailPage() {
 
           <div className="p-8">
             <div className="flex items-center justify-between mb-6">
-              <h1 className="text-3xl font-bold text-white">{animal.name}</h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-3xl font-bold text-white">{animal.name}</h1>
+                {animal.created_by && !isOwner && (
+                  <PresenceDot isOnline={ownerOnlineMap.get(animal.created_by) ?? false} size="lg" />
+                )}
+              </div>
               {personality && <a href={"/animals/" + animal.id + "/personality"} style={{ display:"inline-block", marginTop:8, background: personality.bgColor, color: personality.color, border: "1px solid " + personality.color + "40", fontSize: 12, fontWeight: 800, padding: "4px 14px", borderRadius: 50, textDecoration: "none" }}>{personality.emoji} {personality.name}</a>}
               {hasCoupDeTruffe && (
                 <span className="bg-pink-500/20 text-pink-400 px-3 py-1.5 rounded-full text-xs font-bold border border-pink-500/30 animate-pulse">

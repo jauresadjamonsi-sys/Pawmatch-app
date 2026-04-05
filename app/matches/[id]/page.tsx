@@ -7,6 +7,8 @@ import { getMessages, sendMessageWithLimit, sendImageMessage, markAsRead, Messag
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import BlockReportModal from "@/lib/components/BlockReportModal";
+import { useOnlineStatus } from "@/lib/hooks/useOnlineStatus";
+import PresenceDot from "@/lib/components/PresenceDot";
 
 const EMOJI_MAP: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
@@ -96,6 +98,12 @@ export default function ConversationPage() {
   const params = useParams();
   const supabase = createClient();
   const { profile } = useAuth();
+
+  // Compute other user ID early (before early returns) for hooks rule compliance
+  const otherUserIdEarly = match
+    ? (match.sender_user_id === profile?.id ? match.receiver_user_id : match.sender_user_id)
+    : null;
+  const { onlineMap: chatOnlineMap } = useOnlineStatus(otherUserIdEarly ? [otherUserIdEarly] : []);
 
   useEffect(() => {
     if (profile) {
@@ -268,8 +276,10 @@ export default function ConversationPage() {
 
   const isMe = match.sender_user_id === profile?.id;
   const otherProfile = isMe ? match.receiver_profile : match.sender_profile;
+  const otherUserId = isMe ? match.receiver_user_id : match.sender_user_id;
   const myAnimal = isMe ? match.sender_animal : match.receiver_animal;
   const theirAnimal = isMe ? match.receiver_animal : match.sender_animal;
+  const isOtherOnline = chatOnlineMap.get(otherUserId) ?? false;
 
   function formatTime(dateStr: string) {
     const date = new Date(dateStr);
@@ -326,7 +336,7 @@ export default function ConversationPage() {
             <p className="font-semibold text-white text-sm truncate">{otherProfile.full_name || otherProfile.email}</p>
             <p className="text-xs text-gray-500">{theirAnimal.name} × {myAnimal.name}</p>
           </div>
-          <div className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0" title="En ligne" />
+          <PresenceDot isOnline={isOtherOnline} size="sm" />
           <button
             onClick={() => setShowBlockReport(true)}
             className="p-1.5 rounded-full hover:bg-red-500/10 transition flex-shrink-0"

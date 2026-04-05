@@ -95,6 +95,7 @@ export default function FlairerPage() {
   const [mutualMatchData, setMutualMatchData] = useState<any>(null);
   const [showBlockReport, setShowBlockReport] = useState(false);
   const [blockedIds, setBlockedIds] = useState<string[]>([]);
+  const [cardEntering, setCardEntering] = useState(false);
   const startX = useRef(0);
   const startY = useRef(0);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -103,7 +104,6 @@ export default function FlairerPage() {
 
   useEffect(() => { if (!authLoading) { fetchData(); detectCanton(); } }, [authLoading]);
 
-  
   async function detectCanton() {
     if (typeof navigator === 'undefined' || !navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(async (pos) => {
@@ -114,11 +114,10 @@ export default function FlairerPage() {
         const state = data.address && data.address.state ? data.address.state : '';
         const postcode = data.address && data.address.postcode ? data.address.postcode : '';
         let detected: string | null = null;
-        // Détection par nom de canton
         if (state.includes('Vaud')) detected = 'VD';
         else if (state.includes('Gen')) detected = 'GE';
         else if (state.includes('Bern')) detected = 'BE';
-        else if (state.includes('Zürich') || state.includes('Zurich')) detected = 'ZH';
+        else if (state.includes('Z\u00FCrich') || state.includes('Zurich')) detected = 'ZH';
         else if (state.includes('Fribourg') || state.includes('Freiburg')) detected = 'FR';
         else if (state.includes('Valais') || state.includes('Wallis')) detected = 'VS';
         else if (state.includes('Neuch')) detected = 'NE';
@@ -128,7 +127,7 @@ export default function FlairerPage() {
         else if (state.includes('Luzern') || state.includes('Lucerne')) detected = 'LU';
         else if (state.includes('St. Gallen') || state.includes('Saint-Gall')) detected = 'SG';
         else if (state.includes('Aargau') || state.includes('Argovie')) detected = 'AG';
-        else if (state.includes('Graubünden') || state.includes('Grisons')) detected = 'GR';
+        else if (state.includes('Graub\u00FCnden') || state.includes('Grisons')) detected = 'GR';
         else if (state.includes('Thurgau') || state.includes('Thurgovie')) detected = 'TG';
         else if (state.includes('Solothurn') || state.includes('Soleure')) detected = 'SO';
         else if (state.includes('Schwyz')) detected = 'SZ';
@@ -140,7 +139,6 @@ export default function FlairerPage() {
         else if (state.includes('Nidwalden') || state.includes('Nidwald')) detected = 'NW';
         else if (state.includes('Obwalden') || state.includes('Obwald')) detected = 'OW';
         else if (state.includes('Uri')) detected = 'UR';
-        // Fallback par code postal
         if (!detected && postcode) {
           const pc = parseInt(postcode);
           if (pc >= 1000 && pc <= 1899) detected = 'VD';
@@ -159,22 +157,20 @@ export default function FlairerPage() {
         }
         if (detected) setUserCanton(detected);
       } catch(e) {
-        console.log("[Géoloc] Erreur:", e);
+        console.log("[G\u00E9oloc] Erreur:", e);
       }
     }, function(err) {
-      console.log("[Géoloc] Permission refusée ou erreur:", err.message);
+      console.log("[G\u00E9oloc] Permission refus\u00E9e ou erreur:", err.message);
     }, { enableHighAccuracy: false, timeout: 10000 });
   }
 
   async function fetchData() {
-    // Fetch blocked users to filter them out
     let blocked: string[] = [];
     if (profile) {
       const { data: blocks } = await supabase
         .from("blocks")
         .select("blocked_id")
         .eq("blocker_id", profile.id);
-      // Also fetch users who blocked us
       const { data: blockedBy } = await supabase
         .from("blocks")
         .select("blocker_id")
@@ -197,7 +193,6 @@ export default function FlairerPage() {
       const primary = myList[0] || null;
       setActiveMyAnimal(primary);
 
-      // Trier par compatibilité si on a un animal principal
       if (primary) {
         const sorted = sortByCompatibility(primary, filtered);
         setAnimals(sorted);
@@ -210,7 +205,6 @@ export default function FlairerPage() {
     setLoading(false);
   }
 
-  // Recalcul si on change d'animal actif
   useEffect(() => {
     if (!activeMyAnimal || animals.length === 0) return;
     const base = animals.map(({ compatibility, ...a }) => a as Animal);
@@ -223,7 +217,7 @@ export default function FlairerPage() {
     const colors = type === "like" ? ["#f97316","#fb923c","#fbbf24","#f472b6","#ef4444"]
       : type === "super" ? ["#60a5fa","#a78bfa","#34d399","#fbbf24","#f97316"]
       : ["#6b7280","#9ca3af"];
-    const emojis = type === "like" ? ["❤️","🐾","✨","💛","🧡"] : type === "super" ? ["⚡","💙","🌟","💫","🔥"] : [];
+    const emojis = type === "like" ? ["\u2764\uFE0F","\u{1F43E}","\u2728","\u{1F49B}","\u{1F9E1}"] : type === "super" ? ["\u26A1","\u{1F499}","\u{1F31F}","\u{1F4AB}","\u{1F525}"] : [];
     const count = type === "pass" ? 8 : 20;
     const newP: Particle[] = Array.from({ length: count }, (_, i) => ({
       id: Date.now() + i, x, y,
@@ -238,7 +232,7 @@ export default function FlairerPage() {
   }
 
   function triggerStreak(count: number) {
-    const labels: Record<number, string> = { 3:"🔥 x3 En feu !", 5:"⚡ x5 Instinct !", 7:"🌟 x7 Magnétique !", 10:"💥 x10 LÉGENDAIRE !" };
+    const labels: Record<number, string> = { 3:"\u{1F525} x3 En feu !", 5:"\u26A1 x5 Instinct !", 7:"\u{1F31F} x7 Magn\u00E9tique !", 10:"\u{1F4A5} x10 L\u00C9GENDAIRE !" };
     if (labels[count]) {
       setStreakLabel(labels[count]); setShowStreak(true);
       playSound("streak"); vibrate([50,30,50]);
@@ -257,7 +251,12 @@ export default function FlairerPage() {
     }
     playSound("pass"); vibrate([30]); setStreak(0);
     setSwipeDirection("left");
-    setTimeout(() => { setSwipeDirection(null); setDragX(0); setDragY(0); setCurrentIndex(i => i + 1); }, 320);
+    setTimeout(() => {
+      setSwipeDirection(null); setDragX(0); setDragY(0);
+      setCardEntering(true);
+      setCurrentIndex(i => i + 1);
+      setTimeout(() => setCardEntering(false), 400);
+    }, 320);
   }
 
   function handleLike(isSuper = false) {
@@ -270,7 +269,6 @@ export default function FlairerPage() {
   async function handleMatch(myAnimalId: string) {
     const animal = animals[currentIndex];
     if (!animal || !profile) return;
-    // Freemium — bloquer après FREE_LIMIT likes si non premium
     if (!isAuthenticated && likeCount >= FREE_LIMIT) { setShowPaywall(true); return; }
     setMatchError(null);
     const result = await sendMatch(supabase, myAnimalId, animal.id, profile.id, animal.created_by || "NONE");
@@ -297,7 +295,12 @@ export default function FlairerPage() {
     setTimeout(() => {
       setMatchSuccess(false); setShowMatchModal(false); setIsSuperLike(false);
       setSwipeDirection(isSuperLike ? "super" : "right");
-      setTimeout(() => { setSwipeDirection(null); setDragX(0); setDragY(0); setCurrentIndex(i => i + 1); }, 320);
+      setTimeout(() => {
+        setSwipeDirection(null); setDragX(0); setDragY(0);
+        setCardEntering(true);
+        setCurrentIndex(i => i + 1);
+        setTimeout(() => setCardEntering(false), 400);
+      }, 320);
     }, 1200);
   }
 
@@ -321,7 +324,7 @@ export default function FlairerPage() {
   }
 
   function formatAge(months: number | null) {
-    if (!months) return "Âge inconnu";
+    if (!months) return "\u00C2ge inconnu";
     if (months < 12) return months + " mois";
     const y = Math.floor(months / 12);
     return y + " an" + (y > 1 ? "s" : "");
@@ -329,10 +332,14 @@ export default function FlairerPage() {
 
   if (loading || authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#1a1225]">
+      <div className="min-h-screen flex items-center justify-center bg-[var(--c-deep,#1a1225)]">
+        <div className="aurora-bg" />
         <div className="text-center">
-          <div className="text-5xl mb-4 animate-bounce">🐾</div>
-          <p className="text-gray-500 text-sm">Calcul des compatibilités...</p>
+          <div className="relative">
+            <div className="text-5xl mb-4 animate-float">{"\u{1F43E}"}</div>
+            <div className="absolute inset-0 blur-xl bg-orange-500/20 rounded-full animate-breathe" />
+          </div>
+          <p className="text-gray-500 text-sm animate-breathe mt-2">Calcul des compatibilit\u00E9s...</p>
         </div>
       </div>
     );
@@ -346,13 +353,17 @@ export default function FlairerPage() {
   if (isAuthenticated && myAnimals.length === 0 && !loading && !authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4 bg-[var(--c-deep,#1a1225)]">
-        <div className="text-center max-w-sm">
-          <div className="text-6xl mb-4 animate-bounce">🐾</div>
-          <h2 className="text-2xl font-bold text-[var(--c-text)] mb-2">Ajoute ton premier compagnon !</h2>
+        <div className="aurora-bg" />
+        <div className="text-center max-w-sm animate-scale-in">
+          <div className="relative mb-6">
+            <div className="text-6xl animate-float">{"\u{1F43E}"}</div>
+            <div className="absolute inset-0 blur-2xl bg-orange-500/15 rounded-full animate-breathe" />
+          </div>
+          <h2 className="text-2xl font-bold gradient-text-warm mb-2">Ajoute ton premier compagnon !</h2>
           <p className="text-[var(--c-text-muted)] mb-6 text-sm leading-relaxed">
             Pour commencer a flairer et trouver des compagnons compatibles, cree le profil de ton animal.
           </p>
-          <Link href="/profile/animals/new" className="inline-block px-6 py-3 text-white font-bold rounded-xl transition text-sm" style={{background:"#f97316",boxShadow:"0 0 20px rgba(249,115,22,0.3)"}}>
+          <Link href="/profile/animals/new" className="inline-block btn-futuristic animate-pulse-glow">
             Ajouter mon compagnon
           </Link>
           <p className="mt-4 text-xs text-[var(--c-text-muted)]">Ca prend moins de 30 secondes !</p>
@@ -364,32 +375,40 @@ export default function FlairerPage() {
   if (!animal) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4 bg-[var(--c-deep,#1a1225)]">
-        <div className="text-center max-w-sm">
-          <div className="text-6xl mb-4">🐾</div>
-          <h2 className="text-2xl font-bold text-[var(--c-text)] mb-2">Tu as tout flaire !</h2>
+        <div className="aurora-bg" />
+        <div className="text-center max-w-sm animate-scale-in">
+          {/* Floating emojis */}
+          <div className="relative mb-8 h-20">
+            <div className="absolute -top-6 left-1/4 text-3xl animate-float" style={{ animationDelay: "0s" }}>{"\u{1F43E}"}</div>
+            <div className="absolute -top-2 right-1/4 text-2xl animate-float" style={{ animationDelay: "0.6s" }}>{"\u2728"}</div>
+            <div className="absolute top-8 left-[15%] text-2xl animate-float" style={{ animationDelay: "1.2s" }}>{"\u{1F495}"}</div>
+            <div className="absolute top-6 right-[15%] text-3xl animate-float" style={{ animationDelay: "0.3s" }}>{"\u{1F31F}"}</div>
+            <div className="text-6xl relative z-10 pt-2">{"\u{1F43E}"}</div>
+          </div>
+          <h2 className="text-2xl font-bold gradient-text mb-2">Tu as tout flair\u00E9 !</h2>
           <p className="text-[var(--c-text-muted)] mb-2 text-sm">Reviens demain pour de nouveaux profils.</p>
-          {likeCount > 0 && <p className="text-[var(--c-text-muted)] mb-2 text-sm">Tu as flaire <span style={{color:"var(--c-accent, #f97316)"}} className="font-bold">{likeCount}</span> compagnons.</p>}
-          {streak >= 3 && <p style={{color:"var(--c-accent, #f97316)"}} className="text-sm font-semibold mb-4">Streak max : {streak} !</p>}
+          {likeCount > 0 && <p className="text-[var(--c-text-muted)] mb-2 text-sm">Tu as flair\u00E9 <span className="font-bold gradient-text-warm">{likeCount}</span> compagnons.</p>}
+          {streak >= 3 && <p className="text-sm font-semibold mb-4 gradient-text-warm">Streak max : {streak} !</p>}
 
-          <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-5 mt-6 mb-4 text-left">
+          <div className="glass-strong p-5 mt-6 mb-4 text-left">
             <p className="text-xs font-semibold text-[var(--c-text-muted)] uppercase tracking-wider mb-3">En attendant...</p>
-            <div className="flex flex-col gap-3">
-              <Link href="/events" className="flex items-center gap-3 text-sm text-[var(--c-text)] hover:text-[var(--c-accent)]">
-                <span className="text-lg">📅</span> Decouvre les evenements pres de toi
+            <div className="flex flex-col gap-3 stagger-children">
+              <Link href="/events" className="flex items-center gap-3 text-sm text-[var(--c-text)] hover:text-orange-400 transition-colors duration-300">
+                <span className="text-lg">{"\u{1F4C5}"}</span> D\u00E9couvre les \u00E9v\u00E9nements pr\u00E8s de toi
               </Link>
-              <Link href="/carte" className="flex items-center gap-3 text-sm text-[var(--c-text)] hover:text-[var(--c-accent)]">
-                <span className="text-lg">🗺️</span> Explore la carte des animaux
+              <Link href="/carte" className="flex items-center gap-3 text-sm text-[var(--c-text)] hover:text-orange-400 transition-colors duration-300">
+                <span className="text-lg">{"\u{1F5FA}\uFE0F"}</span> Explore la carte des animaux
               </Link>
-              <Link href="/matches" className="flex items-center gap-3 text-sm text-[var(--c-text)] hover:text-[var(--c-accent)]">
-                <span className="text-lg">💬</span> Consulte tes matchs
+              <Link href="/matches" className="flex items-center gap-3 text-sm text-[var(--c-text)] hover:text-orange-400 transition-colors duration-300">
+                <span className="text-lg">{"\u{1F4AC}"}</span> Consulte tes matchs
               </Link>
             </div>
           </div>
 
           <div className="flex gap-3 justify-center">
-            <Link href="/animals" className="px-5 py-2.5 text-white font-semibold rounded-xl transition text-sm" style={{background:"#f97316"}}>Explorer</Link>
+            <Link href="/animals" className="btn-futuristic text-sm !py-2.5 !px-5">Explorer</Link>
             <button onClick={() => { setCurrentIndex(0); setStreak(0); setLikeCount(0); }}
-              className="px-5 py-2.5 bg-[var(--c-card)] text-[var(--c-text)] rounded-xl transition text-sm border border-[var(--c-border)]">
+              className="px-5 py-2.5 glass text-[var(--c-text)] rounded-2xl transition-all duration-300 text-sm hover:bg-white/10">
               Recommencer
             </button>
           </div>
@@ -410,32 +429,42 @@ export default function FlairerPage() {
         transform: swipeDirection === "left" ? "translateX(-130%) rotate(-25deg)"
           : swipeDirection === "super" ? "translateY(-130%) scale(1.05)"
           : "translateX(130%) rotate(25deg)",
-        transition: "transform 0.32s cubic-bezier(0.25,0.46,0.45,0.94)",
+        transition: "transform 0.32s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.32s ease",
         opacity: 0,
+      }
+    : cardEntering
+    ? {
+        transform: "scale(0.9)",
+        opacity: 0,
+        transition: "none",
       }
     : {
         transform: `translateX(${dragX}px) translateY(${dragY}px) rotate(${rotation}deg)`,
-        transition: isDragging ? "none" : "transform 0.4s cubic-bezier(0.34,1.56,0.64,1)",
+        transition: isDragging ? "none" : "transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease",
         boxShadow: likeOpacity > 0
-          ? `0 0 ${40 * likeOpacity}px rgba(249,115,22,${0.4 * likeOpacity})`
-          : passOpacity > 0 ? `0 0 ${40 * passOpacity}px rgba(239,68,68,${0.3 * passOpacity})`
-          : superOpacity > 0 ? `0 0 ${40 * superOpacity}px rgba(96,165,250,${0.4 * superOpacity})`
-          : "0 20px 60px rgba(0,0,0,0.4)",
+          ? `0 0 ${40 * likeOpacity}px rgba(52,211,153,${0.4 * likeOpacity}), 0 0 ${80 * likeOpacity}px rgba(52,211,153,${0.15 * likeOpacity})`
+          : passOpacity > 0 ? `0 0 ${40 * passOpacity}px rgba(239,68,68,${0.4 * passOpacity}), 0 0 ${80 * passOpacity}px rgba(239,68,68,${0.15 * passOpacity})`
+          : superOpacity > 0 ? `0 0 ${40 * superOpacity}px rgba(167,139,250,${0.4 * superOpacity}), 0 0 ${80 * superOpacity}px rgba(167,139,250,${0.15 * superOpacity})`
+          : "0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(249,115,22,0.05)",
       };
 
   return (
-    <div className="min-h-screen flex flex-col items-center px-4 py-4 bg-[#1a1225] select-none overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center px-4 py-4 bg-[var(--c-deep,#1a1225)] select-none overflow-hidden page-transition">
+      <div className="aurora-bg" />
+
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes particleFly { 0%{transform:translate(0,0) scale(1);opacity:1} 100%{transform:translate(var(--vx),var(--vy)) scale(0);opacity:0} }
         @keyframes streakPop { 0%{transform:scale(0.5) translateY(20px);opacity:0} 30%{transform:scale(1.2) translateY(-5px);opacity:1} 70%{transform:scale(1) translateY(0);opacity:1} 100%{transform:scale(0.8) translateY(-10px);opacity:0} }
         @keyframes compatIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
         @keyframes scoreGrow { from{width:0} to{width:var(--score-w)} }
-        @keyframes pulseOrange { 0%,100%{box-shadow:0 0 0 0 rgba(249,115,22,0.4)} 50%{box-shadow:0 0 0 12px rgba(249,115,22,0)} }
+        @keyframes shimmerBar { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+        @keyframes cardEntrance { 0%{transform:scale(0.85);opacity:0} 100%{transform:scale(1);opacity:1} }
         .particle{animation:particleFly 0.8s ease-out forwards}
         .streak-pop{animation:streakPop 1.8s ease-in-out forwards}
         .compat-in{animation:compatIn 0.4s ease-out forwards}
         .score-bar{animation:scoreGrow 0.8s 0.2s ease-out forwards;width:0}
-        .like-pulse{animation:pulseOrange 1.5s infinite}
+        .shimmer-bar{background:linear-gradient(90deg,transparent 40%,rgba(255,255,255,0.15) 50%,transparent 60%);background-size:200% 100%;animation:shimmerBar 2.5s linear infinite}
+        .card-enter{animation:cardEntrance 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards}
       `}} />
 
       {/* Particules */}
@@ -451,7 +480,7 @@ export default function FlairerPage() {
       {/* Streak */}
       {showStreak && (
         <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[150] streak-pop">
-          <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white font-extrabold text-xl px-6 py-3 rounded-2xl shadow-2xl shadow-orange-500/40">
+          <div className="glass-strong neon-orange text-white font-extrabold text-xl px-6 py-3 shadow-2xl">
             {streakLabel}
           </div>
         </div>
@@ -459,45 +488,50 @@ export default function FlairerPage() {
 
       {/* Coup de Truffe */}
       {showCoupDeTruffe && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm" onClick={() => setShowCoupDeTruffe(false)}>
-          <div className="bg-gradient-to-br from-[#241d33] to-[#1a1225] border border-orange-500/30 rounded-3xl p-10 text-center max-w-sm mx-4 shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="text-7xl mb-4 animate-bounce">🐾</div>
-            <h2 className="text-3xl font-extrabold bg-gradient-to-r from-orange-400 to-orange-300 bg-clip-text text-transparent mb-1">Coup de Truffe !</h2>
-            <p className="text-gray-400 text-sm mb-6">Match mutuel avec {animal?.name} 🎉</p>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md" onClick={() => setShowCoupDeTruffe(false)}>
+          <div className="relative glass-strong neon-orange p-10 text-center max-w-sm mx-4 animate-scale-in" onClick={e => e.stopPropagation()}>
+            <div className="absolute inset-0 rounded-[24px] gradient-border pointer-events-none" />
+            <div className="text-7xl mb-4 animate-float">{"\u{1F43E}"}</div>
+            <h2 className="text-3xl font-extrabold gradient-text-warm mb-1">Coup de Truffe !</h2>
+            <p className="text-gray-400 text-sm mb-6">Match mutuel avec {animal?.name} {"\u{1F389}"}</p>
             <div className="flex gap-3">
               {mutualMatchData && (
-                <Link href={"/matches/" + mutualMatchData.id} className="flex-1 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-2xl text-sm">💬 Discuter</Link>
+                <Link href={"/matches/" + mutualMatchData.id} className="flex-1 py-3 btn-futuristic text-center text-sm">{"\u{1F4AC}"} Discuter</Link>
               )}
-              <button onClick={() => setShowCoupDeTruffe(false)} className="px-4 py-3 bg-white/5 border border-white/10 text-gray-400 rounded-2xl text-sm">Plus tard</button>
+              <button onClick={() => setShowCoupDeTruffe(false)} className="px-4 py-3 glass text-gray-400 text-sm hover:bg-white/10 transition-all duration-300">Plus tard</button>
             </div>
           </div>
         </div>
       )}
 
       {/* Header */}
-      <div className="w-full max-w-md flex items-center justify-between mb-3">
+      <div className="w-full max-w-md flex items-center justify-between mb-3 relative z-10 animate-slide-up">
         <div className="flex items-center gap-2">
-          <h1 className="text-lg font-bold text-white">Flairer</h1>
+          <h1 className="text-lg font-bold gradient-text-warm">Flairer</h1>
           {streak >= 3 && (
-            <span className="px-2 py-0.5 bg-orange-500/20 border border-orange-500/30 text-orange-300 rounded-full text-xs font-bold">
-              🔥 ×{streak}
+            <span className="px-2 py-0.5 glass text-orange-300 rounded-full text-xs font-bold neon-orange"
+              style={{ borderColor: "rgba(249,115,22,0.3)" }}>
+              {"\u{1F525}"} {"\u00D7"}{streak}
             </span>
           )}
         </div>
 
-        {/* Sélecteur animal actif */}
+        {/* S\u00E9lecteur animal actif */}
         {myAnimals.length > 1 && (
           <select value={activeMyAnimal?.id || ""} onChange={e => setActiveMyAnimal(myAnimals.find(a => a.id === e.target.value) || null)}
-            className="text-xs bg-[#241d33] border border-white/10 text-gray-300 rounded-full px-3 py-1 outline-none">
+            className="text-xs input-futuristic !py-1 !px-3 !rounded-full">
             {myAnimals.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
           </select>
         )}
 
         <div className="flex items-center gap-2">
           <span className="text-xs text-gray-500">{animals.length - currentIndex} restants</span>
-          <div className="w-16 h-1.5 bg-white/10 rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full transition-all duration-300"
-              style={{ width: (currentIndex / Math.max(animals.length, 1)) * 100 + "%" }} />
+          <div className="w-16 h-1.5 glass rounded-full overflow-hidden">
+            <div className="h-full rounded-full transition-all duration-500"
+              style={{
+                width: (currentIndex / Math.max(animals.length, 1)) * 100 + "%",
+                background: "linear-gradient(90deg, #F97316, #A78BFA, #38BDF8)",
+              }} />
           </div>
         </div>
       </div>
@@ -505,54 +539,73 @@ export default function FlairerPage() {
       {/* Card stack */}
       <div className="w-full max-w-md relative" style={{ height: "62vh" }}>
         {nextAnimal && (
-          <div className="absolute inset-0 rounded-3xl overflow-hidden border border-white/5"
-            style={{ transform:`scale(${nextCardScale}) translateY(${(1-nextCardScale)*30}px)`, transition:isDragging?"none":"transform 0.4s ease", zIndex:1, opacity:0.7 }}>
-            <div className="w-full h-full bg-[#241d33] flex items-center justify-center">
+          <div className="absolute inset-0 rounded-3xl overflow-hidden glass"
+            style={{ transform:`scale(${nextCardScale}) translateY(${(1-nextCardScale)*30}px)`, transition:isDragging?"none":"transform 0.4s ease", zIndex:1, opacity:0.5 }}>
+            <div className="w-full h-full bg-[var(--c-deep,#1a1225)] flex items-center justify-center">
               {nextAnimal.photo_url
-                ? <img src={nextAnimal.photo_url} alt="" className="w-full h-full object-cover opacity-60" draggable={false} />
+                ? <img src={nextAnimal.photo_url} alt="" className="w-full h-full object-cover opacity-50" draggable={false} />
                 : <span className="text-gray-600 text-4xl font-bold">{(nextAnimal as Animal).name?.charAt(0)}</span>}
             </div>
           </div>
         )}
 
-        {/* Labels */}
+        {/* Swipe indicator overlays with neon glows */}
         {likeOpacity > 0.2 && (
-          <div className="absolute top-8 left-6 z-20 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black text-base px-5 py-2 rounded-2xl border-2 border-orange-400/50 rotate-[-12deg]" style={{ opacity:likeOpacity }}>
-            ❤️ FLAIRER !
+          <div className="absolute top-8 left-6 z-20 rounded-2xl rotate-[-12deg] px-5 py-2 font-black text-base text-white"
+            style={{
+              opacity: likeOpacity,
+              background: "linear-gradient(135deg, rgba(52,211,153,0.9), rgba(16,185,129,0.9))",
+              boxShadow: `0 0 ${30 * likeOpacity}px rgba(52,211,153,0.5)`,
+              border: "2px solid rgba(52,211,153,0.6)",
+            }}>
+            {"\u2764\uFE0F"} FLAIRER !
           </div>
         )}
         {passOpacity > 0.2 && (
-          <div className="absolute top-8 right-6 z-20 bg-gradient-to-r from-red-500 to-red-600 text-white font-black text-base px-5 py-2 rounded-2xl border-2 border-red-400/50 rotate-[12deg]" style={{ opacity:passOpacity }}>
-            PASSER ✕
+          <div className="absolute top-8 right-6 z-20 rounded-2xl rotate-[12deg] px-5 py-2 font-black text-base text-white"
+            style={{
+              opacity: passOpacity,
+              background: "linear-gradient(135deg, rgba(239,68,68,0.9), rgba(220,38,38,0.9))",
+              boxShadow: `0 0 ${30 * passOpacity}px rgba(239,68,68,0.5)`,
+              border: "2px solid rgba(239,68,68,0.6)",
+            }}>
+            PASSER {"\u2715"}
           </div>
         )}
         {superOpacity > 0.2 && (
-          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 z-20 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-black text-base px-5 py-2 rounded-2xl border-2 border-blue-400/50" style={{ opacity:superOpacity }}>
-            ⚡ SUPER FLAIR !
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 z-20 rounded-2xl px-5 py-2 font-black text-base text-white"
+            style={{
+              opacity: superOpacity,
+              background: "linear-gradient(135deg, rgba(96,165,250,0.9), rgba(167,139,250,0.9))",
+              boxShadow: `0 0 ${30 * superOpacity}px rgba(167,139,250,0.5)`,
+              border: "2px solid rgba(167,139,250,0.6)",
+            }}>
+            {"\u26A1"} SUPER FLAIR !
           </div>
         )}
 
-        {/* Main card */}
+        {/* Main card with glassmorphism */}
         <div ref={cardRef}
-          className="absolute inset-0 bg-[#241d33] border border-white/10 rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing z-10"
+          className={`absolute inset-0 glass-strong rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing z-10 ${cardEntering ? "card-enter" : ""}`}
           style={cardStyle}
           onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
           onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}
           onMouseLeave={() => { if (isDragging) { setIsDragging(false); setDragX(0); setDragY(0); } }}>
 
-          {/* Photo */}
-          <div className="h-[55%] relative overflow-hidden bg-[#1a1225]">
+          {/* Photo with gradient overlay */}
+          <div className="h-[55%] relative overflow-hidden bg-[var(--c-deep,#1a1225)]">
             {animal.photo_url
               ? <img src={animal.photo_url} alt={animal.name} className="w-full h-full object-cover" draggable={false} />
               : <div className="w-full h-full flex items-center justify-center text-6xl font-bold text-gray-600">{animal.name?.charAt(0)}</div>}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#241d33] via-transparent to-transparent" />
+
+            {/* Gradient overlay at bottom */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
             {/* Report button */}
             {animal.created_by && (
               <button
                 onClick={(e) => { e.stopPropagation(); setShowBlockReport(true); }}
-                className="absolute top-3 left-3 z-20 p-2 rounded-full backdrop-blur-md transition hover:bg-red-500/20"
-                style={{ background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.1)" }}
+                className="absolute top-3 left-3 z-20 p-2 rounded-full glass transition-all duration-300 hover:bg-red-500/20 hover:shadow-[0_0_15px_rgba(239,68,68,0.3)]"
                 title="Signaler"
               >
                 <svg className="w-4 h-4 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -561,45 +614,51 @@ export default function FlairerPage() {
               </button>
             )}
 
-            {/* Compatibility badge */}
+            {/* Compatibility badge with neon glow */}
             {compat && activeMyAnimal && (
               <div className="compat-in absolute top-3 right-3 z-10">
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-md border"
-                  style={{ backgroundColor: compat.color + "25", borderColor: compat.color + "60" }}>
-                  <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: compat.color }} />
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass font-bold"
+                  style={{
+                    boxShadow: `0 0 15px ${compat.color}40, 0 0 30px ${compat.color}15`,
+                    borderColor: compat.color + "50",
+                  }}>
+                  <div className="w-2 h-2 rounded-full animate-breathe" style={{ backgroundColor: compat.color, boxShadow: `0 0 8px ${compat.color}` }} />
                   <span className="text-white font-bold text-xs">{compat.score}%</span>
                   <span className="text-xs font-medium" style={{ color: compat.color }}>{compat.label}</span>
                 </div>
               </div>
             )}
 
-            {likeOpacity > 0 && <div className="absolute inset-0 bg-orange-500/10 mix-blend-overlay" style={{ opacity:likeOpacity }} />}
+            {likeOpacity > 0 && <div className="absolute inset-0 bg-green-500/10 mix-blend-overlay" style={{ opacity:likeOpacity }} />}
             {passOpacity > 0 && <div className="absolute inset-0 bg-red-500/10 mix-blend-overlay" style={{ opacity:passOpacity }} />}
-            {superOpacity > 0 && <div className="absolute inset-0 bg-blue-500/15 mix-blend-overlay" style={{ opacity:superOpacity }} />}
+            {superOpacity > 0 && <div className="absolute inset-0 bg-purple-500/15 mix-blend-overlay" style={{ opacity:superOpacity }} />}
 
-            <div className="absolute bottom-4 left-5 right-5">
+            {/* Glass info overlay at bottom of photo */}
+            <div className="absolute bottom-0 left-0 right-0 p-5 backdrop-blur-sm bg-black/20">
               <h2 className="text-2xl font-extrabold text-white drop-shadow-lg">{animal.name}</h2>
-              <p className="text-sm text-gray-300">{SPECIES[animal.species] || animal.species}{animal.breed ? " · " + animal.breed : ""}</p>
+              <p className="text-sm text-gray-300">{SPECIES[animal.species] || animal.species}{animal.breed ? " \u00B7 " + animal.breed : ""}</p>
             </div>
           </div>
 
-          {/* Info */}
+          {/* Info section */}
           <div className="h-[45%] p-4 overflow-y-auto">
 
-            {/* Score bar + raisons */}
+            {/* Compatibility meter with shimmer animation */}
             {compat && activeMyAnimal && (
-              <div className="mb-3 p-3 bg-white/5 rounded-2xl border border-white/8">
+              <div className="mb-3 p-3 glass rounded-2xl">
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-[10px] text-gray-500 uppercase tracking-wider">Compatibilité avec {activeMyAnimal.name}</span>
-                  <span className="text-xs font-bold" style={{ color: compat.color }}>{compat.score}%</span>
+                  <span className="text-[10px] text-gray-500 uppercase tracking-wider">Compatibilit\u00E9 avec {activeMyAnimal.name}</span>
+                  <span className="text-xs font-bold" style={{ color: compat.color, textShadow: `0 0 10px ${compat.color}60` }}>{compat.score}%</span>
                 </div>
-                <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden mb-2">
-                  <div className="score-bar h-full rounded-full" style={{ "--score-w": compat.score + "%", backgroundColor: compat.color } as any} />
+                <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden relative">
+                  <div className="score-bar h-full rounded-full relative" style={{ "--score-w": compat.score + "%", backgroundColor: compat.color } as any}>
+                    <div className="absolute inset-0 shimmer-bar rounded-full" />
+                  </div>
                 </div>
                 {compat.reasons.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap gap-1 mt-2">
                     {compat.reasons.map(r => (
-                      <span key={r} className="text-[10px] px-2 py-0.5 bg-white/5 text-gray-400 rounded-full">{r}</span>
+                      <span key={r} className="text-[10px] px-2 py-0.5 glass text-gray-400 rounded-full">{r}</span>
                     ))}
                   </div>
                 )}
@@ -607,16 +666,16 @@ export default function FlairerPage() {
             )}
 
             <div className="flex flex-wrap gap-1.5 mb-2">
-              {animal.canton && <span className="px-2.5 py-1 bg-orange-500/20 text-orange-300 rounded-full text-xs font-medium">{cantonName || animal.canton}</span>}
-              {userCanton && animal.canton && <span className="px-2.5 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-bold">{getProximityLabel(userCanton, animal.canton)}</span>}
-              {animal.city && <span className="px-2.5 py-1 bg-white/8 text-gray-300 rounded-full text-xs">{animal.city}</span>}
-              <span className="px-2.5 py-1 bg-white/8 text-gray-300 rounded-full text-xs">{formatAge(animal.age_months)}</span>
-              <span className="px-2.5 py-1 bg-white/8 text-gray-300 rounded-full text-xs">{animal.gender === "male" ? "Mâle" : animal.gender === "femelle" ? "Femelle" : "Inconnu"}</span>
+              {animal.canton && <span className="px-2.5 py-1 glass text-orange-300 rounded-full text-xs font-medium" style={{ borderColor: "rgba(249,115,22,0.2)" }}>{cantonName || animal.canton}</span>}
+              {userCanton && animal.canton && <span className="px-2.5 py-1 glass text-green-400 rounded-full text-xs font-bold" style={{ borderColor: "rgba(52,211,153,0.2)" }}>{getProximityLabel(userCanton, animal.canton)}</span>}
+              {animal.city && <span className="px-2.5 py-1 glass text-gray-300 rounded-full text-xs">{animal.city}</span>}
+              <span className="px-2.5 py-1 glass text-gray-300 rounded-full text-xs">{formatAge(animal.age_months)}</span>
+              <span className="px-2.5 py-1 glass text-gray-300 rounded-full text-xs">{animal.gender === "male" ? "M\u00E2le" : animal.gender === "femelle" ? "Femelle" : "Inconnu"}</span>
             </div>
             {animal.traits?.length > 0 && (
               <div className="flex flex-wrap gap-1 mb-2">
                 {animal.traits.map(t => (
-                  <span key={t} className="px-2 py-0.5 bg-purple-500/15 text-purple-300 rounded-full text-[11px]">{t}</span>
+                  <span key={t} className="px-2 py-0.5 glass text-purple-300 rounded-full text-[11px]" style={{ borderColor: "rgba(167,139,250,0.2)" }}>{t}</span>
                 ))}
               </div>
             )}
@@ -625,105 +684,131 @@ export default function FlairerPage() {
         </div>
       </div>
 
-      {/* Buttons */}
-      <div className="flex items-center gap-5 mt-5">
+      {/* Action buttons with neon glows */}
+      <div className="flex items-center gap-5 mt-5 relative z-10">
+        {/* Pass button - red neon glow on hover */}
         <button onClick={handlePass}
-          className="w-14 h-14 bg-white/5 border border-white/10 rounded-full flex items-center justify-center hover:bg-red-500/20 hover:border-red-500/40 hover:scale-110 active:scale-95 transition-all">
-          <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          className="w-14 h-14 glass rounded-full flex items-center justify-center
+            transition-all duration-300 group
+            hover:shadow-[0_0_25px_rgba(239,68,68,0.4),0_0_50px_rgba(239,68,68,0.15)]
+            hover:border-red-500/40 hover:scale-110 active:scale-95"
+          style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+          <svg className="w-6 h-6 text-gray-400 group-hover:text-red-400 transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
+
+        {/* Super like button - purple neon glow on hover */}
         <button onClick={() => handleLike(true)}
-          className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full flex items-center justify-center hover:from-blue-500/40 hover:scale-110 active:scale-95 transition-all">
-          <span className="text-xl">⚡</span>
+          className="w-12 h-12 glass rounded-full flex items-center justify-center
+            transition-all duration-300 group
+            hover:shadow-[0_0_25px_rgba(167,139,250,0.4),0_0_50px_rgba(167,139,250,0.15)]
+            hover:border-purple-500/40 hover:scale-110 active:scale-95"
+          style={{ borderColor: "rgba(167,139,250,0.3)", background: "rgba(167,139,250,0.08)" }}>
+          <span className="text-xl group-hover:scale-110 transition-transform duration-300">{"\u26A1"}</span>
         </button>
+
+        {/* Like button - green/orange neon glow */}
         <button onClick={() => handleLike()}
-          className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all like-pulse">
+          className="w-16 h-16 rounded-full flex items-center justify-center
+            transition-all duration-300
+            hover:scale-110 active:scale-95 animate-pulse-glow"
+          style={{
+            background: "linear-gradient(135deg, #F97316, #EA580C)",
+            boxShadow: "0 0 20px rgba(249,115,22,0.3), 0 0 60px rgba(249,115,22,0.1)",
+          }}>
           <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
             <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
           </svg>
         </button>
+
+        {/* Undo button */}
         <button onClick={() => { if (currentIndex > 0) { setCurrentIndex(i => i - 1); setStreak(0); } }}
-          className="w-12 h-12 bg-white/5 border border-white/10 rounded-full flex items-center justify-center hover:bg-white/10 hover:scale-110 active:scale-95 transition-all">
-          <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          className="w-12 h-12 glass rounded-full flex items-center justify-center
+            transition-all duration-300 group
+            hover:bg-white/10 hover:scale-110 active:scale-95"
+          style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+          <svg className="w-4 h-4 text-gray-500 group-hover:text-gray-300 transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
           </svg>
         </button>
       </div>
 
-      <p className="text-gray-600 text-[10px] mt-3">← Passer · ❤️ Flairer · ⚡ Super Flair (swipe haut)</p>
+      <p className="text-gray-600 text-[10px] mt-3 relative z-10">{"\u2190"} Passer {"\u00B7"} {"\u2764\uFE0F"} Flairer {"\u00B7"} {"\u26A1"} Super Flair (swipe haut)</p>
 
       {/* Paywall modal */}
       {showPaywall && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
-          <div className="bg-[var(--c-card)] border border-orange-500/30 rounded-3xl p-8 max-w-sm w-full text-center">
-            <div className="text-5xl mb-4">🐾</div>
-            <h2 className="text-xl font-extrabold text-[var(--c-text)] mb-2">3 matchs gratuits utilisés !</h2>
-            <p className="text-sm text-[var(--c-text-muted)] mb-6">Crée un compte gratuit pour continuer à flairer sans limite.</p>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-md p-4">
+          <div className="relative glass-strong neon-orange p-8 max-w-sm w-full text-center animate-scale-in">
+            <div className="absolute inset-0 rounded-[24px] gradient-border pointer-events-none" />
+            <div className="text-5xl mb-4 animate-float">{"\u{1F43E}"}</div>
+            <h2 className="text-xl font-extrabold gradient-text-warm mb-2">3 matchs gratuits utilis\u00E9s !</h2>
+            <p className="text-sm text-[var(--c-text-muted)] mb-6">Cr\u00E9e un compte gratuit pour continuer \u00E0 flairer sans limite.</p>
             <div className="flex flex-col gap-3">
-              <a href="/signup" className="w-full py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-2xl text-sm">
-                🚀 Créer un compte gratuit
+              <a href="/signup" className="w-full py-3 btn-futuristic text-center text-sm">
+                {"\u{1F680}"} Cr\u00E9er un compte gratuit
               </a>
-              <a href="/login" className="w-full py-3 bg-white/5 border border-white/10 text-[var(--c-text-muted)] font-bold rounded-2xl text-sm">
-                Déjà un compte ? Se connecter
+              <a href="/login" className="w-full py-3 glass text-center text-[var(--c-text-muted)] font-bold text-sm hover:bg-white/10 transition-all duration-300">
+                D\u00E9j\u00E0 un compte ? Se connecter
               </a>
-              <button onClick={() => setShowPaywall(false)} className="text-xs text-[var(--c-text-muted)] mt-2">
-                Continuer sans compte (limité)
+              <button onClick={() => setShowPaywall(false)} className="text-xs text-[var(--c-text-muted)] mt-2 hover:text-gray-300 transition-colors">
+                Continuer sans compte (limit\u00E9)
               </button>
             </div>
-            <p className="text-[10px] text-[var(--c-text-muted)] mt-4">✓ Gratuit · ✓ Sans carte · ✓ Matchs illimités</p>
+            <p className="text-[10px] text-[var(--c-text-muted)] mt-4">{"\u2713"} Gratuit {"\u00B7"} {"\u2713"} Sans carte {"\u00B7"} {"\u2713"} Matchs illimit\u00E9s</p>
           </div>
         </div>
       )}
 
       {/* Match modal */}
       {showMatchModal && (
-        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-gradient-to-br from-[#241d33] to-[#1a1225] border border-white/10 rounded-3xl max-w-md w-full p-6 shadow-2xl">
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-md flex items-center justify-center z-50 p-4">
+          <div className="glass-strong max-w-md w-full p-6 shadow-2xl animate-scale-in">
             {matchSuccess ? (
               <div className="text-center py-4">
-                <div className="text-5xl mb-3 animate-bounce">{isSuperLike ? "⚡" : "❤️"}</div>
-                <h3 className="text-xl font-bold text-white mb-1">{isSuperLike ? "Super Flair envoyé !" : "Flair envoyé !"}</h3>
-                <p className="text-gray-400 text-sm">{animal.name} sera bientôt prévenu</p>
-                {streak >= 3 && <p className="text-orange-400 text-sm font-bold mt-2">🔥 Streak ×{streak} !</p>}
+                <div className="text-5xl mb-3 animate-float">{isSuperLike ? "\u26A1" : "\u2764\uFE0F"}</div>
+                <h3 className="text-xl font-bold gradient-text-warm mb-1">{isSuperLike ? "Super Flair envoy\u00E9 !" : "Flair envoy\u00E9 !"}</h3>
+                <p className="text-gray-400 text-sm">{animal.name} sera bient\u00F4t pr\u00E9venu</p>
+                {streak >= 3 && <p className="text-sm font-bold mt-2 gradient-text-warm">{"\u{1F525}"} Streak {"\u00D7"}{streak} !</p>}
               </div>
             ) : (
               <>
                 <div className="flex items-center gap-3 mb-4">
-                  {isSuperLike && <span className="text-2xl">⚡</span>}
+                  {isSuperLike && <span className="text-2xl">{"\u26A1"}</span>}
                   <div>
-                    <h3 className="text-lg font-bold text-white">Avec quel compagnon ?</h3>
+                    <h3 className="text-lg font-bold gradient-text">Avec quel compagnon ?</h3>
                     <p className="text-sm text-gray-400">Qui va rencontrer {animal.name} ?</p>
                   </div>
                 </div>
                 {compat && (
-                  <div className="mb-4 p-3 rounded-2xl border flex items-center gap-3"
-                    style={{ backgroundColor: compat.color + "15", borderColor: compat.color + "40" }}>
-                    <span className="text-2xl">🤝</span>
+                  <div className="mb-4 p-3 glass rounded-2xl flex items-center gap-3"
+                    style={{ borderColor: compat.color + "40", boxShadow: `0 0 15px ${compat.color}15` }}>
+                    <span className="text-2xl">{"\u{1F91D}"}</span>
                     <div>
-                      <p className="text-sm font-bold" style={{ color: compat.color }}>{compat.score}% — {compat.label}</p>
+                      <p className="text-sm font-bold" style={{ color: compat.color, textShadow: `0 0 8px ${compat.color}40` }}>{compat.score}% {"\u2014"} {compat.label}</p>
                       <p className="text-xs text-gray-500">{compat.reasons[0]}</p>
                     </div>
                   </div>
                 )}
-                {matchError && <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-sm">{matchError}</div>}
-                <div className="space-y-2 mb-4 max-h-60 overflow-y-auto">
+                {matchError && <div className="mb-4 p-3 glass text-red-400 rounded-xl text-sm" style={{ borderColor: "rgba(239,68,68,0.3)" }}>{matchError}</div>}
+                <div className="space-y-2 mb-4 max-h-60 overflow-y-auto stagger-children">
                   {myAnimals.map(myAnimal => {
                     const c = computeCompatibility(myAnimal, animal);
                     return (
                       <button key={myAnimal.id} onClick={() => handleMatch(myAnimal.id)}
-                        className="w-full flex items-center gap-3 p-3 bg-white/5 hover:bg-orange-500/10 rounded-2xl transition text-left border border-white/5 hover:border-orange-500/20">
-                        <div className="w-12 h-12 rounded-full bg-[#1a1225] border-2 border-orange-400/50 flex items-center justify-center overflow-hidden flex-shrink-0">
+                        className="w-full flex items-center gap-3 p-3 glass card-futuristic rounded-2xl text-left">
+                        <div className="w-12 h-12 rounded-full bg-[var(--c-deep,#1a1225)] ring-2 ring-orange-400/50 flex items-center justify-center overflow-hidden flex-shrink-0
+                          shadow-[0_0_10px_rgba(249,115,22,0.2)]">
                           {myAnimal.photo_url
                             ? <img src={myAnimal.photo_url} alt={myAnimal.name} className="w-full h-full object-cover" />
                             : <span className="text-sm font-bold text-gray-500">{myAnimal.name?.charAt(0)}</span>}
                         </div>
                         <div className="flex-1">
-                          <p className="font-semibold text-white text-sm">{myAnimal.name}</p>
-                          <p className="text-xs text-gray-500">{myAnimal.species}{myAnimal.breed ? " · " + myAnimal.breed : ""}</p>
+                          <p className="font-semibold text-[var(--c-text,white)] text-sm">{myAnimal.name}</p>
+                          <p className="text-xs text-gray-500">{myAnimal.species}{myAnimal.breed ? " \u00B7 " + myAnimal.breed : ""}</p>
                         </div>
                         <div className="text-right">
-                          <span className="text-xs font-bold" style={{ color: c.color }}>{c.score}%</span>
+                          <span className="text-xs font-bold" style={{ color: c.color, textShadow: `0 0 8px ${c.color}40` }}>{c.score}%</span>
                           <p className="text-[10px] text-gray-600">{c.label}</p>
                         </div>
                       </button>
@@ -731,7 +816,7 @@ export default function FlairerPage() {
                   })}
                 </div>
                 <button onClick={() => { setShowMatchModal(false); setMatchError(null); setIsSuperLike(false); setDragX(0); setDragY(0); }}
-                  className="w-full py-2.5 bg-white/5 border border-white/10 text-gray-400 font-medium rounded-2xl transition text-sm">
+                  className="w-full py-2.5 glass text-gray-400 font-medium rounded-2xl transition-all duration-300 text-sm hover:bg-white/10">
                   Annuler
                 </button>
               </>
@@ -749,13 +834,14 @@ export default function FlairerPage() {
           onClose={() => setShowBlockReport(false)}
           onBlocked={() => {
             setShowBlockReport(false);
-            // Skip to next animal after blocking
             setSwipeDirection("left");
             setTimeout(() => {
               setSwipeDirection(null);
               setDragX(0);
               setDragY(0);
+              setCardEntering(true);
               setCurrentIndex(i => i + 1);
+              setTimeout(() => setCardEntering(false), 400);
             }, 320);
           }}
         />

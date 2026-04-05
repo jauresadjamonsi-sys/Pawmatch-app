@@ -7,6 +7,7 @@ import Navbar from "@/lib/components/Navbar";
 import Footer from "@/lib/components/Footer";
 import { WelcomeModal } from "@/lib/components/WelcomeModal";
 import { PostHogProvider } from "@/lib/components/PostHogProvider";
+import PresenceHeartbeat from "@/lib/components/PresenceHeartbeat";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -51,6 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className + " bg-[#0d0a14] text-white min-h-screen"}>
 <AppProvider>
         <PostHogProvider>
+        <PresenceHeartbeat />
         <Navbar />
         {children}
         <Footer />

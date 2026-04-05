@@ -1,411 +1,507 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { useAppContext } from "@/lib/contexts/AppContext";
-import { MatchDuJour } from "@/lib/components/MatchDuJour";
-import { PersonalityHook } from "@/lib/components/PersonalityHook";
-import { InviteFriendCard } from "@/lib/components/InviteFriendCard";
 
-const EMOJI_MAP: Record<string, string> = {
-  chien: "🐕", chat: "🐱", lapin: "🐰",
-  oiseau: "🐦", rongeur: "🐹", autre: "🐾",
-};
-
-const STORY_KEYS = [
-  { name: "storyName1", breed: "storyBreed1", story: "story1", photo: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=120&h=120&fit=crop&crop=face", score: 94 },
-  { name: "storyName2", breed: "storyBreed2", story: "story2", photo: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=120&h=120&fit=crop&crop=face", score: 89 },
-  { name: "storyName3", breed: "storyBreed3", story: "story3", photo: "https://images.unsplash.com/photo-1615497001839-b0a0eac3274c?w=120&h=120&fit=crop&crop=face", score: 91 },
+/* ──────────────────────────────────────────
+   FLOATING PARTICLES COMPONENT
+   ────────────────────────────────────────── */
+const PARTICLES = [
+  { color: "rgba(249,115,22,0.25)", size: 5, left: "10%", duration: "14s", delay: "0s" },
+  { color: "rgba(167,139,250,0.2)", size: 4, left: "25%", duration: "18s", delay: "2s" },
+  { color: "rgba(56,189,248,0.2)", size: 6, left: "45%", duration: "16s", delay: "4s" },
+  { color: "rgba(249,115,22,0.18)", size: 3, left: "65%", duration: "20s", delay: "1s" },
+  { color: "rgba(167,139,250,0.22)", size: 5, left: "80%", duration: "15s", delay: "3s" },
+  { color: "rgba(56,189,248,0.15)", size: 4, left: "90%", duration: "17s", delay: "5s" },
+  { color: "rgba(249,115,22,0.2)", size: 3, left: "35%", duration: "19s", delay: "6s" },
+  { color: "rgba(167,139,250,0.18)", size: 5, left: "55%", duration: "13s", delay: "2.5s" },
 ];
 
+function FloatingParticles() {
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
+      {PARTICLES.map((p, i) => (
+        <div
+          key={i}
+          className="particle"
+          style={{
+            background: p.color,
+            width: p.size,
+            height: p.size,
+            left: p.left,
+            bottom: "-10px",
+            animation: `particle-float ${p.duration} ease-in-out infinite`,
+            animationDelay: p.delay,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ──────────────────────────────────────────
+   FLOATING PAWS FOR HERO
+   ────────────────────────────────────────── */
+const PAWS = [
+  { top: "12%", left: "8%", size: "2rem", delay: "0s", duration: "6s" },
+  { top: "20%", right: "10%", size: "1.5rem", delay: "1s", duration: "7s" },
+  { top: "65%", left: "5%", size: "1.8rem", delay: "2s", duration: "5.5s" },
+  { top: "70%", right: "8%", size: "1.3rem", delay: "3s", duration: "8s" },
+  { top: "40%", left: "3%", size: "1rem", delay: "1.5s", duration: "6.5s" },
+  { top: "45%", right: "4%", size: "1.6rem", delay: "4s", duration: "7.5s" },
+];
+
+function FloatingPaws() {
+  return (
+    <>
+      {PAWS.map((paw, i) => (
+        <span
+          key={i}
+          className="absolute animate-paw-drift select-none"
+          style={{
+            top: paw.top,
+            left: paw.left,
+            right: (paw as any).right,
+            fontSize: paw.size,
+            animationDelay: paw.delay,
+            animationDuration: paw.duration,
+            opacity: 0.15,
+          }}
+        >
+          🐾
+        </span>
+      ))}
+    </>
+  );
+}
+
+/* ──────────────────────────────────────────
+   INTERSECTION OBSERVER HOOK
+   ────────────────────────────────────────── */
+function useScrollReveal() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return { ref, visible };
+}
+
+/* ──────────────────────────────────────────
+   ANIMATED COUNTER HOOK
+   ────────────────────────────────────────── */
+function useAnimatedCounter(target: number, visible: boolean, duration = 1500) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!visible || target === 0) return;
+    let start = 0;
+    const step = Math.max(1, Math.floor(target / (duration / 16)));
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= target) { setCount(target); clearInterval(timer); }
+      else setCount(start);
+    }, 16);
+    return () => clearInterval(timer);
+  }, [visible, target, duration]);
+  return count;
+}
+
+/* ──────────────────────────────────────────
+   HOW IT WORKS STEPS
+   ────────────────────────────────────────── */
 const HOW_STEPS = [
-  { num: "1", emoji: "📝", key: "step1", descKey: "step1Desc" },
-  { num: "2", emoji: "🧠", key: "step2", descKey: "step2Desc" },
-  { num: "3", emoji: "🤝", key: "step3", descKey: "step3Desc" },
+  { num: "01", emoji: "📝", titleKey: "step1", descKey: "step1Desc" },
+  { num: "02", emoji: "🧠", titleKey: "step2", descKey: "step2Desc" },
+  { num: "03", emoji: "🤝", titleKey: "step3", descKey: "step3Desc" },
 ];
 
+/* ──────────────────────────────────────────
+   FEATURES
+   ────────────────────────────────────────── */
+const FEATURES = [
+  { emoji: "💕", titleKey: "sniff", descKey: "sniffSub", align: "left" },
+  { emoji: "💬", titleKey: "events", descKey: "eventsSub", align: "right" },
+  { emoji: "📅", titleKey: "premium", descKey: "premiumSub", align: "left" },
+  { emoji: "🗺️", titleKey: "joinCard", descKey: "joinCardSub", align: "right" },
+];
+
+/* ──────────────────────────────────────────
+   TESTIMONIALS
+   ────────────────────────────────────────── */
 const TESTIMONIALS = [
-  { text: "testimonial1", author: "testimonial1Author", pet: "testimonial1Pet" },
-  { text: "testimonial2", author: "testimonial2Author", pet: "testimonial2Pet" },
-  { text: "testimonial3", author: "testimonial3Author", pet: "testimonial3Pet" },
+  { textKey: "testimonial1", authorKey: "testimonial1Author", petKey: "testimonial1Pet", stars: 5, city: "Lausanne" },
+  { textKey: "testimonial2", authorKey: "testimonial2Author", petKey: "testimonial2Pet", stars: 5, city: "Geneve" },
+  { textKey: "testimonial3", authorKey: "testimonial3Author", petKey: "testimonial3Pet", stars: 5, city: "Zurich" },
 ];
 
+/* ══════════════════════════════════════════
+   HOMEPAGE
+   ══════════════════════════════════════════ */
 export default function HomePage() {
   const { t, lang } = useAppContext();
-  const [animals, setAnimals] = useState<any[]>([]);
   const [totalAnimals, setTotalAnimals] = useState(0);
   const [totalProfiles, setTotalProfiles] = useState(0);
-  const [storyIdx, setStoryIdx] = useState(0);
-  const [testimonialIdx, setTestimonialIdx] = useState(0);
   const supabase = createClient();
+
+  // Scroll reveal refs
+  const statsReveal = useScrollReveal();
+  const howReveal = useScrollReveal();
+  const featuresReveal = useScrollReveal();
+  const testimonialsReveal = useScrollReveal();
+  const ctaReveal = useScrollReveal();
+
+  // Animated counters
+  const animalsCount = useAnimatedCounter(totalAnimals || 150, statsReveal.visible);
+  const matchesCount = useAnimatedCounter(92, statsReveal.visible);
+  const cantonsCount = useAnimatedCounter(26, statsReveal.visible);
 
   useEffect(() => {
     async function fetchData() {
-      const { data } = await supabase.from("animals").select("*").order("created_at", { ascending: false }).limit(6);
-      setAnimals(data || []);
       const { count: ac } = await supabase.from("animals").select("*", { count: "exact", head: true });
       setTotalAnimals(ac || 0);
       const { count: pc } = await supabase.from("profiles").select("*", { count: "exact", head: true });
       setTotalProfiles(pc || 0);
     }
     fetchData();
-    const storyInterval = setInterval(() => setStoryIdx(i => (i + 1) % 3), 4000);
-    const testimonialInterval = setInterval(() => setTestimonialIdx(i => (i + 1) % 3), 5000);
-    return () => { clearInterval(storyInterval); clearInterval(testimonialInterval); };
   }, []);
 
-  const currentStory = STORY_KEYS[storyIdx];
-  const currentTestimonial = TESTIMONIALS[testimonialIdx];
-
   return (
-    <div className="min-h-screen bg-[var(--c-deep)] text-[var(--c-text)] overflow-hidden">
-      <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes pawFloat { 0%,100%{transform:translateY(0) rotate(-10deg)}50%{transform:translateY(-8px) rotate(10deg)} }
-        @keyframes fadeInUp { from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)} }
-        @keyframes slideIn { from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)} }
-        @keyframes pulse { 0%,100%{transform:scale(1)}50%{transform:scale(1.04)} }
-        @keyframes shimmer { 0%{background-position:-200% 0}100%{background-position:200% 0} }
-        .paw-float{animation:pawFloat 3s ease-in-out infinite}
-        .fade-in-up{animation:fadeInUp .8s ease-out forwards}
-        .slide-in{animation:slideIn .5s ease-out forwards}
-        .pulse-slow{animation:pulse 3s ease-in-out infinite}
-        .glow-accent{box-shadow:0 0 40px var(--c-accent,rgba(249,115,22,.15))}
-        .card-hover{transition:transform .2s ease}
-        .card-hover:active{transform:scale(.97)}
-        .shimmer{background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);background-size:200% 100%;animation:shimmer 3s linear infinite}
-      `}} />
+    <div className="min-h-screen bg-[var(--c-deep)] text-[var(--c-text)] overflow-hidden relative">
+      {/* Aurora background */}
+      <div className="aurora-bg" />
 
-      {/* Ambient glow */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full blur-3xl" style={{background:"var(--c-accent, rgba(249,115,22,.06))",opacity:0.15}} />
-      </div>
+      {/* Floating particles */}
+      <FloatingParticles />
 
-      {/* ═══════════════ HERO ═══════════════ */}
-      <div className="relative text-center pt-10 pb-8 px-5">
-        <span className="paw-float text-5xl block mb-4">🐾</span>
+      {/* ═══════════════════════════════════════
+          SECTION 1: HERO
+          ═══════════════════════════════════════ */}
+      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6">
+        {/* Floating paw emojis */}
+        <FloatingPaws />
 
-        <h1 className="text-3xl font-extrabold leading-tight mb-1">
-          <span className="text-[var(--c-text)]">{t.heroTitle}</span>
-        </h1>
-        <h2 className="text-2xl font-extrabold mb-3" style={{color:"var(--c-accent, #f97316)"}}>
-          {t.heroTitle2}
-        </h2>
-        <p className="text-base mb-2 max-w-sm mx-auto text-[var(--c-text)] leading-relaxed font-semibold">
-          {t.heroTagline}
-        </p>
-        <p className="text-sm mb-5 max-w-sm mx-auto text-[var(--c-text-muted)] leading-relaxed">{t.heroSub}</p>
-
-        {/* Bullets */}
-        <div className="flex flex-col gap-2.5 max-w-sm mx-auto mb-6 text-left">
-          {[t.bullet1, t.bullet2, t.bullet3].map((b, i) => (
-            <div key={i} className="flex items-start gap-2 text-sm text-[var(--c-text-muted)]">
-              <span className="leading-5">{b}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* CTAs */}
-        <div className="flex flex-col items-center gap-3 mb-4">
-          <Link href="/signup" className="px-8 py-3.5 font-bold rounded-full text-base text-white pulse-slow" style={{background:"#f97316",boxShadow:"0 0 30px rgba(249,115,22,0.3)"}}>
-            {t.heroStartFree}
-          </Link>
-          <button onClick={() => document.getElementById("comment-ca-marche")?.scrollIntoView({ behavior:"smooth" })} className="px-6 py-2.5 bg-[var(--c-card)] border border-[var(--c-border)] font-medium rounded-full text-sm card-hover text-[var(--c-text-muted)]">
-            {t.heroDiscover} ↓
-          </button>
-        </div>
-
-        {/* Social proof */}
-        <p className="text-xs text-[var(--c-text-muted)] mb-3">
-          {t.heroJoinOwners} <span className="font-bold" style={{color:"var(--c-accent, #f97316)"}}>{totalProfiles > 0 ? totalProfiles + "+" : ""}</span> {t.heroOwnersIn}
-        </p>
-
-        {/* Trust badges */}
-        <div className="flex flex-wrap justify-center gap-2 mb-4">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--c-card)] border border-[var(--c-border)] rounded-full text-[11px] text-[var(--c-text-muted)] font-medium">
-            <span>🇨🇭</span> {t.heroBadgeSwiss}
+        {/* Main content */}
+        <div className="relative z-10 max-w-2xl mx-auto animate-slide-up">
+          {/* Glowing paw icon */}
+          <div className="inline-block mb-6">
+            <span className="text-6xl animate-float block" style={{ filter: "drop-shadow(0 0 20px rgba(249,115,22,0.4))" }}>
+              🐾
+            </span>
           </div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full text-[11px] text-green-500 font-bold">
-            {t.heroBadgeFree}
-          </div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--c-card)] border border-[var(--c-border)] rounded-full text-[11px] text-[var(--c-text-muted)] font-medium">
-            <span>🔒</span> {t.heroBadgeData}
-          </div>
-        </div>
 
-        {/* Stats */}
-        <div className="flex justify-center gap-8 mt-4">
-          {[
-            [totalProfiles < 10 ? "🇨🇭" : totalProfiles + "+", totalProfiles < 10 ? t.tagline : t.owners],
-            [totalAnimals < 10 ? "26" : totalAnimals + "+", totalAnimals < 10 ? t.heroCoveredCantons : t.animals],
-            ["92%", t.matchRate],
-          ].map(([val, label]) => (
-            <div key={String(label)} className="text-center">
-              <p className="text-2xl font-bold" style={{color:"var(--c-accent, #f97316)"}}>{val}</p>
-              <p className="text-[10px] uppercase tracking-wider text-[var(--c-text-muted)]">{label}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+          {/* Title */}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black mb-3 leading-tight">
+            <span className="gradient-text">{t.heroTitle}</span>
+          </h1>
 
-      {/* ═══════════════ HISTOIRES ÉMOTIONNELLES ═══════════════ */}
-      <div className="px-5 mb-8">
-        <h2 className="text-[11px] font-semibold uppercase tracking-widest mb-4 text-center text-[var(--c-text-muted)]">{t.storiesTitle}</h2>
-        <div key={storyIdx} className="slide-in bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-5">
-          <div className="flex items-start gap-3">
-            <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border-2" style={{borderColor:"var(--c-accent, #f97316)"}}>
-              <img src={currentStory.photo} alt={t[currentStory.name]} className="w-full h-full object-cover" />
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4" style={{ color: "var(--c-accent, #f97316)" }}>
+            {t.heroTitle2}
+          </h2>
+
+          {/* Subtitle with fade */}
+          <p className="text-base sm:text-lg max-w-lg mx-auto mb-4 leading-relaxed animate-breathe" style={{ color: "var(--c-text-muted)" }}>
+            {t.heroSub}
+          </p>
+
+          {/* Tagline */}
+          <p className="text-sm font-semibold mb-8 max-w-md mx-auto" style={{ color: "var(--c-text)" }}>
+            {t.heroTagline}
+          </p>
+
+          {/* Trust badges */}
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
+            <div className="glass px-4 py-2 flex items-center gap-2 text-xs font-medium" style={{ borderRadius: 40 }}>
+              <span>🇨🇭</span> {t.heroBadgeSwiss}
             </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="font-bold text-sm" style={{color:"var(--c-accent, #f97316)"}}>{t[currentStory.name]}</span>
-                <span className="text-[10px] px-2 py-0.5 bg-[var(--c-border)] rounded-full text-[var(--c-text-muted)]">{t[currentStory.breed]}</span>
-              </div>
-              <p className="text-xs leading-relaxed text-[var(--c-text-muted)] italic">"{t[currentStory.name]} {t[currentStory.story]}"</p>
+            <div className="px-4 py-2 flex items-center gap-2 text-xs font-bold rounded-full" style={{ background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.2)", color: "#22c55e" }}>
+              {t.heroBadgeFree}
+            </div>
+            <div className="glass px-4 py-2 flex items-center gap-2 text-xs font-medium" style={{ borderRadius: 40 }}>
+              <span>🔒</span> {t.heroBadgeData}
             </div>
           </div>
-          <div className="flex items-center justify-end gap-2 mt-3">
-            <span className="text-lg font-black text-green-500">{currentStory.score}%</span>
-            <span className="text-[9px] text-[var(--c-text-muted)]">{t.compatible}</span>
-          </div>
-        </div>
-        {/* Dots */}
-        <div className="flex justify-center gap-2 mt-3">
-          {[0,1,2].map(i => (
-            <button key={i} onClick={() => setStoryIdx(i)} className="w-2 h-2 rounded-full transition-all" style={{background: i === storyIdx ? "var(--c-accent, #f97316)" : "var(--c-border)"}} />
-          ))}
-        </div>
-      </div>
 
-      {/* ═══════════════ MATCH DU JOUR ═══════════════ */}
-      <div className="px-5 mb-8">
-        <MatchDuJour lang={lang} />
-
-        {/* Test personnalité hook */}
-        <PersonalityHook lang={lang} />
-
-        {/* Invitation WhatsApp */}
-        <InviteFriendCard />
-      </div>
-
-      {/* ═══════════════ TEST PERSONNALITÉ — HOOK VIRAL ═══════════════ */}
-      <div className="px-5 mb-8">
-        <div className="relative bg-[var(--c-card)] border-2 rounded-2xl p-6 text-center overflow-hidden" style={{borderColor:"var(--c-accent, rgba(249,115,22,.3))"}}>
-          <div className="shimmer absolute inset-0 rounded-2xl pointer-events-none" />
-          <span className="text-4xl block mb-3">🧠</span>
-          <h2 className="font-extrabold text-lg mb-2 text-[var(--c-text)]">{t.personalityTitle}</h2>
-          <p className="text-xs text-[var(--c-text-muted)] mb-4 max-w-xs mx-auto leading-relaxed">{t.personalitySub}</p>
-          <Link href="/signup" className="inline-block px-6 py-3 text-white font-bold rounded-full text-sm pulse-slow" style={{background:"#f97316",boxShadow:"0 0 30px rgba(249,115,22,0.3)"}}>
-            {t.personalityCta}
-          </Link>
-          <p className="text-[10px] mt-3 text-[var(--c-text-muted)]">{t.personalityTypes}</p>
-        </div>
-      </div>
-
-      {/* ═══════════════ COMMENT ÇA MARCHE ═══════════════ */}
-      <div id="comment-ca-marche" className="px-5 mb-8 scroll-mt-16">
-        <h2 className="text-[11px] font-semibold uppercase tracking-widest mb-2 text-center text-[var(--c-text-muted)]">{t.howItWorks}</h2>
-        <div className="flex flex-col gap-3">
-          {[
-            { num: "1", emoji: "🐾", key: "step1", descKey: "step1Desc" },
-            { num: "2", emoji: "💕", key: "step2", descKey: "step2Desc" },
-            { num: "3", emoji: "🏥", key: "step3", descKey: "step3Desc" },
-          ].map((step, i) => (
-            <div key={i} className="flex items-start gap-4 bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-4 fade-in-up" style={{animationDelay: `${i * 0.15}s`}}>
-              <div className="w-9 h-9 rounded-full flex items-center justify-center font-black text-sm flex-shrink-0 text-white" style={{background:"#f97316",boxShadow:"0 0 30px rgba(249,115,22,0.3)"}}>
-                {step.num}
-              </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-lg">{step.emoji}</span>
-                  <h3 className="font-bold text-sm text-[var(--c-text)]">{t[step.key]}</h3>
-                </div>
-                <p className="text-xs text-[var(--c-text-muted)] leading-relaxed">{t[step.descKey]}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="text-center mt-4">
-          <Link href="/signup" className="inline-block px-6 py-2.5 font-bold rounded-full text-sm text-white" style={{background:"#f97316"}}>
-            {t.heroStartFree}
-          </Link>
-        </div>
-      </div>
-
-      {/* ═══════════════ ANIMAUX RÉCENTS ═══════════════ */}
-      {animals.length > 0 && (
-        <div className="px-5 mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-[var(--c-text-muted)]">{t.recentlyActive}</h2>
-            <Link href="/animals" className="text-[11px] font-semibold" style={{color:"var(--c-accent, #f97316)"}}>{t.seeAll}</Link>
-          </div>
-          <div className="flex gap-5 overflow-x-auto pb-2">
-            {animals.map((animal) => (
-              <Link href={"/animals/" + animal.id} key={animal.id} className="flex flex-col items-center flex-shrink-0 group">
-                <div className="relative">
-                  <div className="w-16 h-16 rounded-full bg-[var(--c-card)] border-[2.5px] group-hover:border-[var(--c-accent)] flex items-center justify-center overflow-hidden mb-2 transition-colors" style={{borderColor:"var(--c-accent, rgba(249,115,22,.6))"}}>
-                    {animal.photo_url
-                      ? <img src={animal.photo_url} alt={animal.name} className="w-full h-full object-cover" />
-                      : <span className="text-2xl">{EMOJI_MAP[animal.species] || "🐾"}</span>}
-                  </div>
-                  <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-2 border-[var(--c-deep)]" />
-                </div>
-                <p className="text-xs font-medium text-[var(--c-text)]">{animal.name}</p>
-                {animal.canton && (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full mt-1" style={{background:"var(--c-accent, rgba(249,115,22,.15))",color:"var(--c-accent, #fb923c)"}}>{animal.canton}</span>
-                )}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* ═══════════════ SCORE IA DEMO ═══════════════ */}
-      <div className="px-5 mb-8">
-        <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-5 glow-accent">
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-2xl">🤖</span>
-            <div className="flex-1">
-              <h3 className="font-bold text-sm text-[var(--c-text)]">{t.iaTitle}</h3>
-              <p className="text-[10px] text-[var(--c-text-muted)]">{t.iaSub}</p>
-            </div>
-            <div className="text-right flex-shrink-0">
-              <div className="text-2xl font-black text-green-500">94%</div>
-              <div className="text-[9px] font-bold" style={{color:"var(--c-accent, #f97316)"}}>{t.iaVerdict}</div>
-            </div>
-          </div>
-          <div className="flex flex-col gap-2.5">
-            {[
-              { key: "iaEnergy", score: 95 },
-              { key: "iaSocial", score: 90 },
-              { key: "iaSize", score: 88 },
-              { key: "iaZone", score: 100 },
-            ].map((trait, i) => (
-              <div key={i}>
-                <div className="flex justify-between text-[10px] mb-1">
-                  <span className="text-[var(--c-text-muted)]">{t[trait.key]}</span>
-                  <span className="font-bold" style={{color:"var(--c-accent, #f97316)"}}>{trait.score}%</span>
-                </div>
-                <div className="h-1.5 bg-[var(--c-border)] rounded-full overflow-hidden">
-                  <div className="h-full rounded-full" style={{width:`${trait.score}%`,background:`linear-gradient(to right, var(--c-accent, #f97316), #22c55e)`}} />
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="text-[10px] mt-4 text-center italic text-[var(--c-text-muted)]">"{t.iaQuote}"</p>
-        </div>
-      </div>
-
-      {/* ═══════════════ TÉMOIGNAGES ═══════════════ */}
-      <div className="px-5 mb-8">
-        <h2 className="text-[11px] font-semibold uppercase tracking-widest mb-4 text-center text-[var(--c-text-muted)]">{t.testimonialTitle}</h2>
-        <div key={testimonialIdx} className="slide-in bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-5">
-          <div className="flex gap-1 mb-3">
-            {[1,2,3,4,5].map(s => <span key={s} className="text-sm">⭐</span>)}
-          </div>
-          <p className="text-sm italic text-[var(--c-text)] leading-relaxed mb-3">"{t[currentTestimonial.text]}"</p>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold" style={{color:"var(--c-accent, #f97316)"}}>{t[currentTestimonial.author]}</p>
-              <p className="text-[10px] text-[var(--c-text-muted)]">{t[currentTestimonial.pet]}</p>
-            </div>
-            <span className="text-2xl">🐾</span>
-          </div>
-        </div>
-        <div className="flex justify-center gap-2 mt-3">
-          {[0,1,2].map(i => (
-            <button key={i} onClick={() => setTestimonialIdx(i)} className="w-2 h-2 rounded-full transition-all" style={{background: i === testimonialIdx ? "var(--c-accent, #f97316)" : "var(--c-border)"}} />
-          ))}
-        </div>
-      </div>
-
-      {/* ═══════════════ GRILLE ACTIONS ═══════════════ */}
-      <div className="px-5 mb-8">
-        <div className="grid grid-cols-2 gap-3">
-          {[
-            { href: "/flairer", emoji: "👃", key: "sniff", subKey: "sniffSub", accent: false },
-            { href: "/events", emoji: "📅", key: "events", subKey: "eventsSub", accent: false },
-            { href: "/pricing", emoji: "✨", key: "premium", subKey: "premiumSub", accent: false },
-            { href: "/signup", emoji: "🚀", key: "joinCard", subKey: "joinCardSub", accent: true },
-          ].map((item, i) => (
-            <Link key={i} href={item.href} className={`bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-5 card-hover ${item.accent ? "border-2" : ""}`} style={item.accent ? {borderColor:"var(--c-accent, #f97316)"} : {}}>
-              <span className="text-2xl mb-2 block">{item.emoji}</span>
-              <h3 className={`font-bold text-sm ${item.accent ? "" : "text-[var(--c-text)]"}`} style={item.accent ? {color:"var(--c-accent, #f97316)"} : {}}>{t[item.key]}</h3>
-              <p className="text-xs mt-1 text-[var(--c-text-muted)]">{t[item.subKey]}</p>
+          {/* CTA buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+            <Link href="/signup" className="btn-futuristic neon-orange animate-pulse-glow text-base tracking-wide">
+              {t.heroStartFree}
             </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* ═══════════════ COUP DE TRUFFE ═══════════════ */}
-      <div className="px-5 mb-8">
-        <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-6 glow-accent">
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-3xl">💥</span>
-            <div>
-              <h3 className="font-bold text-[var(--c-text)]">{t.coupDeTruffe}</h3>
-              <p className="text-xs text-[var(--c-text-muted)]">{t.coupDesc}</p>
-            </div>
+            <button
+              onClick={() => document.getElementById("comment-ca-marche")?.scrollIntoView({ behavior: "smooth" })}
+              className="glass px-6 py-3 font-semibold text-sm cursor-pointer hover:scale-105 transition-transform"
+              style={{ borderRadius: 40 }}
+            >
+              {t.heroDiscover} ↓
+            </button>
           </div>
-          <div className="flex items-center justify-center gap-6 bg-[var(--c-deep)] rounded-xl p-4">
-            <div className="text-center">
-              <div className="w-14 h-14 rounded-full flex items-center justify-center text-2xl mb-1" style={{background:"var(--c-accent, rgba(249,115,22,.2))"}}>🐕</div>
-              <p className="text-xs font-medium text-[var(--c-text)]">Ruby</p>
-              <p className="text-[9px] text-[var(--c-text-muted)]">Juriens</p>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-black">❤️</div>
-              <p className="text-[10px] font-bold text-green-500 mt-1">Match !</p>
-            </div>
-            <div className="text-center">
-              <div className="w-14 h-14 rounded-full bg-pink-500/20 flex items-center justify-center text-2xl mb-1">🐕</div>
-              <p className="text-xs font-medium text-[var(--c-text)]">Luna</p>
-              <p className="text-[9px] text-[var(--c-text-muted)]">Orbe</p>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* ═══════════════ PAWDIRECTORY LINK ═══════════════ */}
-      <div className="px-5 mb-8">
-        <a href="https://pawdirectory.ch" target="_blank" rel="noopener" className="block" style={{textDecoration:"none"}}>
-          <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-5" style={{background:"linear-gradient(135deg, rgba(13,148,136,0.08), rgba(6,95,70,0.05))"}}>
-            <div className="flex items-center gap-4">
-              <div className="text-3xl flex-shrink-0">🏥</div>
-              <div className="flex-1">
-                <div className="font-extrabold text-sm text-[var(--c-text)]">PawDirectory</div>
-                <p className="text-xs text-[var(--c-text-muted)] mt-0.5 leading-relaxed">
-                  {{fr:"Vétos, toiletteurs, pensions — 306+ services pour animaux en Suisse",de:"Tierärzte, Pfleger, Pensionen — 306+ Tierdienste in der Schweiz",it:"Veterinari, toelettatori, pensioni — 306+ servizi per animali in Svizzera",en:"Vets, groomers, boarding — 306+ pet services across Switzerland"}[lang]}
+          {/* Social proof line */}
+          <p className="text-xs" style={{ color: "var(--c-text-muted)" }}>
+            {t.heroJoinOwners}{" "}
+            <span className="font-bold" style={{ color: "var(--c-accent, #f97316)" }}>
+              {totalProfiles > 0 ? totalProfiles + "+" : ""}
+            </span>{" "}
+            {t.heroOwnersIn}
+          </p>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce-down">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.5, color: "var(--c-text-muted)" }}>
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════
+          SECTION 2: STATS BAR
+          ═══════════════════════════════════════ */}
+      <section
+        ref={statsReveal.ref}
+        className={`relative z-10 max-w-4xl mx-auto px-6 -mt-8 mb-20 transition-all duration-700 ${statsReveal.visible ? "section-visible" : "section-hidden"}`}
+      >
+        <div className="glass-strong gradient-border p-6 sm:p-8">
+          <div className="flex justify-around items-center gap-4">
+            {[
+              { value: animalsCount, suffix: "+", label: t.animals },
+              { value: matchesCount, suffix: "%", label: t.matchRate },
+              { value: cantonsCount, suffix: "", label: t.heroCoveredCantons },
+            ].map((stat, i) => (
+              <div key={i} className="text-center">
+                <p className="text-3xl sm:text-4xl font-black gradient-text">
+                  {stat.value}{stat.suffix}
+                </p>
+                <p className="text-[10px] sm:text-xs uppercase tracking-widest mt-1" style={{ color: "var(--c-text-muted)" }}>
+                  {stat.label}
                 </p>
               </div>
-              <span className="text-lg" style={{color:"#0D9488"}}>→</span>
-            </div>
+            ))}
           </div>
-        </a>
-      </div>
+        </div>
+      </section>
 
-      {/* ═══════════════ CTA FINAL ═══════════════ */}
-      <div className="px-5 mb-12">
-        <div className="text-center bg-[var(--c-card)] border-2 rounded-2xl p-8" style={{borderColor:"var(--c-accent, rgba(249,115,22,.2))"}}>
-          <p className="text-3xl mb-3">🐾</p>
-          <h2 className="font-extrabold text-xl mb-2 text-[var(--c-text)]">{t.ctaTitle}</h2>
-          <p className="text-xs mb-6 text-[var(--c-text-muted)] max-w-xs mx-auto">{t.ctaDesc}</p>
-          <Link href="/signup" className="inline-block px-8 py-3 text-white font-bold rounded-full pulse-slow glow-accent" style={{background:"#f97316",boxShadow:"0 0 30px rgba(249,115,22,0.3)"}}>
+      {/* ═══════════════════════════════════════
+          SECTION 3: HOW IT WORKS
+          ═══════════════════════════════════════ */}
+      <section
+        id="comment-ca-marche"
+        ref={howReveal.ref}
+        className={`relative z-10 max-w-5xl mx-auto px-6 mb-24 scroll-mt-20 transition-all duration-700 ${howReveal.visible ? "section-visible" : "section-hidden"}`}
+      >
+        <h2 className="text-center text-xs font-bold uppercase tracking-[0.2em] mb-2" style={{ color: "var(--c-text-muted)" }}>
+          {t.howItWorks}
+        </h2>
+        <div className="h-1 w-16 mx-auto rounded-full mb-12" style={{ background: "linear-gradient(90deg, #F97316, #A78BFA, #38BDF8)" }} />
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative stagger-children">
+          {/* Gradient connector lines (desktop) */}
+          <div className="hidden md:block absolute top-1/2 left-[33%] right-[33%] h-[2px] gradient-line" style={{ width: "34%", left: "16.5%", background: "linear-gradient(90deg, #F97316, #A78BFA)" }} />
+          <div className="hidden md:block absolute top-1/2 right-[16.5%] h-[2px]" style={{ width: "34%", background: "linear-gradient(90deg, #A78BFA, #38BDF8)" }} />
+
+          {HOW_STEPS.map((step, i) => (
+            <div key={i} className="glass card-futuristic p-6 sm:p-8 text-center relative">
+              {/* Step number */}
+              <div className="inline-block mb-4">
+                <span className="text-xs font-black gradient-text tracking-widest">{step.num}</span>
+              </div>
+
+              {/* Floating emoji */}
+              <div className="text-4xl mb-4 animate-float" style={{ animationDelay: `${i * 0.3}s` }}>
+                {step.emoji}
+              </div>
+
+              {/* Title & description */}
+              <h3 className="font-bold text-lg mb-2" style={{ color: "var(--c-text)" }}>{t[step.titleKey]}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: "var(--c-text-muted)" }}>{t[step.descKey]}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center mt-10">
+          <Link href="/signup" className="btn-futuristic neon-orange">
+            {t.heroStartFree}
+          </Link>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════
+          SECTION 4: FEATURES SHOWCASE
+          ═══════════════════════════════════════ */}
+      <section
+        ref={featuresReveal.ref}
+        className={`relative z-10 max-w-5xl mx-auto px-6 mb-24 transition-all duration-700 ${featuresReveal.visible ? "section-visible" : "section-hidden"}`}
+      >
+        <div className="space-y-8">
+          {FEATURES.map((feat, i) => {
+            const isRight = feat.align === "right";
+            return (
+              <div
+                key={i}
+                className={`flex flex-col ${isRight ? "md:flex-row-reverse" : "md:flex-row"} items-center gap-6`}
+              >
+                {/* Icon card */}
+                <div className="glass gradient-border p-8 flex items-center justify-center flex-shrink-0" style={{ width: 120, height: 120 }}>
+                  <span className="text-5xl animate-float" style={{ animationDelay: `${i * 0.5}s` }}>
+                    {feat.emoji}
+                  </span>
+                </div>
+
+                {/* Text */}
+                <div className={`glass card-futuristic p-6 flex-1 ${isRight ? "md:text-right" : ""}`}>
+                  <h3 className="font-bold text-xl mb-2" style={{ color: "var(--c-accent, #f97316)" }}>
+                    {t[feat.titleKey]}
+                  </h3>
+                  <p className="text-sm leading-relaxed" style={{ color: "var(--c-text-muted)" }}>
+                    {t[feat.descKey]}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════
+          SECTION 5: TESTIMONIALS
+          ═══════════════════════════════════════ */}
+      <section
+        ref={testimonialsReveal.ref}
+        className={`relative z-10 max-w-5xl mx-auto px-6 mb-24 transition-all duration-700 ${testimonialsReveal.visible ? "section-visible" : "section-hidden"}`}
+      >
+        <h2 className="text-center text-xs font-bold uppercase tracking-[0.2em] mb-2" style={{ color: "var(--c-text-muted)" }}>
+          {t.testimonialTitle}
+        </h2>
+        <div className="h-1 w-16 mx-auto rounded-full mb-12" style={{ background: "linear-gradient(90deg, #F97316, #A78BFA, #38BDF8)" }} />
+
+        {/* Horizontal scroll on mobile, grid on desktop */}
+        <div className="flex md:grid md:grid-cols-3 gap-6 overflow-x-auto scroll-snap-x pb-4 md:pb-0 stagger-children">
+          {TESTIMONIALS.map((testi, i) => (
+            <div
+              key={i}
+              className="glass card-futuristic p-6 min-w-[280px] md:min-w-0 flex-shrink-0"
+            >
+              {/* Stars */}
+              <div className="flex gap-1 mb-4">
+                {Array.from({ length: testi.stars }).map((_, s) => (
+                  <span key={s} className="text-sm" style={{ color: "#F59E0B" }}>★</span>
+                ))}
+              </div>
+
+              {/* Quote */}
+              <p className="text-sm italic leading-relaxed mb-4" style={{ color: "var(--c-text)" }}>
+                &ldquo;{t[testi.textKey]}&rdquo;
+              </p>
+
+              {/* Author */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-bold" style={{ color: "var(--c-accent, #f97316)" }}>
+                    {t[testi.authorKey]}
+                  </p>
+                  <p className="text-[10px]" style={{ color: "var(--c-text-muted)" }}>
+                    {t[testi.petKey]}
+                  </p>
+                </div>
+                <span className="text-2xl opacity-30">🐾</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════
+          SECTION 6: FINAL CTA
+          ═══════════════════════════════════════ */}
+      <section
+        ref={ctaReveal.ref}
+        className={`relative z-10 max-w-3xl mx-auto px-6 mb-20 transition-all duration-700 ${ctaReveal.visible ? "section-visible" : "section-hidden"}`}
+      >
+        <div className="glass-strong gradient-border p-10 sm:p-14 text-center relative overflow-hidden">
+          {/* CTA particles (CSS only) */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {[
+              { bg: "rgba(249,115,22,0.15)", w: 8, top: "15%", left: "10%", dur: "8s" },
+              { bg: "rgba(167,139,250,0.12)", w: 6, top: "60%", left: "85%", dur: "10s" },
+              { bg: "rgba(56,189,248,0.12)", w: 10, top: "80%", left: "20%", dur: "12s" },
+              { bg: "rgba(249,115,22,0.1)", w: 5, top: "30%", left: "75%", dur: "9s" },
+              { bg: "rgba(167,139,250,0.15)", w: 7, top: "45%", left: "50%", dur: "11s" },
+            ].map((dot, i) => (
+              <div
+                key={i}
+                className="absolute rounded-full animate-float"
+                style={{
+                  background: dot.bg,
+                  width: dot.w,
+                  height: dot.w,
+                  top: dot.top,
+                  left: dot.left,
+                  animationDuration: dot.dur,
+                  animationDelay: `${i * 0.7}s`,
+                }}
+              />
+            ))}
+          </div>
+
+          <span className="text-5xl block mb-4">🐾</span>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-3 gradient-text">
+            {t.ctaTitle}
+          </h2>
+          <p className="text-sm sm:text-base mb-8 max-w-md mx-auto leading-relaxed" style={{ color: "var(--c-text-muted)" }}>
+            {t.ctaDesc}
+          </p>
+
+          <Link href="/signup" className="btn-futuristic neon-orange animate-pulse-glow text-base inline-block">
             {t.ctaButton}
           </Link>
-          <p className="text-[10px] mt-3 text-[var(--c-text-muted)]">{t.ctaFree}</p>
-        </div>
-      </div>
 
-      {/* Footer légal */}
-      <div style={{ padding: "16px 0", textAlign: "center", borderTop: "1px solid var(--c-border)", marginTop: 24 }}>
-        <div style={{ display: "flex", gap: 16, justifyContent: "center" }}>
-          <a href="/legal/cgu" style={{ fontSize: 11, color: "var(--c-text-muted)", textDecoration: "none" }}>{t.footerCGU}</a>
-          <a href="/legal/privacy" style={{ fontSize: 11, color: "var(--c-text-muted)", textDecoration: "none" }}>{t.footerPrivacy}</a>
-          <a href="https://pawdirectory.ch" target="_blank" rel="noopener" style={{ fontSize: 11, color: "var(--c-text-muted)", textDecoration: "none" }}>PawDirectory</a>
+          <p className="text-[10px] mt-4" style={{ color: "var(--c-text-muted)" }}>
+            {t.ctaFree}
+          </p>
         </div>
-        <p style={{ fontSize: 10, color: "var(--c-text-muted)", marginTop: 6, opacity: 0.6 }}>© 2026 Pawly · Canton de Vaud, Suisse</p>
-      </div>
+      </section>
+
+      {/* ═══════════════════════════════════════
+          SECTION 7: PAWDIRECTORY LINK
+          ═══════════════════════════════════════ */}
+      <section className="relative z-10 max-w-3xl mx-auto px-6 mb-16">
+        <a href="https://pawdirectory.ch" target="_blank" rel="noopener" className="block">
+          <div className="glass card-futuristic p-5 flex items-center gap-4 hover:scale-[1.02] transition-transform">
+            <div className="text-3xl flex-shrink-0">🏥</div>
+            <div className="flex-1">
+              <div className="font-extrabold text-sm" style={{ color: "var(--c-text)" }}>PawDirectory</div>
+              <p className="text-xs mt-0.5 leading-relaxed" style={{ color: "var(--c-text-muted)" }}>
+                {{ fr: "306+ services pour animaux en Suisse", de: "306+ Tierdienste in der Schweiz", it: "306+ servizi per animali in Svizzera", en: "306+ pet services across Switzerland" }[lang]}
+              </p>
+            </div>
+            <span className="text-lg" style={{ color: "#0D9488" }}>→</span>
+          </div>
+        </a>
+      </section>
+
+      {/* ═══════════════════════════════════════
+          FOOTER
+          ═══════════════════════════════════════ */}
+      <footer className="relative z-10 border-t py-6 text-center" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+        <div className="flex gap-6 justify-center mb-3">
+          <a href="/legal/cgu" className="text-[11px] hover:underline" style={{ color: "var(--c-text-muted)" }}>{t.footerCGU}</a>
+          <a href="/legal/privacy" className="text-[11px] hover:underline" style={{ color: "var(--c-text-muted)" }}>{t.footerPrivacy}</a>
+          <a href="https://pawdirectory.ch" target="_blank" rel="noopener" className="text-[11px] hover:underline" style={{ color: "var(--c-text-muted)" }}>PawDirectory</a>
+        </div>
+        <p className="text-[10px]" style={{ color: "var(--c-text-muted)", opacity: 0.6 }}>
+          © 2026 Pawly · Canton de Vaud, Suisse
+        </p>
+      </footer>
     </div>
   );
 }

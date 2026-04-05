@@ -271,6 +271,9 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     // Chat
     chatTyping: "écrit...", chatSendPhoto: "Envoyer une photo", chatPhotoSending: "Envoi en cours...",
 
+    // Presence
+    presenceOnline: "En ligne", presenceOffline: "Hors ligne", presenceLastSeen: "Vu il y a",
+
     // Theme
     themeAuto: "Automatique", themeAutoDesc: "Suit les préférences système",
   },
@@ -506,6 +509,9 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
 
     // Chat
     chatTyping: "schreibt...", chatSendPhoto: "Foto senden", chatPhotoSending: "Wird gesendet...",
+
+    // Presence
+    presenceOnline: "Online", presenceOffline: "Offline", presenceLastSeen: "Zuletzt gesehen vor",
 
     // Theme
     themeAuto: "Automatisch", themeAutoDesc: "Folgt den Systemeinstellungen",
@@ -743,6 +749,9 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     // Chat
     chatTyping: "sta scrivendo...", chatSendPhoto: "Invia una foto", chatPhotoSending: "Invio in corso...",
 
+    // Presence
+    presenceOnline: "Online", presenceOffline: "Offline", presenceLastSeen: "Visto",
+
     // Theme
     themeAuto: "Automatico", themeAutoDesc: "Segue le preferenze di sistema",
   },
@@ -978,6 +987,9 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
 
     // Chat
     chatTyping: "typing...", chatSendPhoto: "Send a photo", chatPhotoSending: "Sending...",
+
+    // Presence
+    presenceOnline: "Online", presenceOffline: "Offline", presenceLastSeen: "Last seen",
 
     // Theme
     themeAuto: "Automatic", themeAutoDesc: "Follows system preferences",
