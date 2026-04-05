@@ -88,10 +88,10 @@ export async function GET() {
       safeQuery(db.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", weekStart)),
       safeQuery(db.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", lastWeekStart).lt("created_at", weekStart)),
       safeQuery(db.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", monthStart)),
-      safeQuery(db.from("profiles").select("id, email, full_name, avatar_url, subscription, canton, city, created_at").order("created_at", { ascending: false })),
+      safeQuery(db.from("profiles").select("*").order("created_at", { ascending: false })),
       safeQuery(db.from("animals").select("id", { count: "exact", head: true })),
-      safeQuery(db.from("animals").select("id, name, species, breed, canton, city, photo_url, created_by, created_at, status").order("created_at", { ascending: false })),
-      safeQuery(db.from("animals").select("species")),
+      safeQuery(db.from("animals").select("*").order("created_at", { ascending: false })),
+      safeQuery(db.from("animals").select("id, species")),
       safeQuery(db.from("matches").select("id", { count: "exact", head: true })),
       safeQuery(db.from("matches").select("id", { count: "exact", head: true }).gte("created_at", todayStart)),
       safeQuery(db.from("messages").select("id", { count: "exact", head: true })),
@@ -101,7 +101,7 @@ export async function GET() {
       safeQuery(db.from("profiles").select("created_at").gte("created_at", weekAgo)),
       safeQuery(db.from("animals").select("id", { count: "exact", head: true }).gte("created_at", todayStart)),
       safeQuery(db.from("matches").select("id", { count: "exact", head: true }).gte("created_at", yesterday)),
-      safeQuery(db.from("reports").select("id, reporter_id, reported_user_id, reported_animal_id, reason, details, status, created_at").eq("status", "pending").order("created_at", { ascending: false })),
+      safeQuery(db.from("reports").select("*").eq("status", "pending").order("created_at", { ascending: false })),
       safeQuery(db.from("reports").select("id", { count: "exact", head: true })),
     ]);
 
