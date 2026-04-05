@@ -10,12 +10,12 @@ export async function GET(request: Request) {
   // Auth: CRON_SECRET required
   const authHeader = request.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ error: "Non autorise" }, { status: 401 });
+    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
   try {
     const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) return NextResponse.json({ error: "Email service non configure" }, { status: 500 });
+    if (!apiKey) return NextResponse.json({ error: "Email service non configuré" }, { status: 500 });
 
     const { Resend } = await import("resend");
     const resend = new Resend(apiKey);
@@ -57,7 +57,7 @@ export async function GET(request: Request) {
       const vaccineDate = new Date(animal.next_vaccine_date);
       const daysUntil = Math.ceil((vaccineDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
       const dateStr = vaccineDate.toLocaleDateString("fr-CH", { day: "numeric", month: "long", year: "numeric" });
-      const firstName = owner.full_name ? owner.full_name.split(" ")[0] : "cher proprietaire";
+      const firstName = owner.full_name ? owner.full_name.split(" ")[0] : "cher propriétaire";
 
       const html = `<div style="max-width:500px;margin:0 auto;font-family:-apple-system,sans-serif;background:#1a1225;color:#fff;border-radius:16px;overflow:hidden">
         <div style="background:linear-gradient(135deg,#0D9488,#0f766e);padding:32px;text-align:center">
@@ -76,9 +76,9 @@ export async function GET(request: Request) {
             <p style="margin:8px 0 0;font-size:13px;text-align:center;color:#9ca3af">${dateStr}</p>
           </div>
           <p style="font-size:13px;color:#9ca3af;margin-bottom:20px">
-            N'oublie pas de prendre rendez-vous chez ton veterinaire. Tu peux trouver un veterinaire proche de chez toi sur PawDirectory.
+            N'oublie pas de prendre rendez-vous chez ton vétérinaire. Tu peux trouver un vétérinaire proche de chez toi sur PawDirectory.
           </p>
-          <a href="https://pawdirectory.ch" style="display:block;margin-bottom:12px;padding:14px;background:#0D9488;color:#fff;text-align:center;border-radius:12px;font-weight:700;font-size:14px;text-decoration:none">Trouver un veterinaire</a>
+          <a href="https://pawdirectory.ch" style="display:block;margin-bottom:12px;padding:14px;background:#0D9488;color:#fff;text-align:center;border-radius:12px;font-weight:700;font-size:14px;text-decoration:none">Trouver un vétérinaire</a>
           <a href="https://pawlyapp.ch/profile" style="display:block;padding:14px;background:rgba(255,255,255,0.05);color:#d1d5db;text-align:center;border-radius:12px;font-weight:600;font-size:14px;text-decoration:none;border:1px solid rgba(255,255,255,0.1)">Voir mon profil</a>
         </div>
         <div style="padding:16px;text-align:center;border-top:1px solid rgba(255,255,255,0.05)">

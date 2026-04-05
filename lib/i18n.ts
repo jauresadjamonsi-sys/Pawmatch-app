@@ -68,7 +68,7 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
 
     // Actions
     sniff: "Flairer", sniffSub: "Swipe et trouve des copains",
-    events: "Événements", eventsSub: "Balades de groupe près de toi",
+    events: "Événements", eventsSub: "Groupes de balades près de toi",
     premium: "Premium", premiumSub: "Rencontres illimitées + IA avancée",
     joinCard: "Commencer", joinCardSub: "3 rencontres gratuites",
 

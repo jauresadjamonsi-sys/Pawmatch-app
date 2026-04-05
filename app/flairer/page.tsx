@@ -157,10 +157,10 @@ export default function FlairerPage() {
         }
         if (detected) setUserCanton(detected);
       } catch(e) {
-        console.log("[G\u00E9oloc] Erreur:", e);
+        // Geolocation error — silent
       }
     }, function(err) {
-      console.log("[G\u00E9oloc] Permission refus\u00E9e ou erreur:", err.message);
+      // Geolocation permission denied — silent
     }, { enableHighAccuracy: false, timeout: 10000 });
   }
 

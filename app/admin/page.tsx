@@ -110,7 +110,7 @@ function AdminPageInner() {
       setError(null);
       const res = await fetch("/api/admin/stats");
       if (res.status === 401) { router.push("/login?redirectTo=/admin"); return; }
-      if (res.status === 403) { setError("Acces refuse. Vous n'etes pas administrateur."); setLoading(false); return; }
+      if (res.status === 403) { setError("Accès refusé. Vous n'êtes pas administrateur."); setLoading(false); return; }
       if (!res.ok) throw new Error("Erreur serveur");
       const data = await res.json();
       setStats(data);
@@ -125,7 +125,7 @@ function AdminPageInner() {
   useEffect(() => {
     if (authLoading) return;
     if (!isAuthenticated) { router.push("/login?redirectTo=/admin"); return; }
-    if (!isAdmin) { setError("Acces refuse. Vous n'etes pas administrateur."); setLoading(false); return; }
+    if (!isAdmin) { setError("Accès refusé. Vous n'êtes pas administrateur."); setLoading(false); return; }
     fetchStats();
   }, [authLoading, isAuthenticated, isAdmin, router, fetchStats]);
 
@@ -156,10 +156,8 @@ function AdminPageInner() {
 
   const handleExport = () => {
     console.log("=== EXPORT ADMIN DATA ===");
-    console.log("Users:", JSON.stringify(stats.allUsers, null, 2));
-    console.log("Animals:", JSON.stringify(stats.allAnimals, null, 2));
     console.log("Stats:", { totalUsers: stats.totalUsers, totalAnimals: stats.totalAnimals, totalMatches: stats.totalMatches, estimatedMRR: stats.estimatedMRR });
-    alert("Donnees exportees dans la console (F12)");
+    alert("Données exportées dans la console (F12)");
   };
 
   const TABS: { key: TabKey; label: string }[] = [
@@ -274,7 +272,7 @@ function OverviewTab({ stats, onTabSwitch }: { stats: AdminStats; onTabSwitch: (
           iconColor="#F59E0B"
         />
         <KPICard
-          label="MRR estime"
+          label="MRR estimé"
           value={`CHF ${stats.estimatedMRR.toFixed(2)}`}
           sub={`${stats.premiumCount} premium / ${stats.proCount} pro`}
           subColor="#F59E0B"
@@ -286,14 +284,14 @@ function OverviewTab({ stats, onTabSwitch }: { stats: AdminStats; onTabSwitch: (
         <KPICard
           label="Croissance"
           value={`${stats.growthRate >= 0 ? "+" : ""}${stats.growthRate}%`}
-          sub="vs semaine derniere"
+          sub="vs semaine dernière"
           subColor={stats.growthRate >= 0 ? "#22c55e" : "#ef4444"}
           icon="G"
           iconBg={stats.growthRate >= 0 ? "rgba(34,197,94,0.15)" : "rgba(239,68,68,0.15)"}
           iconColor={stats.growthRate >= 0 ? "#22c55e" : "#ef4444"}
         />
         <KPICard
-          label="Evenements"
+          label="Événements"
           value={stats.totalEvents}
           icon="E"
           iconBg="rgba(236,72,153,0.15)"
@@ -304,7 +302,7 @@ function OverviewTab({ stats, onTabSwitch }: { stats: AdminStats; onTabSwitch: (
       {/* Last 24h section */}
       <div style={{ ...cardStyle, marginBottom: 24, padding: 20 }}>
         <h2 style={{ fontSize: 15, fontWeight: 700, color: "var(--c-text, #f0eeff)", margin: "0 0 12px" }}>
-          Dernieres 24h
+          Dernières 24h
         </h2>
         <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
           <MiniStat label="Nouvelles inscriptions" value={stats.usersToday} color="#A78BFA" />
@@ -342,11 +340,11 @@ function OverviewTab({ stats, onTabSwitch }: { stats: AdminStats; onTabSwitch: (
         {/* Animals by Species */}
         <div style={cardStyle}>
           <h2 style={{ fontSize: 15, fontWeight: 700, color: "var(--c-text, #f0eeff)", margin: "0 0 20px" }}>
-            Animaux par espece
+            Animaux par espèce
           </h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {speciesEntries.length === 0 && (
-              <span style={{ color: "var(--c-text-muted, #9b93b8)", fontSize: 13 }}>Aucune donnee</span>
+              <span style={{ color: "var(--c-text-muted, #9b93b8)", fontSize: 13 }}>Aucune donnée</span>
             )}
             {speciesEntries.map(([species, count]) => (
               <div key={species} style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -368,11 +366,11 @@ function OverviewTab({ stats, onTabSwitch }: { stats: AdminStats; onTabSwitch: (
         {/* Activity Feed */}
         <div style={cardStyle}>
           <h2 style={{ fontSize: 15, fontWeight: 700, color: "var(--c-text, #f0eeff)", margin: "0 0 16px" }}>
-            Activite recente
+            Activité récente
           </h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {stats.recentActivity.length === 0 && (
-              <span style={{ color: "var(--c-text-muted, #9b93b8)", fontSize: 13 }}>Aucune activite</span>
+              <span style={{ color: "var(--c-text-muted, #9b93b8)", fontSize: 13 }}>Aucune activité</span>
             )}
             {stats.recentActivity.map((a, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0" }}>
@@ -509,7 +507,7 @@ function MembersTab({ stats }: { stats: AdminStats }) {
                 <SortHeader label="Abonnement" sortField="subscription" />
                 <SortHeader label="Animaux" sortField="animal_count" />
                 <SortHeader label="Inscrit le" sortField="created_at" />
-                <SortHeader label="Derniere co." sortField="last_sign_in_at" />
+                <SortHeader label="Dernière co." sortField="last_sign_in_at" />
               </tr>
             </thead>
             <tbody>
@@ -569,8 +567,8 @@ function MembersTab({ stats }: { stats: AdminStats }) {
                           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                             <div style={{ display: "flex", gap: 16, flexWrap: "wrap", padding: "8px 0" }}>
                               <MiniStat label="Abonnement" value={subLabel(u.subscription)} color="#A78BFA" />
-                              <MiniStat label="Canton" value={u.canton || "Non renseigne"} color="#38BDF8" />
-                              <MiniStat label="Ville" value={u.city || "Non renseigne"} color="#F59E0B" />
+                              <MiniStat label="Canton" value={u.canton || "Non renseigné"} color="#38BDF8" />
+                              <MiniStat label="Ville" value={u.city || "Non renseigné"} color="#F59E0B" />
                               <MiniStat label="Animaux" value={u.animal_count} color="#EC4899" />
                             </div>
                             {animals.length > 0 && (
@@ -594,7 +592,7 @@ function MembersTab({ stats }: { stats: AdminStats }) {
                             )}
                             {animals.length === 0 && (
                               <p style={{ fontSize: 13, color: "var(--c-text-muted, #9b93b8)", fontStyle: "italic" }}>
-                                Aucun animal enregistre
+                                Aucun animal enregistré
                               </p>
                             )}
                           </div>
@@ -671,7 +669,7 @@ function AnimalsTab({ stats }: { stats: AdminStats }) {
               outline: "none",
             }}
           >
-            <option value="">Toutes les especes</option>
+            <option value="">Toutes les espèces</option>
             {speciesList.map(s => (
               <option key={s} value={s}>{SPECIES_EMOJI[s] || "🐾"} {s}</option>
             ))}
@@ -701,7 +699,7 @@ function AnimalsTab({ stats }: { stats: AdminStats }) {
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
             <thead>
               <tr>
-                {["", "Nom", "Espece", "Race", "Canton", "Proprietaire", "Cree le"].map(h => (
+                {["", "Nom", "Espèce", "Race", "Canton", "Propriétaire", "Créé le"].map(h => (
                   <th key={h} style={thStyle}>{h}</th>
                 ))}
               </tr>
@@ -763,7 +761,7 @@ function RevenueTab({ stats }: { stats: AdminStats }) {
       {/* Revenue KPIs */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12, marginBottom: 24 }}>
         <KPICard
-          label="MRR estime"
+          label="MRR estimé"
           value={`CHF ${stats.estimatedMRR.toFixed(2)}`}
           icon="$"
           iconBg="rgba(34,197,94,0.15)"
@@ -818,7 +816,7 @@ function RevenueTab({ stats }: { stats: AdminStats }) {
               <span style={{ color: "#22c55e", fontWeight: 800, fontSize: 18 }}>CHF {stats.estimatedMRR.toFixed(2)}</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderTop: "1px solid var(--c-border, #2d2545)" }}>
-              <span style={{ color: "var(--c-text-muted, #9b93b8)", fontSize: 13 }}>ARR estime</span>
+              <span style={{ color: "var(--c-text-muted, #9b93b8)", fontSize: 13 }}>ARR estimé</span>
               <span style={{ color: "var(--c-text, #f0eeff)", fontWeight: 600, fontSize: 14 }}>CHF {(stats.estimatedMRR * 12).toFixed(2)}</span>
             </div>
           </div>
@@ -1127,8 +1125,8 @@ function ReportsTab({ stats, onRefresh }: { stats: AdminStats; onRefresh: () => 
               <thead>
                 <tr>
                   <th style={thStyle}>Date</th>
-                  <th style={thStyle}>Signale par</th>
-                  <th style={thStyle}>Utilisateur signale</th>
+                  <th style={thStyle}>Signalé par</th>
+                  <th style={thStyle}>Utilisateur signalé</th>
                   <th style={thStyle}>Raison</th>
                   <th style={thStyle}>Details</th>
                   <th style={thStyle}>Actions</th>

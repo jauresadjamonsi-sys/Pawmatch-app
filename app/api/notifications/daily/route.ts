@@ -39,7 +39,7 @@ export async function GET(request: Request) {
   // Validate CRON_SECRET
   const authHeader = request.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ error: "Non autorise" }, { status: 401 });
+    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
   const results: string[] = [];
@@ -54,7 +54,7 @@ export async function GET(request: Request) {
   if (vaccineAnimals) {
     for (const animal of vaccineAnimals) {
       if (animal.created_by) {
-        const sent = await sendPush(animal.created_by, "Rappel vaccin", animal.name + " a un vaccin prevu dans 7 jours.", "/profile");
+        const sent = await sendPush(animal.created_by, "Rappel vaccin", animal.name + " a un vaccin prévu dans 7 jours.", "/profile");
         if (sent > 0) { totalSent++; results.push("vaccin: " + animal.name); }
       }
     }
@@ -70,7 +70,7 @@ export async function GET(request: Request) {
   if (vetAnimals) {
     for (const animal of vetAnimals) {
       if (animal.created_by) {
-        const sent = await sendPush(animal.created_by, "Visite veto recommandee", animal.name + " n a pas vu le veto depuis plus de 6 mois.", "/profile");
+        const sent = await sendPush(animal.created_by, "Visite véto recommandée", animal.name + " n'a pas vu le véto depuis plus de 6 mois.", "/profile");
         if (sent > 0) { totalSent++; results.push("veto: " + animal.name); }
       }
     }
@@ -82,7 +82,7 @@ export async function GET(request: Request) {
     for (const user of activeUsers) {
       const { data: animals } = await supabase.from("animals").select("name").eq("created_by", user.id).limit(1);
       if (animals && animals.length > 0) {
-        const sent = await sendPush(user.id, "Match du jour", animals[0].name + " a un nouveau copain recommande !", "/flairer");
+        const sent = await sendPush(user.id, "Match du jour", animals[0].name + " a un nouveau copain recommandé !", "/flairer");
         if (sent > 0) totalSent++;
       }
     }

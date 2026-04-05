@@ -31,7 +31,7 @@ const MOODS = [
   { value: "excellent", emoji: "\u{1F929}", label: "Super", color: "#22c55e", score: 5 },
   { value: "happy", emoji: "\u{1F60A}", label: "Content", color: "#84cc16", score: 4 },
   { value: "neutral", emoji: "\u{1F610}", label: "Normal", color: "#f59e0b", score: 3 },
-  { value: "tired", emoji: "\u{1F634}", label: "Fatigue", color: "#f97316", score: 2 },
+  { value: "tired", emoji: "\u{1F634}", label: "Fatigué", color: "#f97316", score: 2 },
   { value: "sick", emoji: "\u{1F912}", label: "Malade", color: "#ef4444", score: 1 },
 ];
 
@@ -111,7 +111,7 @@ function getScoreColor(score: number): string {
 
 function getScoreLabel(score: number): string {
   if (score >= 75) return "Excellent";
-  if (score >= 50) return "A surveiller";
+  if (score >= 50) return "À surveiller";
   return "Attention requise";
 }
 
@@ -134,14 +134,14 @@ function generateAlerts(animal: AnimalWithHealth, moodEntries: MoodEntry[]): Ale
         icon: "\u{1F6A8}", title: "Vaccin en retard",
         description: `Le vaccin est en retard de ${Math.abs(days)} jours. Prenez rendez-vous rapidement.`,
         severity: "red",
-        cta: { label: "Trouver un veto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
+        cta: { label: "Trouver un véto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
       });
     } else if (days <= 30) {
       alerts.push({
         icon: "\u{1F489}", title: "Rappel vaccin",
-        description: `Prochain vaccin dans ${days} jours. Pensez a prendre rendez-vous.`,
+        description: `Prochain vaccin dans ${days} jours. Pensez à prendre rendez-vous.`,
         severity: "orange",
-        cta: { label: "Trouver un veto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
+        cta: { label: "Trouver un véto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
       });
     }
   }
@@ -151,23 +151,23 @@ function generateAlerts(animal: AnimalWithHealth, moodEntries: MoodEntry[]): Ale
     const months = monthsSince(animal.last_vet_visit);
     if (months > 12) {
       alerts.push({
-        icon: "\u{1F3E5}", title: "Visite veterinaire recommandee",
-        description: `Derniere visite il y a ${months} mois. Un bilan de sante annuel est recommande.`,
+        icon: "\u{1F3E5}", title: "Visite vétérinaire recommandée",
+        description: `Dernière visite il y a ${months} mois. Un bilan de santé annuel est recommandé.`,
         severity: "red",
-        cta: { label: "Trouver un veto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
+        cta: { label: "Trouver un véto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
       });
     } else if (months > 6) {
       alerts.push({
-        icon: "\u{1F3E5}", title: "Visite veterinaire recommandee",
-        description: `Derniere visite il y a ${months} mois. Pensez au check-up semestriel.`,
+        icon: "\u{1F3E5}", title: "Visite vétérinaire recommandée",
+        description: `Dernière visite il y a ${months} mois. Pensez au check-up semestriel.`,
         severity: "orange",
-        cta: { label: "Trouver un veto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
+        cta: { label: "Trouver un véto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
       });
     }
   } else {
     alerts.push({
-      icon: "\u{1F3E5}", title: "Visite veterinaire inconnue",
-      description: "Renseignez la date de derniere visite pour un meilleur suivi.",
+      icon: "\u{1F3E5}", title: "Visite vétérinaire inconnue",
+      description: "Renseignez la date de dernière visite pour un meilleur suivi.",
       severity: "orange",
     });
   }
@@ -179,17 +179,17 @@ function generateAlerts(animal: AnimalWithHealth, moodEntries: MoodEntry[]): Ale
     if (isDecline) {
       alerts.push({
         icon: "\u{1F614}", title: "Humeur en baisse",
-        description: `L'humeur de ${animal.name} semble decliner ces derniers jours. Surveillez son comportement.`,
+        description: `L'humeur de ${animal.name} semble décliner ces derniers jours. Surveillez son comportement.`,
         severity: "orange",
       });
     }
     const avg = recent3.reduce((a, b) => a + b, 0) / 3;
     if (avg <= 2) {
       alerts.push({
-        icon: "\u{1F912}", title: "Humeur preoccupante",
-        description: `${animal.name} ne semble pas en forme. Consultez un veterinaire si cela persiste.`,
+        icon: "\u{1F912}", title: "Humeur préoccupante",
+        description: `${animal.name} ne semble pas en forme. Consultez un vétérinaire si cela persiste.`,
         severity: "red",
-        cta: { label: "Trouver un veto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
+        cta: { label: "Trouver un véto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
       });
     }
   }
@@ -202,15 +202,15 @@ function generateAlerts(animal: AnimalWithHealth, moodEntries: MoodEntry[]): Ale
       const diff = ((animal.weight_kg - mid) / mid) * 100;
       if (diff > 25) {
         alerts.push({
-          icon: "\u{2696}\u{FE0F}", title: "Poids a surveiller",
-          description: `${animal.weight_kg} kg — en surpoids significatif. Consultez votre veto pour un regime adapte.`,
+          icon: "\u{2696}\u{FE0F}", title: "Poids à surveiller",
+          description: `${animal.weight_kg} kg — en surpoids significatif. Consultez votre véto pour un régime adapté.`,
           severity: "red",
-          cta: { label: "Trouver un veto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
+          cta: { label: "Trouver un véto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
         });
       } else if (diff > 10) {
         alerts.push({
-          icon: "\u{2696}\u{FE0F}", title: "Poids a surveiller",
-          description: `${animal.weight_kg} kg — legerement au-dessus du poids ideal. Surveillez l'alimentation.`,
+          icon: "\u{2696}\u{FE0F}", title: "Poids à surveiller",
+          description: `${animal.weight_kg} kg — légèrement au-dessus du poids idéal. Surveillez l'alimentation.`,
           severity: "orange",
         });
       }
@@ -220,8 +220,8 @@ function generateAlerts(animal: AnimalWithHealth, moodEntries: MoodEntry[]): Ale
   // Deworming reminder (dogs every 3 months)
   if (animal.species === "chien") {
     alerts.push({
-      icon: "\u{1F48A}", title: "Vermifuge recommande",
-      description: "Les chiens doivent etre vermifuges tous les 3 mois. Verifiez la date du dernier traitement.",
+      icon: "\u{1F48A}", title: "Vermifuge recommandé",
+      description: "Les chiens doivent être vermifugés tous les 3 mois. Vérifiez la date du dernier traitement.",
       severity: "green",
     });
   }
@@ -230,7 +230,7 @@ function generateAlerts(animal: AnimalWithHealth, moodEntries: MoodEntry[]): Ale
   if (alerts.length === 0) {
     alerts.push({
       icon: "\u{2705}", title: "Tout va bien !",
-      description: `${animal.name} est en bonne sante. Continuez ainsi !`,
+      description: `${animal.name} est en bonne santé. Continuez ainsi !`,
       severity: "green",
     });
   }
@@ -252,9 +252,9 @@ function computeProfileCompletion(animal: AnimalWithHealth): { percent: number; 
     { field: "photo_url", label: "Photo", filled: !!animal.photo_url },
     { field: "city", label: "Ville", filled: !!animal.city },
     { field: "canton", label: "Canton", filled: !!animal.canton },
-    { field: "traits", label: "Traits de caractere", filled: (animal.traits || []).length > 0 },
+    { field: "traits", label: "Traits de caractère", filled: (animal.traits || []).length > 0 },
     { field: "next_vaccine_date", label: "Prochain vaccin", filled: !!animal.next_vaccine_date },
-    { field: "last_vet_visit", label: "Derniere visite veto", filled: !!animal.last_vet_visit },
+    { field: "last_vet_visit", label: "Dernière visite véto", filled: !!animal.last_vet_visit },
   ];
   const filled = checks.filter(c => c.filled).length;
   const missing = checks.filter(c => !c.filled).map(c => c.label);
@@ -288,7 +288,7 @@ function buildTimeline(animal: AnimalWithHealth, moodEntries: MoodEntry[]): Time
     events.push({
       date: animal.last_vet_visit,
       type: "vet",
-      label: "Visite veterinaire",
+      label: "Visite vétérinaire",
       color: "#3b82f6",
       emoji: "\u{1F3E5}",
     });
@@ -566,7 +566,7 @@ export default function PawCareHubPage() {
             </div>
           ) : (
             <p style={{ fontSize: 13, color: "var(--c-text-muted)", textAlign: "center", padding: "16px 0" }}>
-              Aucune donnee d'humeur. Commencez le suivi !
+              Aucune donnée d'humeur. Commencez le suivi !
             </p>
           )}
 
@@ -605,9 +605,9 @@ export default function PawCareHubPage() {
               </div>
               <div style={{ marginBottom: 12 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: "var(--c-text)" }}>Energie</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: "var(--c-text)" }}>Énergie</span>
                   <span style={{ fontSize: 11, color: "var(--c-text-muted)" }}>
-                    {["Tres calme", "Calme", "Normal", "Actif", "Survolte"][moodEnergy - 1]}
+                    {["Très calme", "Calme", "Normal", "Actif", "Survolté"][moodEnergy - 1]}
                   </span>
                 </div>
                 <input type="range" min="1" max="5" value={moodEnergy}
@@ -647,7 +647,7 @@ export default function PawCareHubPage() {
             padding: 20, marginBottom: 20,
           }}>
             <h2 style={{ fontSize: 15, fontWeight: 800, color: "var(--c-text)", marginBottom: 14, display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 18 }}>{"\u{1F4C5}"}</span> Timeline sante
+              <span style={{ fontSize: 18 }}>{"\u{1F4C5}"}</span> Timeline santé
             </h2>
             <div style={{ position: "relative", paddingLeft: 24 }}>
               {/* Vertical line */}
@@ -685,7 +685,7 @@ export default function PawCareHubPage() {
           </h2>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
             {[
-              { emoji: "\u{1F3E5}", label: "Trouver un veto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
+              { emoji: "\u{1F3E5}", label: "Trouver un véto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
               { emoji: "\u2702\uFE0F", label: "Trouver un toiletteur", href: "https://pawdirectory.ch/annuaire?category=Toiletteur" },
               { emoji: "\u{1F393}", label: "Trouver un dresseur", href: "https://pawdirectory.ch/annuaire?category=Dresseur" },
               { emoji: "\u{1F9AE}", label: "Trouver un garde", href: "https://pawdirectory.ch/annuaire?category=Garde+%26+Promeneur" },
@@ -723,7 +723,7 @@ export default function PawCareHubPage() {
           {/* Progress bar */}
           <div style={{ marginBottom: 10 }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-              <span style={{ fontSize: 12, color: "var(--c-text-muted)" }}>Completude</span>
+              <span style={{ fontSize: 12, color: "var(--c-text-muted)" }}>Complétude</span>
               <span style={{ fontSize: 12, fontWeight: 800, color: profileCompletion.percent >= 80 ? "#22c55e" : profileCompletion.percent >= 50 ? "#f59e0b" : "#ef4444" }}>
                 {profileCompletion.percent}%
               </span>
@@ -760,14 +760,14 @@ export default function PawCareHubPage() {
             background: "var(--c-accent)", color: "#fff", fontWeight: 700, fontSize: 13,
             textDecoration: "none", textAlign: "center",
           }}>
-            Completer le profil
+            Compléter le profil
           </Link>
         </div>
 
         {/* Footer */}
         <div style={{ textAlign: "center", paddingBottom: 32 }}>
           <p style={{ fontSize: 11, color: "var(--c-text-muted)" }}>
-            PawCare Hub — L'assistant sante de {animal.name}
+            PawCare Hub — L'assistant santé de {animal.name}
           </p>
         </div>
       </div>
