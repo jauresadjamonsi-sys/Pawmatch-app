@@ -27,7 +27,7 @@ export default function PrivacyPage() {
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">6. Vos droits</h2>
-            <p>Droit d'accès, de rectification, d'effacement, de portabilité et d'opposition. Contactez privacy@pawly.ch. Réponse sous 30 jours.</p>
+            <p>Droit d'accès, de rectification, d'effacement, de portabilité et d'opposition. Contactez contact@pawlyapp.ch. Réponse sous 30 jours.</p>
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">7. Securite</h2>
@@ -43,7 +43,7 @@ export default function PrivacyPage() {
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">10. Contact</h2>
-            <p>privacy@pawly.ch</p>
+            <p>contact@pawlyapp.ch</p>
           </section>
         </div>
       </div>
