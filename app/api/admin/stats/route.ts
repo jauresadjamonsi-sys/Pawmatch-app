@@ -52,6 +52,19 @@ export async function GET() {
     }
 
     const db = getServiceClient();
+
+    // ── DEBUG: test direct query on profiles ──
+    const debugResult: any = {};
+    try {
+      const testQuery = await db.from("profiles").select("*").limit(3);
+      debugResult.profilesError = testQuery.error?.message || null;
+      debugResult.profilesCount = testQuery.data?.length || 0;
+      debugResult.profilesSample = testQuery.data?.map((p: any) => ({ id: p.id, email: p.email, full_name: p.full_name })) || [];
+      debugResult.serviceKeyPrefix = (process.env.SUPABASE_SERVICE_ROLE_KEY || "").substring(0, 10) + "...";
+    } catch (e: any) {
+      debugResult.profilesException = e.message;
+    }
+
     const now = new Date();
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
     const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() + 1).toISOString();
@@ -215,6 +228,7 @@ export async function GET() {
       recentActivity: recentActivity.slice(0, 10),
       pendingReports: enrichedReports,
       totalReports: totalReportsRes.count,
+      _debug: debugResult,
     });
   } catch (err) {
     console.error("Admin stats error:", err);
