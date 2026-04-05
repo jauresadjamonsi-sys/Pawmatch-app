@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { Suspense, useEffect, useState, useCallback, useMemo } from "react";
 import { useAuth } from "@/lib/hooks/useAuth";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 /* ────────────────────────────────────────────── Types ── */
 
@@ -87,13 +87,23 @@ const SPECIES_EMOJI: Record<string, string> = {
 /* ────────────────────────────────────────────── Main ── */
 
 export default function AdminPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--c-bg, #0f0c1a)" }}><div style={{ color: "var(--c-text-muted, #9b93b8)", fontSize: 18 }}>Chargement...</div></div>}>
+      <AdminPageInner />
+    </Suspense>
+  );
+}
+
+function AdminPageInner() {
   const { profile, loading: authLoading, isAdmin, isAuthenticated } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
-  const [activeTab, setActiveTab] = useState<TabKey>("overview");
+  const initialTab = (searchParams.get("tab") as TabKey) || "overview";
+  const [activeTab, setActiveTab] = useState<TabKey>(initialTab);
 
   const fetchStats = useCallback(async () => {
     try {

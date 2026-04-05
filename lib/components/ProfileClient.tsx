@@ -115,10 +115,10 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
               <p className="text-lg font-black text-blue-400">{stats.messages}</p>
               <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Messages</p>
             </Link>
-            <Link href="/flairer"
+            <Link href="/admin?tab=members"
               className="bg-purple-500/10 rounded-xl p-3 text-center hover:bg-purple-500/20 transition cursor-pointer block">
-              <p className="text-lg font-black text-purple-400">{stats.days}</p>
-              <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">{stats.days <= 1 ? "Jour" : "Jours"}</p>
+              <p className="text-lg font-black text-purple-400">👥</p>
+              <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Membres</p>
             </Link>
           </div>
 
