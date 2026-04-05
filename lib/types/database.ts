@@ -31,6 +31,10 @@ export interface Animal {
   vaccinated: boolean;
   sterilized: boolean;
   traits: string[];
+  diet_type: string | null;
+  food_brand: string | null;
+  treats: string | null;
+  allergies: string | null;
   created_by: string | null;
   created_at: string;
   updated_at: string;

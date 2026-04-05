@@ -109,6 +109,10 @@ export default function EditAnimalPage() {
       sterilized: form.get("sterilized") === "on",
       traits: selectedTraits,
       photos: newPhotoUrls,
+      diet_type: (form.get("diet_type") as string) || null,
+      food_brand: (form.get("food_brand") as string) || null,
+      treats: (form.get("treats") as string) || null,
+      allergies: (form.get("allergies") as string) || null,
     });
 
     if (result.error) { setError(result.error); setSaving(false); return; }
@@ -301,6 +305,68 @@ export default function EditAnimalPage() {
                 </div>
               </div>
             )}
+
+            {/* Alimentation */}
+            <div className="border-t border-white/10 pt-5">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-lg">🍖</span>
+                <label className="text-sm font-bold text-gray-200">Alimentation</label>
+              </div>
+
+              {/* Type d'alimentation */}
+              <div className="mb-3">
+                <label className="block text-sm font-medium text-gray-300 mb-2">Type d&apos;alimentation</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { value: "croquettes", label: "🥣 Croquettes" },
+                    { value: "barf", label: "🥩 BARF" },
+                    { value: "patee", label: "🥫 Pâtée" },
+                    { value: "mixte", label: "🔄 Mixte" },
+                    { value: "fait_maison", label: "👨‍🍳 Fait maison" },
+                    { value: "autre", label: "🍽️ Autre" },
+                  ].map((d) => (
+                    <button key={d.value} type="button"
+                      onClick={(e) => {
+                        const input = document.querySelector('input[name="diet_type"]') as HTMLInputElement;
+                        if (input) input.value = input.value === d.value ? "" : d.value;
+                        e.currentTarget.parentElement?.querySelectorAll("button").forEach(b => b.classList.remove("!bg-teal-500/20", "!border-teal-500/50", "!text-teal-300"));
+                        if (input?.value === d.value) e.currentTarget.classList.add("!bg-teal-500/20", "!border-teal-500/50", "!text-teal-300");
+                      }}
+                      className={"px-3 py-2 rounded-xl text-sm font-medium transition border " +
+                        (animal.diet_type === d.value
+                          ? "!bg-teal-500/20 !border-teal-500/50 !text-teal-300"
+                          : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10")}>
+                      {d.label}
+                    </button>
+                  ))}
+                </div>
+                <input type="hidden" name="diet_type" defaultValue={animal.diet_type || ""} />
+              </div>
+
+              {/* Marque */}
+              <div className="mb-3">
+                <label className="block text-sm font-medium text-gray-300 mb-1">Marque de nourriture</label>
+                <input name="food_brand" type="text" defaultValue={animal.food_brand || ""}
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                  placeholder="Ex: Royal Canin, Orijen, ANiFit..." />
+              </div>
+
+              {/* Friandises */}
+              <div className="mb-3">
+                <label className="block text-sm font-medium text-gray-300 mb-1">Friandises préférées</label>
+                <input name="treats" type="text" defaultValue={animal.treats || ""}
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                  placeholder="Ex: os à mâcher, biscuits, viande séchée..." />
+              </div>
+
+              {/* Allergies */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Allergies / intolérances</label>
+                <input name="allergies" type="text" defaultValue={animal.allergies || ""}
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                  placeholder="Ex: poulet, gluten, céréales..." />
+              </div>
+            </div>
 
             {/* Description */}
             <div>

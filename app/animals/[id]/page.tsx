@@ -273,7 +273,7 @@ export default function AnimalDetailPage() {
               ))}
             </div>
 
-            <div className="flex gap-3 mb-6">
+            <div className="flex gap-3 mb-4">
               <span className={"px-3 py-1 rounded-full text-xs font-medium " + (animal.vaccinated ? "bg-green-500/20 text-green-300" : "bg-white/5 text-gray-500")}>
                 {animal.vaccinated ? "✓ Vacciné" : "Non vacciné"}
               </span>
@@ -281,6 +281,41 @@ export default function AnimalDetailPage() {
                 {animal.sterilized ? "✓ Stérilisé" : "Non stérilisé"}
               </span>
             </div>
+
+            {/* Alimentation */}
+            {(animal.diet_type || animal.food_brand || animal.treats || animal.allergies) && (
+              <div className="bg-teal-500/5 border border-teal-500/15 rounded-2xl p-4 mb-6">
+                <h3 className="text-sm font-bold text-teal-300 mb-3 flex items-center gap-2">
+                  🍖 Alimentation
+                </h3>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  {animal.diet_type && (
+                    <div>
+                      <span className="text-gray-500 text-xs">Régime</span>
+                      <p className="text-gray-200 font-medium capitalize">{animal.diet_type.replace("_", " ")}</p>
+                    </div>
+                  )}
+                  {animal.food_brand && (
+                    <div>
+                      <span className="text-gray-500 text-xs">Marque</span>
+                      <p className="text-gray-200 font-medium">{animal.food_brand}</p>
+                    </div>
+                  )}
+                  {animal.treats && (
+                    <div>
+                      <span className="text-gray-500 text-xs">Friandises</span>
+                      <p className="text-gray-200 font-medium">{animal.treats}</p>
+                    </div>
+                  )}
+                  {animal.allergies && (
+                    <div>
+                      <span className="text-gray-500 text-xs">Allergies</span>
+                      <p className="text-red-300 font-medium">{animal.allergies}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* PawCare Hub — CTA prominent */}
             {isOwner && (
