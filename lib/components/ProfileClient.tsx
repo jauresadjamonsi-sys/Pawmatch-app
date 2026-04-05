@@ -68,6 +68,9 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
               <h1 className="text-xl font-bold text-[var(--c-text)] truncate">{profile?.full_name || "Utilisateur"}</h1>
               <p className="text-sm text-[var(--c-text-muted)] truncate">{user.email}</p>
               <span className={"inline-block mt-1 text-xs px-3 py-1 rounded-full font-semibold " + subColor}>{subLabel}</span>
+              {profile?.role === "admin" && (
+                <span className="inline-block mt-1 ml-2 text-xs px-3 py-1 rounded-full font-semibold bg-red-500/20 text-red-400">👑 Admin</span>
+              )}
             </div>
           </div>
 

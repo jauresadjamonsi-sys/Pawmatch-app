@@ -35,6 +35,7 @@ export default function AnimalDetailPage() {
   const [matchSuccess, setMatchSuccess] = useState(false);
   const [showMatchModal, setShowMatchModal] = useState(false);
   const [showSimulation, setShowSimulation] = useState(false);
+  const [activePhoto, setActivePhoto] = useState(0);
   const [hasCoupDeTruffe, setHasCoupDeTruffe] = useState(false);
   const [compatibility, setCompatibility] = useState<any>(null);
   const personality = animal ? detectPersonality(animal.traits || []) : null;
