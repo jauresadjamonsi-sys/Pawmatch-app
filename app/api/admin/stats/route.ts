@@ -42,24 +42,30 @@ export async function GET() {
     const now = new Date();
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
     const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() + 1).toISOString();
+    const lastWeekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() - 6).toISOString();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1).toISOString();
 
     // Run all queries in parallel
     const [
       totalUsersRes,
       usersTodayRes,
       usersWeekRes,
+      usersLastWeekRes,
       usersMonthRes,
+      allUsersRes,
       totalAnimalsRes,
+      allAnimalsRes,
       animalsBySpeciesRes,
       totalMatchesRes,
       matchesTodayRes,
       totalMessagesRes,
+      totalEventsRes,
       premiumCountRes,
       proCountRes,
-      recentUsersRes,
-      recentAnimalsRes,
       weeklySignupsRes,
+      animalsToday,
+      matchesYesterday,
     ] = await Promise.all([
       // Total users
       db.from("profiles").select("id", { count: "exact", head: true }),
@@ -67,10 +73,16 @@ export async function GET() {
       db.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", todayStart),
       // Users this week
       db.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", weekStart),
+      // Users last week (for growth)
+      db.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", lastWeekStart).lt("created_at", weekStart),
       // Users this month
       db.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", monthStart),
+      // ALL users with details
+      db.from("profiles").select("id, email, full_name, avatar_url, subscription, canton, city, created_at, last_sign_in_at").order("created_at", { ascending: false }),
       // Total animals
       db.from("animals").select("id", { count: "exact", head: true }),
+      // ALL animals with details
+      db.from("animals").select("id, name, species, breed, canton, city, photo_url, created_by, created_at, status").order("created_at", { ascending: false }),
       // Animals by species
       db.from("animals").select("species"),
       // Total matches
@@ -79,16 +91,18 @@ export async function GET() {
       db.from("matches").select("id", { count: "exact", head: true }).gte("created_at", todayStart),
       // Total messages
       db.from("messages").select("id", { count: "exact", head: true }),
+      // Total events
+      db.from("events").select("id", { count: "exact", head: true }),
       // Premium subscriptions
       db.from("profiles").select("id", { count: "exact", head: true }).eq("subscription", "premium"),
       // Pro subscriptions
       db.from("profiles").select("id", { count: "exact", head: true }).eq("subscription", "pro"),
-      // Recent signups (last 10)
-      db.from("profiles").select("email, full_name, created_at, subscription").order("created_at", { ascending: false }).limit(10),
-      // Recent animals (last 10)
-      db.from("animals").select("name, species, canton, created_at").order("created_at", { ascending: false }).limit(10),
-      // Weekly signups: last 7 days day by day
+      // Weekly signups: last 7 days
       db.from("profiles").select("created_at").gte("created_at", new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6).toISOString()),
+      // Animals created today
+      db.from("animals").select("id", { count: "exact", head: true }).gte("created_at", todayStart),
+      // Matches yesterday (for 24h section)
+      db.from("matches").select("id", { count: "exact", head: true }).gte("created_at", yesterday),
     ]);
 
     // Count animals by species
@@ -113,21 +127,83 @@ export async function GET() {
       dailySignups.push({ date: `${dayName} ${d.getDate()}/${d.getMonth() + 1}`, count });
     }
 
+    // Animals per user count
+    const animalsPerUser: Record<string, number> = {};
+    if (allAnimalsRes.data) {
+      for (const a of allAnimalsRes.data) {
+        const uid = (a as { created_by: string }).created_by;
+        if (uid) animalsPerUser[uid] = (animalsPerUser[uid] || 0) + 1;
+      }
+    }
+
+    // Enrich users with animal count
+    const allUsers = (allUsersRes.data || []).map((u: Record<string, unknown>) => ({
+      ...u,
+      animal_count: animalsPerUser[(u as { id: string }).id] || 0,
+    }));
+
+    // Growth rate calculation
+    const thisWeekSignups = usersWeekRes.count || 0;
+    const lastWeekSignups = usersLastWeekRes.count || 0;
+    const growthRate = lastWeekSignups > 0
+      ? Math.round(((thisWeekSignups - lastWeekSignups) / lastWeekSignups) * 100)
+      : thisWeekSignups > 0 ? 100 : 0;
+
+    // Revenue estimate
+    const premiumCount = premiumCountRes.count || 0;
+    const proCount = proCountRes.count || 0;
+    const estimatedMRR = premiumCount * 4.90 + proCount * 9.90;
+
+    // Build activity feed from recent data
+    const recentActivity: { type: string; text: string; time: string }[] = [];
+
+    // Recent user signups for activity feed
+    const recentUsers = (allUsersRes.data || []).slice(0, 5);
+    for (const u of recentUsers) {
+      const usr = u as { full_name: string | null; email: string; created_at: string };
+      recentActivity.push({
+        type: "signup",
+        text: `${usr.full_name || usr.email} a cree un compte`,
+        time: usr.created_at,
+      });
+    }
+
+    // Recent animals for activity feed
+    const recentAnimals = (allAnimalsRes.data || []).slice(0, 5);
+    for (const a of recentAnimals) {
+      const ani = a as { name: string; species: string; created_at: string };
+      recentActivity.push({
+        type: "animal",
+        text: `${ani.name} (${ani.species}) a ete ajoute`,
+        time: ani.created_at,
+      });
+    }
+
+    // Sort activity by time descending
+    recentActivity.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
+
     return NextResponse.json({
       totalUsers: totalUsersRes.count || 0,
       usersToday: usersTodayRes.count || 0,
-      usersWeek: usersWeekRes.count || 0,
+      usersWeek: thisWeekSignups,
+      usersLastWeek: lastWeekSignups,
       usersMonth: usersMonthRes.count || 0,
       totalAnimals: totalAnimalsRes.count || 0,
+      animalsToday: animalsToday.count || 0,
       animalsBySpecies: speciesCounts,
       totalMatches: totalMatchesRes.count || 0,
       matchesToday: matchesTodayRes.count || 0,
+      matchesLast24h: matchesYesterday.count || 0,
       totalMessages: totalMessagesRes.count || 0,
-      premiumCount: premiumCountRes.count || 0,
-      proCount: proCountRes.count || 0,
-      recentUsers: recentUsersRes.data || [],
-      recentAnimals: recentAnimalsRes.data || [],
+      totalEvents: totalEventsRes.count || 0,
+      premiumCount,
+      proCount,
+      estimatedMRR,
+      growthRate,
+      allUsers,
+      allAnimals: allAnimalsRes.data || [],
       dailySignups,
+      recentActivity: recentActivity.slice(0, 10),
     });
   } catch (err) {
     console.error("Admin stats error:", err);

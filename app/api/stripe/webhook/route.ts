@@ -51,6 +51,18 @@ export async function POST(request: Request) {
             console.error("[Webhook] Erreur update checkout:", error);
           } else {
             console.log(`[Webhook] ✅ ${userId} → ${plan} jusqu'au ${endDate.toLocaleDateString()}`);
+            // PostHog server-side tracking
+            try {
+              const phKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+              const phHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://eu.i.posthog.com";
+              if (phKey) {
+                await fetch(`${phHost}/capture/`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ api_key: phKey, event: "subscription_started", distinct_id: userId, properties: { plan, amount: session.amount_total } }),
+                });
+              }
+            } catch {}
           }
         }
         break;

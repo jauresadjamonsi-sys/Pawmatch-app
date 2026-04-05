@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import PushButton from "./PushButton";
 import { useAppContext } from "@/lib/contexts/AppContext";
 import { BadgesSection } from "./Badges";
+import ReferralCard from "./ReferralCard";
 
 const EMOJI_MAP: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
@@ -141,6 +142,9 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
             </form>
           </div>
         </div>
+
+        {/* Referral */}
+        <ReferralCard userId={user.id} />
 
         {/* Mes compagnons */}
         <div className="mb-6">

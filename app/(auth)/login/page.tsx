@@ -5,6 +5,7 @@ import { login } from "../actions";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { posthog } from "@/lib/posthog";
 
 function LoginForm() {
   const [error, setError] = useState<string | null>(null);
@@ -20,6 +21,7 @@ function LoginForm() {
     const formData = new FormData(e.currentTarget);
     const result = await login(formData);
     if (result?.error) { setError(result.error); setLoading(false); }
+    else { posthog.capture("user_logged_in", { method: "email" }); }
   }
 
   async function handleGoogleLogin() {

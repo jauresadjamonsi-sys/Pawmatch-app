@@ -229,6 +229,10 @@ export default function FlairerPage() {
       const rect = cardRef.current.getBoundingClientRect();
       spawnParticles(rect.left + 60, rect.top + 60, "pass");
     }
+    const skippedAnimal = animals[currentIndex];
+    if (skippedAnimal) {
+      try { const { posthog } = require("@/lib/posthog"); posthog.capture("animal_skipped", { animal_id: skippedAnimal.id, species: skippedAnimal.species, canton: skippedAnimal.canton }); } catch {}
+    }
     playSound("pass"); vibrate([30]); setStreak(0);
     setSwipeDirection("left");
     setTimeout(() => { setSwipeDirection(null); setDragX(0); setDragY(0); setCurrentIndex(i => i + 1); }, 320);
@@ -249,6 +253,7 @@ export default function FlairerPage() {
     setMatchError(null);
     const result = await sendMatch(supabase, myAnimalId, animal.id, profile.id, animal.created_by || "NONE");
     if (result.error) { setMatchError(result.error); return; }
+    try { const { posthog } = require("@/lib/posthog"); posthog.capture("animal_liked", { animal_id: animal.id, species: animal.species, canton: animal.canton, is_super: isSuperLike, mutual: !!result.mutualMatch }); } catch {}
 
     if (result.mutualMatch && result.data) {
       setMutualMatchData(result.data);

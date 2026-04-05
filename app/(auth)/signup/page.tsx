@@ -1,14 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signup } from "../actions";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { posthog } from "@/lib/posthog";
 
 export default function SignupPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const supabase = createClient();
+
+  // Capture referral code from URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get("ref");
+    if (ref) {
+      localStorage.setItem("pawly_referral", ref);
+    }
+  }, []);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -17,9 +27,32 @@ export default function SignupPage() {
     const formData = new FormData(e.currentTarget);
     const result = await signup(formData);
     if (result?.error) { setError(result.error); setLoading(false); }
+    else {
+      posthog.capture("user_signed_up", { method: "email" });
+      // Process referral after signup
+      const ref = localStorage.getItem("pawly_referral");
+      if (ref) {
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            await fetch("/api/referral/validate", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ referral_code: ref, referred_user_id: user.id }),
+            });
+            localStorage.removeItem("pawly_referral");
+          }
+        } catch {}
+      }
+    }
   }
 
   async function handleGoogleSignup() {
+    // Store referral before OAuth redirect
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get("ref");
+    if (ref) localStorage.setItem("pawly_referral", ref);
+    posthog.capture("user_signed_up", { method: "google" });
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: window.location.origin + "/auth/callback" },
@@ -57,6 +90,7 @@ export default function SignupPage() {
         <div className="relative flex justify-center text-sm"><span className="px-4 bg-[var(--c-card)] text-gray-500">ou par email</span></div>
       </div>
       <form onSubmit={handleSubmit} className="space-y-5">
+            <input type="hidden" name="referred_by" value={typeof window !== "undefined" ? localStorage.getItem("pawly_referral") || "" : ""} />
             <div>
               <label htmlFor="fullName" className="block text-sm font-medium text-gray-300 mb-1">Nom complet</label>
               <input id="fullName" name="fullName" type="text" required className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition" placeholder="Jean Dupont"/>

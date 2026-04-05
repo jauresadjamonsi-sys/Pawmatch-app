@@ -6,6 +6,7 @@ import { CookieBanner } from "@/lib/components/CookieBanner";
 import Navbar from "@/lib/components/Navbar";
 import Footer from "@/lib/components/Footer";
 import { WelcomeModal } from "@/lib/components/WelcomeModal";
+import { PostHogProvider } from "@/lib/components/PostHogProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -45,10 +46,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={inter.className + " bg-[#0d0a14] text-white min-h-screen"}>
 <AppProvider>
+        <PostHogProvider>
         <Navbar />
         {children}
         <Footer />
         <WelcomeModal />
+        </PostHogProvider>
       </AppProvider>
   <CookieBanner />
       </body>
