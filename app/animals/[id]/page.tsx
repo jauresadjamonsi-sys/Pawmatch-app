@@ -267,6 +267,34 @@ export default function AnimalDetailPage() {
               </span>
             </div>
 
+            {/* PawCare Hub — CTA prominent */}
+            {isOwner && (
+              <Link href={"/animals/" + animal.id + "/care"} style={{
+                display: "flex", alignItems: "center", gap: 14, padding: 18,
+                background: "linear-gradient(135deg, rgba(239,68,68,0.08), rgba(249,115,22,0.06))",
+                border: "2px solid rgba(239,68,68,0.2)", borderRadius: 16,
+                textDecoration: "none", marginBottom: 16, transition: "all 0.2s",
+              }}>
+                <div style={{
+                  width: 48, height: 48, borderRadius: 14,
+                  background: "linear-gradient(135deg, #ef4444, #f97316)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 22, flexShrink: 0,
+                }}>
+                  ❤️‍🩹
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 800, fontSize: 15, color: "var(--c-text, #fff)" }}>
+                    PawCare Hub
+                  </div>
+                  <div style={{ fontSize: 12, color: "var(--c-text-muted, #9ca3af)", marginTop: 2 }}>
+                    Santé & Soins — Alertes, suivi d'humeur, timeline
+                  </div>
+                </div>
+                <span style={{ fontSize: 18, color: "var(--c-text-muted, #9ca3af)" }}>→</span>
+              </Link>
+            )}
+
             {traits.length > 0 && (
               <div className="mb-6">
                 <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Caractère</h2>
