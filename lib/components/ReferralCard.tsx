@@ -48,7 +48,7 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
   const shareUrl = encodeURIComponent(referralLink);
 
   const whatsappUrl = `https://wa.me/?text=${shareText}`;
-  const telegramUrl = `https://t.me/share/url?url=${shareUrl}&text=${encodeURIComponent("Rejoins Pawly, l'app qui connecte les proprios d'animaux en Suisse !")}`;
+  const instagramUrl = `/share/promo?ref=${userId}`;
   const emailUrl = `mailto:?subject=${encodeURIComponent("Rejoins Pawly !")}&body=${shareText}`;
 
   return (
@@ -96,12 +96,14 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
           WhatsApp
         </a>
         <a
-          href={telegramUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex-1 py-2.5 text-center text-sm font-bold bg-blue-500/15 text-blue-400 rounded-xl hover:bg-blue-500/25 transition border border-blue-500/20"
+          href={instagramUrl}
+          className="flex-1 py-2.5 text-center text-sm font-bold rounded-xl transition border border-pink-500/20"
+          style={{
+            background: "linear-gradient(135deg, rgba(240,148,51,0.15), rgba(220,39,67,0.15), rgba(188,24,136,0.15))",
+            color: "#e1306c",
+          }}
         >
-          Telegram
+          \ud83d\udcf8 Instagram
         </a>
         <a
           href={emailUrl}
