@@ -98,23 +98,26 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
             </div>
           </div>
 
-          {/* Stats engagement */}
+          {/* Stats engagement — cliquables */}
           <div className="grid grid-cols-4 gap-2 mb-5">
-            <div className="bg-orange-500/10 rounded-xl p-3 text-center">
+            <Link href="#compagnons" onClick={(e) => { e.preventDefault(); document.getElementById("compagnons")?.scrollIntoView({ behavior: "smooth" }); }}
+              className="bg-orange-500/10 rounded-xl p-3 text-center hover:bg-orange-500/20 transition cursor-pointer block">
               <p className="text-lg font-black text-orange-400">{stats.animals}</p>
               <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Animaux</p>
-            </div>
-            <div className="bg-green-500/10 rounded-xl p-3 text-center">
+            </Link>
+            <Link href="/matches"
+              className="bg-green-500/10 rounded-xl p-3 text-center hover:bg-green-500/20 transition cursor-pointer block">
               <p className="text-lg font-black text-green-400">{stats.matches}</p>
               <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Matchs</p>
-            </div>
-            <div className="bg-blue-500/10 rounded-xl p-3 text-center">
+            </Link>
+            <Link href="/matches"
+              className="bg-blue-500/10 rounded-xl p-3 text-center hover:bg-blue-500/20 transition cursor-pointer block">
               <p className="text-lg font-black text-blue-400">{stats.messages}</p>
               <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Messages</p>
-            </div>
+            </Link>
             <div className="bg-purple-500/10 rounded-xl p-3 text-center">
-              <p className="text-lg font-black text-purple-400">{stats.days}j</p>
-              <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Membre</p>
+              <p className="text-lg font-black text-purple-400">{stats.days}</p>
+              <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">{stats.days <= 1 ? "Jour" : "Jours"}</p>
             </div>
           </div>
 
@@ -170,7 +173,7 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
         <ReferralCard userId={user.id} />
 
         {/* Mes compagnons */}
-        <div className="mb-6">
+        <div className="mb-6" id="compagnons">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-[var(--c-text)]">Mes compagnons</h2>
             <Link href="/profile/animals/new"
