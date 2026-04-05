@@ -100,11 +100,11 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
 
           {/* Stats engagement — cliquables */}
           <div className="grid grid-cols-4 gap-2 mb-5">
-            <Link href="#compagnons" onClick={(e) => { e.preventDefault(); document.getElementById("compagnons")?.scrollIntoView({ behavior: "smooth" }); }}
-              className="bg-orange-500/10 rounded-xl p-3 text-center hover:bg-orange-500/20 transition cursor-pointer block">
+            <button onClick={() => document.getElementById("compagnons")?.scrollIntoView({ behavior: "smooth" })}
+              className="bg-orange-500/10 rounded-xl p-3 text-center hover:bg-orange-500/20 transition cursor-pointer">
               <p className="text-lg font-black text-orange-400">{stats.animals}</p>
               <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Animaux</p>
-            </Link>
+            </button>
             <Link href="/matches"
               className="bg-green-500/10 rounded-xl p-3 text-center hover:bg-green-500/20 transition cursor-pointer block">
               <p className="text-lg font-black text-green-400">{stats.matches}</p>
@@ -115,10 +115,11 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
               <p className="text-lg font-black text-blue-400">{stats.messages}</p>
               <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Messages</p>
             </Link>
-            <div className="bg-purple-500/10 rounded-xl p-3 text-center">
+            <Link href="/flairer"
+              className="bg-purple-500/10 rounded-xl p-3 text-center hover:bg-purple-500/20 transition cursor-pointer block">
               <p className="text-lg font-black text-purple-400">{stats.days}</p>
               <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">{stats.days <= 1 ? "Jour" : "Jours"}</p>
-            </div>
+            </Link>
           </div>
 
           {/* Badges */}

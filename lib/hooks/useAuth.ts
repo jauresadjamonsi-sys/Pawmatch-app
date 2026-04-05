@@ -45,10 +45,12 @@ export function useAuth() {
     fetchProfile();
   }, []);
 
+  const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "jaures.adjamonsi@gmail.com").split(",").map(e => e.trim().toLowerCase());
+
   return {
     profile,
     loading,
-    isAdmin: profile?.role === "admin",
+    isAdmin: profile?.role === "admin" || (profile?.email ? ADMIN_EMAILS.includes(profile.email.toLowerCase()) : false),
     isAuthenticated: !!profile,
   };
 }
