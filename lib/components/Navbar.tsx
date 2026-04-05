@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useAppContext } from "@/lib/contexts/AppContext";
 import { LANGS, THEMES } from "@/lib/i18n";
+import NotificationBell from "@/lib/components/NotificationBell";
 
 export default function Navbar() {
   const [user, setUser] = useState<any>(null);
@@ -14,7 +15,7 @@ export default function Navbar() {
   const [hasPendingSwipes, setHasPendingSwipes] = useState(false);
   const pathname = usePathname();
   const supabase = createClient();
-  const { lang, setLang, theme, setTheme, t } = useAppContext();
+  const { lang, setLang, themePreference, setTheme, t } = useAppContext();
 
   useEffect(() => {
     async function getUser() {
@@ -81,6 +82,7 @@ export default function Navbar() {
             </div>
 
             <div className="hidden md:flex items-center gap-3">
+              {!loading && user && <NotificationBell />}
               <div className="flex items-center gap-1">
                 {LANGS.map((l) => (
                   <button key={l.code} onClick={() => setLang(l.code as any)} title={l.code.toUpperCase()}
@@ -93,9 +95,9 @@ export default function Navbar() {
               <div className="w-px h-5 bg-white/10" />
               <div className="flex items-center gap-1">
                 {THEMES.map((th) => (
-                  <button key={th.code} onClick={() => setTheme(th.code as any)} title={th.name}
+                  <button key={th.code} onClick={() => setTheme(th.code as any)} title={th.code === "auto" ? (t.themeAuto || "Auto") : th.name}
                     className={"w-7 h-7 rounded-full text-sm transition-all flex items-center justify-center " +
-                      (theme === th.code ? "bg-orange-500/20 border border-orange-500/50 scale-110" : "bg-white/5 border border-white/10 hover:border-orange-500/30 opacity-60 hover:opacity-100")}>
+                      (themePreference === th.code ? "bg-orange-500/20 border border-orange-500/50 scale-110" : "bg-white/5 border border-white/10 hover:border-orange-500/30 opacity-60 hover:opacity-100")}>
                     {th.label}
                   </button>
                 ))}
@@ -103,6 +105,7 @@ export default function Navbar() {
             </div>
 
             <div className="md:hidden flex items-center gap-2">
+              {!loading && user && <NotificationBell />}
               <div className="flex items-center gap-0.5">
                 {LANGS.map((l) => (
                   <button key={l.code} onClick={() => setLang(l.code as any)}
@@ -116,7 +119,7 @@ export default function Navbar() {
                 {THEMES.map((th) => (
                   <button key={th.code} onClick={() => setTheme(th.code as any)}
                     className={"w-5 h-5 rounded-full text-[9px] transition-all flex items-center justify-center " +
-                      (theme === th.code ? "bg-orange-500/20 border border-orange-500/50" : "opacity-40")}>
+                      (themePreference === th.code ? "bg-orange-500/20 border border-orange-500/50" : "opacity-40")}>
                     {th.label}
                   </button>
                 ))}

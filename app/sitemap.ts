@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { createClient } from "@supabase/supabase-js";
+import { CANTONS_SEO, getCitySlug } from "@/lib/data/cantons";
 
 const BASE_URL = "https://pawlyapp.ch";
 
@@ -17,6 +18,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/legal/cgu`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
     { url: `${BASE_URL}/legal/privacy`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
   ];
+
+  // SEO canton & city pages
+  const cantonRoutes: MetadataRoute.Sitemap = [
+    {
+      url: `${BASE_URL}/animaux`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+  ];
+
+  for (const canton of CANTONS_SEO) {
+    cantonRoutes.push({
+      url: `${BASE_URL}/animaux/${canton.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    });
+
+    for (const city of canton.cities) {
+      cantonRoutes.push({
+        url: `${BASE_URL}/animaux/${canton.slug}/${getCitySlug(city)}`,
+        lastModified: new Date(),
+        changeFrequency: "weekly",
+        priority: 0.7,
+      });
+    }
+  }
 
   // Fetch all animals for dynamic routes
   let animalRoutes: MetadataRoute.Sitemap = [];
@@ -42,5 +71,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("Sitemap: failed to fetch animals", e);
   }
 
-  return [...staticRoutes, ...animalRoutes];
+  return [...staticRoutes, ...cantonRoutes, ...animalRoutes];
 }

@@ -156,6 +156,10 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
               className="px-4 py-2 bg-[var(--c-border)] text-[var(--c-text)] text-sm font-medium rounded-xl hover:opacity-80 transition">
               ✏️ Modifier
             </Link>
+            <Link href="/profile/stats"
+              className="px-4 py-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 text-sm font-medium rounded-xl transition border border-blue-500/20">
+              📊 {t.statsTitle || "Statistiques"}
+            </Link>
             <PushButton />
             <Link href="/pricing"
               className="px-4 py-2 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 text-sm font-medium rounded-xl transition border border-orange-500/20">

@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/hooks/useAuth";
-import { getMessages, sendMessageWithLimit, markAsRead, MessageRow } from "@/lib/services/messages";
+import { getMessages, sendMessageWithLimit, sendImageMessage, markAsRead, MessageRow } from "@/lib/services/messages";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import BlockReportModal from "@/lib/components/BlockReportModal";
@@ -86,8 +86,13 @@ export default function ConversationPage() {
   const [loadingAI, setLoadingAI] = useState(false);
   const [aiReady, setAiReady] = useState(false);
   const [showBlockReport, setShowBlockReport] = useState(false);
+  const [otherTyping, setOtherTyping] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [expandedImage, setExpandedImage] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const lastTypingSent = useRef<number>(0);
   const params = useParams();
   const supabase = createClient();
   const { profile } = useAuth();
@@ -118,6 +123,74 @@ export default function ConversationPage() {
       setMessages(result.data);
       if (profile) await markAsRead(supabase, matchId, profile.id);
     }
+    // Piggyback typing status on message poll
+    try {
+      const res = await fetch(`/api/chat/typing?match_id=${matchId}`);
+      const data = await res.json();
+      setOtherTyping(!!data.typing);
+    } catch {
+      // Silent
+    }
+  }
+
+  async function notifyTyping() {
+    const now = Date.now();
+    if (now - lastTypingSent.current < 3000) return;
+    lastTypingSent.current = now;
+    try {
+      await fetch("/api/chat/typing", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ match_id: params.id }),
+      });
+    } catch {
+      // Silent
+    }
+  }
+
+  async function handlePhotoSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !profile) return;
+    if (!file.type.startsWith("image/")) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Image trop volumineuse (max 5 Mo)");
+      return;
+    }
+
+    setUploadingPhoto(true);
+    setError(null);
+
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `${params.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("chat-images")
+        .upload(path, file, { cacheControl: "3600", upsert: false });
+
+      if (uploadError) {
+        setError("Erreur upload: " + uploadError.message);
+        setUploadingPhoto(false);
+        return;
+      }
+
+      const { data: urlData } = supabase.storage.from("chat-images").getPublicUrl(path);
+
+      const result = await sendImageMessage(
+        supabase, params.id as string, profile.id, urlData.publicUrl, profile.subscription || "free"
+      );
+
+      if (result.error) {
+        setError(result.error);
+      } else {
+        fetchMessages();
+      }
+    } catch {
+      setError("Erreur inattendue lors de l'envoi de la photo.");
+    }
+
+    setUploadingPhoto(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
   // Charger suggestions statiques immédiatement, IA en arrière-plan
@@ -223,6 +296,17 @@ export default function ConversationPage() {
           background-size: 200% 100%;
           animation: shimmer 1.5s infinite;
         }
+        @keyframes bounce-dot {
+          0%, 60%, 100% { transform: translateY(0); }
+          30% { transform: translateY(-6px); }
+        }
+        .typing-dot {
+          width: 6px; height: 6px; border-radius: 50%;
+          background: #9ca3af; display: inline-block;
+          animation: bounce-dot 1.2s infinite;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.3s; }
       `}} />
 
       {/* Header */}
@@ -279,16 +363,51 @@ export default function ConversationPage() {
                   <p className="text-center text-[10px] text-gray-600 my-2">{formatTime(msg.created_at)}</p>
                 )}
                 <div className={"flex " + (isMine ? "justify-end" : "justify-start")}>
-                  <div className={"max-w-[75%] px-4 py-2.5 rounded-2xl text-sm " +
+                  <div className={"max-w-[75%] rounded-2xl text-sm " +
                     (isMine
                       ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-br-md"
-                      : "bg-[#241d33] border border-white/8 text-gray-100 rounded-bl-md")}>
-                    <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                      : "bg-[#241d33] border border-white/8 text-gray-100 rounded-bl-md") +
+                    (msg.image_url ? " p-1.5" : " px-4 py-2.5")}>
+                    {msg.image_url ? (
+                      <div>
+                        <img
+                          src={msg.image_url}
+                          alt="Photo"
+                          className="rounded-xl max-w-full max-h-60 object-cover cursor-pointer hover:opacity-90 transition"
+                          onClick={() => setExpandedImage(msg.image_url)}
+                        />
+                        {msg.content && msg.content !== "📷 Photo" && (
+                          <p className="whitespace-pre-wrap leading-relaxed px-2.5 py-1.5 text-sm">{msg.content}</p>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                    )}
+                    {/* Read receipts for own messages */}
+                    {isMine && (
+                      <div className={"flex justify-end mt-0.5 " + (msg.image_url ? "px-2 pb-1" : "")}>
+                        <span className={"text-[10px] font-medium " + (msg.read_at ? "text-blue-300" : "text-white/40")}>
+                          {msg.read_at ? "\u2713\u2713" : "\u2713"}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             );
           })}
+
+          {/* Typing indicator */}
+          {otherTyping && (
+            <div className="flex justify-start">
+              <div className="bg-[#241d33] border border-white/8 rounded-2xl rounded-bl-md px-4 py-3 flex items-center gap-1.5">
+                <span className="typing-dot" />
+                <span className="typing-dot" />
+                <span className="typing-dot" />
+              </div>
+            </div>
+          )}
+
           <div ref={messagesEndRef} />
         </div>
       </div>
@@ -320,11 +439,33 @@ export default function ConversationPage() {
         <div className="max-w-3xl mx-auto">
           {error && <p className="text-red-400 text-xs mb-2">{error}</p>}
           <div className="flex gap-2 items-end">
+            {/* Hidden file input for photo */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoSelect}
+              className="hidden"
+            />
+            {/* Photo button */}
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploadingPhoto}
+              className="w-10 h-10 bg-[#241d33] border border-white/10 hover:border-orange-500/30 hover:bg-orange-500/10 rounded-2xl flex items-center justify-center transition active:scale-95 flex-shrink-0"
+              title="Envoyer une photo"
+            >
+              {uploadingPhoto
+                ? <div className="w-4 h-4 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
+                : <svg className="w-4.5 h-4.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+                  </svg>}
+            </button>
             <input
               ref={inputRef}
               type="text"
               value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
+              onChange={(e) => { setNewMessage(e.target.value); notifyTyping(); }}
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
               placeholder="Message..."
               maxLength={2000}
@@ -343,6 +484,27 @@ export default function ConversationPage() {
           </div>
         </div>
       </div>
+
+      {/* Image lightbox */}
+      {expandedImage && (
+        <div
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          onClick={() => setExpandedImage(null)}
+        >
+          <button
+            className="absolute top-4 right-4 text-white/70 hover:text-white text-2xl font-light"
+            onClick={() => setExpandedImage(null)}
+          >
+            &#10005;
+          </button>
+          <img
+            src={expandedImage}
+            alt="Photo agrandie"
+            className="max-w-full max-h-[90vh] object-contain rounded-lg"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
 
       {/* Block/Report modal */}
       {showBlockReport && otherProfile && (

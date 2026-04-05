@@ -6,6 +6,7 @@ export const LANGS = [
 ];
 
 export const THEMES = [
+  { code: "auto",   label: "💻", name: "Auto"   },
   { code: "nuit",   label: "🌑", name: "Nuit"   },
   { code: "aurore", label: "🌅", name: "Aurore" },
   { code: "ocean",  label: "🌊", name: "Océan"  },
@@ -255,6 +256,23 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     delete: "Supprimer", edit: "Modifier", back: "Retour", next: "Suivant",
     yes: "Oui", no: "Non", or: "ou", close: "Fermer", search: "Rechercher",
     noResults: "Aucun résultat", seeMore: "Voir plus",
+
+    // Stats
+    statsTitle: "Mes statistiques",
+    statsAnimals: "Animaux", statsMatches: "Matches", statsMessages: "Messages",
+    statsEvents: "Événements", statsMember: "Membre depuis", statsDays: "jours",
+    statsProfile: "Profil complété", statsAccepted: "Acceptés",
+    statsPending: "En attente", statsActivity: "Activité récente",
+
+    // Notifications
+    notifTitle: "Notifications", notifEmpty: "Aucune notification",
+    notifMarkAll: "Tout marquer comme lu", notifNew: "nouveau",
+
+    // Chat
+    chatTyping: "écrit...", chatSendPhoto: "Envoyer une photo", chatPhotoSending: "Envoi en cours...",
+
+    // Theme
+    themeAuto: "Automatique", themeAutoDesc: "Suit les préférences système",
   },
 
   de: {
@@ -474,6 +492,23 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     delete: "Löschen", edit: "Bearbeiten", back: "Zurück", next: "Weiter",
     yes: "Ja", no: "Nein", or: "oder", close: "Schliessen", search: "Suchen",
     noResults: "Keine Ergebnisse", seeMore: "Mehr anzeigen",
+
+    // Stats
+    statsTitle: "Meine Statistiken",
+    statsAnimals: "Tiere", statsMatches: "Matches", statsMessages: "Nachrichten",
+    statsEvents: "Veranstaltungen", statsMember: "Mitglied seit", statsDays: "Tage",
+    statsProfile: "Profil abgeschlossen", statsAccepted: "Akzeptiert",
+    statsPending: "Ausstehend", statsActivity: "Letzte Aktivität",
+
+    // Notifications
+    notifTitle: "Benachrichtigungen", notifEmpty: "Keine Benachrichtigungen",
+    notifMarkAll: "Alle als gelesen markieren", notifNew: "neu",
+
+    // Chat
+    chatTyping: "schreibt...", chatSendPhoto: "Foto senden", chatPhotoSending: "Wird gesendet...",
+
+    // Theme
+    themeAuto: "Automatisch", themeAutoDesc: "Folgt den Systemeinstellungen",
   },
 
   it: {
@@ -693,6 +728,23 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     delete: "Elimina", edit: "Modifica", back: "Indietro", next: "Avanti",
     yes: "Sì", no: "No", or: "o", close: "Chiudi", search: "Cerca",
     noResults: "Nessun risultato", seeMore: "Vedi di più",
+
+    // Stats
+    statsTitle: "Le mie statistiche",
+    statsAnimals: "Animali", statsMatches: "Matches", statsMessages: "Messaggi",
+    statsEvents: "Eventi", statsMember: "Membro da", statsDays: "giorni",
+    statsProfile: "Profilo completato", statsAccepted: "Accettati",
+    statsPending: "In attesa", statsActivity: "Attività recente",
+
+    // Notifications
+    notifTitle: "Notifiche", notifEmpty: "Nessuna notifica",
+    notifMarkAll: "Segna tutto come letto", notifNew: "nuovo",
+
+    // Chat
+    chatTyping: "sta scrivendo...", chatSendPhoto: "Invia una foto", chatPhotoSending: "Invio in corso...",
+
+    // Theme
+    themeAuto: "Automatico", themeAutoDesc: "Segue le preferenze di sistema",
   },
 
   en: {
@@ -912,5 +964,22 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     delete: "Delete", edit: "Edit", back: "Back", next: "Next",
     yes: "Yes", no: "No", or: "or", close: "Close", search: "Search",
     noResults: "No results", seeMore: "See more",
+
+    // Stats
+    statsTitle: "My Statistics",
+    statsAnimals: "Animals", statsMatches: "Matches", statsMessages: "Messages",
+    statsEvents: "Events", statsMember: "Member since", statsDays: "days",
+    statsProfile: "Profile completed", statsAccepted: "Accepted",
+    statsPending: "Pending", statsActivity: "Recent activity",
+
+    // Notifications
+    notifTitle: "Notifications", notifEmpty: "No notifications",
+    notifMarkAll: "Mark all as read", notifNew: "new",
+
+    // Chat
+    chatTyping: "typing...", chatSendPhoto: "Send a photo", chatPhotoSending: "Sending...",
+
+    // Theme
+    themeAuto: "Automatic", themeAutoDesc: "Follows system preferences",
   },
 };

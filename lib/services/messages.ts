@@ -6,6 +6,7 @@ export type MessageRow = {
   match_id: string;
   sender_id: string;
   content: string;
+  image_url: string | null;
   read_at: string | null;
   created_at: string;
 };
@@ -119,4 +120,33 @@ export async function sendMessageWithLimit(
   const limit = await checkMessageLimit(supabase, senderId, subscription);
   if (!limit.allowed) return { data: null, error: limit.error };
   return sendMessage(supabase, matchId, senderId, content);
+}
+
+export async function sendImageMessage(
+  supabase: SupabaseClient,
+  matchId: string,
+  senderId: string,
+  imageUrl: string,
+  subscription: string
+): Promise<ServiceResult<MessageRow>> {
+  const limit = await checkMessageLimit(supabase, senderId, subscription);
+  if (!limit.allowed) return { data: null, error: limit.error };
+
+  try {
+    const { data, error } = await supabase
+      .from("messages")
+      .insert({
+        match_id: matchId,
+        sender_id: senderId,
+        content: "📷 Photo",
+        image_url: imageUrl,
+      })
+      .select()
+      .single();
+
+    if (error) return { data: null, error: "Erreur: " + error.message };
+    return { data, error: null };
+  } catch {
+    return { data: null, error: "Erreur inattendue." };
+  }
 }
