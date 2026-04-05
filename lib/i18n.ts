@@ -102,6 +102,17 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     ctaDesc2: "Gratuit pour commencer. Toutes les espèces. Toute la Suisse.",
     compatibility: "Compatibilité IA",
 
+    // Hero extra
+    heroTagline: "L'app qui gère la santé et la vie de ton animal",
+    heroStartFree: "Commencer gratuitement",
+    heroDiscover: "Découvrir",
+    heroJoinOwners: "Rejoins",
+    heroOwnersIn: "propriétaires en Suisse",
+    heroBadgeSwiss: "Conçu en Suisse",
+    heroBadgeFree: "Gratuit pour commencer",
+    heroBadgeData: "Données protégées (nLPD)",
+    heroCoveredCantons: "cantons couverts",
+
     // Auth
     loginTitle: "Connecte-toi à ton compte", loginGoogle: "Continuer avec Google",
     loginOr: "ou par email", loginEmail: "Email", loginPassword: "Mot de passe",
@@ -266,6 +277,16 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     ctaDesc2: "Kostenlos starten. Alle Tierarten. Die ganze Schweiz.",
     compatibility: "KI-Kompatibilität",
 
+    heroTagline: "Die App die Gesundheit und Leben deines Tieres verwaltet",
+    heroStartFree: "Kostenlos starten",
+    heroDiscover: "Entdecken",
+    heroJoinOwners: "Tritt",
+    heroOwnersIn: "Tierhaltern in der Schweiz bei",
+    heroBadgeSwiss: "Made in Switzerland",
+    heroBadgeFree: "Kostenlos starten",
+    heroBadgeData: "Datenschutz (nDSG)",
+    heroCoveredCantons: "Kantone abgedeckt",
+
     loginTitle: "Melde dich an", loginGoogle: "Weiter mit Google",
     loginOr: "oder per E-Mail", loginEmail: "E-Mail", loginPassword: "Passwort",
     loginButton: "Anmelden", loginForgot: "Passwort vergessen?",
@@ -418,6 +439,16 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     ctaDesc2: "Gratis per iniziare. Tutte le specie. Tutta la Svizzera.",
     compatibility: "Compatibilità IA",
 
+    heroTagline: "L'app che gestisce la salute e la vita del tuo animale",
+    heroStartFree: "Inizia gratis",
+    heroDiscover: "Scopri",
+    heroJoinOwners: "Unisciti a",
+    heroOwnersIn: "proprietari in Svizzera",
+    heroBadgeSwiss: "Progettato in Svizzera",
+    heroBadgeFree: "Gratis per iniziare",
+    heroBadgeData: "Dati protetti (nLPD)",
+    heroCoveredCantons: "cantoni coperti",
+
     loginTitle: "Accedi al tuo account", loginGoogle: "Continua con Google",
     loginOr: "o via email", loginEmail: "Email", loginPassword: "Password",
     loginButton: "Accedi", loginForgot: "Password dimenticata?",
@@ -569,6 +600,16 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     catalog: "Catalogue", pricing: "Pricing",
     ctaDesc2: "Free to start. All species. All of Switzerland.",
     compatibility: "AI Compatibility",
+
+    heroTagline: "The app that manages your pet's health and life",
+    heroStartFree: "Start for free",
+    heroDiscover: "Discover",
+    heroJoinOwners: "Join",
+    heroOwnersIn: "pet owners in Switzerland",
+    heroBadgeSwiss: "Made in Switzerland",
+    heroBadgeFree: "Free to start",
+    heroBadgeData: "Data protected (nFADP)",
+    heroCoveredCantons: "cantons covered",
 
     loginTitle: "Log in to your account", loginGoogle: "Continue with Google",
     loginOr: "or by email", loginEmail: "Email", loginPassword: "Password",

@@ -92,7 +92,7 @@ export default function HomePage() {
           {t.heroTitle2}
         </h2>
         <p className="text-base mb-2 max-w-sm mx-auto text-[var(--c-text)] leading-relaxed font-semibold">
-          L'app qui g&egrave;re la sant&eacute; et la vie de ton animal
+          {t.heroTagline}
         </p>
         <p className="text-sm mb-5 max-w-sm mx-auto text-[var(--c-text-muted)] leading-relaxed">{t.heroSub}</p>
 
@@ -108,28 +108,28 @@ export default function HomePage() {
         {/* CTAs */}
         <div className="flex flex-col items-center gap-3 mb-4">
           <Link href="/signup" className="px-8 py-3.5 font-bold rounded-full text-base text-white pulse-slow" style={{background:"#f97316",boxShadow:"0 0 30px rgba(249,115,22,0.3)"}}>
-            Commencer gratuitement
+            {t.heroStartFree}
           </Link>
           <button onClick={() => document.getElementById("comment-ca-marche")?.scrollIntoView({ behavior:"smooth" })} className="px-6 py-2.5 bg-[var(--c-card)] border border-[var(--c-border)] font-medium rounded-full text-sm card-hover text-[var(--c-text-muted)]">
-            D&eacute;couvrir ↓
+            {t.heroDiscover} ↓
           </button>
         </div>
 
         {/* Social proof */}
         <p className="text-xs text-[var(--c-text-muted)] mb-3">
-          Rejoins <span className="font-bold" style={{color:"var(--c-accent, #f97316)"}}>{totalProfiles > 0 ? totalProfiles + "+" : ""}</span> propri&eacute;taires en Suisse
+          {t.heroJoinOwners} <span className="font-bold" style={{color:"var(--c-accent, #f97316)"}}>{totalProfiles > 0 ? totalProfiles + "+" : ""}</span> {t.heroOwnersIn}
         </p>
 
         {/* Trust badges */}
         <div className="flex flex-wrap justify-center gap-2 mb-4">
           <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--c-card)] border border-[var(--c-border)] rounded-full text-[11px] text-[var(--c-text-muted)] font-medium">
-            <span>🇨🇭</span> Con&ccedil;u en Suisse
+            <span>🇨🇭</span> {t.heroBadgeSwiss}
           </div>
           <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full text-[11px] text-green-500 font-bold">
-            Gratuit pour commencer
+            {t.heroBadgeFree}
           </div>
           <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--c-card)] border border-[var(--c-border)] rounded-full text-[11px] text-[var(--c-text-muted)] font-medium">
-            <span>🔒</span> Donn&eacute;es prot&eacute;g&eacute;es (nLPD)
+            <span>🔒</span> {t.heroBadgeData}
           </div>
         </div>
 
@@ -137,7 +137,7 @@ export default function HomePage() {
         <div className="flex justify-center gap-8 mt-4">
           {[
             [totalProfiles < 10 ? "🇨🇭" : totalProfiles + "+", totalProfiles < 10 ? t.tagline : t.owners],
-            [totalAnimals < 10 ? "26" : totalAnimals + "+", totalAnimals < 10 ? "cantons couverts" : t.animals],
+            [totalAnimals < 10 ? "26" : totalAnimals + "+", totalAnimals < 10 ? t.heroCoveredCantons : t.animals],
             ["92%", t.matchRate],
           ].map(([val, label]) => (
             <div key={String(label)} className="text-center">
@@ -205,12 +205,11 @@ export default function HomePage() {
       {/* ═══════════════ COMMENT ÇA MARCHE ═══════════════ */}
       <div id="comment-ca-marche" className="px-5 mb-8 scroll-mt-16">
         <h2 className="text-[11px] font-semibold uppercase tracking-widest mb-2 text-center text-[var(--c-text-muted)]">{t.howItWorks}</h2>
-        <p className="text-xs text-center text-[var(--c-text-muted)] mb-5">3 &eacute;tapes simples pour commencer</p>
         <div className="flex flex-col gap-3">
           {[
-            { num: "1", emoji: "🐾", title: "Inscris ton animal", desc: "Cr\u00e9e le profil de ton compagnon en 30 secondes. Nom, race, photo \u2014 c'est tout !" },
-            { num: "2", emoji: "💕", title: "Trouve des compagnons", desc: "Swipe pour d\u00e9couvrir des animaux compatibles pr\u00e8s de chez toi. Notre IA calcule la compatibilit\u00e9." },
-            { num: "3", emoji: "🏥", title: "Prends soin de lui", desc: "G\u00e8re la sant\u00e9 de ton animal et trouve les meilleurs pros sur PawCare Hub." },
+            { num: "1", emoji: "🐾", key: "step1", descKey: "step1Desc" },
+            { num: "2", emoji: "💕", key: "step2", descKey: "step2Desc" },
+            { num: "3", emoji: "🏥", key: "step3", descKey: "step3Desc" },
           ].map((step, i) => (
             <div key={i} className="flex items-start gap-4 bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-4 fade-in-up" style={{animationDelay: `${i * 0.15}s`}}>
               <div className="w-9 h-9 rounded-full flex items-center justify-center font-black text-sm flex-shrink-0 text-white" style={{background:"#f97316",boxShadow:"0 0 30px rgba(249,115,22,0.3)"}}>
@@ -219,16 +218,16 @@ export default function HomePage() {
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-lg">{step.emoji}</span>
-                  <h3 className="font-bold text-sm text-[var(--c-text)]">{step.title}</h3>
+                  <h3 className="font-bold text-sm text-[var(--c-text)]">{t[step.key]}</h3>
                 </div>
-                <p className="text-xs text-[var(--c-text-muted)] leading-relaxed">{step.desc}</p>
+                <p className="text-xs text-[var(--c-text-muted)] leading-relaxed">{t[step.descKey]}</p>
               </div>
             </div>
           ))}
         </div>
         <div className="text-center mt-4">
           <Link href="/signup" className="inline-block px-6 py-2.5 font-bold rounded-full text-sm text-white" style={{background:"#f97316"}}>
-            Commencer maintenant
+            {t.heroStartFree}
           </Link>
         </div>
       </div>
@@ -401,8 +400,8 @@ export default function HomePage() {
       {/* Footer légal */}
       <div style={{ padding: "16px 0", textAlign: "center", borderTop: "1px solid var(--c-border)", marginTop: 24 }}>
         <div style={{ display: "flex", gap: 16, justifyContent: "center" }}>
-          <a href="/legal/cgu" style={{ fontSize: 11, color: "var(--c-text-muted)", textDecoration: "none" }}>CGU</a>
-          <a href="/legal/privacy" style={{ fontSize: 11, color: "var(--c-text-muted)", textDecoration: "none" }}>Confidentialité</a>
+          <a href="/legal/cgu" style={{ fontSize: 11, color: "var(--c-text-muted)", textDecoration: "none" }}>{t.footerCGU}</a>
+          <a href="/legal/privacy" style={{ fontSize: 11, color: "var(--c-text-muted)", textDecoration: "none" }}>{t.footerPrivacy}</a>
           <a href="https://pawdirectory.ch" target="_blank" rel="noopener" style={{ fontSize: 11, color: "var(--c-text-muted)", textDecoration: "none" }}>PawDirectory</a>
         </div>
         <p style={{ fontSize: 10, color: "var(--c-text-muted)", marginTop: 6, opacity: 0.6 }}>© 2026 Pawly · Canton de Vaud, Suisse</p>
