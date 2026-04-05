@@ -1,7 +1,20 @@
 import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
   try {
+    // Allow system calls with CRON_SECRET, otherwise require authentication
+    const authHeader = request.headers.get("authorization");
+    const isCronCall = authHeader === `Bearer ${process.env.CRON_SECRET}`;
+
+    if (!isCronCall) {
+      const supabase = await createClient();
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) {
+        return NextResponse.json({ error: "Non autorise" }, { status: 401 });
+      }
+    }
+
     const { email, name } = await request.json();
     if (!email) return NextResponse.json({ error: "Email requis" }, { status: 400 });
 

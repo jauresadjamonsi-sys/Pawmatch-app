@@ -108,20 +108,20 @@ export default function PricingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
+    <div className="min-h-screen py-12 px-4" style={{ background: "var(--c-bg, #f9fafb)" }}>
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl font-bold mb-4" style={{ color: "var(--c-text, #111827)" }}>
             Choisis ton plan
           </h1>
-          <p className="text-gray-500 text-lg max-w-md mx-auto">
+          <p className="text-lg max-w-md mx-auto" style={{ color: "var(--c-text-muted, #6b7280)" }}>
             Débloque toutes les fonctionnalités de Pawly et connecte-toi avec
             encore plus de compagnons.
           </p>
         </div>
 
         {error && (
-          <div className="mb-8 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm text-center max-w-md mx-auto">
+          <div className="mb-8 p-4 border rounded-xl text-sm text-center max-w-md mx-auto bg-red-500/10 border-red-500/30 text-red-500">
             {error}
           </div>
         )}
@@ -134,11 +134,15 @@ export default function PricingPage() {
             return (
               <div
                 key={plan.key}
-                className={`relative bg-white rounded-2xl shadow-sm border-2 p-8 flex flex-col ${
+                className={`relative rounded-2xl border-2 p-8 flex flex-col ${
                   isPopular
-                    ? "border-orange-400 shadow-lg shadow-orange-100"
-                    : "border-gray-100"
+                    ? "border-orange-400 shadow-lg"
+                    : ""
                 }`}
+                style={{
+                  background: "var(--c-card, #ffffff)",
+                  borderColor: isPopular ? undefined : "var(--c-border, #f3f4f6)",
+                }}
               >
                 {isPopular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-orange-500 text-white text-xs font-bold rounded-full uppercase tracking-wide">
@@ -148,15 +152,15 @@ export default function PricingPage() {
 
                 <div className="text-center mb-6">
                   <span className="text-4xl mb-3 block">{plan.emoji}</span>
-                  <h2 className="text-xl font-bold text-gray-900 mb-1">
+                  <h2 className="text-xl font-bold mb-1" style={{ color: "var(--c-text, #111827)" }}>
                     {plan.name}
                   </h2>
                   <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-3xl font-bold text-gray-900">
+                    <span className="text-3xl font-bold" style={{ color: "var(--c-text, #111827)" }}>
                       {plan.price}
                     </span>
                     {plan.period && (
-                      <span className="text-gray-400 text-sm">
+                      <span className="text-sm" style={{ color: "var(--c-text-muted, #9ca3af)" }}>
                         {plan.period}
                       </span>
                     )}
@@ -167,7 +171,8 @@ export default function PricingPage() {
                   {plan.features.map((feature) => (
                     <li
                       key={feature}
-                      className="flex items-center gap-3 text-sm text-gray-600"
+                      className="flex items-center gap-3 text-sm"
+                      style={{ color: "var(--c-text-muted, #4b5563)" }}
                     >
                       <svg
                         className={`w-5 h-5 flex-shrink-0 ${
@@ -190,11 +195,17 @@ export default function PricingPage() {
                 </ul>
 
                 {isCurrent ? (
-                  <div className="w-full py-3 bg-gray-100 text-gray-500 font-semibold rounded-xl text-center text-sm">
+                  <div
+                    className="w-full py-3 font-semibold rounded-xl text-center text-sm"
+                    style={{ background: "var(--c-border, #f3f4f6)", color: "var(--c-text-muted, #6b7280)" }}
+                  >
                     Plan actuel
                   </div>
                 ) : plan.key === "free" ? (
-                  <div className="w-full py-3 bg-gray-50 text-gray-400 font-medium rounded-xl text-center text-sm">
+                  <div
+                    className="w-full py-3 font-medium rounded-xl text-center text-sm"
+                    style={{ background: "var(--c-bg, #f9fafb)", color: "var(--c-text-muted, #9ca3af)" }}
+                  >
                     Inclus
                   </div>
                 ) : (
@@ -204,8 +215,9 @@ export default function PricingPage() {
                     className={`w-full py-3 font-semibold rounded-xl transition text-sm disabled:opacity-50 ${
                       isPopular
                         ? "bg-orange-500 hover:bg-orange-600 text-white"
-                        : "bg-gray-900 hover:bg-gray-800 text-white"
+                        : "text-white"
                     }`}
+                    style={!isPopular ? { background: "var(--c-text, #111827)" } : undefined}
                   >
                     {loading === plan.key ? "Redirection..." : plan.cta}
                   </button>
@@ -216,10 +228,10 @@ export default function PricingPage() {
         </div>
 
         <div className="text-center mt-12">
-          <p className="text-gray-400 text-sm">
+          <p className="text-sm" style={{ color: "var(--c-text-muted, #9ca3af)" }}>
             Tous les prix sont en CHF. Annulation possible à tout moment.
           </p>
-          <p className="text-gray-400 text-sm mt-1">
+          <p className="text-sm mt-1" style={{ color: "var(--c-text-muted, #9ca3af)" }}>
             Paiement sécurisé par Stripe. Aucune donnée bancaire stockée sur nos serveurs.
           </p>
         </div>

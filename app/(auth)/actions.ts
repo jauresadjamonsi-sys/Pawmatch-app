@@ -15,7 +15,7 @@ export async function login(formData: FormData) {
     return { error: error.message };
   }
 
-  redirect("/dashboard");
+  redirect("/profile");
 }
 
 export async function signup(formData: FormData) {

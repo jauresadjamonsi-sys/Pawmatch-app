@@ -53,30 +53,23 @@ async function fetchAISuggestions(
   profileId: string
 ): Promise<string[]> {
   try {
-    const context = messages.slice(-6).map(m => ({
-      role: m.sender_id === profileId ? "moi" : "eux",
-      text: m.content,
-    }));
-
-    const prompt = messages.length === 0
-      ? `Je viens d'avoir un match avec quelqu'un qui a un ${theirSpecies} nommé ${theirAnimalName}. J'ai un ${mySpecies} nommé ${myAnimalName}. Génère 3 premiers messages courts et naturels pour briser la glace et organiser une rencontre entre nos animaux en Suisse. Réponds UNIQUEMENT en JSON: ["msg1","msg2","msg3"]`
-      : `Conversation entre propriétaires d'animaux en Suisse. Mon animal: ${myAnimalName} (${mySpecies}). Leur animal: ${theirAnimalName} (${theirSpecies}). Derniers messages: ${context.map(m => `${m.role}: "${m.text}"`).join(" | ")}. Génère 3 réponses courtes et naturelles en français pour continuer la conversation et organiser une sortie. Réponds UNIQUEMENT en JSON: ["msg1","msg2","msg3"]`;
-
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const response = await fetch("/api/chat/suggest", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 200,
-        messages: [{ role: "user", content: prompt }],
+        messages: messages.slice(-6),
+        myAnimalName,
+        theirAnimalName,
+        mySpecies,
+        theirSpecies,
+        profileId,
       }),
     });
 
     const data = await response.json();
-    const text = data.content?.[0]?.text || "";
-    const clean = text.replace(/```json|```/g, "").trim();
-    const parsed = JSON.parse(clean);
-    if (Array.isArray(parsed) && parsed.length > 0) return parsed.slice(0, 3);
+    if (Array.isArray(data.suggestions) && data.suggestions.length > 0) {
+      return data.suggestions.slice(0, 3);
+    }
   } catch {}
   return [];
 }

@@ -1,8 +1,26 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { createClient as createServerClient } from '@/lib/supabase/server';
 
 export async function POST(req: Request) {
   try {
+    // Allow system calls with CRON_SECRET, otherwise require auth
+    const authHeader = req.headers.get('authorization');
+    const isCronCall = authHeader === `Bearer ${process.env.CRON_SECRET}`;
+
+    if (!isCronCall) {
+      const supabaseAuth = await createServerClient();
+      const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
+      if (authError || !user) {
+        return NextResponse.json({ error: 'Non autorise' }, { status: 401 });
+      }
+      // Authenticated users can only send push notifications to themselves
+      const body = await req.clone().json();
+      if (body.user_id !== user.id) {
+        return NextResponse.json({ error: 'Non autorise' }, { status: 403 });
+      }
+    }
+
     const { user_id, title, body, url } = await req.json();
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,

@@ -35,7 +35,13 @@ async function sendPush(userId: string, title: string, body: string, url: string
   } catch { return 0; }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  // Validate CRON_SECRET
+  const authHeader = request.headers.get("authorization");
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return NextResponse.json({ error: "Non autorise" }, { status: 401 });
+  }
+
   const results: string[] = [];
   let totalSent = 0;
 
