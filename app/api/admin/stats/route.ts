@@ -80,7 +80,7 @@ export async function GET() {
       // Users this month
       db.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", monthStart),
       // ALL users with details
-      db.from("profiles").select("id, email, full_name, avatar_url, subscription, canton, city, created_at, last_sign_in_at").order("created_at", { ascending: false }),
+      db.from("profiles").select("id, email, full_name, avatar_url, subscription, canton, city, created_at").order("created_at", { ascending: false }),
       // Total animals
       db.from("animals").select("id", { count: "exact", head: true }),
       // ALL animals with details
@@ -142,10 +142,22 @@ export async function GET() {
       }
     }
 
-    // Enrich users with animal count
+    // Fetch auth users for last_sign_in_at
+    const authSignIns: Record<string, string | null> = {};
+    try {
+      const { data: { users: authUsers } } = await db.auth.admin.listUsers({ page: 1, perPage: 1000 });
+      if (authUsers) {
+        for (const au of authUsers) {
+          authSignIns[au.id] = au.last_sign_in_at || null;
+        }
+      }
+    } catch {}
+
+    // Enrich users with animal count + last_sign_in_at
     const allUsers = (allUsersRes.data || []).map((u: Record<string, unknown>) => ({
       ...u,
       animal_count: animalsPerUser[(u as { id: string }).id] || 0,
+      last_sign_in_at: authSignIns[(u as { id: string }).id] || null,
     }));
 
     // Growth rate calculation
