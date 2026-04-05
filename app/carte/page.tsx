@@ -21,7 +21,6 @@ const CANTON_COORDS: Record<string, [number, number]> = {
 function MapInner({ animals, userPos }: { animals: any[]; userPos: [number, number] | null }) {
   const L = require("leaflet");
   const { MapContainer, TileLayer, Marker, Popup } = require("react-leaflet");
-  require("leaflet/dist/leaflet.css");
 
   useEffect(() => {
     delete (L.Icon.Default.prototype as any)._getIconUrl;
