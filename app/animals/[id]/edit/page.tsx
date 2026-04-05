@@ -8,6 +8,7 @@ import { CITIES } from "@/lib/cities";
 import { BREEDS } from "@/lib/breeds";
 import { TRAITS } from "@/lib/traits";
 import { useRouter, useParams } from "next/navigation";
+import { useAppContext } from "@/lib/contexts/AppContext";
 
 const SPECIES_LIST = [
   { value: "chien", label: "🐕 Chien" },
@@ -17,6 +18,8 @@ const SPECIES_LIST = [
   { value: "rongeur", label: "🐹 Rongeur" },
   { value: "autre", label: "🐾 Autre" },
 ];
+
+type PhotoEntry = { url?: string; file?: File; preview: string; tag: "with_owner" | "animal_only" };
 
 export default function EditAnimalPage() {
   const [animal, setAnimal] = useState<any>(null);
@@ -28,14 +31,14 @@ export default function EditAnimalPage() {
   const [customCity, setCustomCity] = useState(false);
   const [customBreed, setCustomBreed] = useState(false);
   const [selectedTraits, setSelectedTraits] = useState<string[]>([]);
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [additionalPhotos, setAdditionalPhotos] = useState<File[]>([]);
-  const [additionalPreviews, setAdditionalPreviews] = useState<string[]>([]);
-  const [existingPhotos, setExistingPhotos] = useState<string[]>([]);
+  const [photos, setPhotos] = useState<PhotoEntry[]>([]);
+  const [dietType, setDietType] = useState("");
   const supabase = createClient();
   const router = useRouter();
   const params = useParams();
+  const { t } = useAppContext();
+
+  const hasOwnerPhoto = photos.some((p) => p.tag === "with_owner");
 
   useEffect(() => {
     async function load() {
@@ -46,7 +49,21 @@ export default function EditAnimalPage() {
         setSpecies(a.species);
         setSelectedTraits(a.traits || []);
         setSelectedCanton(a.canton || "");
-        if (a.photo_url) setPhotoPreview(a.photo_url);
+        setDietType(a.diet_type || "");
+
+        // Load existing photos
+        const existingPhotos: PhotoEntry[] = [];
+        if (a.photo_url) {
+          // Assume main photo is with_owner if it already existed (existing users get grace)
+          existingPhotos.push({ url: a.photo_url, preview: a.photo_url, tag: "with_owner" });
+        }
+        if ((a as any).extra_photos?.length) {
+          for (const url of (a as any).extra_photos) {
+            existingPhotos.push({ url, preview: url, tag: "animal_only" });
+          }
+        }
+        setPhotos(existingPhotos);
+
         if (a.city && a.canton) {
           const cities = CITIES[a.canton] || [];
           if (!cities.includes(a.city)) setCustomCity(true);
@@ -61,9 +78,15 @@ export default function EditAnimalPage() {
     load();
   }, [params.id]);
 
-  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleAddPhoto(e: React.ChangeEvent<HTMLInputElement>, tag: "with_owner" | "animal_only") {
     const file = e.target.files?.[0];
-    if (file) { setPhotoFile(file); setPhotoPreview(URL.createObjectURL(file)); }
+    if (!file || photos.length >= 5) return;
+    setPhotos((prev) => [...prev, { file, preview: URL.createObjectURL(file), tag }]);
+    e.target.value = "";
+  }
+
+  function removePhoto(index: number) {
+    setPhotos((prev) => prev.filter((_, i) => i !== index));
   }
 
   function toggleTrait(trait: string) {
@@ -72,27 +95,31 @@ export default function EditAnimalPage() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!hasOwnerPhoto) {
+      setError(t.animalPhotoWithOwner);
+      return;
+    }
     setSaving(true);
     setError(null);
 
     const form = new FormData(e.currentTarget);
-    let photo_url = animal?.photo_url || null;
 
-    if (photoFile) {
-      const uploadResult = await uploadAnimalPhoto(supabase, photoFile);
-      if (uploadResult.error) { setError(uploadResult.error); setSaving(false); return; }
-      photo_url = uploadResult.data;
+    // Upload new photos, keep existing URLs
+    const uploadedUrls: string[] = [];
+    for (const photo of photos) {
+      if (photo.url) {
+        uploadedUrls.push(photo.url);
+      } else if (photo.file) {
+        const uploadResult = await uploadAnimalPhoto(supabase, photo.file);
+        if (uploadResult.error) { setError(uploadResult.error); setSaving(false); return; }
+        if (uploadResult.data) uploadedUrls.push(uploadResult.data);
+      }
     }
+
+    const photo_url = uploadedUrls[0] || null;
 
     const breed = customBreed ? (form.get("breed_custom") as string) || null : (form.get("breed") as string) || null;
     const city = customCity ? (form.get("city_custom") as string) || null : (form.get("city") as string) || null;
-
-    // Upload additional photos
-    const newPhotoUrls = [...existingPhotos];
-    for (const file of additionalPhotos) {
-      const uploadResult = await uploadAnimalPhoto(supabase, file);
-      if (uploadResult.data) newPhotoUrls.push(uploadResult.data);
-    }
 
     const result = await updateAnimal(supabase, params.id as string, {
       name: form.get("name") as string,
@@ -108,8 +135,8 @@ export default function EditAnimalPage() {
       vaccinated: form.get("vaccinated") === "on",
       sterilized: form.get("sterilized") === "on",
       traits: selectedTraits,
-      photos: newPhotoUrls,
-      diet_type: (form.get("diet_type") as string) || null,
+      extra_photos: uploadedUrls.slice(1),
+      diet_type: dietType || null,
       food_brand: (form.get("food_brand") as string) || null,
       treats: (form.get("treats") as string) || null,
       allergies: (form.get("allergies") as string) || null,
@@ -129,41 +156,77 @@ export default function EditAnimalPage() {
   return (
     <div className="min-h-screen px-4 py-8">
       <div className="max-w-lg mx-auto">
-        <h1 className="text-2xl font-bold text-white mb-2">Modifier {animal.name}</h1>
-        <p className="text-gray-400 text-sm mb-6">Mets à jour le profil de ton compagnon</p>
+        <h1 className="text-2xl font-bold text-white mb-2">{t.animalSaveButton} — {animal.name}</h1>
+        <p className="text-gray-400 text-sm mb-6">{t.animalAddSub}</p>
 
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
           {error && <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-sm">{error}</div>}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Photo */}
+            {/* Photos section */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Photo</label>
-              <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-2xl bg-[#2a1f3a] border-2 border-dashed border-white/10 flex items-center justify-center overflow-hidden">
-                  {photoPreview ? (
-                    <img src={photoPreview} alt="preview" className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-2xl text-gray-600">📷</span>
-                  )}
-                </div>
-                <label className="px-4 py-2 bg-white/10 hover:bg-white/20 text-gray-300 text-sm rounded-xl transition cursor-pointer border border-white/10">
-                  Changer la photo
-                  <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
-                </label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">{t.animalPhoto} *</label>
+
+              {/* Owner photo requirement banner */}
+              <div className={"mb-3 p-3 rounded-xl border text-sm " + (hasOwnerPhoto ? "bg-green-500/10 border-green-500/20 text-green-400" : "bg-amber-500/10 border-amber-500/20 text-amber-400")}>
+                <div className="font-bold mb-1">{t.animalPhotoWithOwner}</div>
+                <div className="text-xs opacity-80">{t.animalPhotoWithOwnerHint}</div>
               </div>
+
+              {/* Photo grid */}
+              <div className="flex flex-wrap gap-3 mb-3">
+                {photos.map((photo, i) => (
+                  <div key={i} className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-white/10">
+                    <img src={photo.preview} alt={`photo-${i}`} className="w-full h-full object-cover" />
+                    <span className={"absolute bottom-0 left-0 right-0 text-[9px] font-bold text-center py-0.5 " + (photo.tag === "with_owner" ? "bg-green-600 text-white" : "bg-white/80 text-gray-700")}>
+                      {photo.tag === "with_owner" ? t.animalPhotoTagOwner : t.animalPhotoTagAnimal}
+                    </span>
+                    <button type="button" onClick={() => removePhoto(i)}
+                      className="absolute top-0.5 right-0.5 w-5 h-5 bg-red-500 text-white rounded-full text-xs font-bold flex items-center justify-center">×</button>
+                  </div>
+                ))}
+              </div>
+
+              {/* Add photo buttons */}
+              {photos.length < 5 && (
+                <div className="space-y-2">
+                  <div className={"flex gap-2 p-2 rounded-xl border " + (!hasOwnerPhoto ? "border-amber-500/40 bg-amber-500/5" : "border-white/10 bg-white/5")}>
+                    <span className="text-xs text-gray-400 flex items-center gap-1 w-28 shrink-0">🤝 {t.animalPhotoTagOwner}</span>
+                    <label className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-gray-300 text-xs rounded-lg transition cursor-pointer border border-white/10">
+                      {t.animalGallery}
+                      <input type="file" accept="image/*" onChange={(e) => handleAddPhoto(e, "with_owner")} className="hidden" />
+                    </label>
+                    <label className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-gray-300 text-xs rounded-lg transition cursor-pointer border border-white/10">
+                      {t.animalCamera}
+                      <input type="file" accept="image/*" capture="environment" onChange={(e) => handleAddPhoto(e, "with_owner")} className="hidden" />
+                    </label>
+                  </div>
+                  <div className="flex gap-2 p-2 rounded-xl border border-white/10 bg-white/5">
+                    <span className="text-xs text-gray-400 flex items-center gap-1 w-28 shrink-0">🐾 {t.animalPhotoTagAnimal}</span>
+                    <label className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-gray-300 text-xs rounded-lg transition cursor-pointer border border-white/10">
+                      {t.animalGallery}
+                      <input type="file" accept="image/*" onChange={(e) => handleAddPhoto(e, "animal_only")} className="hidden" />
+                    </label>
+                    <label className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-gray-300 text-xs rounded-lg transition cursor-pointer border border-white/10">
+                      {t.animalCamera}
+                      <input type="file" accept="image/*" capture="environment" onChange={(e) => handleAddPhoto(e, "animal_only")} className="hidden" />
+                    </label>
+                  </div>
+                </div>
+              )}
+              <p className="text-[10px] text-gray-500 mt-1">{photos.length}/5 — {t.animalMaxPhotos}</p>
             </div>
 
             {/* Nom */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Nom *</label>
+              <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalName} *</label>
               <input name="name" type="text" required defaultValue={animal.name}
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition" />
             </div>
 
             {/* Espèce */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Espèce *</label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">{t.animalSpecies} *</label>
               <div className="grid grid-cols-3 gap-2">
                 {SPECIES_LIST.map((s) => (
                   <button key={s.value} type="button" onClick={() => { setSpecies(s.value); setCustomBreed(false); setSelectedTraits([]); }}
@@ -177,16 +240,16 @@ export default function EditAnimalPage() {
 
             {/* Race */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Race</label>
+              <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalBreed}</label>
               {customBreed ? (
                 <input name="breed_custom" type="text" defaultValue={animal.breed || ""}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition" />
               ) : (
                 <select name="breed" defaultValue={animal.breed || ""} onChange={(e) => { if (e.target.value === "__other") setCustomBreed(true); }}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-gray-300 focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
-                  <option value="" className="bg-[#1a1225]">Sélectionner</option>
+                  <option value="" className="bg-[#1a1225]">{t.animalSelect}</option>
                   {breedList.map((b: string) => (<option key={b} value={b} className="bg-[#1a1225]">{b}</option>))}
-                  <option value="__other" className="bg-[#1a1225]">Autre race...</option>
+                  <option value="__other" className="bg-[#1a1225]">{t.animalOtherBreed}</option>
                 </select>
               )}
             </div>
@@ -194,21 +257,21 @@ export default function EditAnimalPage() {
             {/* Âge + Genre + Poids */}
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Âge (mois)</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalAge}</label>
                 <input name="age_months" type="number" min="0" defaultValue={animal.age_months || ""}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-orange-500 outline-none transition" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Genre</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalGender}</label>
                 <select name="gender" defaultValue={animal.gender}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-gray-300 focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
-                  <option value="inconnu" className="bg-[#1a1225]">Inconnu</option>
-                  <option value="male" className="bg-[#1a1225]">Mâle</option>
-                  <option value="femelle" className="bg-[#1a1225]">Femelle</option>
+                  <option value="inconnu" className="bg-[#1a1225]">{t.animalUnknown}</option>
+                  <option value="male" className="bg-[#1a1225]">{t.animalMale}</option>
+                  <option value="femelle" className="bg-[#1a1225]">{t.animalFemale}</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Poids (kg)</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalWeight}</label>
                 <input name="weight_kg" type="number" step="0.1" min="0" defaultValue={animal.weight_kg || ""}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-orange-500 outline-none transition" />
               </div>
@@ -217,24 +280,24 @@ export default function EditAnimalPage() {
             {/* Canton + Ville */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Canton</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalCanton}</label>
                 <select name="canton" value={selectedCanton} onChange={(e) => { setSelectedCanton(e.target.value); setCustomCity(false); }}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-gray-300 focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
-                  <option value="" className="bg-[#1a1225]">Canton</option>
+                  <option value="" className="bg-[#1a1225]">{t.animalCanton}</option>
                   {CANTONS.map((c) => (<option key={c.code} value={c.code} className="bg-[#1a1225]">{c.name}</option>))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Ville</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalCity}</label>
                 {customCity ? (
                   <input name="city_custom" type="text" defaultValue={animal.city || ""}
                     className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-orange-500 outline-none transition" />
                 ) : (
                   <select name="city" defaultValue={animal.city || ""} onChange={(e) => { if (e.target.value === "__other") setCustomCity(true); }}
                     className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-gray-300 focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
-                    <option value="" className="bg-[#1a1225]">Ville</option>
+                    <option value="" className="bg-[#1a1225]">{t.animalCity}</option>
                     {cantonCities.map((c: string) => (<option key={c} value={c} className="bg-[#1a1225]">{c}</option>))}
-                    <option value="__other" className="bg-[#1a1225]">Autre...</option>
+                    <option value="__other" className="bg-[#1a1225]">{t.animalOther}</option>
                   </select>
                 )}
               </div>
@@ -244,56 +307,18 @@ export default function EditAnimalPage() {
             <div className="flex gap-6">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" name="vaccinated" defaultChecked={animal.vaccinated} className="w-4 h-4 rounded bg-white/5 border-white/10 text-orange-500 focus:ring-orange-500" />
-                <span className="text-sm text-gray-300">Vacciné</span>
+                <span className="text-sm text-gray-300">{t.animalVaccinated}</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" name="sterilized" defaultChecked={animal.sterilized} className="w-4 h-4 rounded bg-white/5 border-white/10 text-orange-500 focus:ring-orange-500" />
-                <span className="text-sm text-gray-300">Stérilisé</span>
+                <span className="text-sm text-gray-300">{t.animalSterilized}</span>
               </label>
-            </div>
-
-            
-            {/* Photos supplémentaires */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Photos supplémentaires</label>
-              <div className="flex flex-wrap gap-2 mb-2">
-                {existingPhotos.map((url, i) => (
-                  <div key={i} className="relative w-16 h-16 rounded-xl overflow-hidden border border-white/10">
-                    <img src={url} alt="" className="w-full h-full object-cover" />
-                    <button type="button" onClick={() => setExistingPhotos(prev => prev.filter((_, idx) => idx !== i))}
-                      className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">✕</button>
-                  </div>
-                ))}
-                {additionalPreviews.map((url, i) => (
-                  <div key={"new" + i} className="relative w-16 h-16 rounded-xl overflow-hidden border border-orange-500/30">
-                    <img src={url} alt="" className="w-full h-full object-cover" />
-                    <button type="button" onClick={() => {
-                      setAdditionalPhotos(prev => prev.filter((_, idx) => idx !== i));
-                      setAdditionalPreviews(prev => prev.filter((_, idx) => idx !== i));
-                    }}
-                      className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">✕</button>
-                  </div>
-                ))}
-                <label className="w-16 h-16 rounded-xl border-2 border-dashed border-white/10 flex items-center justify-center cursor-pointer hover:border-orange-500/30">
-                  <span className="text-xl text-gray-600">+</span>
-                  <input type="file" accept="image/*" className="hidden" onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      setAdditionalPhotos(prev => [...prev, file]);
-                      const reader = new FileReader();
-                      reader.onloadend = () => setAdditionalPreviews(prev => [...prev, reader.result as string]);
-                      reader.readAsDataURL(file);
-                    }
-                  }} />
-                </label>
-              </div>
-              <p className="text-xs text-gray-500">Ajoutez jusqu'à 5 photos de votre animal</p>
             </div>
 
             {/* Traits */}
             {traitList.length > 0 && (
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Caractère</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">{t.animalCharacter}</label>
                 <div className="flex flex-wrap gap-2">
                   {traitList.map((trait: string) => (
                     <button key={trait} type="button" onClick={() => toggleTrait(trait)}
@@ -310,80 +335,76 @@ export default function EditAnimalPage() {
             <div className="border-t border-white/10 pt-5">
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-lg">🍖</span>
-                <label className="text-sm font-bold text-gray-200">Alimentation</label>
+                <label className="text-sm font-bold text-gray-200">{t.dietTitle}</label>
               </div>
 
-              {/* Type d'alimentation */}
               <div className="mb-3">
-                <label className="block text-sm font-medium text-gray-300 mb-2">Type d&apos;alimentation</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">{t.dietType}</label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
-                    { value: "croquettes", label: "🥣 Croquettes" },
-                    { value: "barf", label: "🥩 BARF" },
-                    { value: "patee", label: "🥫 Pâtée" },
-                    { value: "mixte", label: "🔄 Mixte" },
-                    { value: "fait_maison", label: "👨‍🍳 Fait maison" },
-                    { value: "autre", label: "🍽️ Autre" },
+                    { value: "croquettes", label: `🥣 ${t.dietCroquettes}` },
+                    { value: "barf", label: `🥩 ${t.dietBarf}` },
+                    { value: "patee", label: `🥫 ${t.dietPatee}` },
+                    { value: "mixte", label: `🔄 ${t.dietMixte}` },
+                    { value: "fait_maison", label: `👨‍🍳 ${t.dietHomemade}` },
+                    { value: "autre", label: `🍽️ ${t.dietOther}` },
                   ].map((d) => (
                     <button key={d.value} type="button"
-                      onClick={(e) => {
-                        const input = document.querySelector('input[name="diet_type"]') as HTMLInputElement;
-                        if (input) input.value = input.value === d.value ? "" : d.value;
-                        e.currentTarget.parentElement?.querySelectorAll("button").forEach(b => b.classList.remove("!bg-teal-500/20", "!border-teal-500/50", "!text-teal-300"));
-                        if (input?.value === d.value) e.currentTarget.classList.add("!bg-teal-500/20", "!border-teal-500/50", "!text-teal-300");
-                      }}
+                      onClick={() => setDietType((prev) => prev === d.value ? "" : d.value)}
                       className={"px-3 py-2 rounded-xl text-sm font-medium transition border " +
-                        (animal.diet_type === d.value
-                          ? "!bg-teal-500/20 !border-teal-500/50 !text-teal-300"
-                          : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10")}>
+                        (dietType === d.value
+                          ? "bg-teal-500/20 border-teal-500/50 text-teal-300"
+                          : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10")
+                      }>
                       {d.label}
                     </button>
                   ))}
                 </div>
-                <input type="hidden" name="diet_type" defaultValue={animal.diet_type || ""} />
+                <input type="hidden" name="diet_type" value={dietType} />
               </div>
 
-              {/* Marque */}
               <div className="mb-3">
-                <label className="block text-sm font-medium text-gray-300 mb-1">Marque de nourriture</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t.dietBrand}</label>
                 <input name="food_brand" type="text" defaultValue={animal.food_brand || ""}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
-                  placeholder="Ex: Royal Canin, Orijen, ANiFit..." />
+                  placeholder={t.dietBrandPlaceholder} />
               </div>
 
-              {/* Friandises */}
               <div className="mb-3">
-                <label className="block text-sm font-medium text-gray-300 mb-1">Friandises préférées</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t.dietTreats}</label>
                 <input name="treats" type="text" defaultValue={animal.treats || ""}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
-                  placeholder="Ex: os à mâcher, biscuits, viande séchée..." />
+                  placeholder={t.dietTreatsPlaceholder} />
               </div>
 
-              {/* Allergies */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Allergies / intolérances</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t.dietAllergies}</label>
                 <input name="allergies" type="text" defaultValue={animal.allergies || ""}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
-                  placeholder="Ex: poulet, gluten, céréales..." />
+                  placeholder={t.dietAllergiesPlaceholder} />
               </div>
             </div>
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Description</label>
+              <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalDescription}</label>
               <textarea name="description" rows={3} defaultValue={animal.description || ""}
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 outline-none transition resize-none" />
             </div>
 
             {/* Actions */}
             <div className="flex gap-3">
-              <button type="submit" disabled={saving}
-                className="flex-1 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition disabled:opacity-50">
-                {saving ? "Sauvegarde..." : "Sauvegarder"}
+              <button type="submit" disabled={saving || !hasOwnerPhoto}
+                className={"flex-1 py-3 font-semibold rounded-xl transition " +
+                  (hasOwnerPhoto
+                    ? "bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50"
+                    : "bg-gray-600 text-gray-400 cursor-not-allowed")
+                }>
+                {saving ? t.animalSaving : !hasOwnerPhoto ? t.animalPhotoWithOwner : t.animalSaveButton}
               </button>
               <button type="button" onClick={() => router.push("/animals/" + params.id)}
                 className="px-6 py-3 bg-white/10 hover:bg-white/20 text-gray-300 font-medium rounded-xl transition border border-white/10">
-                Annuler
+                {t.animalCancel}
               </button>
             </div>
           </form>

@@ -34,6 +34,11 @@ export const animalSchema = z.object({
     .enum(["disponible", "en_cours", "adopte"])
     .default("disponible")
     .optional(),
+  diet_type: z.string().max(50).nullable().optional(),
+  food_brand: z.string().max(200).nullable().optional(),
+  treats: z.string().max(500).nullable().optional(),
+  allergies: z.string().max(500).nullable().optional(),
+  extra_photos: z.array(z.string().url()).default([]).optional(),
 });
 
 export type AnimalInput = z.infer<typeof animalSchema>;

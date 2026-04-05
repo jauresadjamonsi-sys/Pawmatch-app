@@ -19,6 +19,8 @@ const SPECIES_LIST = [
   { value: "autre", label: "🐾 Autre" },
 ];
 
+type PhotoEntry = { file: File; preview: string; tag: "with_owner" | "animal_only" };
+
 export default function NewAnimalPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,8 +29,8 @@ export default function NewAnimalPage() {
   const [customCity, setCustomCity] = useState(false);
   const [customBreed, setCustomBreed] = useState(false);
   const [selectedTraits, setSelectedTraits] = useState<string[]>([]);
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photos, setPhotos] = useState<PhotoEntry[]>([]);
+  const [dietType, setDietType] = useState("");
   const supabase = createClient();
   const router = useRouter();
   const { t } = useAppContext();
@@ -37,12 +39,17 @@ export default function NewAnimalPage() {
   const traitList = TRAITS[species] || [];
   const cantonCities = selectedCanton ? CITIES[selectedCanton] || [] : [];
 
-  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+  const hasOwnerPhoto = photos.some((p) => p.tag === "with_owner");
+
+  function handleAddPhoto(e: React.ChangeEvent<HTMLInputElement>, tag: "with_owner" | "animal_only") {
     const file = e.target.files?.[0];
-    if (file) {
-      setPhotoFile(file);
-      setPhotoPreview(URL.createObjectURL(file));
-    }
+    if (!file || photos.length >= 5) return;
+    setPhotos((prev) => [...prev, { file, preview: URL.createObjectURL(file), tag }]);
+    e.target.value = "";
+  }
+
+  function removePhoto(index: number) {
+    setPhotos((prev) => prev.filter((_, i) => i !== index));
   }
 
   function toggleTrait(trait: string) {
@@ -53,17 +60,24 @@ export default function NewAnimalPage() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!hasOwnerPhoto) {
+      setError(t.animalPhotoWithOwner);
+      return;
+    }
     setLoading(true);
     setError(null);
 
     const form = new FormData(e.currentTarget);
-    let photo_url = null;
 
-    if (photoFile) {
-      const uploadResult = await uploadAnimalPhoto(supabase, photoFile);
+    // Upload all photos
+    const uploadedUrls: string[] = [];
+    for (const photo of photos) {
+      const uploadResult = await uploadAnimalPhoto(supabase, photo.file);
       if (uploadResult.error) { setError(uploadResult.error); setLoading(false); return; }
-      photo_url = uploadResult.data;
+      if (uploadResult.data) uploadedUrls.push(uploadResult.data);
     }
+
+    const photo_url = uploadedUrls[0] || null;
 
     const breed = customBreed
       ? (form.get("breed_custom") as string) || null
@@ -80,6 +94,7 @@ export default function NewAnimalPage() {
     const { checkAnimalLimit } = await import("@/lib/services/limits");
     const limitCheck = await checkAnimalLimit(supabase, user?.id || "", profileData?.subscription || "free");
     if (!limitCheck.allowed) { setError(limitCheck.error || "Limite atteinte"); setLoading(false); return; }
+
     const result = await createAnimal(supabase, {
       name: form.get("name") as string,
       species,
@@ -94,10 +109,11 @@ export default function NewAnimalPage() {
       vaccinated: form.get("vaccinated") === "on",
       sterilized: form.get("sterilized") === "on",
       traits: selectedTraits,
-      diet_type: (form.get("diet_type") as string) || null,
+      diet_type: dietType || null,
       food_brand: (form.get("food_brand") as string) || null,
       treats: (form.get("treats") as string) || null,
       allergies: (form.get("allergies") as string) || null,
+      extra_photos: uploadedUrls.slice(1),
     }, user?.id);
 
     if (result.error) { setError(result.error); setLoading(false); return; }
@@ -120,28 +136,65 @@ export default function NewAnimalPage() {
           {error && <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-sm">{error}</div>}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Photo */}
+            {/* Photos section */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">{t.animalPhoto}</label>
-              <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-2xl bg-[#2a1f3a] border-2 border-dashed border-white/10 flex items-center justify-center overflow-hidden">
-                  {photoPreview ? (
-                    <img src={photoPreview} alt="preview" className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-2xl text-gray-600">📷</span>
-                  )}
-                </div>
-                <div className="flex gap-2">
-                  <label className="px-4 py-2 bg-white/10 hover:bg-white/20 text-gray-300 text-sm rounded-xl transition cursor-pointer border border-white/10">
-                    {t.animalGallery}
-                    <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
-                  </label>
-                  <label className="px-4 py-2 bg-white/10 hover:bg-white/20 text-gray-300 text-sm rounded-xl transition cursor-pointer border border-white/10">
-                    {t.animalCamera}
-                    <input type="file" accept="image/*" capture="environment" onChange={handlePhotoChange} className="hidden" />
-                  </label>
-                </div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">{t.animalPhoto} *</label>
+
+              {/* Owner photo requirement banner */}
+              <div className={"mb-3 p-3 rounded-xl border text-sm " + (hasOwnerPhoto ? "bg-green-500/10 border-green-500/20 text-green-400" : "bg-amber-500/10 border-amber-500/20 text-amber-400")}>
+                <div className="font-bold mb-1">{t.animalPhotoWithOwner}</div>
+                <div className="text-xs opacity-80">{t.animalPhotoWithOwnerHint}</div>
               </div>
+
+              {/* Photo grid */}
+              <div className="flex flex-wrap gap-3 mb-3">
+                {photos.map((photo, i) => (
+                  <div key={i} className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-white/10">
+                    <img src={photo.preview} alt={`photo-${i}`} className="w-full h-full object-cover" />
+                    <span className={"absolute bottom-0 left-0 right-0 text-[9px] font-bold text-center py-0.5 " + (photo.tag === "with_owner" ? "bg-green-600 text-white" : "bg-white/80 text-gray-700")}>
+                      {photo.tag === "with_owner" ? t.animalPhotoTagOwner : t.animalPhotoTagAnimal}
+                    </span>
+                    <button type="button" onClick={() => removePhoto(i)}
+                      className="absolute top-0.5 right-0.5 w-5 h-5 bg-red-500 text-white rounded-full text-xs font-bold flex items-center justify-center">×</button>
+                  </div>
+                ))}
+                {photos.length === 0 && (
+                  <div className="w-20 h-20 rounded-2xl bg-[#2a1f3a] border-2 border-dashed border-white/10 flex items-center justify-center">
+                    <span className="text-2xl text-gray-600">📷</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Add photo buttons */}
+              {photos.length < 5 && (
+                <div className="space-y-2">
+                  {/* With owner - highlighted if none yet */}
+                  <div className={"flex gap-2 p-2 rounded-xl border " + (!hasOwnerPhoto ? "border-amber-500/40 bg-amber-500/5" : "border-white/10 bg-white/5")}>
+                    <span className="text-xs text-gray-400 flex items-center gap-1 w-28 shrink-0">🤝 {t.animalPhotoTagOwner}</span>
+                    <label className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-gray-300 text-xs rounded-lg transition cursor-pointer border border-white/10">
+                      {t.animalGallery}
+                      <input type="file" accept="image/*" onChange={(e) => handleAddPhoto(e, "with_owner")} className="hidden" />
+                    </label>
+                    <label className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-gray-300 text-xs rounded-lg transition cursor-pointer border border-white/10">
+                      {t.animalCamera}
+                      <input type="file" accept="image/*" capture="environment" onChange={(e) => handleAddPhoto(e, "with_owner")} className="hidden" />
+                    </label>
+                  </div>
+                  {/* Animal only */}
+                  <div className="flex gap-2 p-2 rounded-xl border border-white/10 bg-white/5">
+                    <span className="text-xs text-gray-400 flex items-center gap-1 w-28 shrink-0">🐾 {t.animalPhotoTagAnimal}</span>
+                    <label className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-gray-300 text-xs rounded-lg transition cursor-pointer border border-white/10">
+                      {t.animalGallery}
+                      <input type="file" accept="image/*" onChange={(e) => handleAddPhoto(e, "animal_only")} className="hidden" />
+                    </label>
+                    <label className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-gray-300 text-xs rounded-lg transition cursor-pointer border border-white/10">
+                      {t.animalCamera}
+                      <input type="file" accept="image/*" capture="environment" onChange={(e) => handleAddPhoto(e, "animal_only")} className="hidden" />
+                    </label>
+                  </div>
+                </div>
+              )}
+              <p className="text-[10px] text-gray-500 mt-1">{photos.length}/5 — {t.animalMaxPhotos}</p>
             </div>
 
             {/* Nom */}
@@ -277,59 +330,58 @@ export default function NewAnimalPage() {
             <div className="border-t border-white/10 pt-5">
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-lg">🍖</span>
-                <label className="text-sm font-bold text-gray-200">Alimentation</label>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/15 text-teal-400 font-bold">Nouveau</span>
+                <label className="text-sm font-bold text-gray-200">{t.dietTitle}</label>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/15 text-teal-400 font-bold">{t.dietNew}</span>
               </div>
 
               {/* Type d'alimentation */}
               <div className="mb-3">
-                <label className="block text-sm font-medium text-gray-300 mb-2">Type d&apos;alimentation</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">{t.dietType}</label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
-                    { value: "croquettes", label: "🥣 Croquettes" },
-                    { value: "barf", label: "🥩 BARF" },
-                    { value: "patee", label: "🥫 Pâtée" },
-                    { value: "mixte", label: "🔄 Mixte" },
-                    { value: "fait_maison", label: "👨‍🍳 Fait maison" },
-                    { value: "autre", label: "🍽️ Autre" },
+                    { value: "croquettes", label: `🥣 ${t.dietCroquettes}` },
+                    { value: "barf", label: `🥩 ${t.dietBarf}` },
+                    { value: "patee", label: `🥫 ${t.dietPatee}` },
+                    { value: "mixte", label: `🔄 ${t.dietMixte}` },
+                    { value: "fait_maison", label: `👨‍🍳 ${t.dietHomemade}` },
+                    { value: "autre", label: `🍽️ ${t.dietOther}` },
                   ].map((d) => (
                     <button key={d.value} type="button"
-                      onClick={(e) => {
-                        const input = document.querySelector('input[name="diet_type"]') as HTMLInputElement;
-                        if (input) input.value = input.value === d.value ? "" : d.value;
-                        e.currentTarget.parentElement?.querySelectorAll("button").forEach(b => b.classList.remove("!bg-teal-500/20", "!border-teal-500/50", "!text-teal-300"));
-                        if (input?.value === d.value) e.currentTarget.classList.add("!bg-teal-500/20", "!border-teal-500/50", "!text-teal-300");
-                      }}
-                      className="px-3 py-2 rounded-xl text-sm font-medium transition border bg-white/5 border-white/10 text-gray-400 hover:bg-white/10">
+                      onClick={() => setDietType((prev) => prev === d.value ? "" : d.value)}
+                      className={"px-3 py-2 rounded-xl text-sm font-medium transition border " +
+                        (dietType === d.value
+                          ? "bg-teal-500/20 border-teal-500/50 text-teal-300"
+                          : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10")
+                      }>
                       {d.label}
                     </button>
                   ))}
                 </div>
-                <input type="hidden" name="diet_type" />
+                <input type="hidden" name="diet_type" value={dietType} />
               </div>
 
               {/* Marque de nourriture */}
               <div className="mb-3">
-                <label className="block text-sm font-medium text-gray-300 mb-1">Marque de nourriture</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t.dietBrand}</label>
                 <input name="food_brand" type="text"
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
-                  placeholder="Ex: Royal Canin, Orijen, ANiFit..." />
+                  placeholder={t.dietBrandPlaceholder} />
               </div>
 
               {/* Friandises */}
               <div className="mb-3">
-                <label className="block text-sm font-medium text-gray-300 mb-1">Friandises préférées</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t.dietTreats}</label>
                 <input name="treats" type="text"
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
-                  placeholder="Ex: os à mâcher, biscuits, viande séchée..." />
+                  placeholder={t.dietTreatsPlaceholder} />
               </div>
 
               {/* Allergies */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Allergies / intolérances</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t.dietAllergies}</label>
                 <input name="allergies" type="text"
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
-                  placeholder="Ex: poulet, gluten, céréales..." />
+                  placeholder={t.dietAllergiesPlaceholder} />
               </div>
             </div>
 
@@ -342,9 +394,13 @@ export default function NewAnimalPage() {
             </div>
 
             {/* Submit */}
-            <button type="submit" disabled={loading}
-              className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition disabled:opacity-50 text-lg">
-              {loading ? t.animalCreating : t.animalAddButton}
+            <button type="submit" disabled={loading || !hasOwnerPhoto}
+              className={"w-full py-3 font-semibold rounded-xl transition text-lg " +
+                (hasOwnerPhoto
+                  ? "bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50"
+                  : "bg-gray-600 text-gray-400 cursor-not-allowed")
+              }>
+              {loading ? t.animalCreating : !hasOwnerPhoto ? t.animalPhotoWithOwner : t.animalAddButton}
             </button>
           </form>
         </div>

@@ -35,6 +35,7 @@ export interface Animal {
   food_brand: string | null;
   treats: string | null;
   allergies: string | null;
+  extra_photos: string[];
   created_by: string | null;
   created_at: string;
   updated_at: string;
