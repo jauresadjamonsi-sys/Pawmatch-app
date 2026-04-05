@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css"
 import { CookieBanner } from "@/lib/components/CookieBanner";
 import Navbar from "@/lib/components/Navbar";
+import Footer from "@/lib/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 <AppProvider>
         <Navbar />
         {children}
+        <Footer />
       </AppProvider>
   <CookieBanner />
       </body>
