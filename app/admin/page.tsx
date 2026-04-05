@@ -38,6 +38,19 @@ interface ActivityItem {
   time: string;
 }
 
+interface ReportRow {
+  id: string;
+  reporter_id: string;
+  reported_user_id: string;
+  reported_animal_id: string | null;
+  reason: string;
+  details: string | null;
+  status: string;
+  created_at: string;
+  reporter_name: string;
+  reported_user_name: string;
+}
+
 interface AdminStats {
   totalUsers: number;
   usersToday: number;
@@ -60,9 +73,11 @@ interface AdminStats {
   allAnimals: AnimalRow[];
   dailySignups: { date: string; count: number }[];
   recentActivity: ActivityItem[];
+  pendingReports: ReportRow[];
+  totalReports: number;
 }
 
-type TabKey = "overview" | "members" | "animals" | "revenue";
+type TabKey = "overview" | "members" | "animals" | "revenue" | "reports";
 
 const SPECIES_EMOJI: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
@@ -142,6 +157,7 @@ export default function AdminPage() {
     { key: "members", label: "Membres" },
     { key: "animals", label: "Animaux" },
     { key: "revenue", label: "Revenue" },
+    { key: "reports", label: "Signalements" },
   ];
 
   return (
@@ -190,6 +206,7 @@ export default function AdminPage() {
               {t.label}
               {t.key === "members" && <span style={{ marginLeft: 6, fontSize: 11, opacity: 0.7 }}>({stats.totalUsers})</span>}
               {t.key === "animals" && <span style={{ marginLeft: 6, fontSize: 11, opacity: 0.7 }}>({stats.totalAnimals})</span>}
+              {t.key === "reports" && stats.pendingReports.length > 0 && <span style={{ marginLeft: 6, fontSize: 10, background: "#ef4444", color: "#fff", borderRadius: 20, padding: "2px 7px", fontWeight: 800 }}>{stats.pendingReports.length}</span>}
             </button>
           ))}
         </div>
@@ -199,6 +216,7 @@ export default function AdminPage() {
         {activeTab === "members" && <MembersTab stats={stats} />}
         {activeTab === "animals" && <AnimalsTab stats={stats} />}
         {activeTab === "revenue" && <RevenueTab stats={stats} />}
+        {activeTab === "reports" && <ReportsTab stats={stats} onRefresh={fetchStats} />}
 
       </div>
     </div>
@@ -1034,3 +1052,136 @@ const tdStyle: React.CSSProperties = {
   padding: "10px 14px",
   borderBottom: "1px solid rgba(255,255,255,0.03)",
 };
+
+/* ────────────────────────────────────── Tab: Reports ── */
+
+function ReportsTab({ stats, onRefresh }: { stats: AdminStats; onRefresh: () => void }) {
+  const [processingId, setProcessingId] = useState<string | null>(null);
+
+  async function handleResolve(reportId: string) {
+    setProcessingId(reportId);
+    try {
+      const res = await fetch("/api/admin/reports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ report_id: reportId, action: "resolved" }),
+      });
+      if (res.ok) onRefresh();
+    } catch {}
+    setProcessingId(null);
+  }
+
+  function formatDate(dateStr: string) {
+    return new Date(dateStr).toLocaleDateString("fr-CH", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
+
+  const REASON_COLORS: Record<string, string> = {
+    "Maltraitance animale": "#ef4444",
+    "Harcelement": "#f97316",
+    "Arnaque": "#f59e0b",
+    "Contenu inapproprie": "#8b5cf6",
+    "Faux profil": "#3b82f6",
+    "Spam": "#6b7280",
+    "Autre": "#9ca3af",
+  };
+
+  return (
+    <>
+      {/* KPI */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, marginBottom: 24 }}>
+        <div style={{ ...cardStyle, padding: 20 }}>
+          <p style={{ fontSize: 28, fontWeight: 800, color: "#ef4444" }}>{stats.pendingReports.length}</p>
+          <p style={{ fontSize: 12, color: "var(--c-text-muted, #9b93b8)", marginTop: 4 }}>En attente</p>
+        </div>
+        <div style={{ ...cardStyle, padding: 20 }}>
+          <p style={{ fontSize: 28, fontWeight: 800, color: "var(--c-text, #f0eeff)" }}>{stats.totalReports}</p>
+          <p style={{ fontSize: 12, color: "var(--c-text-muted, #9b93b8)", marginTop: 4 }}>Total signalements</p>
+        </div>
+      </div>
+
+      {stats.pendingReports.length === 0 ? (
+        <div style={{ textAlign: "center", padding: 60 }}>
+          <p style={{ fontSize: 40, marginBottom: 12 }}>✅</p>
+          <p style={{ color: "var(--c-text-muted, #9b93b8)", fontSize: 14 }}>Aucun signalement en attente</p>
+        </div>
+      ) : (
+        <div style={{ ...cardStyle, overflow: "hidden" }}>
+          <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+              <thead>
+                <tr>
+                  <th style={thStyle}>Date</th>
+                  <th style={thStyle}>Signale par</th>
+                  <th style={thStyle}>Utilisateur signale</th>
+                  <th style={thStyle}>Raison</th>
+                  <th style={thStyle}>Details</th>
+                  <th style={thStyle}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {stats.pendingReports.map((report) => (
+                  <tr key={report.id}>
+                    <td style={{ ...tdStyle, color: "var(--c-text-muted, #9b93b8)", fontSize: 12, whiteSpace: "nowrap" }}>
+                      {formatDate(report.created_at)}
+                    </td>
+                    <td style={{ ...tdStyle, color: "var(--c-text, #f0eeff)", fontWeight: 500 }}>
+                      {report.reporter_name}
+                    </td>
+                    <td style={{ ...tdStyle, color: "var(--c-text, #f0eeff)", fontWeight: 500 }}>
+                      {report.reported_user_name}
+                    </td>
+                    <td style={tdStyle}>
+                      <span style={{
+                        display: "inline-block",
+                        padding: "3px 10px",
+                        borderRadius: 20,
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: REASON_COLORS[report.reason] || "#9ca3af",
+                        background: (REASON_COLORS[report.reason] || "#9ca3af") + "18",
+                        border: `1px solid ${(REASON_COLORS[report.reason] || "#9ca3af")}30`,
+                      }}>
+                        {report.reason}
+                      </span>
+                    </td>
+                    <td style={{ ...tdStyle, color: "var(--c-text-muted, #9b93b8)", fontSize: 12, maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {report.details || "—"}
+                    </td>
+                    <td style={tdStyle}>
+                      <div style={{ display: "flex", gap: 6 }}>
+                        <button
+                          onClick={() => handleResolve(report.id)}
+                          disabled={processingId === report.id}
+                          style={{
+                            padding: "5px 12px",
+                            borderRadius: 8,
+                            border: "1px solid rgba(34,197,94,0.3)",
+                            background: "rgba(34,197,94,0.1)",
+                            color: "#22c55e",
+                            fontSize: 11,
+                            fontWeight: 700,
+                            cursor: "pointer",
+                            opacity: processingId === report.id ? 0.5 : 1,
+                          }}
+                        >
+                          {processingId === report.id ? "..." : "Traite"}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+

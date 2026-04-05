@@ -66,6 +66,8 @@ export async function GET() {
       weeklySignupsRes,
       animalsToday,
       matchesYesterday,
+      pendingReportsRes,
+      totalReportsRes,
     ] = await Promise.all([
       // Total users
       db.from("profiles").select("id", { count: "exact", head: true }),
@@ -103,6 +105,10 @@ export async function GET() {
       db.from("animals").select("id", { count: "exact", head: true }).gte("created_at", todayStart),
       // Matches yesterday (for 24h section)
       db.from("matches").select("id", { count: "exact", head: true }).gte("created_at", yesterday),
+      // Pending reports
+      db.from("reports").select("id, reporter_id, reported_user_id, reported_animal_id, reason, details, status, created_at").eq("status", "pending").order("created_at", { ascending: false }),
+      // Total reports
+      db.from("reports").select("id", { count: "exact", head: true }),
     ]);
 
     // Count animals by species
@@ -179,6 +185,27 @@ export async function GET() {
       });
     }
 
+    // Enrich reports with user emails
+    const pendingReports = pendingReportsRes.data || [];
+    const reportUserIds = [
+      ...new Set([
+        ...pendingReports.map((r: any) => r.reporter_id),
+        ...pendingReports.map((r: any) => r.reported_user_id),
+      ].filter(Boolean))
+    ];
+    let reportProfiles: Record<string, string> = {};
+    if (reportUserIds.length > 0) {
+      const { data: rProfiles } = await db.from("profiles").select("id, email, full_name").in("id", reportUserIds);
+      for (const p of (rProfiles || [])) {
+        reportProfiles[(p as any).id] = (p as any).full_name || (p as any).email || "Inconnu";
+      }
+    }
+    const enrichedReports = pendingReports.map((r: any) => ({
+      ...r,
+      reporter_name: reportProfiles[r.reporter_id] || "Inconnu",
+      reported_user_name: reportProfiles[r.reported_user_id] || "Inconnu",
+    }));
+
     // Sort activity by time descending
     recentActivity.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
 
@@ -204,6 +231,8 @@ export async function GET() {
       allAnimals: allAnimalsRes.data || [],
       dailySignups,
       recentActivity: recentActivity.slice(0, 10),
+      pendingReports: enrichedReports,
+      totalReports: totalReportsRes.count || 0,
     });
   } catch (err) {
     console.error("Admin stats error:", err);

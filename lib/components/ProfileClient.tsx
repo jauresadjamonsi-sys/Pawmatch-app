@@ -30,6 +30,8 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
   const [showDeleteProfile, setShowDeleteProfile] = useState(false);
   const [deletingAnimal, setDeletingAnimal] = useState<string|null>(null);
   const [loading, setLoading] = useState(false);
+  const [blockedUsers, setBlockedUsers] = useState<any[]>([]);
+  const [loadingBlocked, setLoadingBlocked] = useState(false);
   const router = useRouter();
   const supabase = createClient();
 
@@ -47,6 +49,27 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
     await supabase.from("profiles").delete().eq("id", user.id);
     await supabase.auth.signOut();
     router.push("/");
+  }
+
+  async function fetchBlockedUsers() {
+    setLoadingBlocked(true);
+    try {
+      const res = await fetch("/api/block");
+      if (res.ok) {
+        const data = await res.json();
+        setBlockedUsers(data.blocked_users || []);
+      }
+    } catch {}
+    setLoadingBlocked(false);
+  }
+
+  async function unblockUser(userId: string) {
+    try {
+      const res = await fetch(`/api/block/${userId}`, { method: "DELETE" });
+      if (res.ok) {
+        setBlockedUsers(prev => prev.filter(u => u.user_id !== userId));
+      }
+    } catch {}
   }
 
   const subColor = profile?.subscription === "pro"
@@ -189,6 +212,87 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
                       </button>
                     </div>
                   </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Utilisateurs bloques */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold text-[var(--c-text)]">Utilisateurs bloques</h2>
+            <button
+              onClick={fetchBlockedUsers}
+              className="px-3 py-1.5 text-xs font-bold rounded-xl transition"
+              style={{
+                background: "var(--c-border, #2d2545)",
+                color: "var(--c-text-muted, #9b93b8)",
+              }}
+            >
+              {loadingBlocked ? "..." : "Voir"}
+            </button>
+          </div>
+
+          {blockedUsers.length === 0 && !loadingBlocked && (
+            <div
+              className="text-center py-8 rounded-2xl"
+              style={{
+                background: "var(--c-card, #1e1830)",
+                border: "1px solid var(--c-border, #2d2545)",
+              }}
+            >
+              <p className="text-sm" style={{ color: "var(--c-text-muted, #9b93b8)" }}>
+                Aucun utilisateur bloque
+              </p>
+            </div>
+          )}
+
+          {blockedUsers.length > 0 && (
+            <div
+              className="rounded-2xl overflow-hidden"
+              style={{
+                background: "var(--c-card, #1e1830)",
+                border: "1px solid var(--c-border, #2d2545)",
+              }}
+            >
+              {blockedUsers.map((u, i) => (
+                <div
+                  key={u.user_id}
+                  className="flex items-center gap-3 px-4 py-3"
+                  style={{
+                    borderBottom: i < blockedUsers.length - 1 ? "1px solid var(--c-border, #2d2545)" : "none",
+                  }}
+                >
+                  <div
+                    className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{ background: "var(--c-border, #2d2545)" }}
+                  >
+                    <span className="text-xs font-bold" style={{ color: "var(--c-text-muted, #9b93b8)" }}>
+                      {(u.full_name || u.email || "?").charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold truncate" style={{ color: "var(--c-text, #f0eeff)" }}>
+                      {u.full_name || u.email || "Utilisateur"}
+                    </p>
+                    {u.reason && (
+                      <p className="text-xs truncate" style={{ color: "var(--c-text-muted, #9b93b8)" }}>
+                        {u.reason}
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => unblockUser(u.user_id)}
+                    className="px-3 py-1.5 text-xs font-bold rounded-lg transition"
+                    style={{
+                      background: "rgba(34,197,94,0.1)",
+                      color: "#22c55e",
+                      border: "1px solid rgba(34,197,94,0.2)",
+                    }}
+                  >
+                    Debloquer
+                  </button>
                 </div>
               ))}
             </div>

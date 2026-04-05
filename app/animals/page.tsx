@@ -26,11 +26,35 @@ export default function AnimalsPage() {
   const [species, setSpecies] = useState("");
   const [canton, setCanton] = useState("");
   const [search, setSearch] = useState("");
+  const [blockedIds, setBlockedIds] = useState<string[]>([]);
   const supabase = createClient();
+
+  useEffect(() => {
+    fetchBlockedUsers();
+  }, []);
 
   useEffect(() => {
     fetchAnimals();
   }, [species, canton]);
+
+  async function fetchBlockedUsers() {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data: blocks } = await supabase
+        .from("blocks")
+        .select("blocked_id")
+        .eq("blocker_id", user.id);
+      const { data: blockedBy } = await supabase
+        .from("blocks")
+        .select("blocker_id")
+        .eq("blocked_id", user.id);
+      setBlockedIds([
+        ...(blocks || []).map((b: any) => b.blocked_id),
+        ...(blockedBy || []).map((b: any) => b.blocker_id),
+      ]);
+    } catch {}
+  }
 
   async function fetchAnimals() {
     setLoading(true);
@@ -43,6 +67,8 @@ export default function AnimalsPage() {
   }
 
   const filtered = animals.filter((a) => {
+    // Filter out blocked users
+    if (blockedIds.length > 0 && a.created_by && blockedIds.includes(a.created_by)) return false;
     if (!search) return true;
     const s = search.toLowerCase();
     return (

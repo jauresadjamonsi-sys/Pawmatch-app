@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import { getMessages, sendMessageWithLimit, markAsRead, MessageRow } from "@/lib/services/messages";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import BlockReportModal from "@/lib/components/BlockReportModal";
 
 const EMOJI_MAP: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
@@ -84,6 +85,7 @@ export default function ConversationPage() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [loadingAI, setLoadingAI] = useState(false);
   const [aiReady, setAiReady] = useState(false);
+  const [showBlockReport, setShowBlockReport] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const params = useParams();
@@ -241,6 +243,15 @@ export default function ConversationPage() {
             <p className="text-xs text-gray-500">{theirAnimal.name} × {myAnimal.name}</p>
           </div>
           <div className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0" title="En ligne" />
+          <button
+            onClick={() => setShowBlockReport(true)}
+            className="p-1.5 rounded-full hover:bg-red-500/10 transition flex-shrink-0"
+            title="Signaler ou bloquer"
+          >
+            <svg className="w-4.5 h-4.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -332,6 +343,17 @@ export default function ConversationPage() {
           </div>
         </div>
       </div>
+
+      {/* Block/Report modal */}
+      {showBlockReport && otherProfile && (
+        <BlockReportModal
+          targetUserId={otherProfile.id}
+          targetAnimalId={theirAnimal?.id}
+          targetName={otherProfile.full_name || otherProfile.email || "Utilisateur"}
+          onClose={() => setShowBlockReport(false)}
+          onBlocked={() => { window.location.href = "/matches"; }}
+        />
+      )}
     </div>
   );
 }

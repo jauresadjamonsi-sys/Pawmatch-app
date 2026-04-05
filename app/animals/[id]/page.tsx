@@ -20,6 +20,7 @@ import { QRIdentity } from "@/lib/components/QRIdentity";
 import { AIRecommendations } from "@/lib/components/AIRecommendations";
 import { MoodTracker } from "@/lib/components/MoodTracker";
 import { ActivityAlert } from "@/lib/components/ActivityAlert";
+import BlockReportModal from "@/lib/components/BlockReportModal";
 
 const EMOJI_MAP: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
@@ -37,6 +38,7 @@ export default function AnimalDetailPage() {
   const [showSimulation, setShowSimulation] = useState(false);
   const [activePhoto, setActivePhoto] = useState(0);
   const [hasCoupDeTruffe, setHasCoupDeTruffe] = useState(false);
+  const [showBlockReport, setShowBlockReport] = useState(false);
   const [compatibility, setCompatibility] = useState<any>(null);
   const personality = animal ? detectPersonality(animal.traits || []) : null;
   const { lang } = useAppContext();
@@ -114,6 +116,19 @@ export default function AnimalDetailPage() {
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-4 mb-6">
           <Link href="/animals" className="text-orange-400 hover:underline text-sm">← Retour au catalogue</Link>
+          <div className="flex-1" />
+          {!isOwner && isAuthenticated && animal.created_by && (
+            <button
+              onClick={() => setShowBlockReport(true)}
+              className="p-2 rounded-full hover:bg-red-500/10 transition"
+              title="Signaler ou bloquer"
+              style={{ color: "var(--c-text-muted, #9b93b8)" }}
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+              </svg>
+            </button>
+          )}
           {/* compatibility moved */}
               {false && (
                 <div className="mt-6 bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/20 rounded-2xl p-5">
@@ -507,6 +522,17 @@ export default function AnimalDetailPage() {
             )}
           </div>
         </div>
+
+        {/* Block/Report modal */}
+        {showBlockReport && animal.created_by && (
+          <BlockReportModal
+            targetUserId={animal.created_by}
+            targetAnimalId={animal.id}
+            targetName={animal.name}
+            onClose={() => setShowBlockReport(false)}
+            onBlocked={() => { window.location.href = "/animals"; }}
+          />
+        )}
       </div>
     </div>
   );

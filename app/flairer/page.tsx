@@ -7,6 +7,7 @@ import { sendMatch } from "@/lib/services/matches";
 import { computeCompatibility, sortByCompatibility, getProximityLabel } from "@/lib/services/compatibility";
 import { CANTONS } from "@/lib/cantons";
 import Link from "next/link";
+import BlockReportModal from "@/lib/components/BlockReportModal";
 
 const SPECIES: Record<string, string> = {
   chien: "Chien", chat: "Chat", lapin: "Lapin",
@@ -92,6 +93,8 @@ export default function FlairerPage() {
   const [userCanton, setUserCanton] = useState(null);
   const [showCoupDeTruffe, setShowCoupDeTruffe] = useState(false);
   const [mutualMatchData, setMutualMatchData] = useState<any>(null);
+  const [showBlockReport, setShowBlockReport] = useState(false);
+  const [blockedIds, setBlockedIds] = useState<string[]>([]);
   const startX = useRef(0);
   const startY = useRef(0);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -164,9 +167,28 @@ export default function FlairerPage() {
   }
 
   async function fetchData() {
+    // Fetch blocked users to filter them out
+    let blocked: string[] = [];
+    if (profile) {
+      const { data: blocks } = await supabase
+        .from("blocks")
+        .select("blocked_id")
+        .eq("blocker_id", profile.id);
+      // Also fetch users who blocked us
+      const { data: blockedBy } = await supabase
+        .from("blocks")
+        .select("blocker_id")
+        .eq("blocked_id", profile.id);
+      blocked = [
+        ...(blocks || []).map((b: any) => b.blocked_id),
+        ...(blockedBy || []).map((b: any) => b.blocker_id),
+      ];
+      setBlockedIds(blocked);
+    }
+
     const { data: allAnimals } = await supabase
       .from("animals").select("*").eq("status", "disponible").order("created_at", { ascending: false });
-    const filtered = (allAnimals || []).filter((a: Animal) => a.created_by !== profile?.id);
+    const filtered = (allAnimals || []).filter((a: Animal) => a.created_by !== profile?.id && !blocked.includes(a.created_by || ""));
 
     if (profile) {
       const { data: mine } = await supabase.from("animals").select("*").eq("created_by", profile.id);
@@ -525,6 +547,20 @@ export default function FlairerPage() {
               : <div className="w-full h-full flex items-center justify-center text-6xl font-bold text-gray-600">{animal.name?.charAt(0)}</div>}
             <div className="absolute inset-0 bg-gradient-to-t from-[#241d33] via-transparent to-transparent" />
 
+            {/* Report button */}
+            {animal.created_by && (
+              <button
+                onClick={(e) => { e.stopPropagation(); setShowBlockReport(true); }}
+                className="absolute top-3 left-3 z-20 p-2 rounded-full backdrop-blur-md transition hover:bg-red-500/20"
+                style={{ background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.1)" }}
+                title="Signaler"
+              >
+                <svg className="w-4 h-4 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+                </svg>
+              </button>
+            )}
+
             {/* Compatibility badge */}
             {compat && activeMyAnimal && (
               <div className="compat-in absolute top-3 right-3 z-10">
@@ -702,6 +738,27 @@ export default function FlairerPage() {
             )}
           </div>
         </div>
+      )}
+
+      {/* Block/Report modal */}
+      {showBlockReport && animal && animal.created_by && (
+        <BlockReportModal
+          targetUserId={animal.created_by}
+          targetAnimalId={animal.id}
+          targetName={animal.name}
+          onClose={() => setShowBlockReport(false)}
+          onBlocked={() => {
+            setShowBlockReport(false);
+            // Skip to next animal after blocking
+            setSwipeDirection("left");
+            setTimeout(() => {
+              setSwipeDirection(null);
+              setDragX(0);
+              setDragY(0);
+              setCurrentIndex(i => i + 1);
+            }, 320);
+          }}
+        />
       )}
     </div>
   );
