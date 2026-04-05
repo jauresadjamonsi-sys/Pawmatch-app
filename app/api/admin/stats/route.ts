@@ -51,43 +51,21 @@ export async function GET() {
       return NextResponse.json({ error: "Acces refuse" }, { status: 403 });
     }
 
-    // Try service client first, fallback to auth client for profiles
-    let db: any;
-    const debugResult: any = {};
+    // Pick the best DB client: service role if valid, otherwise authenticated client
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
-    debugResult.serviceKeyLength = serviceKey.length;
-    debugResult.serviceKeyPrefix = serviceKey.substring(0, 15) + "...";
-    debugResult.hasValidKey = serviceKey.length > 50 && serviceKey !== "COLLE_TA_SERVICE_ROLE_KEY_ICI";
+    const hasServiceKey = serviceKey.length > 50 && serviceKey !== "COLLE_TA_SERVICE_ROLE_KEY_ICI";
 
-    if (serviceKey.length > 50 && serviceKey !== "COLLE_TA_SERVICE_ROLE_KEY_ICI") {
-      db = getServiceClient();
-    } else {
-      // Fallback: use authenticated client (works if RLS allows reads)
-      db = supabase;
-      debugResult.usingFallback = true;
-    }
-
-    // Test both clients
-    try {
-      const testService = serviceKey.length > 50 ? await getServiceClient().from("profiles").select("id").limit(1) : null;
-      const testAuth = await supabase.from("profiles").select("id").limit(1);
-      debugResult.serviceWorks = testService ? (!testService.error && (testService.data?.length || 0) > 0) : false;
-      debugResult.serviceError = testService?.error?.message || null;
-      debugResult.authWorks = !testAuth.error && (testAuth.data?.length || 0) > 0;
-      debugResult.authError = testAuth.error?.message || null;
-      debugResult.authDataCount = testAuth.data?.length || 0;
-
-      // Use whichever works
-      if (testService && !testService.error && (testService.data?.length || 0) > 0) {
-        db = getServiceClient();
-        debugResult.using = "service";
-      } else {
-        db = supabase;
-        debugResult.using = "auth";
+    let db: any = supabase; // Default: use authenticated client
+    if (hasServiceKey) {
+      try {
+        const svc = getServiceClient();
+        const test = await svc.from("profiles").select("id").limit(1);
+        if (!test.error && test.data && test.data.length > 0) {
+          db = svc; // Service client works, use it
+        }
+      } catch {
+        // Service client failed, keep using auth client
       }
-    } catch (e: any) {
-      debugResult.testException = e.message;
-      db = supabase;
     }
 
     const now = new Date();
@@ -175,22 +153,19 @@ export async function GET() {
 
     // Last sign in from auth (requires service role)
     const authSignIns: Record<string, string | null> = {};
-    try {
-      const svc = getServiceClient();
-      const { data: { users: authUsers } } = await svc.auth.admin.listUsers({ page: 1, perPage: 1000 });
-      if (authUsers) {
-        for (const au of authUsers) {
-          authSignIns[au.id] = au.last_sign_in_at || null;
+    if (hasServiceKey) {
+      try {
+        const svc = getServiceClient();
+        const { data: { users: authUsers } } = await svc.auth.admin.listUsers({ page: 1, perPage: 1000 });
+        if (authUsers) {
+          for (const au of authUsers) {
+            authSignIns[au.id] = au.last_sign_in_at || null;
+          }
         }
-      }
-      debugResult.authAdminWorks = true;
-    } catch (e: any) {
-      debugResult.authAdminError = e.message;
+      } catch {}
     }
 
     // Enrich users
-    debugResult.allUsersResData = allUsersRes.data ? (allUsersRes.data as any[]).length : "null";
-    debugResult.allUsersResCount = allUsersRes.count;
     const allUsers = ((allUsersRes.data || []) as any[]).map(u => ({
       ...u,
       animal_count: animalsPerUser[u.id] || 0,
@@ -259,7 +234,6 @@ export async function GET() {
       recentActivity: recentActivity.slice(0, 10),
       pendingReports: enrichedReports,
       totalReports: totalReportsRes.count,
-      _debug: debugResult,
     });
   } catch (err) {
     console.error("Admin stats error:", err);
