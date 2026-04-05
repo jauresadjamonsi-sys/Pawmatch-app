@@ -2,73 +2,75 @@
 
 import { useState } from "react";
 import { useAuth } from "@/lib/hooks/useAuth";
+import { useAppContext } from "@/lib/contexts/AppContext";
 import Link from "next/link";
-
-const PLANS = [
-  {
-    key: "free",
-    name: "Paw",
-    emoji: "🐾",
-    price: "Gratuit",
-    period: "",
-    features: [
-      "1 animal",
-      "3 matchs par jour",
-      "10 messages par jour",
-      "Accès au catalogue",
-    ],
-    color: "rgba(255,255,255,0.06)",
-    border: "rgba(255,255,255,0.1)",
-    cta: "Plan actuel",
-    disabled: true,
-  },
-  {
-    key: "premium",
-    name: "PawPlus",
-    emoji: "✨",
-    price: "CHF 4.90",
-    period: "/mois",
-    popular: true,
-    features: [
-      "3 animaux",
-      "Matchs illimités",
-      "Messages illimités",
-      "Voir qui t'a liké",
-      "Badge Premium",
-      "Filtres avancés",
-    ],
-    color: "rgba(255,107,53,0.08)",
-    border: "rgba(255,107,53,0.3)",
-    cta: "Choisir PawPlus",
-    disabled: false,
-  },
-  {
-    key: "pro",
-    name: "PawPro",
-    emoji: "🚀",
-    price: "CHF 9.90",
-    period: "/mois",
-    features: [
-      "Animaux illimités",
-      "Tout PawPlus inclus",
-      "Profil mis en avant",
-      "Statistiques de visites",
-      "Support prioritaire",
-      "Accès événements VIP",
-    ],
-    color: "rgba(139,92,246,0.08)",
-    border: "rgba(139,92,246,0.3)",
-    cta: "Choisir PawPro",
-    disabled: false,
-  },
-];
 
 export default function PricingPage() {
   const { profile, isAuthenticated } = useAuth();
+  const { t } = useAppContext();
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const currentPlan = profile?.subscription || "free";
+
+  const PLANS = [
+    {
+      key: "free",
+      name: "Paw",
+      emoji: "\u{1F43E}",
+      price: t.pricingFree,
+      period: "",
+      features: [
+        t.pricingFeat1Animal,
+        t.pricingFeat3Matches,
+        t.pricingFeat10Msg,
+        t.pricingFeatCatalog,
+      ],
+      color: "rgba(255,255,255,0.06)",
+      border: "rgba(255,255,255,0.1)",
+      cta: t.pricingCurrent,
+      disabled: true,
+    },
+    {
+      key: "premium",
+      name: "PawPlus",
+      emoji: "\u2728",
+      price: "CHF 4.90",
+      period: t.pricingMonth,
+      popular: true,
+      features: [
+        t.pricingFeat3Animals,
+        t.pricingFeatUnlimitedMatches,
+        t.pricingFeatUnlimitedMsg,
+        t.pricingFeatSeeLikes,
+        t.pricingFeatBadge,
+        t.pricingFeatFilters,
+      ],
+      color: "rgba(255,107,53,0.08)",
+      border: "rgba(255,107,53,0.3)",
+      cta: t.pricingChoosePlus,
+      disabled: false,
+    },
+    {
+      key: "pro",
+      name: "PawPro",
+      emoji: "\u{1F680}",
+      price: "CHF 9.90",
+      period: t.pricingMonth,
+      features: [
+        t.pricingFeatUnlimitedAnimals,
+        t.pricingFeatAllPlus,
+        t.pricingFeatHighlight,
+        t.pricingFeatStats,
+        t.pricingFeatSupport,
+        t.pricingFeatVIP,
+      ],
+      color: "rgba(139,92,246,0.08)",
+      border: "rgba(139,92,246,0.3)",
+      cta: t.pricingChoosePro,
+      disabled: false,
+    },
+  ];
 
   async function handleSubscribe(planKey: string) {
     if (!isAuthenticated) {
@@ -102,7 +104,7 @@ export default function PricingPage() {
 
       window.location.href = data.url;
     } catch {
-      setError("Erreur inattendue. Réessayez.");
+      setError(t.pricingError);
       setLoading(null);
     }
   }
@@ -112,11 +114,10 @@ export default function PricingPage() {
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4" style={{ color: "var(--c-text, #111827)" }}>
-            Choisis ton plan
+            {t.pricingTitle}
           </h1>
           <p className="text-lg max-w-md mx-auto" style={{ color: "var(--c-text-muted, #6b7280)" }}>
-            Débloque toutes les fonctionnalités de Pawly et connecte-toi avec
-            encore plus de compagnons.
+            {t.pricingDesc}
           </p>
         </div>
 
@@ -146,7 +147,7 @@ export default function PricingPage() {
               >
                 {isPopular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-orange-500 text-white text-xs font-bold rounded-full uppercase tracking-wide">
-                    Populaire
+                    {t.pricingPopular}
                   </div>
                 )}
 
@@ -199,14 +200,14 @@ export default function PricingPage() {
                     className="w-full py-3 font-semibold rounded-xl text-center text-sm"
                     style={{ background: "var(--c-border, #f3f4f6)", color: "var(--c-text-muted, #6b7280)" }}
                   >
-                    Plan actuel
+                    {t.pricingCurrent}
                   </div>
                 ) : plan.key === "free" ? (
                   <div
                     className="w-full py-3 font-medium rounded-xl text-center text-sm"
                     style={{ background: "var(--c-bg, #f9fafb)", color: "var(--c-text-muted, #9ca3af)" }}
                   >
-                    Inclus
+                    {t.pricingIncluded}
                   </div>
                 ) : (
                   <button
@@ -219,7 +220,7 @@ export default function PricingPage() {
                     }`}
                     style={!isPopular ? { background: "var(--c-text, #111827)" } : undefined}
                   >
-                    {loading === plan.key ? "Redirection..." : plan.cta}
+                    {loading === plan.key ? t.pricingRedirect : plan.cta}
                   </button>
                 )}
               </div>
@@ -229,10 +230,10 @@ export default function PricingPage() {
 
         <div className="text-center mt-12">
           <p className="text-sm" style={{ color: "var(--c-text-muted, #9ca3af)" }}>
-            Tous les prix sont en CHF. Annulation possible à tout moment.
+            {t.pricingNote}
           </p>
           <p className="text-sm mt-1" style={{ color: "var(--c-text-muted, #9ca3af)" }}>
-            Paiement sécurisé par Stripe. Aucune donnée bancaire stockée sur nos serveurs.
+            {t.pricingSecure}
           </p>
         </div>
       </div>

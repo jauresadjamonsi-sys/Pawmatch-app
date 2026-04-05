@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/hooks/useAuth";
+import { useAppContext } from "@/lib/contexts/AppContext";
 import { CANTONS } from "@/lib/cantons";
 import Link from "next/link";
 
@@ -42,6 +43,7 @@ export default function EventsPage() {
   const [showCreate, setShowCreate] = useState(false);
   const [joining, setJoining] = useState<string | null>(null);
   const { profile } = useAuth();
+  const { t, lang } = useAppContext();
   const supabase = createClient();
 
   // Form state
@@ -145,10 +147,11 @@ export default function EventsPage() {
     const date = new Date(dateStr);
     const now = new Date();
     const diff = Math.floor((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    const dayStr = diff === 0 ? "Aujourd'hui" : diff === 1 ? "Demain" : `Dans ${diff} jours`;
+    const locale = lang === "de" ? "de-CH" : lang === "it" ? "it-CH" : lang === "en" ? "en-GB" : "fr-CH";
+    const dayStr = diff === 0 ? t.eventsToday : diff === 1 ? t.eventsTomorrow : t.eventsInDays.replace("{n}", String(diff));
     return {
-      day: date.toLocaleDateString("fr-CH", { weekday: "long", day: "numeric", month: "long" }),
-      time: date.toLocaleTimeString("fr-CH", { hour: "2-digit", minute: "2-digit" }),
+      day: date.toLocaleDateString(locale, { weekday: "long", day: "numeric", month: "long" }),
+      time: date.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" }),
       soon: dayStr,
       urgent: diff <= 3,
     };
@@ -156,7 +159,7 @@ export default function EventsPage() {
 
   const grouped = events.reduce((acc, event) => {
     const week = Math.floor((new Date(event.event_date).getTime() - Date.now()) / (7 * 24 * 60 * 60 * 1000));
-    const key = week <= 0 ? "Cette semaine" : week === 1 ? "Semaine prochaine" : "Plus tard";
+    const key = week <= 0 ? t.eventsThisWeek : week === 1 ? t.eventsNextWeek : t.eventsLater;
     if (!acc[key]) acc[key] = [];
     acc[key].push(event);
     return acc;
@@ -177,13 +180,13 @@ export default function EventsPage() {
       <div className="sticky top-0 z-10 bg-[#1a1225]/90 backdrop-blur-xl border-b border-white/5 px-4 py-4">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-white">Événements</h1>
-            <p className="text-xs text-gray-500">Balades & rencontres en Suisse</p>
+            <h1 className="text-xl font-bold text-white">{t.eventsTitle}</h1>
+            <p className="text-xs text-gray-500">{t.eventsSub2}</p>
           </div>
           {profile && (
             <button onClick={() => setShowCreate(true)}
               className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-semibold rounded-full hover:from-orange-600 hover:to-orange-700 transition shadow-lg shadow-orange-500/20">
-              + Créer
+              {t.eventsCreate}
             </button>
           )}
         </div>
@@ -193,7 +196,7 @@ export default function EventsPage() {
           <button onClick={() => setFilterCanton("")}
             className={"flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition " +
               (!filterCanton ? "bg-orange-500/20 border border-orange-500/40 text-orange-300" : "bg-white/5 border border-white/10 text-gray-400 hover:border-orange-500/30")}>
-            Toute la Suisse 🇨🇭
+            {t.eventsAll}
           </button>
           {CANTONS.map(c => (
             <button key={c.code} onClick={() => setFilterCanton(filterCanton === c.code ? "" : c.code)}
@@ -210,7 +213,7 @@ export default function EventsPage() {
         <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-4">
           <div className="slide-down bg-gradient-to-br from-[#241d33] to-[#1a1225] border border-white/10 rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-lg font-bold text-white">Créer un événement</h2>
+              <h2 className="text-lg font-bold text-white">{t.eventsCreateTitle}</h2>
               <button onClick={() => setShowCreate(false)} className="text-gray-500 hover:text-white">✕</button>
             </div>
 
@@ -218,7 +221,7 @@ export default function EventsPage() {
 
             <form onSubmit={handleCreate} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1.5">Titre *</label>
+                <label className="block text-xs font-medium text-gray-400 mb-1.5">{t.eventsEventTitle} *</label>
                 <input value={form.title} onChange={e => setForm(f => ({...f, title: e.target.value}))} required
                   placeholder="Balade dominicale au parc..."
                   className="w-full px-4 py-2.5 bg-[#1a1225] border border-white/10 rounded-xl text-white placeholder-gray-600 focus:ring-1 focus:ring-orange-500/50 outline-none text-sm" />
@@ -226,13 +229,13 @@ export default function EventsPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Date *</label>
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5">{t.eventsDate} *</label>
                   <input type="date" value={form.event_date} onChange={e => setForm(f => ({...f, event_date: e.target.value}))} required
                     min={new Date().toISOString().split("T")[0]}
                     className="w-full px-3 py-2.5 bg-[#1a1225] border border-white/10 rounded-xl text-white focus:ring-1 focus:ring-orange-500/50 outline-none text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Heure *</label>
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5">{t.eventsTime} *</label>
                   <input type="time" value={form.event_time} onChange={e => setForm(f => ({...f, event_time: e.target.value}))}
                     className="w-full px-3 py-2.5 bg-[#1a1225] border border-white/10 rounded-xl text-white focus:ring-1 focus:ring-orange-500/50 outline-none text-sm" />
                 </div>
@@ -242,20 +245,20 @@ export default function EventsPage() {
                 <label className="block text-xs font-medium text-gray-400 mb-1.5">Canton *</label>
                 <select value={form.canton} onChange={e => setForm(f => ({...f, canton: e.target.value}))} required
                   className="w-full px-3 py-2.5 bg-[#1a1225] border border-white/10 rounded-xl text-white focus:ring-1 focus:ring-orange-500/50 outline-none text-sm">
-                  <option value="">Sélectionne un canton</option>
+                  <option value="">{t.eventsSelectCanton}</option>
                   {CANTONS.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1.5">Lieu *</label>
+                <label className="block text-xs font-medium text-gray-400 mb-1.5">{t.eventsLocation} *</label>
                 <input value={form.location} onChange={e => setForm(f => ({...f, location: e.target.value}))} required
                   placeholder="Parc de la Grange, Genève"
                   className="w-full px-4 py-2.5 bg-[#1a1225] border border-white/10 rounded-xl text-white placeholder-gray-600 focus:ring-1 focus:ring-orange-500/50 outline-none text-sm" />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1.5">Animaux bienvenus</label>
+                <label className="block text-xs font-medium text-gray-400 mb-1.5">{t.eventsAnimals}</label>
                 <div className="flex flex-wrap gap-2">
                   {Object.entries(SPECIES_EMOJI).map(([s, emoji]) => (
                     <button key={s} type="button" onClick={() => toggleSpecies(s)}
@@ -269,7 +272,7 @@ export default function EventsPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Max participants</label>
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5">{t.eventsMax}</label>
                   <input type="number" value={form.max_participants} onChange={e => setForm(f => ({...f, max_participants: e.target.value}))}
                     min="2" max="200"
                     className="w-full px-3 py-2.5 bg-[#1a1225] border border-white/10 rounded-xl text-white focus:ring-1 focus:ring-orange-500/50 outline-none text-sm" />
@@ -277,7 +280,7 @@ export default function EventsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1.5">Description</label>
+                <label className="block text-xs font-medium text-gray-400 mb-1.5">{t.eventsDescription}</label>
                 <textarea value={form.description} onChange={e => setForm(f => ({...f, description: e.target.value}))}
                   placeholder="Décris l'événement, le point de rendez-vous..."
                   rows={3}
@@ -287,11 +290,11 @@ export default function EventsPage() {
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowCreate(false)}
                   className="flex-1 py-2.5 bg-white/5 border border-white/10 text-gray-400 rounded-2xl text-sm">
-                  Annuler
+                  {t.eventsCancel}
                 </button>
                 <button type="submit" disabled={creating}
                   className="flex-1 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-2xl text-sm disabled:opacity-50">
-                  {creating ? "Création..." : "Créer 🎉"}
+                  {creating ? t.eventsCreating : t.eventsCreateBtn}
                 </button>
               </div>
             </form>
@@ -304,19 +307,19 @@ export default function EventsPage() {
         {loading ? (
           <div className="text-center py-16">
             <div className="text-4xl mb-3 animate-bounce">🐾</div>
-            <p className="text-gray-500 text-sm">Chargement des événements...</p>
+            <p className="text-gray-500 text-sm">{t.eventsLoading}</p>
           </div>
         ) : events.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-5xl mb-4">📅</div>
-            <h2 className="text-xl font-bold text-white mb-2">Aucun événement</h2>
+            <h2 className="text-xl font-bold text-white mb-2">{t.eventsNone}</h2>
             <p className="text-gray-500 text-sm mb-6">
-              {filterCanton ? `Pas d'événement dans ce canton pour l'instant.` : "Sois le premier à organiser une balade !"}
+              {filterCanton ? t.eventsNoInCanton : t.eventsBeFirst}
             </p>
             {profile && (
               <button onClick={() => setShowCreate(true)}
                 className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition text-sm">
-                Créer le premier événement 🎉
+                {t.eventsCreateFirst}
               </button>
             )}
           </div>
@@ -363,14 +366,14 @@ export default function EventsPage() {
                                 : isFull
                                 ? "bg-white/5 border border-white/10 text-gray-600 cursor-not-allowed"
                                 : "bg-orange-500 hover:bg-orange-600 text-white")}>
-                            {joining === event.id ? "..." : event.is_joined ? "✓ Inscrit" : isFull ? "Complet" : "Participer"}
+                            {joining === event.id ? "..." : event.is_joined ? t.eventsJoined : isFull ? t.eventsFull : t.eventsJoin}
                           </button>
                         </div>
 
                         {/* Info */}
                         <div className="flex flex-wrap gap-2 mb-3">
                           <span className="flex items-center gap-1 text-xs text-gray-400">
-                            📅 {date.day} à {date.time}
+                            📅 {date.day} {t.eventsAt} {date.time}
                           </span>
                         </div>
                         <div className="flex flex-wrap gap-2 mb-3">
@@ -379,7 +382,7 @@ export default function EventsPage() {
                           <span className={"px-2.5 py-1 rounded-full text-xs " +
                             (isFull ? "bg-red-500/15 text-red-400" : spotsLeft <= 3 ? "bg-orange-500/15 text-orange-300" : "bg-white/8 text-gray-300")}>
                             👥 {event.participant_count}/{event.max_participants}
-                            {spotsLeft <= 5 && !isFull && <span className="ml-1 font-semibold">({spotsLeft} places restantes !)</span>}
+                            {spotsLeft <= 5 && !isFull && <span className="ml-1 font-semibold">({spotsLeft} {t.eventsSpotsLeft})</span>}
                           </span>
                         </div>
 
@@ -395,7 +398,7 @@ export default function EventsPage() {
                         </div>
 
                         <p className="text-[10px] text-gray-600 mt-2">
-                          Organisé par {event.organizer?.full_name || event.organizer?.email || "Anonyme"}
+                          {t.eventsOrganizedBy} {event.organizer?.full_name || event.organizer?.email || t.eventsAnonymous}
                         </p>
                       </div>
                     );

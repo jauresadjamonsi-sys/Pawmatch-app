@@ -41,7 +41,7 @@ export default function AnimalDetailPage() {
   const [showBlockReport, setShowBlockReport] = useState(false);
   const [compatibility, setCompatibility] = useState<any>(null);
   const personality = animal ? detectPersonality(animal.traits || []) : null;
-  const { lang } = useAppContext();
+  const { t, lang } = useAppContext();
   const params = useParams();
   const supabase = createClient();
   const { profile, isAuthenticated } = useAuth();
@@ -97,15 +97,15 @@ export default function AnimalDetailPage() {
   }
 
   function formatAge(months: number | null) {
-    if (!months) return "Inconnu";
-    if (months < 12) return months + " mois";
+    if (!months) return t.animalUnknown;
+    if (months < 12) return months + " " + t.animalMonths;
     const y = Math.floor(months / 12);
     const r = months % 12;
-    return y + " an" + (y > 1 ? "s" : "") + (r > 0 ? " " + r + " mois" : "");
+    return y + " " + (y > 1 ? t.animalYears : t.animalYear) + (r > 0 ? " " + r + " " + t.animalMonths : "");
   }
 
-  if (loading) return <p className="text-center py-12 text-gray-500">Chargement...</p>;
-  if (!animal) return <p className="text-center py-12 text-gray-500">Animal introuvable</p>;
+  if (loading) return <p className="text-center py-12 text-gray-500">{t.loading}</p>;
+  if (!animal) return <p className="text-center py-12 text-gray-500">{t.animalNotFound}</p>;
 
   const cantonName = animal.canton ? CANTONS.find((c) => c.code === animal.canton)?.name || animal.canton : null;
   const traits: string[] = animal.traits || [];
@@ -115,7 +115,7 @@ export default function AnimalDetailPage() {
     <div className="min-h-screen px-6 py-8">
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-4 mb-6">
-          <Link href="/animals" className="text-orange-400 hover:underline text-sm">← Retour au catalogue</Link>
+          <Link href="/animals" className="text-orange-400 hover:underline text-sm">{t.animalBackCatalog}</Link>
           <div className="flex-1" />
           {!isOwner && isAuthenticated && animal.created_by && (
             <button
@@ -135,7 +135,7 @@ export default function AnimalDetailPage() {
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
                       <span className="text-xl">🤖</span>
-                      <h3 className="font-bold text-[var(--c-text)] text-sm">Pourquoi ce match ?</h3>
+                      <h3 className="font-bold text-[var(--c-text)] text-sm">{t.animalWhyMatch}</h3>
                     </div>
                     <div className="text-right">
                       <span className="text-2xl font-black" style={{ color: compatibility.color }}>{compatibility.score}%</span>
@@ -144,10 +144,10 @@ export default function AnimalDetailPage() {
                   </div>
                   <div className="flex flex-col gap-2 mb-4">
                     {[
-                      { label: 'Espèce', score: Math.min(100, (compatibility.score * 1.2)) },
-                      { label: 'Caractère', score: Math.min(100, (compatibility.score * 0.9)) },
-                      { label: 'Localisation', score: Math.min(100, (compatibility.score * 1.1)) },
-                      { label: 'Âge', score: Math.min(100, (compatibility.score * 0.8)) },
+                      { label: t.animalSpeciesLabel, score: Math.min(100, (compatibility.score * 1.2)) },
+                      { label: t.animalCharacter, score: Math.min(100, (compatibility.score * 0.9)) },
+                      { label: t.animalLocationLabel, score: Math.min(100, (compatibility.score * 1.1)) },
+                      { label: t.animalAgeLabel, score: Math.min(100, (compatibility.score * 0.8)) },
                     ].map((trait, i) => (
                       <div key={i}>
                         <div className="flex justify-between text-[10px] mb-1">
@@ -172,13 +172,13 @@ export default function AnimalDetailPage() {
                 </div>
               )}
 
-              {isOwner && <Link href={"/animals/" + animal.id + "/edit"} className="text-orange-400 hover:underline text-sm">Modifier</Link>}
+              {isOwner && <Link href={"/animals/" + animal.id + "/edit"} className="text-orange-400 hover:underline text-sm">{t.edit}</Link>}
             {compatibility && (
               <div className="mt-6 bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/20 rounded-2xl p-5">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <span className="text-xl">🤖</span>
-                    <h3 className="font-bold text-[var(--c-text)] text-sm">Pourquoi ce match ?</h3>
+                    <h3 className="font-bold text-[var(--c-text)] text-sm">{t.animalWhyMatch}</h3>
                   </div>
                   <div className="text-right">
                     <span className="text-2xl font-black" style={{ color: compatibility.color }}>{compatibility.score}%</span>
@@ -187,10 +187,10 @@ export default function AnimalDetailPage() {
                 </div>
                 <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:16 }}>
                   {[
-                    { label: 'Espèce', score: Math.min(100, (compatibility.score * 1.2)) },
-                    { label: 'Caractère', score: Math.min(100, (compatibility.score * 0.9)) },
-                    { label: 'Localisation', score: Math.min(100, (compatibility.score * 1.1)) },
-                    { label: 'Âge', score: Math.min(100, (compatibility.score * 0.8)) },
+                    { label: t.animalSpeciesLabel, score: Math.min(100, (compatibility.score * 1.2)) },
+                    { label: t.animalCharacter, score: Math.min(100, (compatibility.score * 0.9)) },
+                    { label: t.animalLocationLabel, score: Math.min(100, (compatibility.score * 1.1)) },
+                    { label: t.animalAgeLabel, score: Math.min(100, (compatibility.score * 0.8)) },
                   ].map((trait, i) => (
                     <div key={i}>
                       <div style={{ display:"flex", justifyContent:"space-between", fontSize:10, marginBottom:3 }}>
@@ -253,18 +253,18 @@ export default function AnimalDetailPage() {
                 </span>
               )}
               <span className="bg-green-500/20 text-green-300 px-3 py-1 rounded-full text-sm font-medium">
-                {animal.status === "disponible" ? "Disponible" : animal.status === "en_cours" ? "En cours" : "Matché"}
+                {animal.status === "disponible" ? t.animalAvailable : animal.status === "en_cours" ? t.animalInProgress : t.animalMatched}
               </span>
             </div>
 
             <div className="grid grid-cols-2 gap-3 mb-6">
               {[
-                { label: "Espèce", value: animal.species.charAt(0).toUpperCase() + animal.species.slice(1) },
-                { label: "Race", value: animal.breed || "Non renseignée" },
-                { label: "Âge", value: formatAge(animal.age_months) },
-                { label: "Genre", value: animal.gender === "male" ? "Mâle" : animal.gender === "femelle" ? "Femelle" : "Inconnu" },
-                { label: "Poids", value: animal.weight_kg ? animal.weight_kg + " kg" : "Non renseigné" },
-                { label: "Localisation", value: [animal.city, cantonName ? cantonName + " (" + animal.canton + ")" : ""].filter(Boolean).join(", ") || "Non renseignée" },
+                { label: t.animalSpeciesLabel, value: animal.species.charAt(0).toUpperCase() + animal.species.slice(1) },
+                { label: t.animalBreedLabel, value: animal.breed || t.animalNotSpecifiedF },
+                { label: t.animalAgeLabel, value: formatAge(animal.age_months) },
+                { label: t.animalGenderLabel, value: animal.gender === "male" ? t.animalMale : animal.gender === "femelle" ? t.animalFemale : t.animalUnknown },
+                { label: t.animalWeightLabel, value: animal.weight_kg ? animal.weight_kg + " kg" : t.animalNotSpecified },
+                { label: t.animalLocationLabel, value: [animal.city, cantonName ? cantonName + " (" + animal.canton + ")" : ""].filter(Boolean).join(", ") || t.animalNotSpecifiedF },
               ].map((item) => (
                 <div key={item.label} className="bg-white/5 rounded-xl p-4">
                   <p className="text-xs text-gray-500">{item.label}</p>
@@ -275,10 +275,10 @@ export default function AnimalDetailPage() {
 
             <div className="flex gap-3 mb-4">
               <span className={"px-3 py-1 rounded-full text-xs font-medium " + (animal.vaccinated ? "bg-green-500/20 text-green-300" : "bg-white/5 text-gray-500")}>
-                {animal.vaccinated ? "✓ Vacciné" : "Non vacciné"}
+                {animal.vaccinated ? "✓ " + t.animalVaccinated : t.animalNotVaccinated}
               </span>
               <span className={"px-3 py-1 rounded-full text-xs font-medium " + (animal.sterilized ? "bg-green-500/20 text-green-300" : "bg-white/5 text-gray-500")}>
-                {animal.sterilized ? "✓ Stérilisé" : "Non stérilisé"}
+                {animal.sterilized ? "✓ " + t.animalSterilized : t.animalNotSterilized}
               </span>
             </div>
 
@@ -286,30 +286,30 @@ export default function AnimalDetailPage() {
             {(animal.diet_type || animal.food_brand || animal.treats || animal.allergies) && (
               <div className="bg-teal-500/5 border border-teal-500/15 rounded-2xl p-4 mb-6">
                 <h3 className="text-sm font-bold text-teal-300 mb-3 flex items-center gap-2">
-                  🍖 Alimentation
+                  {"🍖 " + t.dietTitle}
                 </h3>
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   {animal.diet_type && (
                     <div>
-                      <span className="text-gray-500 text-xs">Régime</span>
+                      <span className="text-gray-500 text-xs">{t.animalRegime}</span>
                       <p className="text-gray-200 font-medium capitalize">{animal.diet_type.replace("_", " ")}</p>
                     </div>
                   )}
                   {animal.food_brand && (
                     <div>
-                      <span className="text-gray-500 text-xs">Marque</span>
+                      <span className="text-gray-500 text-xs">{t.animalBrandLabel}</span>
                       <p className="text-gray-200 font-medium">{animal.food_brand}</p>
                     </div>
                   )}
                   {animal.treats && (
                     <div>
-                      <span className="text-gray-500 text-xs">Friandises</span>
+                      <span className="text-gray-500 text-xs">{t.animalTreatsLabel}</span>
                       <p className="text-gray-200 font-medium">{animal.treats}</p>
                     </div>
                   )}
                   {animal.allergies && (
                     <div>
-                      <span className="text-gray-500 text-xs">Allergies</span>
+                      <span className="text-gray-500 text-xs">{t.animalAllergiesLabel}</span>
                       <p className="text-red-300 font-medium">{animal.allergies}</p>
                     </div>
                   )}
@@ -338,7 +338,7 @@ export default function AnimalDetailPage() {
                     PawCare Hub
                   </div>
                   <div style={{ fontSize: 12, color: "var(--c-text-muted, #9ca3af)", marginTop: 2 }}>
-                    Santé & Soins — Alertes, suivi d'humeur, timeline
+                    {t.animalPawCareDesc}
                   </div>
                 </div>
                 <span style={{ fontSize: 18, color: "var(--c-text-muted, #9ca3af)" }}>→</span>
@@ -347,7 +347,7 @@ export default function AnimalDetailPage() {
 
             {traits.length > 0 && (
               <div className="mb-6">
-                <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Caractère</h2>
+                <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">{t.animalCharacter}</h2>
                 <div className="flex flex-wrap gap-2">
                   {traits.map((trait) => (
                     <span key={trait} className="px-3 py-1.5 bg-orange-500/10 text-orange-300 rounded-full text-xs font-medium">{trait}</span>
@@ -358,7 +358,7 @@ export default function AnimalDetailPage() {
 
             {animal.description && (
               <div className="mb-6">
-                <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Description</h2>
+                <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">{t.animalDescription}</h2>
                 <p className="text-gray-300 leading-relaxed text-sm">{animal.description}</p>
               </div>
             )}
@@ -375,7 +375,7 @@ export default function AnimalDetailPage() {
                   background: "var(--c-accent, rgba(249,115,22,.05))"
                 }}
               >
-                🎬 Simuler la rencontre
+                {t.animalSimulate}
               </button>
             )}
 
@@ -446,40 +446,40 @@ export default function AnimalDetailPage() {
 
             {/* Carte */}
             <a href="/carte" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: 14, background: "linear-gradient(135deg, #3B82F6, #2563EB)", color: "#fff", borderRadius: 14, fontWeight: 700, fontSize: 13, textDecoration: "none", marginBottom: 16, boxShadow: "0 2px 8px rgba(59,130,246,0.3)" }}>
-              🗺️ Voir les copains sur la carte
+              {t.animalMapFriends}
             </a>
 
             {/* Services recommandés — pont vers PawDirectory */}
             <div style={{ marginTop: 16, background: "linear-gradient(135deg, rgba(13,148,136,0.08), rgba(6,95,70,0.04))", border: "1.5px solid rgba(13,148,136,0.15)", borderRadius: 16, padding: 20 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
                 <span style={{ fontSize: 20 }}>🏥</span>
-                <h3 className="font-bold text-sm text-[var(--c-text)]">Services pour {animal.name}</h3>
+                <h3 className="font-bold text-sm text-[var(--c-text)]">{t.animalServicesFor} {animal.name}</h3>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                 <a href={"https://pawdirectory.ch/annuaire?cat=" + encodeURIComponent("Vétérinaire") + (animal.canton ? "&cn=" + animal.canton : "")}
                   target="_blank" rel="noopener"
                   style={{ padding: "10px 12px", background: "rgba(255,255,255,0.6)", borderRadius: 10, textDecoration: "none", textAlign: "center", fontSize: 12, fontWeight: 700, color: "#0D9488", border: "1px solid rgba(13,148,136,0.15)" }}>
-                  🏥 Véto
+                  {t.animalVet}
                 </a>
                 <a href={"https://pawdirectory.ch/annuaire?cat=" + encodeURIComponent("Toiletteur") + (animal.canton ? "&cn=" + animal.canton : "")}
                   target="_blank" rel="noopener"
                   style={{ padding: "10px 12px", background: "rgba(255,255,255,0.6)", borderRadius: 10, textDecoration: "none", textAlign: "center", fontSize: 12, fontWeight: 700, color: "#0D9488", border: "1px solid rgba(13,148,136,0.15)" }}>
-                  ✂️ Toiletteur
+                  {t.animalGroomer}
                 </a>
                 <a href={"https://pawdirectory.ch/annuaire?cat=" + encodeURIComponent("Garde & Promeneur") + (animal.canton ? "&cn=" + animal.canton : "")}
                   target="_blank" rel="noopener"
                   style={{ padding: "10px 12px", background: "rgba(255,255,255,0.6)", borderRadius: 10, textDecoration: "none", textAlign: "center", fontSize: 12, fontWeight: 700, color: "#0D9488", border: "1px solid rgba(13,148,136,0.15)" }}>
-                  🦮 Garde
+                  {t.animalSitter}
                 </a>
                 <a href={"https://pawdirectory.ch/annuaire?cat=" + encodeURIComponent("Dresseur") + (animal.canton ? "&cn=" + animal.canton : "")}
                   target="_blank" rel="noopener"
                   style={{ padding: "10px 12px", background: "rgba(255,255,255,0.6)", borderRadius: 10, textDecoration: "none", textAlign: "center", fontSize: 12, fontWeight: 700, color: "#0D9488", border: "1px solid rgba(13,148,136,0.15)" }}>
-                  🎓 Éducateur
+                  {t.animalTrainer}
                 </a>
               </div>
               <a href="https://pawdirectory.ch" target="_blank" rel="noopener"
                 style={{ display: "block", marginTop: 10, textAlign: "center", fontSize: 11, color: "#0D9488", fontWeight: 700, textDecoration: "none" }}>
-                Voir tous les services sur PawDirectory →
+                {t.animalAllServices}
               </a>
             </div>
 
@@ -488,22 +488,22 @@ export default function AnimalDetailPage() {
               <>
                 {matchSuccess ? (
                   <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-4 text-center">
-                    <p className="text-green-300 font-semibold">Demande envoyée !</p>
-                    <p className="text-green-400/70 text-sm mt-1">Vous serez notifié quand le propriétaire répondra.</p>
-                    <Link href="/matches" className="inline-block mt-3 text-orange-400 hover:underline text-sm font-medium">Voir mes matchs →</Link>
+                    <p className="text-green-300 font-semibold">{t.animalMatchSent}</p>
+                    <p className="text-green-400/70 text-sm mt-1">{t.animalMatchNotify}</p>
+                    <Link href="/matches" className="inline-block mt-3 text-orange-400 hover:underline text-sm font-medium">{t.animalViewMatches}</Link>
                   </div>
                 ) : !isAuthenticated ? (
                   <Link href="/login" className="block w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition text-center">
-                    Se connecter pour matcher
+                    {t.animalLoginToMatch}
                   </Link>
                 ) : myAnimals.length === 0 ? (
                   <div className="bg-orange-500/10 border border-orange-500/20 rounded-xl p-4 text-center">
-                    <p className="text-orange-300 font-medium">Ajoutez d'abord votre compagnon pour matcher.</p>
-                    <Link href="/profile/animals/new" className="inline-block mt-2 text-orange-400 hover:underline text-sm font-medium">+ Ajouter mon compagnon</Link>
+                    <p className="text-orange-300 font-medium">{t.animalAddFirst}</p>
+                    <Link href="/profile/animals/new" className="inline-block mt-2 text-orange-400 hover:underline text-sm font-medium">{t.animalAddMine}</Link>
                   </div>
                 ) : (
                   <button onClick={() => setShowMatchModal(true)} className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition text-lg">
-                    👃 Je flaire {animal.name}
+                    {t.animalSniff} {animal.name}
                   </button>
                 )}
               </>
@@ -513,8 +513,8 @@ export default function AnimalDetailPage() {
             {showMatchModal && (
               <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
                 <div className="bg-[#2a1f3a] border border-white/10 rounded-2xl max-w-md w-full p-6">
-                  <h3 className="text-lg font-bold text-white mb-2">Avec quel compagnon ?</h3>
-                  <p className="text-sm text-gray-400 mb-4">Choisissez lequel de vos compagnons rencontrera {animal.name}</p>
+                  <h3 className="text-lg font-bold text-white mb-2">{t.animalWithWhich}</h3>
+                  <p className="text-sm text-gray-400 mb-4">{t.animalChooseWhich} {animal.name}</p>
 
                   {matchError && <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-sm">{matchError}</div>}
 
@@ -539,7 +539,7 @@ export default function AnimalDetailPage() {
 
                   <button onClick={() => { setShowMatchModal(false); setMatchError(null); }}
                     className="w-full py-2 bg-white/10 hover:bg-white/20 text-gray-300 font-medium rounded-xl transition text-sm">
-                    Annuler
+                    {t.cancel}
                   </button>
                 </div>
               </div>

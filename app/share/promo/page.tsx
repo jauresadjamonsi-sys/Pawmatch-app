@@ -7,10 +7,10 @@ import { useSearchParams } from "next/navigation";
 /*  Constants                                                         */
 /* ------------------------------------------------------------------ */
 
-const ANIMAL_EMOJIS = ["\ud83d\udc15", "\ud83d\udc31", "\ud83d\udc30", "\ud83d\udc39", "\ud83e\udd9c", "\ud83d\udc22"];
+const ANIMAL_EMOJIS = ["🐕", "🐱", "🐰", "🐹", "🦜", "🐢"];
 
 const FUN_FACTS = [
-  "Les chiens ont 300M de r\u00e9cepteurs olfactifs",
+  "Les chiens ont 300M de récepteurs olfactifs",
   "Les chats dorment 16h par jour",
   "Les lapins font des binkies quand ils sont heureux",
   "Un chien peut comprendre 250 mots",
@@ -105,7 +105,7 @@ function PromoContent() {
 
         {/* Pawly logo */}
         <div className="story-logo">
-          <span className="logo-paw">\ud83d\udc3e</span>
+          <span className="logo-paw">🐾</span>
           <span className="logo-text">Pawly</span>
         </div>
 
@@ -120,19 +120,19 @@ function PromoContent() {
           {/* Frame 2: Tagline */}
           <div className={`frame frame-2 ${frame === 1 ? "frame-active" : ""}`}>
             <h1 className="frame-title slide-text">
-              Pawly connecte les propri\u00e9taires d&apos;animaux en Suisse&nbsp;\ud83c\udde8\ud83c\udded
+              Pawly connecte les propriétaires d&apos;animaux en Suisse&nbsp;🇨🇭
             </h1>
           </div>
 
           {/* Frame 3: Fun fact */}
           <div className={`frame frame-3 ${frame === 2 ? "frame-active" : ""}`}>
-            <div className="fact-icon">\ud83e\udde0</div>
+            <div className="fact-icon">🧠</div>
             <p className="fact-text">{FUN_FACTS[factIdx]}</p>
           </div>
 
           {/* Frame 4: CTA */}
           <div className={`frame frame-4 ${frame === 3 ? "frame-active" : ""}`}>
-            <h1 className="frame-title cta-title">T\u00e9l\u00e9charge Pawly</h1>
+            <h1 className="frame-title cta-title">Télécharge Pawly</h1>
             <div className="cta-domain">pawlyapp.ch</div>
             {ref && <div className="ref-code">Code : {ref.slice(0, 8)}</div>}
             <div className="gratuit-badge">Gratuit</div>
@@ -147,7 +147,7 @@ function PromoContent() {
         </div>
 
         {/* Swiss badge */}
-        <div className="swiss-badge">Con\u00e7u en Suisse \ud83c\udde8\ud83c\udded</div>
+        <div className="swiss-badge">Conçu en Suisse 🇨🇭</div>
 
         {/* Watermark */}
         <div className="watermark">pawlyapp.ch</div>
@@ -156,25 +156,21 @@ function PromoContent() {
       {/* ---- Action buttons (outside story) ---- */}
       <div className="actions-bar">
         <button
-          onClick={() => alert("Fais une capture d\u2019\u00e9cran ou un enregistrement d\u2019\u00e9cran pour sauvegarder ta story !")}
+          onClick={() => alert("Fais une capture d'écran ou un enregistrement d'écran pour sauvegarder ta story !")}
           className="action-btn save-btn"
         >
-          \ud83d\udce5 Enregistrer
+          📥 Enregistrer
         </button>
         <button onClick={openInstagram} className="action-btn ig-btn">
-          \ud83d\udcf1 Partager sur Instagram
+          📱 Partager sur Instagram
         </button>
         <button onClick={copyLink} className="action-btn copy-btn">
-          {copied ? "\u2705 Copi\u00e9 !" : "\ud83d\udd17 Copier le lien"}
+          {copied ? "✅ Copié !" : "🔗 Copier le lien"}
         </button>
       </div>
 
       {/* ---- All styles ---- */}
       <style>{`
-        /* =========================================================
-           Keyframes
-           ========================================================= */
-
         @keyframes gradientShift {
           0%   { background-position: 0% 50%; }
           25%  { background-position: 100% 50%; }
@@ -231,10 +227,6 @@ function PromoContent() {
           50%      { transform: scale(1.4); }
         }
 
-        /* =========================================================
-           Layout
-           ========================================================= */
-
         .promo-wrapper {
           min-height: 100dvh;
           display: flex;
@@ -246,10 +238,6 @@ function PromoContent() {
           gap: 20px;
           overflow: hidden;
         }
-
-        /* =========================================================
-           Story frame — 9:16 ratio
-           ========================================================= */
 
         .story-frame {
           position: relative;
@@ -281,10 +269,6 @@ function PromoContent() {
           }
         }
 
-        /* =========================================================
-           Background gradient
-           ========================================================= */
-
         .story-bg {
           position: absolute;
           inset: 0;
@@ -303,10 +287,6 @@ function PromoContent() {
           z-index: 0;
         }
 
-        /* =========================================================
-           Floating particles
-           ========================================================= */
-
         .particles-container {
           position: absolute;
           inset: 0;
@@ -323,10 +303,6 @@ function PromoContent() {
           user-select: none;
           filter: blur(0.5px);
         }
-
-        /* =========================================================
-           Logo
-           ========================================================= */
 
         .story-logo {
           position: absolute;
@@ -351,10 +327,6 @@ function PromoContent() {
           text-shadow: 0 2px 12px rgba(0,0,0,0.5);
           letter-spacing: -0.5px;
         }
-
-        /* =========================================================
-           Frames container
-           ========================================================= */
 
         .frames-container {
           position: absolute;
@@ -383,7 +355,6 @@ function PromoContent() {
           pointer-events: auto;
         }
 
-        /* ---- Frame 1 ---- */
         .frame-1.frame-active .big-emoji {
           animation: fadeInUp 0.6s ease forwards, bounce 2s ease-in-out 0.6s infinite;
         }
@@ -408,12 +379,10 @@ function PromoContent() {
           text-shadow: 0 3px 20px rgba(0,0,0,0.5);
         }
 
-        /* ---- Frame 2 ---- */
         .frame-2.frame-active .slide-text {
           animation: slideInRight 0.7s ease forwards;
         }
 
-        /* ---- Frame 3 ---- */
         .frame-3.frame-active .fact-icon {
           animation: popIn 0.5s ease forwards;
         }
@@ -439,7 +408,6 @@ function PromoContent() {
           max-width: 300px;
         }
 
-        /* ---- Frame 4 ---- */
         .frame-4.frame-active .cta-title {
           animation: zoomIn 0.5s ease forwards;
         }
@@ -504,10 +472,6 @@ function PromoContent() {
           box-shadow: 0 4px 24px rgba(251, 191, 36, 0.4);
         }
 
-        /* =========================================================
-           Progress dots
-           ========================================================= */
-
         .progress-dots {
           position: absolute;
           bottom: 60px;
@@ -531,10 +495,6 @@ function PromoContent() {
           animation: dotPulse 1s ease-in-out infinite;
         }
 
-        /* =========================================================
-           Swiss badge & watermark
-           ========================================================= */
-
         .swiss-badge {
           position: absolute;
           bottom: 24px;
@@ -557,10 +517,6 @@ function PromoContent() {
           z-index: 10;
           letter-spacing: 0.5px;
         }
-
-        /* =========================================================
-           Action buttons
-           ========================================================= */
 
         .actions-bar {
           display: flex;

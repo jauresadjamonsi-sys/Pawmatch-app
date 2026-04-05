@@ -65,7 +65,7 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
       <div className="bg-orange-500/10 rounded-xl p-3 mb-4 text-center">
         <p className="text-2xl font-black text-orange-400">{referralCount}</p>
         <p className="text-xs text-[var(--c-text-muted)] font-bold uppercase">
-          {referralCount === 1 ? "Ami invit\u00e9" : "Amis invit\u00e9s"}
+          {referralCount === 1 ? "Ami invité" : "Amis invités"}
         </p>
       </div>
 
@@ -81,7 +81,7 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
           onClick={copyLink}
           className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold rounded-xl transition whitespace-nowrap"
         >
-          {copied ? "Copi\u00e9 !" : "Copier"}
+          {copied ? "Copié !" : "Copier"}
         </button>
       </div>
 
@@ -103,7 +103,7 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
             color: "#e1306c",
           }}
         >
-          \ud83d\udcf8 Instagram
+          📸 Instagram
         </a>
         <a
           href={emailUrl}

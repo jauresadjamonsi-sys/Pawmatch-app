@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/hooks/useAuth";
+import { useAppContext } from "@/lib/contexts/AppContext";
 import { getMyMatches, respondToMatch, MatchWithAnimals } from "@/lib/services/matches";
 import Link from "next/link";
 
@@ -13,7 +14,7 @@ const EMOJI_MAP: Record<string, string> = {
 
 const CONFETTI_COLORS = ["#f97316","#fb923c","#fbbf24","#34d399","#60a5fa","#f472b6","#a78bfa"];
 
-function CoupDeTruffe({ match, onClose }: { match: MatchWithAnimals; onClose: () => void }) {
+function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose: () => void; t: Record<string, string> }) {
   const [confetti, setConfetti] = useState<Array<{id:number;x:number;color:string;size:number;delay:number;duration:number}>>([]);
 
   useEffect(() => {
@@ -86,10 +87,10 @@ function CoupDeTruffe({ match, onClose }: { match: MatchWithAnimals; onClose: ()
         {/* Title */}
         <h2 className="slide-up text-3xl font-extrabold bg-gradient-to-r from-orange-400 to-orange-300 bg-clip-text text-transparent mb-1"
           style={{ animationDelay: "0.2s" }}>
-          Coup de Truffe !
+          {t.matchesCoup}
         </h2>
         <p className="slide-up text-gray-400 text-sm mb-6" style={{ animationDelay: "0.3s" }}>
-          C'est un match mutuel ! 🎉
+          {t.matchesMutual} 🎉
         </p>
 
         {/* Animals */}
@@ -119,15 +120,15 @@ function CoupDeTruffe({ match, onClose }: { match: MatchWithAnimals; onClose: ()
         <div className="slide-up flex gap-3" style={{ animationDelay: "0.5s" }}>
           <Link href={"/matches/" + match.id}
             className="flex-1 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-2xl text-sm transition hover:from-orange-600 hover:to-orange-700">
-            💬 Discuter
+            {t.matchesChat}
           </Link>
           <button onClick={onClose}
             className="px-4 py-3 bg-white/5 border border-white/10 text-gray-400 rounded-2xl text-sm hover:bg-white/10 transition">
-            Plus tard
+            {t.matchesLater}
           </button>
         </div>
 
-        <p className="text-[10px] text-gray-600 mt-4">Se ferme automatiquement...</p>
+        <p className="text-[10px] text-gray-600 mt-4">{t.matchesAutoClose}</p>
       </div>
     </div>
   );
@@ -140,6 +141,7 @@ export default function MatchesPage() {
   const [coupDeTruffe, setCoupDeTruffe] = useState<MatchWithAnimals | null>(null);
   const supabase = createClient();
   const { profile, loading: authLoading } = useAuth();
+  const { t } = useAppContext();
 
   useEffect(() => {
     if (profile) fetchMatches();
@@ -176,7 +178,7 @@ export default function MatchesPage() {
       <div className="min-h-screen bg-[#1a1225] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
-          <p className="text-gray-500 text-sm">Chargement...</p>
+          <p className="text-gray-500 text-sm">{t.loading}</p>
         </div>
       </div>
     );
@@ -186,8 +188,8 @@ export default function MatchesPage() {
     return (
       <div className="min-h-screen bg-[#1a1225] flex items-center justify-center">
         <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center max-w-md">
-          <h2 className="text-xl font-bold text-white mb-2">Connexion requise</h2>
-          <p className="text-gray-500">Connectez-vous pour voir vos matchs.</p>
+          <h2 className="text-xl font-bold text-white mb-2">{t.matchesLoginRequired}</h2>
+          <p className="text-gray-500">{t.matchesLoginMsg}</p>
         </div>
       </div>
     );
@@ -219,11 +221,11 @@ export default function MatchesPage() {
   return (
     <div className="min-h-screen bg-[#1a1225] p-6">
       {coupDeTruffe && (
-        <CoupDeTruffe match={coupDeTruffe} onClose={() => setCoupDeTruffe(null)} />
+        <CoupDeTruffe match={coupDeTruffe} onClose={() => setCoupDeTruffe(null)} t={t} />
       )}
 
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-2xl font-bold text-white mb-6">Mes matchs</h1>
+        <h1 className="text-2xl font-bold text-white mb-6">{t.matchesTitle}</h1>
 
         {error && (
           <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-sm">{error}</div>
@@ -233,7 +235,7 @@ export default function MatchesPage() {
         {pendingReceived.length > 0 && (
           <div className="mb-8">
             <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-3">
-              Demandes reçues
+              {t.matchesReceived}
               <span className="ml-2 px-2 py-0.5 bg-orange-500/20 text-orange-300 rounded-full normal-case">{pendingReceived.length}</span>
             </h2>
             <div className="space-y-3">
@@ -245,16 +247,16 @@ export default function MatchesPage() {
                     <AnimalBadge animal={match.receiver_animal} />
                   </div>
                   <p className="text-sm text-gray-500 mb-4">
-                    {match.sender_profile.full_name || match.sender_profile.email} veut que {match.sender_animal.name} rencontre {match.receiver_animal.name}
+                    {match.sender_profile.full_name || match.sender_profile.email} {t.matchesWants} {match.sender_animal.name} {t.matchesMeet} {match.receiver_animal.name}
                   </p>
                   <div className="flex gap-3">
                     <button onClick={() => handleRespond(match.id, "accepted")}
                       className="flex-1 py-2.5 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition text-sm">
-                      ✓ Accepter
+                      {t.matchesAccept}
                     </button>
                     <button onClick={() => handleRespond(match.id, "rejected")}
                       className="flex-1 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 font-semibold rounded-xl transition text-sm">
-                      Décliner
+                      {t.matchesDecline}
                     </button>
                   </div>
                 </div>
@@ -267,7 +269,7 @@ export default function MatchesPage() {
         {accepted.length > 0 && (
           <div className="mb-8">
             <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-3">
-              Matchs confirmés
+              {t.matchesConfirmed}
               <span className="ml-2 px-2 py-0.5 bg-green-500/20 text-green-400 rounded-full normal-case">{accepted.length}</span>
             </h2>
             <div className="space-y-3">
@@ -285,11 +287,11 @@ export default function MatchesPage() {
                     <div className="flex gap-3 mt-3">
                       <button onClick={() => setCoupDeTruffe(match)}
                         className="px-4 py-2 bg-orange-500/20 border border-orange-500/30 text-orange-300 rounded-xl text-xs font-semibold hover:bg-orange-500/30 transition">
-                        🐾 Coup de Truffe
+                        {"🐾 " + t.matchesCoup}
                       </button>
                       <Link href={"/matches/" + match.id}
                         className="flex-1 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition text-sm text-center">
-                        💬 Discuter
+                        {t.matchesChat}
                       </Link>
                     </div>
                   </div>
@@ -303,7 +305,7 @@ export default function MatchesPage() {
         {pendingSent.length > 0 && (
           <div className="mb-8">
             <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-3">
-              En attente
+              {t.matchesPending}
               <span className="ml-2 px-2 py-0.5 bg-white/10 text-gray-400 rounded-full normal-case">{pendingSent.length}</span>
             </h2>
             <div className="space-y-3">
@@ -314,7 +316,7 @@ export default function MatchesPage() {
                     <span className="text-gray-500 font-bold">→</span>
                     <AnimalBadge animal={match.receiver_animal} />
                   </div>
-                  <p className="text-xs text-gray-500 mt-3">En attente de {match.receiver_profile.full_name || match.receiver_profile.email}</p>
+                  <p className="text-xs text-gray-500 mt-3">{t.matchesWaiting} {match.receiver_profile.full_name || match.receiver_profile.email}</p>
                 </div>
               ))}
             </div>
@@ -324,10 +326,10 @@ export default function MatchesPage() {
         {matches.length === 0 && (
           <div className="text-center py-16">
             <p className="text-5xl mb-4">💕</p>
-            <p className="text-xl text-white font-medium">Aucun match pour l'instant</p>
-            <p className="text-gray-500 mt-2 text-sm">Parcourez le catalogue et craquez pour un compagnon.</p>
+            <p className="text-xl text-white font-medium">{t.matchesNone}</p>
+            <p className="text-gray-500 mt-2 text-sm">{t.matchesBrowse}</p>
             <Link href="/animals" className="inline-block mt-6 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition">
-              Découvrir les profils
+              {t.matchesDiscover}
             </Link>
           </div>
         )}

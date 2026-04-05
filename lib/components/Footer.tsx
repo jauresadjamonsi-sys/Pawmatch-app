@@ -41,7 +41,7 @@ export default function Footer() {
               background: "var(--c-card, rgba(255,255,255,0.04))",
             }}
           >
-            {t.footerMadeIn} {"\ud83c\udde8\ud83c\udded"}
+            {t.footerMadeIn} 🇨🇭
           </span>
           <span
             style={{

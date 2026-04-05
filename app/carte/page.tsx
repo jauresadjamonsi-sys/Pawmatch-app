@@ -18,7 +18,7 @@ const CANTON_COORDS: Record<string, [number, number]> = {
   SZ: [47.02, 8.65], ZG: [47.17, 8.52], SH: [47.7, 8.64], JU: [47.35, 7.15],
 };
 
-function MapInner({ animals, userPos }: { animals: any[]; userPos: [number, number] | null }) {
+function MapInner({ animals, userPos, t }: { animals: any[]; userPos: [number, number] | null; t: any }) {
   const L = require("leaflet");
   const { MapContainer, TileLayer, Marker, Popup } = require("react-leaflet");
 
@@ -52,7 +52,7 @@ function MapInner({ animals, userPos }: { animals: any[]; userPos: [number, numb
                   : <div style={{ fontSize: 28 }}>{EMOJI_MAP[a.species] || "🐾"}</div>}
                 <strong>{a.name}</strong>
                 <div style={{ fontSize: 11, color: "#6b7280" }}>{a.breed || a.species}</div>
-                <a href={"/animals/" + a.id} style={{ fontSize: 11, color: "#f97316", fontWeight: 700 }}>Voir →</a>
+                <a href={"/animals/" + a.id} style={{ fontSize: 11, color: "#f97316", fontWeight: 700 }}>{t.mapSee}</a>
               </div>
             </Popup>
           </Marker>
@@ -89,9 +89,9 @@ export default function CartePage() {
   return (
     <div style={{ height: "100dvh", display: "flex", flexDirection: "column" }}>
       <div style={{ padding: "10px 16px", background: "var(--c-nav)", borderBottom: "1px solid var(--c-border)", display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
-        <span style={{ fontSize: 13, fontWeight: 800, color: "var(--c-text)" }}>🗺️ Carte des compagnons</span>
+        <span style={{ fontSize: 13, fontWeight: 800, color: "var(--c-text)" }}>🗺️ {t.mapTitle}</span>
         <div style={{ display: "flex", gap: 4, marginLeft: "auto" }}>
-          {[{ v: "", l: "Tous", e: "🐾" }, { v: "chien", l: "Chiens", e: "🐕" }, { v: "chat", l: "Chats", e: "🐱" }, { v: "lapin", l: "Lapins", e: "🐰" }].map(s => (
+          {[{ v: "", l: t.mapAll, e: "🐾" }, { v: "chien", l: t.mapDogs, e: "🐕" }, { v: "chat", l: t.mapCats, e: "🐱" }, { v: "lapin", l: t.mapRabbits, e: "🐰" }].map(s => (
             <button key={s.v} onClick={() => setFilter(s.v)}
               style={{ padding: "4px 10px", borderRadius: 50, border: "none", cursor: "pointer", fontSize: 10, fontWeight: 700,
                 background: filter === s.v ? "#f97316" : "var(--c-card)", color: filter === s.v ? "#fff" : "var(--c-text-muted)" }}>
@@ -102,10 +102,10 @@ export default function CartePage() {
       </div>
       <div style={{ flex: 1, minHeight: 0 }}>
         {loading ? <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}><span style={{ fontSize: 40 }} className="animate-pulse">🗺️</span></div>
-          : <MapComponent animals={animals} userPos={userPos} />}
+          : <MapComponent animals={animals} userPos={userPos} t={t} />}
       </div>
       <div style={{ padding: "6px 16px", background: "var(--c-nav)", borderTop: "1px solid var(--c-border)", textAlign: "center" }}>
-        <span style={{ fontSize: 10, color: "var(--c-text-muted)", fontWeight: 700 }}>🐾 {animals.length} compagnons sur la carte</span>
+        <span style={{ fontSize: 10, color: "var(--c-text-muted)", fontWeight: 700 }}>🐾 {animals.length} {t.mapCompanions}</span>
       </div>
     </div>
   );

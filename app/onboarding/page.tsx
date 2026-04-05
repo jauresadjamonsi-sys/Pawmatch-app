@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { createAnimal, uploadAnimalPhoto } from "@/lib/services/animals";
 import { BREEDS } from "@/lib/breeds";
 import { useRouter } from "next/navigation";
+import { useAppContext } from "@/lib/contexts/AppContext";
 
 const SPECIES_OPTIONS = [
   { value: "chien", emoji: "🐕", label: "Chien" },
@@ -25,6 +26,7 @@ export default function OnboardingPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { t } = useAppContext();
   const supabase = createClient();
 
   const breedList = BREEDS[species] || [];
@@ -38,7 +40,7 @@ export default function OnboardingPage() {
   }
 
   async function handleFinish() {
-    if (!name.trim()) { setError("Donne un nom a ton compagnon !"); return; }
+    if (!name.trim()) { setError(t.onboardNameError); return; }
     setLoading(true);
     setError(null);
 
@@ -89,8 +91,8 @@ export default function OnboardingPage() {
           <div className="text-center fade-in-up">
             <style dangerouslySetInnerHTML={{ __html: `@keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}.fade-in-up{animation:fadeInUp .6s ease-out forwards}` }} />
             <div className="text-6xl mb-4">🎉</div>
-            <h1 className="text-2xl font-extrabold text-[var(--c-text)] mb-2">Bienvenue sur Pawly !</h1>
-            <p className="text-sm text-[var(--c-text-muted)] mb-8">Ajoutons ton premier compagnon. Quelle espece est-ce ?</p>
+            <h1 className="text-2xl font-extrabold text-[var(--c-text)] mb-2">{t.onboardWelcome}</h1>
+            <p className="text-sm text-[var(--c-text-muted)] mb-8">{t.onboardSpecies}</p>
 
             <div className="grid grid-cols-3 gap-3 mb-6">
               {SPECIES_OPTIONS.map((s) => (
@@ -109,12 +111,12 @@ export default function OnboardingPage() {
               disabled={!species}
               className="w-full py-3.5 font-bold rounded-xl text-white transition disabled:opacity-40"
               style={{ background: "#f97316" }}>
-              Continuer
+              {t.onboardContinue}
             </button>
 
             <button onClick={() => router.push("/profile")}
               className="mt-3 text-sm text-[var(--c-text-muted)] hover:text-[var(--c-text)] transition">
-              Je ferai ca plus tard
+              {t.onboardSkip}
             </button>
           </div>
         )}
@@ -125,8 +127,8 @@ export default function OnboardingPage() {
             <style dangerouslySetInnerHTML={{ __html: `@keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}.fade-in-up{animation:fadeInUp .6s ease-out forwards}` }} />
             <div className="text-center mb-6">
               <span className="text-5xl block mb-2">{SPECIES_OPTIONS.find(s => s.value === species)?.emoji || "🐾"}</span>
-              <h1 className="text-2xl font-extrabold text-[var(--c-text)] mb-1">Parle-nous de lui !</h1>
-              <p className="text-sm text-[var(--c-text-muted)]">Juste le minimum pour commencer</p>
+              <h1 className="text-2xl font-extrabold text-[var(--c-text)] mb-1">{t.onboardTellUs}</h1>
+              <p className="text-sm text-[var(--c-text-muted)]">{t.onboardMinimum}</p>
             </div>
 
             {error && <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-sm">{error}</div>}
@@ -143,28 +145,28 @@ export default function OnboardingPage() {
                 </div>
                 <div>
                   <label className="inline-block px-4 py-2 bg-[var(--c-bg)] hover:bg-[var(--c-border)] text-[var(--c-text-muted)] text-sm rounded-xl transition cursor-pointer border border-[var(--c-border)]">
-                    Ajouter une photo
+                    {t.onboardAddPhoto}
                     <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
                   </label>
-                  <p className="text-[10px] text-[var(--c-text-muted)] mt-1">Optionnel</p>
+                  <p className="text-[10px] text-[var(--c-text-muted)] mt-1">{t.onboardOptional}</p>
                 </div>
               </div>
 
               {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-[var(--c-text)] mb-1">Comment s'appelle-t-il ? *</label>
+                <label className="block text-sm font-medium text-[var(--c-text)] mb-1">{t.onboardNamePlaceholder} *</label>
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)}
                   className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
-                  placeholder="Ex: Luna, Rex, Milo..." autoFocus />
+                  placeholder={t.onboardNameEx} autoFocus />
               </div>
 
               {/* Breed */}
               {breedList.length > 0 && (
                 <div>
-                  <label className="block text-sm font-medium text-[var(--c-text)] mb-1">Race (optionnel)</label>
+                  <label className="block text-sm font-medium text-[var(--c-text)] mb-1">{t.onboardBreed}</label>
                   <select value={breed} onChange={(e) => setBreed(e.target.value)}
                     className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
-                    <option value="">Selectionner</option>
+                    <option value="">{t.onboardSelect}</option>
                     {breedList.map((b: string) => (
                       <option key={b} value={b}>{b}</option>
                     ))}
@@ -176,16 +178,16 @@ export default function OnboardingPage() {
             <button onClick={handleFinish} disabled={loading || !name.trim()}
               className="w-full mt-5 py-3.5 font-bold rounded-xl text-white transition disabled:opacity-40"
               style={{ background: "#f97316" }}>
-              {loading ? "Creation..." : "Ajouter mon compagnon"}
+              {loading ? t.onboardCreating : t.onboardAddCompanion}
             </button>
 
             <div className="flex justify-between mt-3">
               <button onClick={() => setStep(1)} className="text-sm text-[var(--c-text-muted)] hover:text-[var(--c-text)] transition">
-                ← Retour
+                ← {t.onboardBack}
               </button>
               <button onClick={() => router.push("/profile")}
                 className="text-sm text-[var(--c-text-muted)] hover:text-[var(--c-text)] transition">
-                Je ferai ca plus tard
+                {t.onboardSkip}
               </button>
             </div>
           </div>
@@ -196,21 +198,21 @@ export default function OnboardingPage() {
           <div className="text-center fade-in-up">
             <style dangerouslySetInnerHTML={{ __html: `@keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}.fade-in-up{animation:fadeInUp .6s ease-out forwards}@keyframes confettiBurst{0%{transform:scale(0);opacity:1}100%{transform:scale(1.5);opacity:0}}.confetti-burst{animation:confettiBurst 1s ease-out forwards}` }} />
             <div className="text-7xl mb-4">🎉</div>
-            <h1 className="text-2xl font-extrabold text-[var(--c-text)] mb-2">C'est parti !</h1>
+            <h1 className="text-2xl font-extrabold text-[var(--c-text)] mb-2">{t.onboardReady}</h1>
             <p className="text-sm text-[var(--c-text-muted)] mb-2">
-              <span className="font-bold" style={{ color: "var(--c-accent, #f97316)" }}>{name}</span> est pret a trouver des compagnons !
+              <span className="font-bold" style={{ color: "var(--c-accent, #f97316)" }}>{name}</span> {t.onboardReadyMsg}
             </p>
-            <p className="text-xs text-[var(--c-text-muted)] mb-8">Tu pourras completer son profil plus tard.</p>
+            <p className="text-xs text-[var(--c-text-muted)] mb-8">{t.onboardComplete}</p>
 
             <div className="flex flex-col gap-3">
               <button onClick={() => router.push("/flairer")}
                 className="w-full py-3.5 font-bold rounded-xl text-white"
                 style={{ background: "#f97316", boxShadow: "0 0 30px rgba(249,115,22,0.3)" }}>
-                Commencer a flairer
+                {t.onboardStart}
               </button>
               <button onClick={() => router.push("/profile")}
                 className="w-full py-3 bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text-muted)] font-medium rounded-xl transition">
-                Voir mon profil
+                {t.onboardProfile}
               </button>
             </div>
           </div>
