@@ -101,6 +101,92 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     catalog: "Catalogue", pricing: "Tarifs",
     ctaDesc2: "Gratuit pour commencer. Toutes les espèces. Toute la Suisse.",
     compatibility: "Compatibilité IA",
+
+    // Auth
+    loginTitle: "Connecte-toi à ton compte", loginGoogle: "Continuer avec Google",
+    loginOr: "ou par email", loginEmail: "Email", loginPassword: "Mot de passe",
+    loginButton: "Se connecter", loginForgot: "Mot de passe oublié ?",
+    loginNoAccount: "Pas encore de compte ?", loginCreate: "Créer un compte",
+    signupTitle: "Crée ton compte gratuitement", signupSub: "Rejoins des propriétaires en Suisse",
+    signupGoogle: "S'inscrire avec Google", signupName: "Prénom",
+    signupButton: "Créer mon compte", signupHasAccount: "Déjà un compte ?", signupLogin: "Se connecter",
+
+    // Profile
+    profileTitle: "Mon profil", profileEdit: "Modifier le profil",
+    profileCity: "Ville", profilePhone: "Téléphone",
+    profileAnimals: "Animaux", profileMatches: "Matchs", profileMessages: "Messages", profileMembers: "Membres",
+    profileLogout: "Se déconnecter", profileNoAnimals: "Aucun animal ajouté",
+    profileAddFirst: "Ajouter mon premier compagnon",
+
+    // Animal form
+    animalAddTitle: "Ajouter mon compagnon", animalAddSub: "Crée le profil de ton animal pour commencer à flairer",
+    animalEditTitle: "Modifier", animalEditSub: "Mets à jour le profil de ton compagnon",
+    animalPhoto: "Photo", animalGallery: "Galerie", animalCamera: "Caméra", animalChangePhoto: "Changer la photo",
+    animalName: "Nom", animalSpecies: "Espèce", animalBreed: "Race", animalOtherBreed: "Autre race...",
+    animalAge: "Âge (mois)", animalGender: "Genre", animalWeight: "Poids (kg)",
+    animalMale: "Mâle", animalFemale: "Femelle", animalUnknown: "Inconnu",
+    animalCanton: "Canton", animalCity: "Ville", animalSelect: "Sélectionner", animalOther: "Autre...",
+    animalVaccinated: "Vacciné", animalSterilized: "Stérilisé",
+    animalNotVaccinated: "Non vacciné", animalNotSterilized: "Non stérilisé",
+    animalCharacter: "Caractère", animalDescription: "Description",
+    animalDescPlaceholder: "Décris ton compagnon en quelques mots...",
+    animalCreating: "Création...", animalSaving: "Sauvegarde...",
+    animalAddButton: "Ajouter mon compagnon", animalSaveButton: "Sauvegarder", animalCancel: "Annuler",
+    animalAdditionalPhotos: "Photos supplémentaires", animalMaxPhotos: "Ajoutez jusqu'à 5 photos de votre animal",
+
+    // Diet
+    dietTitle: "Alimentation", dietType: "Type d'alimentation",
+    dietCroquettes: "Croquettes", dietBarf: "BARF", dietPatee: "Pâtée",
+    dietMixte: "Mixte", dietHomemade: "Fait maison", dietOther: "Autre",
+    dietBrand: "Marque de nourriture", dietBrandPlaceholder: "Ex: Royal Canin, Orijen, ANiFit...",
+    dietTreats: "Friandises préférées", dietTreatsPlaceholder: "Ex: os à mâcher, biscuits, viande séchée...",
+    dietAllergies: "Allergies / intolérances", dietAllergiesPlaceholder: "Ex: poulet, gluten, céréales...",
+
+    // Animal detail
+    animalRegime: "Régime", animalBrandLabel: "Marque", animalTreatsLabel: "Friandises",
+    animalAllergiesLabel: "Allergies",
+
+    // Matches
+    matchesTitle: "Mes matchs", matchesReceived: "Demandes reçues",
+    matchesConfirmed: "Matchs confirmés", matchesPending: "En attente",
+    matchesNone: "Aucun match pour l'instant", matchesBrowse: "Parcourez le catalogue et craquez pour un compagnon",
+    matchesCoup: "Coup de Truffe !", matchesMutual: "C'est un match mutuel !",
+    matchesAccept: "Accepter", matchesDecline: "Refuser", matchesChat: "Discuter",
+
+    // Events
+    eventsTitle: "Événements", eventsSub2: "Balades & rencontres en Suisse",
+    eventsCreate: "Créer", eventsCreateTitle: "Créer un événement",
+    eventsAll: "Toute la Suisse", eventsLoading: "Chargement des événements...",
+    eventsNone: "Aucun événement", eventsEventTitle: "Titre", eventsDate: "Date",
+    eventsTime: "Heure", eventsLocation: "Lieu", eventsAnimals: "Animaux bienvenus",
+    eventsMax: "Max participants", eventsDescription: "Description",
+
+    // Map
+    mapTitle: "Carte des compagnons", mapAll: "Tous", mapDogs: "Chiens",
+    mapCats: "Chats", mapRabbits: "Lapins",
+
+    // Pricing
+    pricingTitle: "Choisis ton plan", pricingCurrent: "Plan actuel", pricingIncluded: "Inclus",
+    pricingNote: "Tous les prix sont en CHF. Annulation possible à tout moment.",
+    pricingSecure: "Paiement sécurisé par Stripe",
+
+    // Onboarding
+    onboardWelcome: "Bienvenue sur Pawly !", onboardSpecies: "Ajoutons ton premier compagnon. Quelle espèce est-ce ?",
+    onboardContinue: "Continuer", onboardSkip: "Je ferai ça plus tard",
+    onboardTellUs: "Parle-nous de lui !", onboardAddPhoto: "Ajouter une photo",
+    onboardNamePlaceholder: "Comment s'appelle-t-il ?", onboardBreed: "Race (optionnel)",
+    onboardReady: "C'est parti !", onboardStart: "Commencer à flairer", onboardProfile: "Voir mon profil",
+
+    // Footer
+    footerMadeIn: "Conçu en Suisse", footerLPD: "Conforme nLPD",
+    footerCGU: "CGU", footerPrivacy: "Politique de confidentialité",
+    footerDirectory: "PawDirectory — Services animaliers en Suisse",
+
+    // Common
+    loading: "Chargement...", save: "Sauvegarder", cancel: "Annuler",
+    delete: "Supprimer", edit: "Modifier", back: "Retour", next: "Suivant",
+    yes: "Oui", no: "Non", or: "ou", close: "Fermer", search: "Rechercher",
+    noResults: "Aucun résultat", seeMore: "Voir plus",
   },
 
   de: {
@@ -179,6 +265,80 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     catalog: "Katalog", pricing: "Preise",
     ctaDesc2: "Kostenlos starten. Alle Tierarten. Die ganze Schweiz.",
     compatibility: "KI-Kompatibilität",
+
+    loginTitle: "Melde dich an", loginGoogle: "Weiter mit Google",
+    loginOr: "oder per E-Mail", loginEmail: "E-Mail", loginPassword: "Passwort",
+    loginButton: "Anmelden", loginForgot: "Passwort vergessen?",
+    loginNoAccount: "Noch kein Konto?", loginCreate: "Konto erstellen",
+    signupTitle: "Erstelle dein kostenloses Konto", signupSub: "Tritt Tierhaltern in der Schweiz bei",
+    signupGoogle: "Mit Google registrieren", signupName: "Vorname",
+    signupButton: "Konto erstellen", signupHasAccount: "Bereits ein Konto?", signupLogin: "Anmelden",
+
+    profileTitle: "Mein Profil", profileEdit: "Profil bearbeiten",
+    profileCity: "Stadt", profilePhone: "Telefon",
+    profileAnimals: "Tiere", profileMatches: "Matches", profileMessages: "Nachrichten", profileMembers: "Mitglieder",
+    profileLogout: "Abmelden", profileNoAnimals: "Keine Tiere hinzugefügt",
+    profileAddFirst: "Erstes Tier hinzufügen",
+
+    animalAddTitle: "Begleiter hinzufügen", animalAddSub: "Erstelle das Profil deines Tieres",
+    animalEditTitle: "Bearbeiten", animalEditSub: "Aktualisiere das Profil deines Begleiters",
+    animalPhoto: "Foto", animalGallery: "Galerie", animalCamera: "Kamera", animalChangePhoto: "Foto ändern",
+    animalName: "Name", animalSpecies: "Tierart", animalBreed: "Rasse", animalOtherBreed: "Andere Rasse...",
+    animalAge: "Alter (Monate)", animalGender: "Geschlecht", animalWeight: "Gewicht (kg)",
+    animalMale: "Männlich", animalFemale: "Weiblich", animalUnknown: "Unbekannt",
+    animalCanton: "Kanton", animalCity: "Stadt", animalSelect: "Auswählen", animalOther: "Andere...",
+    animalVaccinated: "Geimpft", animalSterilized: "Sterilisiert",
+    animalNotVaccinated: "Nicht geimpft", animalNotSterilized: "Nicht sterilisiert",
+    animalCharacter: "Charakter", animalDescription: "Beschreibung",
+    animalDescPlaceholder: "Beschreibe deinen Begleiter kurz...",
+    animalCreating: "Erstellen...", animalSaving: "Speichern...",
+    animalAddButton: "Begleiter hinzufügen", animalSaveButton: "Speichern", animalCancel: "Abbrechen",
+    animalAdditionalPhotos: "Zusätzliche Fotos", animalMaxPhotos: "Bis zu 5 Fotos hinzufügen",
+
+    dietTitle: "Ernährung", dietType: "Ernährungstyp",
+    dietCroquettes: "Trockenfutter", dietBarf: "BARF", dietPatee: "Nassfutter",
+    dietMixte: "Gemischt", dietHomemade: "Selbstgemacht", dietOther: "Andere",
+    dietBrand: "Futtermarke", dietBrandPlaceholder: "z.B. Royal Canin, Orijen, ANiFit...",
+    dietTreats: "Lieblingsleckerlis", dietTreatsPlaceholder: "z.B. Kauknochen, Kekse, Trockenfleisch...",
+    dietAllergies: "Allergien / Unverträglichkeiten", dietAllergiesPlaceholder: "z.B. Huhn, Gluten, Getreide...",
+
+    animalRegime: "Ernährung", animalBrandLabel: "Marke", animalTreatsLabel: "Leckerlis",
+    animalAllergiesLabel: "Allergien",
+
+    matchesTitle: "Meine Matches", matchesReceived: "Erhaltene Anfragen",
+    matchesConfirmed: "Bestätigte Matches", matchesPending: "Ausstehend",
+    matchesNone: "Noch keine Matches", matchesBrowse: "Durchsuche den Katalog und finde einen Begleiter",
+    matchesCoup: "Coup de Truffe!", matchesMutual: "Es ist ein Match!",
+    matchesAccept: "Annehmen", matchesDecline: "Ablehnen", matchesChat: "Chatten",
+
+    eventsTitle: "Veranstaltungen", eventsSub2: "Spaziergänge & Treffen in der Schweiz",
+    eventsCreate: "Erstellen", eventsCreateTitle: "Veranstaltung erstellen",
+    eventsAll: "Ganze Schweiz", eventsLoading: "Veranstaltungen laden...",
+    eventsNone: "Keine Veranstaltungen", eventsEventTitle: "Titel", eventsDate: "Datum",
+    eventsTime: "Uhrzeit", eventsLocation: "Ort", eventsAnimals: "Willkommene Tiere",
+    eventsMax: "Max Teilnehmer", eventsDescription: "Beschreibung",
+
+    mapTitle: "Karte der Begleiter", mapAll: "Alle", mapDogs: "Hunde",
+    mapCats: "Katzen", mapRabbits: "Kaninchen",
+
+    pricingTitle: "Wähle deinen Plan", pricingCurrent: "Aktueller Plan", pricingIncluded: "Inklusive",
+    pricingNote: "Alle Preise in CHF. Jederzeit kündbar.",
+    pricingSecure: "Sichere Zahlung über Stripe",
+
+    onboardWelcome: "Willkommen bei Pawly!", onboardSpecies: "Fügen wir dein erstes Tier hinzu. Welche Tierart?",
+    onboardContinue: "Weiter", onboardSkip: "Später erledigen",
+    onboardTellUs: "Erzähl uns von ihm!", onboardAddPhoto: "Foto hinzufügen",
+    onboardNamePlaceholder: "Wie heisst er/sie?", onboardBreed: "Rasse (optional)",
+    onboardReady: "Los geht's!", onboardStart: "Schnüffeln starten", onboardProfile: "Profil ansehen",
+
+    footerMadeIn: "Made in Switzerland", footerLPD: "nDSG-konform",
+    footerCGU: "AGB", footerPrivacy: "Datenschutzrichtlinie",
+    footerDirectory: "PawDirectory — Tierdienste in der Schweiz",
+
+    loading: "Laden...", save: "Speichern", cancel: "Abbrechen",
+    delete: "Löschen", edit: "Bearbeiten", back: "Zurück", next: "Weiter",
+    yes: "Ja", no: "Nein", or: "oder", close: "Schliessen", search: "Suchen",
+    noResults: "Keine Ergebnisse", seeMore: "Mehr anzeigen",
   },
 
   it: {
@@ -257,6 +417,80 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     catalog: "Catalogo", pricing: "Prezzi",
     ctaDesc2: "Gratis per iniziare. Tutte le specie. Tutta la Svizzera.",
     compatibility: "Compatibilità IA",
+
+    loginTitle: "Accedi al tuo account", loginGoogle: "Continua con Google",
+    loginOr: "o via email", loginEmail: "Email", loginPassword: "Password",
+    loginButton: "Accedi", loginForgot: "Password dimenticata?",
+    loginNoAccount: "Non hai un account?", loginCreate: "Crea un account",
+    signupTitle: "Crea il tuo account gratuito", signupSub: "Unisciti ai proprietari in Svizzera",
+    signupGoogle: "Iscriviti con Google", signupName: "Nome",
+    signupButton: "Crea il mio account", signupHasAccount: "Hai già un account?", signupLogin: "Accedi",
+
+    profileTitle: "Il mio profilo", profileEdit: "Modifica profilo",
+    profileCity: "Città", profilePhone: "Telefono",
+    profileAnimals: "Animali", profileMatches: "Match", profileMessages: "Messaggi", profileMembers: "Membri",
+    profileLogout: "Esci", profileNoAnimals: "Nessun animale aggiunto",
+    profileAddFirst: "Aggiungi il tuo primo compagno",
+
+    animalAddTitle: "Aggiungi il tuo compagno", animalAddSub: "Crea il profilo del tuo animale per iniziare",
+    animalEditTitle: "Modifica", animalEditSub: "Aggiorna il profilo del tuo compagno",
+    animalPhoto: "Foto", animalGallery: "Galleria", animalCamera: "Fotocamera", animalChangePhoto: "Cambia foto",
+    animalName: "Nome", animalSpecies: "Specie", animalBreed: "Razza", animalOtherBreed: "Altra razza...",
+    animalAge: "Età (mesi)", animalGender: "Genere", animalWeight: "Peso (kg)",
+    animalMale: "Maschio", animalFemale: "Femmina", animalUnknown: "Sconosciuto",
+    animalCanton: "Cantone", animalCity: "Città", animalSelect: "Seleziona", animalOther: "Altro...",
+    animalVaccinated: "Vaccinato", animalSterilized: "Sterilizzato",
+    animalNotVaccinated: "Non vaccinato", animalNotSterilized: "Non sterilizzato",
+    animalCharacter: "Carattere", animalDescription: "Descrizione",
+    animalDescPlaceholder: "Descrivi il tuo compagno in poche parole...",
+    animalCreating: "Creazione...", animalSaving: "Salvataggio...",
+    animalAddButton: "Aggiungi il mio compagno", animalSaveButton: "Salva", animalCancel: "Annulla",
+    animalAdditionalPhotos: "Foto aggiuntive", animalMaxPhotos: "Aggiungi fino a 5 foto",
+
+    dietTitle: "Alimentazione", dietType: "Tipo di alimentazione",
+    dietCroquettes: "Crocchette", dietBarf: "BARF", dietPatee: "Umido",
+    dietMixte: "Misto", dietHomemade: "Fatto in casa", dietOther: "Altro",
+    dietBrand: "Marca di cibo", dietBrandPlaceholder: "Es: Royal Canin, Orijen, ANiFit...",
+    dietTreats: "Snack preferiti", dietTreatsPlaceholder: "Es: ossa da masticare, biscotti, carne secca...",
+    dietAllergies: "Allergie / intolleranze", dietAllergiesPlaceholder: "Es: pollo, glutine, cereali...",
+
+    animalRegime: "Regime", animalBrandLabel: "Marca", animalTreatsLabel: "Snack",
+    animalAllergiesLabel: "Allergie",
+
+    matchesTitle: "I miei match", matchesReceived: "Richieste ricevute",
+    matchesConfirmed: "Match confermati", matchesPending: "In attesa",
+    matchesNone: "Nessun match per ora", matchesBrowse: "Sfoglia il catalogo e trova un compagno",
+    matchesCoup: "Coup de Truffe!", matchesMutual: "È un match!",
+    matchesAccept: "Accetta", matchesDecline: "Rifiuta", matchesChat: "Chatta",
+
+    eventsTitle: "Eventi", eventsSub2: "Passeggiate e incontri in Svizzera",
+    eventsCreate: "Crea", eventsCreateTitle: "Crea un evento",
+    eventsAll: "Tutta la Svizzera", eventsLoading: "Caricamento eventi...",
+    eventsNone: "Nessun evento", eventsEventTitle: "Titolo", eventsDate: "Data",
+    eventsTime: "Ora", eventsLocation: "Luogo", eventsAnimals: "Animali benvenuti",
+    eventsMax: "Max partecipanti", eventsDescription: "Descrizione",
+
+    mapTitle: "Mappa dei compagni", mapAll: "Tutti", mapDogs: "Cani",
+    mapCats: "Gatti", mapRabbits: "Conigli",
+
+    pricingTitle: "Scegli il tuo piano", pricingCurrent: "Piano attuale", pricingIncluded: "Incluso",
+    pricingNote: "Tutti i prezzi sono in CHF. Cancellazione possibile in qualsiasi momento.",
+    pricingSecure: "Pagamento sicuro tramite Stripe",
+
+    onboardWelcome: "Benvenuto su Pawly!", onboardSpecies: "Aggiungiamo il tuo primo compagno. Che specie è?",
+    onboardContinue: "Continua", onboardSkip: "Lo farò più tardi",
+    onboardTellUs: "Parlaci di lui!", onboardAddPhoto: "Aggiungi foto",
+    onboardNamePlaceholder: "Come si chiama?", onboardBreed: "Razza (opzionale)",
+    onboardReady: "Andiamo!", onboardStart: "Inizia ad annusare", onboardProfile: "Vedi profilo",
+
+    footerMadeIn: "Progettato in Svizzera", footerLPD: "Conforme nLPD",
+    footerCGU: "Termini", footerPrivacy: "Privacy",
+    footerDirectory: "PawDirectory — Servizi per animali in Svizzera",
+
+    loading: "Caricamento...", save: "Salva", cancel: "Annulla",
+    delete: "Elimina", edit: "Modifica", back: "Indietro", next: "Avanti",
+    yes: "Sì", no: "No", or: "o", close: "Chiudi", search: "Cerca",
+    noResults: "Nessun risultato", seeMore: "Vedi di più",
   },
 
   en: {
@@ -335,5 +569,79 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     catalog: "Catalogue", pricing: "Pricing",
     ctaDesc2: "Free to start. All species. All of Switzerland.",
     compatibility: "AI Compatibility",
+
+    loginTitle: "Log in to your account", loginGoogle: "Continue with Google",
+    loginOr: "or by email", loginEmail: "Email", loginPassword: "Password",
+    loginButton: "Log in", loginForgot: "Forgot password?",
+    loginNoAccount: "No account yet?", loginCreate: "Create an account",
+    signupTitle: "Create your free account", signupSub: "Join pet owners in Switzerland",
+    signupGoogle: "Sign up with Google", signupName: "First name",
+    signupButton: "Create my account", signupHasAccount: "Already have an account?", signupLogin: "Log in",
+
+    profileTitle: "My profile", profileEdit: "Edit profile",
+    profileCity: "City", profilePhone: "Phone",
+    profileAnimals: "Animals", profileMatches: "Matches", profileMessages: "Messages", profileMembers: "Members",
+    profileLogout: "Log out", profileNoAnimals: "No animals added",
+    profileAddFirst: "Add your first companion",
+
+    animalAddTitle: "Add my companion", animalAddSub: "Create your pet's profile to start sniffing",
+    animalEditTitle: "Edit", animalEditSub: "Update your companion's profile",
+    animalPhoto: "Photo", animalGallery: "Gallery", animalCamera: "Camera", animalChangePhoto: "Change photo",
+    animalName: "Name", animalSpecies: "Species", animalBreed: "Breed", animalOtherBreed: "Other breed...",
+    animalAge: "Age (months)", animalGender: "Gender", animalWeight: "Weight (kg)",
+    animalMale: "Male", animalFemale: "Female", animalUnknown: "Unknown",
+    animalCanton: "Canton", animalCity: "City", animalSelect: "Select", animalOther: "Other...",
+    animalVaccinated: "Vaccinated", animalSterilized: "Sterilized",
+    animalNotVaccinated: "Not vaccinated", animalNotSterilized: "Not sterilized",
+    animalCharacter: "Character", animalDescription: "Description",
+    animalDescPlaceholder: "Describe your companion in a few words...",
+    animalCreating: "Creating...", animalSaving: "Saving...",
+    animalAddButton: "Add my companion", animalSaveButton: "Save", animalCancel: "Cancel",
+    animalAdditionalPhotos: "Additional photos", animalMaxPhotos: "Add up to 5 photos",
+
+    dietTitle: "Diet", dietType: "Diet type",
+    dietCroquettes: "Dry food", dietBarf: "BARF", dietPatee: "Wet food",
+    dietMixte: "Mixed", dietHomemade: "Homemade", dietOther: "Other",
+    dietBrand: "Food brand", dietBrandPlaceholder: "e.g. Royal Canin, Orijen, ANiFit...",
+    dietTreats: "Favourite treats", dietTreatsPlaceholder: "e.g. chew bones, biscuits, dried meat...",
+    dietAllergies: "Allergies / intolerances", dietAllergiesPlaceholder: "e.g. chicken, gluten, grains...",
+
+    animalRegime: "Diet", animalBrandLabel: "Brand", animalTreatsLabel: "Treats",
+    animalAllergiesLabel: "Allergies",
+
+    matchesTitle: "My matches", matchesReceived: "Received requests",
+    matchesConfirmed: "Confirmed matches", matchesPending: "Pending",
+    matchesNone: "No matches yet", matchesBrowse: "Browse the catalogue and find a companion",
+    matchesCoup: "Coup de Truffe!", matchesMutual: "It's a match!",
+    matchesAccept: "Accept", matchesDecline: "Decline", matchesChat: "Chat",
+
+    eventsTitle: "Events", eventsSub2: "Walks & meetups in Switzerland",
+    eventsCreate: "Create", eventsCreateTitle: "Create an event",
+    eventsAll: "All Switzerland", eventsLoading: "Loading events...",
+    eventsNone: "No events", eventsEventTitle: "Title", eventsDate: "Date",
+    eventsTime: "Time", eventsLocation: "Location", eventsAnimals: "Welcome animals",
+    eventsMax: "Max participants", eventsDescription: "Description",
+
+    mapTitle: "Companion map", mapAll: "All", mapDogs: "Dogs",
+    mapCats: "Cats", mapRabbits: "Rabbits",
+
+    pricingTitle: "Choose your plan", pricingCurrent: "Current plan", pricingIncluded: "Included",
+    pricingNote: "All prices in CHF. Cancel anytime.",
+    pricingSecure: "Secure payment via Stripe",
+
+    onboardWelcome: "Welcome to Pawly!", onboardSpecies: "Let's add your first companion. What species?",
+    onboardContinue: "Continue", onboardSkip: "I'll do this later",
+    onboardTellUs: "Tell us about them!", onboardAddPhoto: "Add photo",
+    onboardNamePlaceholder: "What's their name?", onboardBreed: "Breed (optional)",
+    onboardReady: "Let's go!", onboardStart: "Start sniffing", onboardProfile: "View profile",
+
+    footerMadeIn: "Made in Switzerland", footerLPD: "nFADP compliant",
+    footerCGU: "Terms", footerPrivacy: "Privacy policy",
+    footerDirectory: "PawDirectory — Pet services in Switzerland",
+
+    loading: "Loading...", save: "Save", cancel: "Cancel",
+    delete: "Delete", edit: "Edit", back: "Back", next: "Next",
+    yes: "Yes", no: "No", or: "or", close: "Close", search: "Search",
+    noResults: "No results", seeMore: "See more",
   },
 };

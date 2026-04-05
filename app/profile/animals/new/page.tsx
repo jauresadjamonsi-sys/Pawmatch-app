@@ -8,6 +8,7 @@ import { CITIES } from "@/lib/cities";
 import { BREEDS } from "@/lib/breeds";
 import { TRAITS } from "@/lib/traits";
 import { useRouter } from "next/navigation";
+import { useAppContext } from "@/lib/contexts/AppContext";
 
 const SPECIES_LIST = [
   { value: "chien", label: "🐕 Chien" },
@@ -30,6 +31,7 @@ export default function NewAnimalPage() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const supabase = createClient();
   const router = useRouter();
+  const { t } = useAppContext();
 
   const breedList = BREEDS[species] || [];
   const traitList = TRAITS[species] || [];
@@ -111,8 +113,8 @@ export default function NewAnimalPage() {
   return (
     <div className="min-h-screen px-4 py-8">
       <div className="max-w-lg mx-auto">
-        <h1 className="text-2xl font-bold text-white mb-2">Ajouter mon compagnon</h1>
-        <p className="text-gray-400 text-sm mb-6">Crée le profil de ton animal pour commencer à flairer</p>
+        <h1 className="text-2xl font-bold text-white mb-2">{t.animalAddTitle}</h1>
+        <p className="text-gray-400 text-sm mb-6">{t.animalAddSub}</p>
 
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
           {error && <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-sm">{error}</div>}
@@ -120,7 +122,7 @@ export default function NewAnimalPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Photo */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Photo</label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">{t.animalPhoto}</label>
               <div className="flex items-center gap-4">
                 <div className="w-20 h-20 rounded-2xl bg-[#2a1f3a] border-2 border-dashed border-white/10 flex items-center justify-center overflow-hidden">
                   {photoPreview ? (
@@ -131,11 +133,11 @@ export default function NewAnimalPage() {
                 </div>
                 <div className="flex gap-2">
                   <label className="px-4 py-2 bg-white/10 hover:bg-white/20 text-gray-300 text-sm rounded-xl transition cursor-pointer border border-white/10">
-                    Galerie
+                    {t.animalGallery}
                     <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
                   </label>
                   <label className="px-4 py-2 bg-white/10 hover:bg-white/20 text-gray-300 text-sm rounded-xl transition cursor-pointer border border-white/10">
-                    Caméra
+                    {t.animalCamera}
                     <input type="file" accept="image/*" capture="environment" onChange={handlePhotoChange} className="hidden" />
                   </label>
                 </div>
@@ -144,7 +146,7 @@ export default function NewAnimalPage() {
 
             {/* Nom */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Nom *</label>
+              <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalName} *</label>
               <input name="name" type="text" required
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
                 placeholder="Comment s'appelle ton compagnon ?" />
@@ -152,7 +154,7 @@ export default function NewAnimalPage() {
 
             {/* Espèce */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Espèce *</label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">{t.animalSpecies} *</label>
               <div className="grid grid-cols-3 gap-2">
                 {SPECIES_LIST.map((s) => (
                   <button key={s.value} type="button" onClick={() => { setSpecies(s.value); setCustomBreed(false); setSelectedTraits([]); }}
@@ -169,7 +171,7 @@ export default function NewAnimalPage() {
 
             {/* Race */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Race</label>
+              <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalBreed}</label>
               {customBreed ? (
                 <input name="breed_custom" type="text"
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
@@ -189,21 +191,21 @@ export default function NewAnimalPage() {
             {/* Âge + Genre + Poids */}
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Âge (mois)</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalAge}</label>
                 <input name="age_months" type="number" min="0"
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Genre</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalGender}</label>
                 <select name="gender"
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-gray-300 focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
-                  <option value="inconnu" className="bg-[#1a1225]">Inconnu</option>
-                  <option value="male" className="bg-[#1a1225]">Mâle</option>
-                  <option value="femelle" className="bg-[#1a1225]">Femelle</option>
+                  <option value="inconnu" className="bg-[#1a1225]">{t.animalUnknown}</option>
+                  <option value="male" className="bg-[#1a1225]">{t.animalMale}</option>
+                  <option value="femelle" className="bg-[#1a1225]">{t.animalFemale}</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Poids (kg)</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalWeight}</label>
                 <input name="weight_kg" type="number" step="0.1" min="0"
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition" />
               </div>
@@ -244,18 +246,18 @@ export default function NewAnimalPage() {
             <div className="flex gap-6">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" name="vaccinated" className="w-4 h-4 rounded bg-white/5 border-white/10 text-orange-500 focus:ring-orange-500" />
-                <span className="text-sm text-gray-300">Vacciné</span>
+                <span className="text-sm text-gray-300">{t.animalVaccinated}</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" name="sterilized" className="w-4 h-4 rounded bg-white/5 border-white/10 text-orange-500 focus:ring-orange-500" />
-                <span className="text-sm text-gray-300">Stérilisé</span>
+                <span className="text-sm text-gray-300">{t.animalSterilized}</span>
               </label>
             </div>
 
             {/* Traits */}
             {traitList.length > 0 && (
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Caractère</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">{t.animalCharacter}</label>
                 <div className="flex flex-wrap gap-2">
                   {traitList.map((trait: string) => (
                     <button key={trait} type="button" onClick={() => toggleTrait(trait)}
@@ -333,7 +335,7 @@ export default function NewAnimalPage() {
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Description</label>
+              <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalDescription}</label>
               <textarea name="description" rows={3}
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition resize-none"
                 placeholder="Décris ton compagnon en quelques mots..." />
@@ -342,7 +344,7 @@ export default function NewAnimalPage() {
             {/* Submit */}
             <button type="submit" disabled={loading}
               className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition disabled:opacity-50 text-lg">
-              {loading ? "Création..." : "Ajouter mon compagnon"}
+              {loading ? t.animalCreating : t.animalAddButton}
             </button>
           </form>
         </div>

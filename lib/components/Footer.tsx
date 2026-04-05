@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
+import { useAppContext } from "@/lib/contexts/AppContext";
 
 export default function Footer() {
+  const { t } = useAppContext();
+
   return (
     <footer
       style={{
@@ -36,7 +41,7 @@ export default function Footer() {
               background: "var(--c-card, rgba(255,255,255,0.04))",
             }}
           >
-            {"Concu en Suisse \ud83c\udde8\ud83c\udded"}
+            {t.footerMadeIn} {"\ud83c\udde8\ud83c\udded"}
           </span>
           <span
             style={{
@@ -52,7 +57,7 @@ export default function Footer() {
               background: "var(--c-card, rgba(255,255,255,0.04))",
             }}
           >
-            {"Conforme nLPD"}
+            {t.footerLPD}
           </span>
         </div>
 
@@ -62,13 +67,13 @@ export default function Footer() {
             href="/legal/cgu"
             style={{ fontSize: 12, color: "var(--c-text-muted)", textDecoration: "none" }}
           >
-            CGU
+            {t.footerCGU}
           </Link>
           <Link
             href="/legal/privacy"
             style={{ fontSize: 12, color: "var(--c-text-muted)", textDecoration: "none" }}
           >
-            Politique de confidentialite
+            {t.footerPrivacy}
           </Link>
           <a
             href="mailto:contact@pawlyapp.ch"
@@ -90,7 +95,7 @@ export default function Footer() {
             fontWeight: 600,
           }}
         >
-          PawDirectory — Services animaliers en Suisse
+          {t.footerDirectory}
         </a>
 
         {/* Copyright */}
