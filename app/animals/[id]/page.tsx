@@ -44,6 +44,10 @@ export default function AnimalDetailPage() {
   const { profile, isAuthenticated } = useAuth();
 
   useEffect(() => {
+    if (animal) document.title = animal.name + " — Pawly";
+  }, [animal]);
+
+  useEffect(() => {
     async function fetchData() {
       const result = await getAnimalById(supabase, params.id as string);
       if (result.data) setAnimal(result.data);
@@ -53,7 +57,7 @@ export default function AnimalDetailPage() {
         setMyAnimals(animals || []);
       }
       setLoading(false);
-      if (animalData) document.title = animalData.name + " — Pawly";
+      
       // Vérifier si Coup de Truffe existe
       if (user && result.data) {
         const { data: myAnimalsList } = await supabase.from("animals").select("id").eq("created_by", user.id);
