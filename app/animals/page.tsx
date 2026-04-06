@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { CANTONS } from "@/lib/cantons";
 import Link from "next/link";
+import Image from "next/image";
 import { EMOJI_MAP } from "@/lib/constants";
 
 const SPECIES_LIST = [
@@ -121,9 +122,9 @@ export default function AnimalsPage() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filtered.map((animal) => (
               <Link href={"/animals/" + animal.id} key={animal.id} className="bg-white/5 border border-[var(--c-border)] rounded-2xl overflow-hidden hover:bg-white/10 transition group">
-                <div className="aspect-square bg-[var(--c-card)] flex items-center justify-center overflow-hidden">
+                <div className="aspect-square bg-[var(--c-card)] flex items-center justify-center overflow-hidden relative">
                   {animal.photo_url ? (
-                    <img src={animal.photo_url} alt={animal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    <Image src={animal.photo_url} alt={animal.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw" />
                   ) : (
                     <span className="text-5xl">{EMOJI_MAP[animal.species] || "🐾"}</span>
                   )}

@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
+import QRCode from "qrcode";
 
 type QRProps = {
   animalId: string;
@@ -21,12 +23,18 @@ const LABELS: Record<string, Record<string, string>> = {
 
 export function QRIdentity({ animalId, animalName, species, breed, canton, ownerName, lang }: QRProps) {
   const [showQR, setShowQR] = useState(false);
+  const [qrDataUrl, setQrDataUrl] = useState("");
   const l = LABELS[lang] || LABELS.fr;
   const profileUrl = typeof window !== "undefined"
     ? `${window.location.origin}/animals/${animalId}`
     : `https://pawlyapp.ch/animals/${animalId}`;
 
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(profileUrl)}&bgcolor=ffffff&color=1a1714&margin=10`;
+  useEffect(() => {
+    if (showQR && profileUrl) {
+      QRCode.toDataURL(profileUrl, { width: 250, margin: 2, color: { dark: "#1a1714", light: "#ffffff" } })
+        .then(setQrDataUrl);
+    }
+  }, [showQR, profileUrl]);
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -39,13 +47,14 @@ export function QRIdentity({ animalId, animalName, species, breed, canton, owner
       } catch {}
     } else {
       await navigator.clipboard.writeText(profileUrl);
-      alert("Lien copié !");
+      toast.success("Lien copié !");
     }
   };
 
   const handleDownload = () => {
+    if (!qrDataUrl) return;
     const a = document.createElement("a");
-    a.href = qrUrl;
+    a.href = qrDataUrl;
     a.download = `${animalName}-pawly-qr.png`;
     a.click();
   };
@@ -70,7 +79,7 @@ export function QRIdentity({ animalId, animalName, species, breed, canton, owner
 
       {/* QR Code */}
       <div style={{ background: "#fff", borderRadius: 16, padding: 16, display: "inline-block", marginBottom: 12, border: "2px solid #f0f0f0" }}>
-        <img src={qrUrl} alt={`QR ${animalName}`} style={{ width: 200, height: 200, display: "block" }} />
+        {qrDataUrl && <Image src={qrDataUrl} alt={`QR ${animalName}`} width={200} height={200} style={{ display: "block" }} unoptimized />}
       </div>
 
       {/* Info sous le QR */}

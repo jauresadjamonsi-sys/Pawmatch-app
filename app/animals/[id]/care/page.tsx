@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import { getAnimalById, AnimalRow } from "@/lib/services/animals";
 import { detectPersonality } from "@/lib/services/personality";
 import Link from "next/link";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useAppContext } from "@/lib/contexts/AppContext";
 import { EMOJI_MAP } from "@/lib/constants";
@@ -432,10 +433,10 @@ export default function PawCareHubPage() {
           <div style={{
             width: 72, height: 72, borderRadius: "50%", overflow: "hidden", flexShrink: 0,
             background: "var(--c-border)", display: "flex", alignItems: "center", justifyContent: "center",
-            border: `3px solid ${scoreColor}40`,
+            border: `3px solid ${scoreColor}40`, position: "relative",
           }}>
             {animal.photo_url ? (
-              <img src={animal.photo_url} alt={animal.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="(max-width: 768px) 72px, 72px" />
             ) : (
               <span style={{ fontSize: 32 }}>{EMOJI_MAP[animal.species] || "🐾"}</span>
             )}

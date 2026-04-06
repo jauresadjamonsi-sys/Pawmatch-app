@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import { getAnimalById, AnimalRow } from "@/lib/services/animals";
 import { sendMatchWithLimit } from "@/lib/services/matches";
 import { CANTONS } from "@/lib/cantons";
+import Image from "next/image";
 import { computeCompatibility } from "@/lib/services/compatibility";
 import { detectPersonality } from "@/lib/services/personality";
 import Link from "next/link";
@@ -225,7 +226,7 @@ export default function AnimalDetailPage() {
               if (photos.length === 0) return <span className="text-8xl">{EMOJI_MAP[animal.species] || "🐾"}</span>;
               return (
                 <div className="relative w-full h-full">
-                  <img src={photos[activePhoto] || photos[0]} alt={animal.name} className="w-full h-full object-cover" />
+                  <Image src={photos[activePhoto] || photos[0]} alt={animal.name} fill className="object-cover" sizes="(max-width: 768px) 100vw, 600px" />
                   {photos.length > 1 && (
                     <>
                       <button onClick={() => setActivePhoto(p => (p - 1 + photos.length) % photos.length)}
@@ -529,9 +530,9 @@ export default function AnimalDetailPage() {
                     {myAnimals.map((myAnimal) => (
                       <button key={myAnimal.id} onClick={() => handleMatch(myAnimal.id)} disabled={matchSending}
                         className="w-full flex items-center gap-3 p-3 bg-white/5 hover:bg-orange-500/10 rounded-xl transition text-left disabled:opacity-50 border border-[var(--c-border)]">
-                        <div className="w-12 h-12 rounded-full bg-[var(--c-deep)] border-2 border-orange-400 flex items-center justify-center overflow-hidden flex-shrink-0">
+                        <div className="w-12 h-12 rounded-full bg-[var(--c-deep)] border-2 border-orange-400 flex items-center justify-center overflow-hidden flex-shrink-0 relative">
                           {myAnimal.photo_url ? (
-                            <img src={myAnimal.photo_url} alt={myAnimal.name} className="w-full h-full object-cover" />
+                            <Image src={myAnimal.photo_url} alt={myAnimal.name} fill className="object-cover" sizes="(max-width: 768px) 48px, 48px" />
                           ) : (
                             <span className="text-xl">{EMOJI_MAP[myAnimal.species] || "🐾"}</span>
                           )}

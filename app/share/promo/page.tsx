@@ -2,6 +2,7 @@
 
 import { Suspense, useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                         */
@@ -156,7 +157,7 @@ function PromoContent() {
       {/* ---- Action buttons (outside story) ---- */}
       <div className="actions-bar">
         <button
-          onClick={() => alert("Fais une capture d'écran ou un enregistrement d'écran pour sauvegarder ta story !")}
+          onClick={() => toast.success("Fais une capture d'écran ou un enregistrement d'écran pour sauvegarder ta story !")}
           className="action-btn save-btn"
         >
           📥 Enregistrer

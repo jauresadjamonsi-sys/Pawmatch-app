@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import dynamic from "next/dynamic";
 import { useAppContext } from "@/lib/contexts/AppContext";
 import { EMOJI_MAP } from "@/lib/constants";
+import Image from "next/image";
 
 const CANTON_COORDS: Record<string, [number, number]> = {
   VD: [46.6, 6.6], GE: [46.2, 6.15], BE: [46.95, 7.45], ZH: [47.37, 8.54],
@@ -44,7 +45,7 @@ function MapInner({ animals, userPos, t }: { animals: any[]; userPos: [number, n
           <Marker key={a.id} position={[coords[0] + off[0], coords[1] + off[1]]}>
             <Popup>
               <div style={{ textAlign: "center", minWidth: 120 }}>
-                {a.photo_url ? <img src={a.photo_url} alt={a.name} style={{ width: 50, height: 50, borderRadius: "50%", objectFit: "cover", margin: "0 auto 4px" }} />
+                {a.photo_url ? <Image src={a.photo_url} alt={a.name} width={50} height={50} style={{ borderRadius: "50%", objectFit: "cover", margin: "0 auto 4px" }} sizes="50px" />
                   : <div style={{ fontSize: 28 }}>{EMOJI_MAP[a.species] || "🐾"}</div>}
                 <strong>{a.name}</strong>
                 <div style={{ fontSize: 11, color: "#6b7280" }}>{a.breed || a.species}</div>

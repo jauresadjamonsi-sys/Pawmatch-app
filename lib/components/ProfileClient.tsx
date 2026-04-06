@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PushButton from "./PushButton";
@@ -278,7 +279,7 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
                 >
                   <div className="h-36 flex items-center justify-center overflow-hidden relative" style={{ background: "var(--c-card)" }}>
                     {animal.photo_url
-                      ? <img src={animal.photo_url} alt={animal.name} className="w-full h-full object-cover" />
+                      ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="(max-width: 768px) 50vw, 200px" />
                       : <span className="text-5xl">{EMOJI_MAP[animal.species] || "🐾"}</span>}
                   </div>
                   <div className="p-3">

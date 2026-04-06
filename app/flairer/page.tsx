@@ -7,6 +7,7 @@ import { sendMatch } from "@/lib/services/matches";
 import { computeCompatibility, sortByCompatibility, getProximityLabel } from "@/lib/services/compatibility";
 import { CANTONS } from "@/lib/cantons";
 import Link from "next/link";
+import Image from "next/image";
 import BlockReportModal from "@/lib/components/BlockReportModal";
 
 const SPECIES: Record<string, string> = {
@@ -541,9 +542,9 @@ export default function FlairerPage() {
         {nextAnimal && (
           <div className="absolute inset-0 rounded-3xl overflow-hidden glass"
             style={{ transform:`scale(${nextCardScale}) translateY(${(1-nextCardScale)*30}px)`, transition:isDragging?"none":"transform 0.4s ease", zIndex:1, opacity:0.5 }}>
-            <div className="w-full h-full bg-[var(--c-deep,#1a1225)] flex items-center justify-center">
+            <div className="w-full h-full bg-[var(--c-deep,#1a1225)] flex items-center justify-center relative">
               {nextAnimal.photo_url
-                ? <img src={nextAnimal.photo_url} alt="" className="w-full h-full object-cover opacity-50" draggable={false} />
+                ? <Image src={nextAnimal.photo_url} alt="" fill className="object-cover opacity-50" draggable={false} sizes="(max-width: 768px) 100vw, 448px" />
                 : <span className="text-[var(--c-text-muted)] text-4xl font-bold">{(nextAnimal as Animal).name?.charAt(0)}</span>}
             </div>
           </div>
@@ -595,7 +596,7 @@ export default function FlairerPage() {
           {/* Photo with gradient overlay */}
           <div className="h-[55%] relative overflow-hidden bg-[var(--c-deep,#1a1225)]">
             {animal.photo_url
-              ? <img src={animal.photo_url} alt={animal.name} className="w-full h-full object-cover" draggable={false} />
+              ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" draggable={false} sizes="(max-width: 768px) 100vw, 448px" />
               : <div className="w-full h-full flex items-center justify-center text-6xl font-bold text-[var(--c-text-muted)]">{animal.name?.charAt(0)}</div>}
 
             {/* Gradient overlay at bottom */}
@@ -797,10 +798,10 @@ export default function FlairerPage() {
                     return (
                       <button key={myAnimal.id} onClick={() => handleMatch(myAnimal.id)}
                         className="w-full flex items-center gap-3 p-3 glass card-futuristic rounded-2xl text-left">
-                        <div className="w-12 h-12 rounded-full bg-[var(--c-deep,#1a1225)] ring-2 ring-orange-400/50 flex items-center justify-center overflow-hidden flex-shrink-0
+                        <div className="w-12 h-12 rounded-full bg-[var(--c-deep,#1a1225)] ring-2 ring-orange-400/50 flex items-center justify-center overflow-hidden flex-shrink-0 relative
                           shadow-[0_0_10px_rgba(249,115,22,0.2)]">
                           {myAnimal.photo_url
-                            ? <img src={myAnimal.photo_url} alt={myAnimal.name} className="w-full h-full object-cover" />
+                            ? <Image src={myAnimal.photo_url} alt={myAnimal.name} fill className="object-cover" sizes="(max-width: 768px) 48px, 48px" />
                             : <span className="text-sm font-bold text-[var(--c-text-muted)]">{myAnimal.name?.charAt(0)}</span>}
                         </div>
                         <div className="flex-1">

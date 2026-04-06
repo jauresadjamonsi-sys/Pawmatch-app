@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css"
 import { CookieBanner } from "@/lib/components/CookieBanner";
+import { Toaster } from "sonner";
 import Navbar from "@/lib/components/Navbar";
 import Footer from "@/lib/components/Footer";
 import { WelcomeModal } from "@/lib/components/WelcomeModal";
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </PostHogProvider>
       </AppProvider>
   <CookieBanner />
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   );

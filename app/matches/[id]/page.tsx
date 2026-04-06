@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import { getMessages, sendMessageWithLimit, sendImageMessage, markAsRead, MessageRow } from "@/lib/services/messages";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import BlockReportModal from "@/lib/components/BlockReportModal";
 import { useOnlineStatus } from "@/lib/hooks/useOnlineStatus";
 import PresenceDot from "@/lib/components/PresenceDot";
@@ -323,9 +324,9 @@ export default function ConversationPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </Link>
-          <div className="w-9 h-9 rounded-full bg-[var(--c-card)] border border-orange-500/30 flex items-center justify-center overflow-hidden flex-shrink-0">
+          <div className="w-9 h-9 rounded-full bg-[var(--c-card)] border border-orange-500/30 flex items-center justify-center overflow-hidden flex-shrink-0 relative">
             {theirAnimal.photo_url
-              ? <img src={theirAnimal.photo_url} alt={theirAnimal.name} className="w-full h-full object-cover" />
+              ? <Image src={theirAnimal.photo_url} alt={theirAnimal.name} fill className="object-cover" sizes="(max-width: 768px) 36px, 36px" />
               : <span className="text-base">{EMOJI_MAP[theirAnimal.species] || "🐾"}</span>}
           </div>
           <div className="flex-1 min-w-0">
@@ -376,12 +377,17 @@ export default function ConversationPage() {
                     (msg.image_url ? " p-1.5" : " px-4 py-2.5")}>
                     {msg.image_url ? (
                       <div>
-                        <img
-                          src={msg.image_url}
-                          alt="Photo"
-                          className="rounded-xl max-w-full max-h-60 object-cover cursor-pointer hover:opacity-90 transition"
-                          onClick={() => setExpandedImage(msg.image_url)}
-                        />
+                        <div className="relative max-w-full" style={{ maxHeight: 240 }}>
+                          <Image
+                            src={msg.image_url}
+                            alt="Photo"
+                            width={300}
+                            height={240}
+                            className="rounded-xl object-cover cursor-pointer hover:opacity-90 transition"
+                            onClick={() => setExpandedImage(msg.image_url)}
+                            sizes="(max-width: 768px) 250px, 300px"
+                          />
+                        </div>
                         {msg.content && msg.content !== "📷 Photo" && (
                           <p className="whitespace-pre-wrap leading-relaxed px-2.5 py-1.5 text-sm">{msg.content}</p>
                         )}
@@ -503,11 +509,14 @@ export default function ConversationPage() {
           >
             &#10005;
           </button>
-          <img
+          <Image
             src={expandedImage}
             alt="Photo agrandie"
+            width={800}
+            height={800}
             className="max-w-full max-h-[90vh] object-contain rounded-lg"
             onClick={(e) => e.stopPropagation()}
+            sizes="90vw"
           />
         </div>
       )}

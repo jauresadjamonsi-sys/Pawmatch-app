@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { notFound } from "next/navigation";
 import { CANTONS_SEO, getCantonBySlug, getCitySlug } from "@/lib/data/cantons";
 import Link from "next/link";
+import Image from "next/image";
 
 const BASE_URL = "https://pawlyapp.ch";
 
@@ -178,10 +179,12 @@ export default async function CantonPage({ params }: Props) {
               >
                 <div className="relative w-full h-48 bg-gray-100">
                   {animal.photo_url ? (
-                    <img
+                    <Image
                       src={animal.photo_url}
                       alt={`${animal.name} - ${animal.species} a ${canton.name}`}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-4xl">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { createAnimal, uploadAnimalPhoto } from "@/lib/services/animals";
 import { BREEDS } from "@/lib/breeds";
@@ -136,9 +137,9 @@ export default function OnboardingPage() {
             <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-6 space-y-5">
               {/* Photo */}
               <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-2xl bg-[var(--c-bg)] border-2 border-dashed border-[var(--c-border)] flex items-center justify-center overflow-hidden flex-shrink-0">
+                <div className="w-20 h-20 rounded-2xl bg-[var(--c-bg)] border-2 border-dashed border-[var(--c-border)] flex items-center justify-center overflow-hidden flex-shrink-0 relative">
                   {photoPreview ? (
-                    <img src={photoPreview} alt="preview" className="w-full h-full object-cover" />
+                    <Image src={photoPreview} alt="preview" fill className="object-cover" unoptimized sizes="80px" />
                   ) : (
                     <span className="text-2xl">📷</span>
                   )}

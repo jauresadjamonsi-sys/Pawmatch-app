@@ -8,6 +8,7 @@ import { getMyMatches, respondToMatch, MatchWithAnimals } from "@/lib/services/m
 import { useOnlineStatus } from "@/lib/hooks/useOnlineStatus";
 import PresenceDot from "@/lib/components/PresenceDot";
 import Link from "next/link";
+import Image from "next/image";
 import { EMOJI_MAP } from "@/lib/constants";
 
 const SPECIES_GLOW: Record<string, string> = {
@@ -131,9 +132,9 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
         {/* Animals */}
         <div className="slide-up flex items-center justify-center gap-4 mb-6" style={{ animationDelay: "0.4s" }}>
           <div className="text-center">
-            <div className="w-16 h-16 rounded-full bg-orange-500/20 ring-2 ring-orange-500/50 flex items-center justify-center overflow-hidden mx-auto mb-1 ring-pulse">
+            <div className="w-16 h-16 rounded-full bg-orange-500/20 ring-2 ring-orange-500/50 flex items-center justify-center overflow-hidden mx-auto mb-1 ring-pulse relative">
               {match.sender_animal.photo_url
-                ? <img src={match.sender_animal.photo_url} alt={match.sender_animal.name} className="w-full h-full object-cover" />
+                ? <Image src={match.sender_animal.photo_url} alt={match.sender_animal.name} fill className="object-cover" sizes="(max-width: 768px) 64px, 64px" />
                 : <span className="text-2xl">{EMOJI_MAP[match.sender_animal.species] || "🐾"}</span>}
             </div>
             <p className="text-xs text-white font-semibold">{match.sender_animal.name}</p>
@@ -142,9 +143,9 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
           <div className="text-3xl paw-beat">💥</div>
 
           <div className="text-center">
-            <div className="w-16 h-16 rounded-full bg-pink-500/20 ring-2 ring-pink-500/50 flex items-center justify-center overflow-hidden mx-auto mb-1 ring-pulse">
+            <div className="w-16 h-16 rounded-full bg-pink-500/20 ring-2 ring-pink-500/50 flex items-center justify-center overflow-hidden mx-auto mb-1 ring-pulse relative">
               {match.receiver_animal.photo_url
-                ? <img src={match.receiver_animal.photo_url} alt={match.receiver_animal.name} className="w-full h-full object-cover" />
+                ? <Image src={match.receiver_animal.photo_url} alt={match.receiver_animal.name} fill className="object-cover" sizes="(max-width: 768px) 64px, 64px" />
                 : <span className="text-2xl">{EMOJI_MAP[match.receiver_animal.species] || "🐾"}</span>}
             </div>
             <p className="text-xs text-white font-semibold">{match.receiver_animal.name}</p>
@@ -261,9 +262,9 @@ export default function MatchesPage() {
     return (
       <div className="flex items-center gap-3">
         <div className="relative">
-          <div className={`w-12 h-12 rounded-full bg-white/5 flex items-center justify-center overflow-hidden flex-shrink-0 ring-2 ${ringClass} transition-all duration-500`}>
+          <div className={`w-12 h-12 rounded-full bg-white/5 flex items-center justify-center overflow-hidden flex-shrink-0 ring-2 ${ringClass} transition-all duration-500 relative`}>
             {animal.photo_url
-              ? <img src={animal.photo_url} alt={animal.name} className="w-full h-full object-cover" />
+              ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="(max-width: 768px) 48px, 48px" />
               : <span className="text-xl">{EMOJI_MAP[animal.species] || "🐾"}</span>}
           </div>
           {userId && (

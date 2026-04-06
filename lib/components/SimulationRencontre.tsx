@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { detectPersonality, PersonalityType } from "@/lib/services/personality";
 
 type SimulationProps = {
@@ -276,9 +277,9 @@ export function SimulationRencontre({ myAnimal, otherAnimal, compatibilityScore,
 
           <div className="flex items-center justify-center gap-4 mb-3">
             <div className="text-center">
-              <div className="w-14 h-14 rounded-full overflow-hidden border-2 mx-auto mb-1" style={{ borderColor: myPersonality.color }}>
+              <div className="w-14 h-14 rounded-full overflow-hidden border-2 mx-auto mb-1 relative" style={{ borderColor: myPersonality.color }}>
                 {myAnimal.photo_url
-                  ? <img src={myAnimal.photo_url} alt={myAnimal.name} className="w-full h-full object-cover" />
+                  ? <Image src={myAnimal.photo_url} alt={myAnimal.name} fill className="object-cover" sizes="(max-width: 768px) 56px, 56px" />
                   : <div className="w-full h-full flex items-center justify-center bg-[var(--c-card)] text-xl">{SPECIES_EMOJI[myAnimal.species] || "🐾"}</div>}
               </div>
               <p className="text-xs font-bold text-[var(--c-text)]">{myAnimal.name}</p>
@@ -291,9 +292,9 @@ export function SimulationRencontre({ myAnimal, otherAnimal, compatibilityScore,
             </div>
 
             <div className="text-center">
-              <div className="w-14 h-14 rounded-full overflow-hidden border-2 mx-auto mb-1" style={{ borderColor: otherPersonality.color }}>
+              <div className="w-14 h-14 rounded-full overflow-hidden border-2 mx-auto mb-1 relative" style={{ borderColor: otherPersonality.color }}>
                 {otherAnimal.photo_url
-                  ? <img src={otherAnimal.photo_url} alt={otherAnimal.name} className="w-full h-full object-cover" />
+                  ? <Image src={otherAnimal.photo_url} alt={otherAnimal.name} fill className="object-cover" sizes="(max-width: 768px) 56px, 56px" />
                   : <div className="w-full h-full flex items-center justify-center bg-[var(--c-card)] text-xl">{SPECIES_EMOJI[otherAnimal.species] || "🐾"}</div>}
               </div>
               <p className="text-xs font-bold text-[var(--c-text)]">{otherAnimal.name}</p>

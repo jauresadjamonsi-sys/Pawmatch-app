@@ -8,6 +8,7 @@ import { CITIES } from "@/lib/cities";
 import { BREEDS } from "@/lib/breeds";
 import { TRAITS } from "@/lib/traits";
 import { useRouter, useParams } from "next/navigation";
+import Image from "next/image";
 import { useAppContext } from "@/lib/contexts/AppContext";
 
 const SPECIES_LIST = [
@@ -177,7 +178,7 @@ export default function EditAnimalPage() {
               <div className="flex flex-wrap gap-3 mb-3">
                 {photos.map((photo, i) => (
                   <div key={i} className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-[var(--c-border)]">
-                    <img src={photo.preview} alt={`photo-${i}`} className="w-full h-full object-cover" />
+                    <Image src={photo.preview} alt={`photo-${i}`} fill className="object-cover" unoptimized sizes="80px" />
                     <span className={"absolute bottom-0 left-0 right-0 text-[9px] font-bold text-center py-0.5 " + (photo.tag === "with_owner" ? "bg-green-600 text-[var(--c-text)]" : "bg-white/80 text-gray-700")}>
                       {photo.tag === "with_owner" ? t.animalPhotoTagOwner : t.animalPhotoTagAnimal}
                     </span>

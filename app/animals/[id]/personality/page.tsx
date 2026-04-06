@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { detectPersonality } from "@/lib/services/personality";
 import { useAppContext } from "@/lib/contexts/AppContext";
@@ -72,9 +73,9 @@ export default function PersonalityPage() {
 
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-24 h-24 rounded-full overflow-hidden mx-auto mb-4 border-4" style={{ borderColor: personality.color + "50" }}>
+          <div className="w-24 h-24 rounded-full overflow-hidden mx-auto mb-4 border-4 relative" style={{ borderColor: personality.color + "50" }}>
             {animal.photo_url
-              ? <img src={animal.photo_url} alt={animal.name} className="w-full h-full object-cover" />
+              ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="(max-width: 768px) 96px, 96px" />
               : <div className="w-full h-full bg-[var(--c-card)] flex items-center justify-center text-4xl">🐾</div>}
           </div>
           <h1 className="text-2xl font-extrabold text-[var(--c-text)] mb-1">{animal.name}</h1>

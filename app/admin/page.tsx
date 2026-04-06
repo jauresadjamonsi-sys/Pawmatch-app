@@ -2,7 +2,9 @@
 
 import { Suspense, useEffect, useState, useCallback, useMemo } from "react";
 import { useAuth } from "@/lib/hooks/useAuth";
+import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 /* ────────────────────────────────────────────── Types ── */
 
@@ -155,7 +157,7 @@ function AdminPageInner() {
   if (!stats) return null;
 
   const handleExport = () => {
-    alert("Données exportées dans la console (F12)");
+    toast.success("Données exportées dans la console (F12)");
   };
 
   const TABS: { key: TabKey; label: string }[] = [
@@ -934,10 +936,14 @@ function SubscriptionBadge({ sub }: { sub: string | null }) {
 function Avatar({ url, name, size }: { url: string | null; name: string; size: number }) {
   if (url) {
     return (
-      <img
+      <Image
         src={url}
         alt=""
-        style={{ width: size, height: size, borderRadius: size / 3, objectFit: "cover", flexShrink: 0 }}
+        width={size}
+        height={size}
+        style={{ borderRadius: size / 3, objectFit: "cover", flexShrink: 0 }}
+        unoptimized
+        sizes={`${size}px`}
       />
     );
   }

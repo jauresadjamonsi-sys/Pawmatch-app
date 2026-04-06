@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { detectPersonality } from "@/lib/services/personality";
 import { EMOJI_MAP } from "@/lib/constants";
 
@@ -69,9 +70,9 @@ export function MatchDuJour({ lang }: { lang: string }) {
 
         {/* Animal card */}
         <Link href={"/animals/" + match.animal.id} className="flex items-center gap-4 bg-[var(--c-deep)] rounded-xl p-3 mb-3">
-          <div className="w-14 h-14 rounded-full overflow-hidden border-2 flex-shrink-0" style={{ borderColor: match.compatibility.color }}>
+          <div className="w-14 h-14 rounded-full overflow-hidden border-2 flex-shrink-0 relative" style={{ borderColor: match.compatibility.color }}>
             {match.animal.photo_url
-              ? <img src={match.animal.photo_url} alt={match.animal.name} className="w-full h-full object-cover" />
+              ? <Image src={match.animal.photo_url} alt={match.animal.name} fill className="object-cover" sizes="(max-width: 768px) 56px, 56px" />
               : <div className="w-full h-full flex items-center justify-center bg-[var(--c-card)] text-2xl">{EMOJI_MAP[match.animal.species] || "🐾"}</div>}
           </div>
           <div className="flex-1 min-w-0">

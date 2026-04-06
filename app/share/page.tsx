@@ -2,8 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { useAppContext } from "@/lib/contexts/AppContext";
+import { toast } from "sonner";
+import QRCode from "qrcode";
 
 const REWARDS = [
   { friends: 1, badge: "🎖️ Ambassadeur", reward: "Badge exclusif" },
@@ -12,47 +15,12 @@ const REWARDS = [
   { friends: 10, badge: "👑 Légende", reward: "1 an Premium gratuit" },
 ];
 
-// Simple QR code generator (SVG-based, no external lib)
-function generateQRSVG(data: string, size: number = 200): string {
-  // Simple QR-like pattern using data hash - visual representation
-  const hash = Array.from(data).reduce((h, c) => ((h << 5) - h + c.charCodeAt(0)) | 0, 0);
-  const grid = 21;
-  const cellSize = size / grid;
-  let cells = "";
-
-  for (let y = 0; y < grid; y++) {
-    for (let x = 0; x < grid; x++) {
-      // Fixed patterns (corners)
-      const isCorner =
-        (x < 7 && y < 7) || (x >= grid - 7 && y < 7) || (x < 7 && y >= grid - 7);
-      const isCornerInner =
-        (x >= 2 && x <= 4 && y >= 2 && y <= 4) ||
-        (x >= grid - 5 && x <= grid - 3 && y >= 2 && y <= 4) ||
-        (x >= 2 && x <= 4 && y >= grid - 5 && y <= grid - 3);
-      const isCornerBorder =
-        isCorner && (x === 0 || x === 6 || y === 0 || y === 6 ||
-          x === grid - 7 || x === grid - 1 || y === grid - 7 || y === grid - 1);
-
-      const shouldFill = isCornerBorder || isCornerInner ||
-        (!isCorner && ((hash * (x + 1) * (y + 1) + x * 31 + y * 17) & 3) === 0);
-
-      if (shouldFill) {
-        cells += `<rect x="${x * cellSize}" y="${y * cellSize}" width="${cellSize}" height="${cellSize}" fill="#f97316" rx="1"/>`;
-      }
-    }
-  }
-
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
-    <rect width="${size}" height="${size}" fill="white" rx="8"/>
-    ${cells}
-  </svg>`;
-}
-
 export default function SharePage() {
   const { t } = useAppContext();
   const [profile, setProfile] = useState<any>(null);
   const [referralCount, setReferralCount] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [qrDataUrl, setQrDataUrl] = useState("");
   const supabase = createClient();
 
   const referralCode = profile?.referral_code || "";
@@ -73,6 +41,13 @@ export default function SharePage() {
     }
     load();
   }, []);
+
+  useEffect(() => {
+    if (shareUrl) {
+      QRCode.toDataURL(shareUrl, { width: 200, margin: 2, color: { dark: "#000", light: "#fff" } })
+        .then(setQrDataUrl);
+    }
+  }, [shareUrl]);
 
   const copyLink = () => {
     navigator.clipboard.writeText(shareUrl);
@@ -154,7 +129,7 @@ export default function SharePage() {
             target="_blank"
             rel="noopener"
             className="glass card-futuristic rounded-xl p-4 text-center transition-all duration-300"
-            onClick={(e) => { e.preventDefault(); navigator.clipboard.writeText(shareText); alert(t.shareInstaCopied); window.open("https://www.instagram.com/", "_blank"); }}
+            onClick={(e) => { e.preventDefault(); navigator.clipboard.writeText(shareText); toast.success(t.shareInstaCopied); window.open("https://www.instagram.com/", "_blank"); }}
           >
             <span className="text-2xl block mb-1">📸</span>
             <span className="text-xs font-semibold text-[var(--c-text)]">Instagram</span>
@@ -164,7 +139,7 @@ export default function SharePage() {
             target="_blank"
             rel="noopener"
             className="glass card-futuristic rounded-xl p-4 text-center transition-all duration-300"
-            onClick={(e) => { e.preventDefault(); navigator.clipboard.writeText(shareText); alert(t.shareTiktokCopied); window.open("https://www.tiktok.com/", "_blank"); }}
+            onClick={(e) => { e.preventDefault(); navigator.clipboard.writeText(shareText); toast.success(t.shareTiktokCopied); window.open("https://www.tiktok.com/", "_blank"); }}
           >
             <span className="text-2xl block mb-1">🎵</span>
             <span className="text-xs font-semibold text-[var(--c-text)]">TikTok</span>
@@ -199,10 +174,7 @@ export default function SharePage() {
         {/* QR Code */}
         <div className="glass rounded-2xl p-6 mb-6 text-center animate-slide-up" style={{ animationDelay: "0.25s" }}>
           <p className="text-sm font-bold text-[var(--c-text)] mb-4">{t.shareQR}</p>
-          <div
-            className="inline-block rounded-xl overflow-hidden shadow-lg"
-            dangerouslySetInnerHTML={{ __html: generateQRSVG(shareUrl, 180) }}
-          />
+          {qrDataUrl && <Image src={qrDataUrl} alt="QR Code" width={200} height={200} className="mx-auto rounded-xl" unoptimized />}
           <p className="text-[10px] text-[var(--c-text-muted)] mt-3">Scanne ce code pour rejoindre Pawly</p>
         </div>
 
