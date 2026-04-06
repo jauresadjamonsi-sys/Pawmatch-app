@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
@@ -26,6 +26,155 @@ export default function SharePage() {
   const referralCode = profile?.referral_code || "";
   const shareUrl = `https://pawlyapp.ch/signup?ref=${referralCode}`;
   const shareText = `🐾 Mon animal a trouvé des copains de balade sur Pawly ! Rejoins la communauté suisse des propriétaires d'animaux → ${shareUrl}`;
+  const [storyCardUrl, setStoryCardUrl] = useState<string>("");
+
+  /** Generate a story-ready image with Ruby + QR code + branding */
+  const generateStoryCard = useCallback(async () => {
+    if (storyCardUrl) return storyCardUrl; // cached
+    const canvas = document.createElement("canvas");
+    // Instagram story dimensions (9:16)
+    canvas.width = 1080;
+    canvas.height = 1920;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return "";
+
+    // Background gradient
+    const bg = ctx.createLinearGradient(0, 0, 1080, 1920);
+    bg.addColorStop(0, "#2a2248");
+    bg.addColorStop(0.5, "#3d2810");
+    bg.addColorStop(1, "#1a1714");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, 1080, 1920);
+
+    // Subtle pattern dots
+    ctx.fillStyle = "rgba(249,115,22,0.05)";
+    for (let i = 0; i < 60; i++) {
+      const x = Math.random() * 1080;
+      const y = Math.random() * 1920;
+      ctx.beginPath();
+      ctx.arc(x, y, Math.random() * 30 + 10, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Ruby photo — circular with glow
+    try {
+      const rubyImg = new window.Image();
+      rubyImg.crossOrigin = "anonymous";
+      await new Promise<void>((resolve, reject) => {
+        rubyImg.onload = () => resolve();
+        rubyImg.onerror = () => reject();
+        rubyImg.src = "/ruby-hero.jpg";
+      });
+
+      // Orange glow
+      ctx.save();
+      ctx.shadowColor = "rgba(249,115,22,0.6)";
+      ctx.shadowBlur = 60;
+      ctx.beginPath();
+      ctx.arc(540, 520, 200, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(249,115,22,0.3)";
+      ctx.fill();
+      ctx.restore();
+
+      // Circular mask for Ruby
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(540, 520, 190, 0, Math.PI * 2);
+      ctx.clip();
+      const size = Math.min(rubyImg.width, rubyImg.height);
+      const sx = (rubyImg.width - size) / 2;
+      const sy = (rubyImg.height - size) / 2;
+      ctx.drawImage(rubyImg, sx, sy, size, size, 350, 330, 380, 380);
+      ctx.restore();
+
+      // Orange ring
+      ctx.strokeStyle = "rgba(249,115,22,0.7)";
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.arc(540, 520, 193, 0, Math.PI * 2);
+      ctx.stroke();
+    } catch {
+      // If Ruby fails to load, draw paw emoji
+      ctx.font = "180px serif";
+      ctx.textAlign = "center";
+      ctx.fillStyle = "#f97316";
+      ctx.fillText("🐾", 540, 560);
+    }
+
+    // "PAWLY" title
+    ctx.font = "bold 72px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#f97316";
+    ctx.fillText("PAWLY", 540, 820);
+
+    // Tagline
+    ctx.font = "32px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillStyle = "rgba(255,255,255,0.85)";
+    ctx.fillText("Trouve des copains de balade", 540, 880);
+    ctx.fillText("pour ton animal", 540, 920);
+
+    // Divider line
+    const divGrad = ctx.createLinearGradient(300, 980, 780, 980);
+    divGrad.addColorStop(0, "transparent");
+    divGrad.addColorStop(0.5, "rgba(249,115,22,0.6)");
+    divGrad.addColorStop(1, "transparent");
+    ctx.strokeStyle = divGrad;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(300, 980);
+    ctx.lineTo(780, 980);
+    ctx.stroke();
+
+    // Features
+    ctx.font = "28px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillStyle = "rgba(255,255,255,0.7)";
+    const features = [
+      "🐕 Balades entre compagnons",
+      "🧠 Match de personnalité IA",
+      "📍 Animaux près de chez toi",
+      "🇨🇭 100% suisse",
+    ];
+    features.forEach((f, i) => {
+      ctx.fillText(f, 540, 1050 + i * 55);
+    });
+
+    // QR Code
+    try {
+      const qrData = await QRCode.toDataURL(shareUrl, { width: 280, margin: 2, color: { dark: "#fff", light: "rgba(0,0,0,0)" } });
+      const qrImg = new window.Image();
+      await new Promise<void>((resolve) => { qrImg.onload = () => resolve(); qrImg.src = qrData; });
+      // QR background rounded rect
+      ctx.fillStyle = "rgba(255,255,255,0.1)";
+      const qrX = 400, qrY = 1340, qrW = 280, qrH = 280, r = 20;
+      ctx.beginPath();
+      ctx.moveTo(qrX + r, qrY);
+      ctx.lineTo(qrX + qrW - r, qrY);
+      ctx.quadraticCurveTo(qrX + qrW, qrY, qrX + qrW, qrY + r);
+      ctx.lineTo(qrX + qrW, qrY + qrH - r);
+      ctx.quadraticCurveTo(qrX + qrW, qrY + qrH, qrX + qrW - r, qrY + qrH);
+      ctx.lineTo(qrX + r, qrY + qrH);
+      ctx.quadraticCurveTo(qrX, qrY + qrH, qrX, qrY + qrH - r);
+      ctx.lineTo(qrX, qrY + r);
+      ctx.quadraticCurveTo(qrX, qrY, qrX + r, qrY);
+      ctx.closePath();
+      ctx.fill();
+      ctx.drawImage(qrImg, 400, 1340, 280, 280);
+    } catch {}
+
+    // CTA
+    ctx.font = "bold 30px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillStyle = "#f97316";
+    ctx.fillText("Scanne pour rejoindre", 540, 1680);
+
+    // Footer
+    ctx.font = "22px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillStyle = "rgba(255,255,255,0.4)";
+    ctx.fillText("pawlyapp.ch", 540, 1780);
+
+    const url = canvas.toDataURL("image/jpeg", 0.92);
+    setStoryCardUrl(url);
+    return url;
+  }, [shareUrl, storyCardUrl]);
 
   useEffect(() => {
     async function load() {
@@ -124,33 +273,43 @@ export default function SharePage() {
             <span className="text-2xl block mb-1">💬</span>
             <span className="text-xs font-semibold text-[var(--c-text)]">{t.shareWhatsapp}</span>
           </a>
-          {/* Instagram — copy text then open app */}
+          {/* Instagram — generate story card, download, open app */}
           <button
             className="glass card-futuristic rounded-xl p-4 text-center transition-all duration-300"
-            onClick={() => {
-              navigator.clipboard.writeText(shareText);
-              toast.success(t.shareInstaCopied, { duration: 4000 });
-              // Small delay so user sees the toast before Instagram opens
+            onClick={async () => {
+              toast.loading("Preparation de la story...", { id: "story" });
+              const cardUrl = await generateStoryCard();
+              // Download the story card image
+              const link = document.createElement("a");
+              link.href = cardUrl;
+              link.download = "pawly-story.jpg";
+              link.click();
+              toast.success("Image telechargee ! Ouvre Instagram → Story → choisis l'image depuis ta galerie", { id: "story", duration: 6000 });
+              // Open Instagram after download
               setTimeout(() => {
-                window.location.href = "instagram://app";
-                // Fallback if app not installed
-                setTimeout(() => { window.open("https://www.instagram.com/", "_blank"); }, 1500);
-              }, 800);
+                window.location.href = "instagram://library";
+                setTimeout(() => { window.open("https://www.instagram.com/", "_blank"); }, 2000);
+              }, 1500);
             }}
           >
             <span className="text-2xl block mb-1">📸</span>
             <span className="text-xs font-semibold text-[var(--c-text)]">Instagram</span>
           </button>
-          {/* TikTok — copy text then open app */}
+          {/* TikTok — generate story card, download, open app */}
           <button
             className="glass card-futuristic rounded-xl p-4 text-center transition-all duration-300"
-            onClick={() => {
-              navigator.clipboard.writeText(shareText);
-              toast.success(t.shareTiktokCopied, { duration: 4000 });
+            onClick={async () => {
+              toast.loading("Preparation de la story...", { id: "story" });
+              const cardUrl = await generateStoryCard();
+              const link = document.createElement("a");
+              link.href = cardUrl;
+              link.download = "pawly-story.jpg";
+              link.click();
+              toast.success("Image telechargee ! Ouvre TikTok → + → choisis l'image depuis ta galerie", { id: "story", duration: 6000 });
               setTimeout(() => {
                 window.location.href = "snssdk1233://";
-                setTimeout(() => { window.open("https://www.tiktok.com/", "_blank"); }, 1500);
-              }, 800);
+                setTimeout(() => { window.open("https://www.tiktok.com/", "_blank"); }, 2000);
+              }, 1500);
             }}
           >
             <span className="text-2xl block mb-1">🎵</span>
