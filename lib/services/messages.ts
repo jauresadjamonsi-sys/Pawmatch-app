@@ -150,3 +150,32 @@ export async function sendImageMessage(
     return { data: null, error: "Erreur inattendue." };
   }
 }
+
+export async function sendVoiceMessage(
+  supabase: SupabaseClient,
+  matchId: string,
+  senderId: string,
+  voiceUrl: string,
+  subscription: string
+): Promise<ServiceResult<MessageRow>> {
+  const limit = await checkMessageLimit(supabase, senderId, subscription);
+  if (!limit.allowed) return { data: null, error: limit.error };
+
+  try {
+    const { data, error } = await supabase
+      .from("messages")
+      .insert({
+        match_id: matchId,
+        sender_id: senderId,
+        content: "\uD83C\uDF99\uFE0F Message vocal",
+        image_url: voiceUrl,
+      })
+      .select()
+      .single();
+
+    if (error) return { data: null, error: "Erreur: " + error.message };
+    return { data, error: null };
+  } catch {
+    return { data: null, error: "Erreur inattendue." };
+  }
+}

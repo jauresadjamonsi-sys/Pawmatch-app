@@ -293,6 +293,13 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
 
     // Theme
     themeAuto: "Automatique", themeAutoDesc: "Suit les préférences système",
+
+    // Digital Card
+    cardTitle: "Carte digitale", cardBreed: "Race", cardLocation: "Localisation",
+    cardTraits: "Personnalité", cardEnergy: "Énergie", cardShare: "Partager",
+    cardCopyLink: "Copier le lien", cardDownload: "Télécharger", cardCopied: "Lien copié !",
+    cardScanProfile: "Scannez pour voir le profil", cardPoweredBy: "Propulsé par Pawly",
+    cardDigitalPassport: "Passeport digital",
   },
 
   de: {
@@ -547,6 +554,13 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
 
     // Theme
     themeAuto: "Automatisch", themeAutoDesc: "Folgt den Systemeinstellungen",
+
+    // Digital Card
+    cardTitle: "Digitale Karte", cardBreed: "Rasse", cardLocation: "Standort",
+    cardTraits: "Persönlichkeit", cardEnergy: "Energie", cardShare: "Teilen",
+    cardCopyLink: "Link kopieren", cardDownload: "Herunterladen", cardCopied: "Link kopiert!",
+    cardScanProfile: "Scannen Sie das Profil", cardPoweredBy: "Powered by Pawly",
+    cardDigitalPassport: "Digitaler Reisepass",
   },
 
   it: {
@@ -801,6 +815,13 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
 
     // Theme
     themeAuto: "Automatico", themeAutoDesc: "Segue le preferenze di sistema",
+
+    // Digital Card
+    cardTitle: "Carta digitale", cardBreed: "Razza", cardLocation: "Posizione",
+    cardTraits: "Personalità", cardEnergy: "Energia", cardShare: "Condividi",
+    cardCopyLink: "Copia link", cardDownload: "Scarica", cardCopied: "Link copiato!",
+    cardScanProfile: "Scansiona per il profilo", cardPoweredBy: "Powered by Pawly",
+    cardDigitalPassport: "Passaporto digitale",
   },
 
   en: {
@@ -1055,5 +1076,12 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
 
     // Theme
     themeAuto: "Automatic", themeAutoDesc: "Follows system preferences",
+
+    // Digital Card
+    cardTitle: "Digital Card", cardBreed: "Breed", cardLocation: "Location",
+    cardTraits: "Personality", cardEnergy: "Energy", cardShare: "Share",
+    cardCopyLink: "Copy link", cardDownload: "Download", cardCopied: "Link copied!",
+    cardScanProfile: "Scan to view profile", cardPoweredBy: "Powered by Pawly",
+    cardDigitalPassport: "Digital Passport",
   },
 };

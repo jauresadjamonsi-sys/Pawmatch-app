@@ -465,3 +465,27 @@ html {
 .scroll-snap-x > * {
   scroll-snap-align: start;
 }
+
+/* ============================================
+   21. HOLOGRAPHIC SHIMMER (Pet Card)
+   ============================================ */
+@keyframes holographic {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.holographic-shimmer {
+  position: relative;
+}
+
+.holographic-shimmer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 20%, rgba(255,255,255,0.1) 25%, transparent 30%, transparent 45%, rgba(168,85,247,0.08) 50%, transparent 55%, transparent 70%, rgba(56,189,248,0.08) 75%, transparent 80%);
+  background-size: 400% 400%;
+  animation: holographic 6s ease infinite;
+  border-radius: inherit;
+  pointer-events: none;
+}

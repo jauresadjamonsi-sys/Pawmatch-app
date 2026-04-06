@@ -3,13 +3,15 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/hooks/useAuth";
-import { getMessages, sendMessageWithLimit, sendImageMessage, markAsRead, MessageRow } from "@/lib/services/messages";
+import { getMessages, sendMessageWithLimit, sendImageMessage, sendVoiceMessage, markAsRead, MessageRow } from "@/lib/services/messages";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import BlockReportModal from "@/lib/components/BlockReportModal";
 import { useOnlineStatus } from "@/lib/hooks/useOnlineStatus";
 import PresenceDot from "@/lib/components/PresenceDot";
+import VoiceRecorder, { getFileExtension, getSupportedMimeType } from "@/lib/components/VoiceRecorder";
+import VoiceMessage from "@/lib/components/VoiceMessage";
 import { EMOJI_MAP } from "@/lib/constants";
 
 // Suggestions statiques par contexte (fallback + instantané)
@@ -88,6 +90,8 @@ export default function ConversationPage() {
   const [otherTyping, setOtherTyping] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
+  const [isRecordingVoice, setIsRecordingVoice] = useState(false);
+  const [uploadingVoice, setUploadingVoice] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -196,6 +200,45 @@ export default function ConversationPage() {
 
     setUploadingPhoto(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
+  async function handleVoiceComplete(blob: Blob) {
+    if (!profile) return;
+    setIsRecordingVoice(false);
+    setUploadingVoice(true);
+    setError(null);
+
+    try {
+      const mimeType = getSupportedMimeType();
+      const ext = getFileExtension(mimeType);
+      const path = `voice/${params.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("voice-messages")
+        .upload(path, blob, { cacheControl: "3600", upsert: false, contentType: mimeType });
+
+      if (uploadError) {
+        setError("Erreur upload vocal: " + uploadError.message);
+        setUploadingVoice(false);
+        return;
+      }
+
+      const { data: urlData } = supabase.storage.from("voice-messages").getPublicUrl(path);
+
+      const result = await sendVoiceMessage(
+        supabase, params.id as string, profile.id, urlData.publicUrl, profile.subscription || "free"
+      );
+
+      if (result.error) {
+        setError(result.error);
+      } else {
+        fetchMessages();
+      }
+    } catch {
+      setError("Erreur inattendue lors de l'envoi du message vocal.");
+    }
+
+    setUploadingVoice(false);
   }
 
   // Charger suggestions statiques immédiatement, IA en arrière-plan
@@ -363,6 +406,8 @@ export default function ConversationPage() {
             const isMine = msg.sender_id === profile?.id;
             const prevMsg = messages[i - 1];
             const showTime = !prevMsg || new Date(msg.created_at).getTime() - new Date(prevMsg.created_at).getTime() > 5 * 60 * 1000;
+            const isVoice = msg.content === "\uD83C\uDF99\uFE0F Message vocal" && msg.image_url && (msg.image_url.endsWith(".webm") || msg.image_url.endsWith(".m4a") || msg.image_url.endsWith(".ogg"));
+            const isImage = msg.image_url && !isVoice;
 
             return (
               <div key={msg.id}>
@@ -374,12 +419,14 @@ export default function ConversationPage() {
                     (isMine
                       ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-br-md"
                       : "bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text)] rounded-bl-md") +
-                    (msg.image_url ? " p-1.5" : " px-4 py-2.5")}>
-                    {msg.image_url ? (
+                    (isImage ? " p-1.5" : isVoice ? " p-0.5" : " px-4 py-2.5")}>
+                    {isVoice ? (
+                      <VoiceMessage audioUrl={msg.image_url!} isMine={isMine} />
+                    ) : isImage ? (
                       <div>
                         <div className="relative max-w-full" style={{ maxHeight: 240 }}>
                           <Image
-                            src={msg.image_url}
+                            src={msg.image_url!}
                             alt="Photo"
                             width={300}
                             height={240}
@@ -397,7 +444,7 @@ export default function ConversationPage() {
                     )}
                     {/* Read receipts for own messages */}
                     {isMine && (
-                      <div className={"flex justify-end mt-0.5 " + (msg.image_url ? "px-2 pb-1" : "")}>
+                      <div className={"flex justify-end mt-0.5 " + (isImage ? "px-2 pb-1" : isVoice ? "px-3 pb-1" : "")}>
                         <span className={"text-[10px] font-medium " + (msg.read_at ? "text-blue-300" : "text-white/40")}>
                           {msg.read_at ? "✓✓" : "✓"}
                         </span>
@@ -450,6 +497,12 @@ export default function ConversationPage() {
       <div className="backdrop-blur-xl border-t border-[var(--c-border)] px-4 py-3" style={{ background: "var(--c-deep)" }}>
         <div className="max-w-3xl mx-auto">
           {error && <p className="text-red-400 text-xs mb-2">{error}</p>}
+          {uploadingVoice && (
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-4 h-4 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
+              <span className="text-[var(--c-text-muted)] text-xs">Envoi du message vocal...</span>
+            </div>
+          )}
           <div className="flex gap-2 items-end">
             {/* Hidden file input for photo */}
             <input
@@ -459,40 +512,65 @@ export default function ConversationPage() {
               onChange={handlePhotoSelect}
               className="hidden"
             />
-            {/* Photo button */}
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploadingPhoto}
-              className="w-10 h-10 bg-[var(--c-card)] border border-[var(--c-border)] hover:border-orange-500/30 hover:bg-orange-500/10 rounded-2xl flex items-center justify-center transition active:scale-95 flex-shrink-0"
-              title="Envoyer une photo"
-            >
-              {uploadingPhoto
-                ? <div className="w-4 h-4 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
-                : <svg className="w-4.5 h-4.5 text-[var(--c-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
-                  </svg>}
-            </button>
-            <input
-              ref={inputRef}
-              type="text"
-              value={newMessage}
-              onChange={(e) => { setNewMessage(e.target.value); notifyTyping(); }}
-              onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-              placeholder="Message..."
-              maxLength={2000}
-              className="flex-1 px-4 py-2.5 bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-1 focus:ring-orange-500/50 focus:border-orange-500/30 outline-none text-sm transition"
-            />
-            <button
-              onClick={() => handleSend()}
-              disabled={sending || !newMessage.trim()}
-              className="w-10 h-10 bg-orange-500 hover:bg-orange-600 disabled:opacity-30 rounded-2xl flex items-center justify-center transition active:scale-95 flex-shrink-0">
-              {sending
-                ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                : <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
-                  </svg>}
-            </button>
+
+            {isRecordingVoice ? (
+              /* Voice recorder replaces text input when recording */
+              <VoiceRecorder
+                onRecordingComplete={handleVoiceComplete}
+                onCancel={() => setIsRecordingVoice(false)}
+              />
+            ) : (
+              <>
+                {/* Photo button */}
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadingPhoto || uploadingVoice}
+                  className="w-10 h-10 bg-[var(--c-card)] border border-[var(--c-border)] hover:border-orange-500/30 hover:bg-orange-500/10 rounded-2xl flex items-center justify-center transition active:scale-95 flex-shrink-0"
+                  title="Envoyer une photo"
+                >
+                  {uploadingPhoto
+                    ? <div className="w-4 h-4 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
+                    : <svg className="w-4.5 h-4.5 text-[var(--c-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+                      </svg>}
+                </button>
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={newMessage}
+                  onChange={(e) => { setNewMessage(e.target.value); notifyTyping(); }}
+                  onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+                  placeholder="Message..."
+                  maxLength={2000}
+                  className="flex-1 px-4 py-2.5 bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-1 focus:ring-orange-500/50 focus:border-orange-500/30 outline-none text-sm transition"
+                />
+                {/* Mic button - show when no text typed */}
+                {!newMessage.trim() ? (
+                  <button
+                    onClick={() => setIsRecordingVoice(true)}
+                    disabled={uploadingVoice || uploadingPhoto}
+                    className="w-10 h-10 bg-[var(--c-card)] border border-[var(--c-border)] hover:border-orange-500/30 hover:bg-orange-500/10 rounded-2xl flex items-center justify-center transition active:scale-95 flex-shrink-0"
+                    title="Message vocal"
+                  >
+                    <svg className="w-4.5 h-4.5 text-[var(--c-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+                    </svg>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleSend()}
+                    disabled={sending || !newMessage.trim()}
+                    className="w-10 h-10 bg-orange-500 hover:bg-orange-600 disabled:opacity-30 rounded-2xl flex items-center justify-center transition active:scale-95 flex-shrink-0">
+                    {sending
+                      ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      : <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
+                        </svg>}
+                  </button>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>

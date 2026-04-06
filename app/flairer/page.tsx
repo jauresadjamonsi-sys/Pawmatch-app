@@ -9,6 +9,7 @@ import { CANTONS } from "@/lib/cantons";
 import Link from "next/link";
 import Image from "next/image";
 import BlockReportModal from "@/lib/components/BlockReportModal";
+import CompatibilityBadge from "@/lib/components/CompatibilityBadge";
 
 const SPECIES: Record<string, string> = {
   chien: "Chien", chat: "Chat", lapin: "Lapin",
@@ -681,6 +682,13 @@ export default function FlairerPage() {
               </div>
             )}
             {animal.description && <p className="text-[var(--c-text-muted)] text-xs leading-relaxed line-clamp-2">{animal.description}</p>}
+
+            {/* AI Compatibility Insight */}
+            {activeMyAnimal && (
+              <div className="mt-3">
+                <CompatibilityBadge myAnimal={activeMyAnimal} otherAnimal={animal} />
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -452,6 +452,20 @@ export default function AnimalDetailPage() {
               lang={typeof lang !== "undefined" ? lang : "fr"}
             />
 
+            {/* Carte digitale */}
+            <Link
+              href={"/animals/" + animal.id + "/card"}
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                padding: 14, background: "linear-gradient(135deg, rgba(168,85,247,0.1), rgba(249,115,22,0.08))",
+                border: "1.5px solid rgba(168,85,247,0.25)", borderRadius: 14,
+                fontWeight: 700, fontSize: 13, color: "#a78bfa",
+                textDecoration: "none", marginBottom: 12,
+              }}
+            >
+              {"\u{1FAAA}"} {t.cardTitle || "Carte digitale"}
+            </Link>
+
             {/* Carte */}
             <a href="/carte" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: 14, background: "linear-gradient(135deg, #3B82F6, #2563EB)", color: "#fff", borderRadius: 14, fontWeight: 700, fontSize: 13, textDecoration: "none", marginBottom: 16, boxShadow: "0 2px 8px rgba(59,130,246,0.3)" }}>
               {t.animalMapFriends}
