@@ -11,6 +11,7 @@ import { PostHogProvider } from "@/lib/components/PostHogProvider";
 import PresenceHeartbeat from "@/lib/components/PresenceHeartbeat";
 import { ServiceWorkerRegistrar } from "@/lib/components/ServiceWorkerRegistrar";
 import { AchievementProvider } from "@/lib/components/AchievementToast";
+import FeedbackWidget from "@/lib/components/FeedbackWidget";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -105,6 +106,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <Footer />
         <WelcomeModal />
+        <FeedbackWidget />
         </AchievementProvider>
         </PostHogProvider>
       </AppProvider>
