@@ -88,12 +88,12 @@ export default function AnimalsPage() {
             placeholder="Rechercher..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="px-4 py-2 bg-white/5 border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+            className="px-4 py-2 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
           />
           <select
             value={species}
             onChange={(e) => setSpecies(e.target.value)}
-            className="px-4 py-2 bg-white/5 border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] text-sm focus:ring-2 focus:ring-orange-500 outline-none appearance-none"
+            className="px-4 py-2 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] text-sm focus:ring-2 focus:ring-orange-500 outline-none appearance-none"
           >
             {SPECIES_LIST.map((s) => (
               <option key={s.value} value={s.value} className="bg-[var(--c-deep)]">{s.label}</option>
@@ -102,7 +102,7 @@ export default function AnimalsPage() {
           <select
             value={canton}
             onChange={(e) => setCanton(e.target.value)}
-            className="px-4 py-2 bg-white/5 border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] text-sm focus:ring-2 focus:ring-orange-500 outline-none appearance-none"
+            className="px-4 py-2 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] text-sm focus:ring-2 focus:ring-orange-500 outline-none appearance-none"
           >
             <option value="" className="bg-[var(--c-deep)]">Tous les cantons</option>
             {CANTONS.map((c) => (
@@ -121,7 +121,7 @@ export default function AnimalsPage() {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filtered.map((animal) => (
-              <Link href={"/animals/" + animal.id} key={animal.id} className="bg-white/5 border border-[var(--c-border)] rounded-2xl overflow-hidden hover:bg-white/10 transition group">
+              <Link href={"/animals/" + animal.id} key={animal.id} className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl overflow-hidden hover:bg-[var(--c-card)] transition group">
                 <div className="aspect-square bg-[var(--c-card)] flex items-center justify-center overflow-hidden relative">
                   {animal.photo_url ? (
                     <Image src={animal.photo_url} alt={animal.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw" />

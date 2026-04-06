@@ -305,7 +305,7 @@ export default function ConversationPage() {
   if (!match || match.status !== "accepted") {
     return (
       <div className="min-h-screen bg-[var(--c-deep)] flex items-center justify-center">
-        <div className="bg-white/5 border border-[var(--c-border)] rounded-2xl p-8 text-center max-w-md">
+        <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-8 text-center max-w-md">
           <h2 className="text-xl font-bold text-[var(--c-text)] mb-2">Conversation indisponible</h2>
           <p className="text-[var(--c-text-muted)]">Ce match n'existe pas ou n'a pas encore été accepté.</p>
           <Link href="/matches" className="inline-block mt-4 text-orange-500 font-medium">← Retour</Link>
@@ -563,7 +563,7 @@ export default function ConversationPage() {
                     disabled={sending || !newMessage.trim()}
                     className="w-10 h-10 bg-orange-500 hover:bg-orange-600 disabled:opacity-30 rounded-2xl flex items-center justify-center transition active:scale-95 flex-shrink-0">
                     {sending
-                      ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ? <div className="w-4 h-4 border-2 border-[var(--c-border)] border-t-white rounded-full animate-spin" />
                       : <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
                         </svg>}

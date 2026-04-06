@@ -220,7 +220,7 @@ export default function AnimalDetailPage() {
             )}
         </div>
 
-        <div className="bg-white/5 border border-[var(--c-border)] rounded-2xl overflow-hidden">
+        <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl overflow-hidden">
           <div className="h-72 bg-[var(--c-card)] flex items-center justify-center overflow-hidden">
             {(() => {
               const photos = [animal.photo_url, ...(animal.photos || [])].filter(Boolean);
@@ -237,7 +237,7 @@ export default function AnimalDetailPage() {
                       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
                         {photos.map((_: any, i: number) => (
                           <button key={i} onClick={() => setActivePhoto(i)}
-                            className={"w-2 h-2 rounded-full transition-all " + (i === activePhoto ? "bg-white scale-125" : "bg-white/50")} />
+                            className={"w-2 h-2 rounded-full transition-all " + (i === activePhoto ? "bg-white scale-125" : "bg-[var(--c-card)]0")} />
                         ))}
                       </div>
                     </>
@@ -275,7 +275,7 @@ export default function AnimalDetailPage() {
                 { label: t.animalWeightLabel, value: animal.weight_kg ? animal.weight_kg + " kg" : t.animalNotSpecified },
                 { label: t.animalLocationLabel, value: [animal.city, cantonName ? cantonName + " (" + animal.canton + ")" : ""].filter(Boolean).join(", ") || t.animalNotSpecifiedF },
               ].map((item) => (
-                <div key={item.label} className="bg-white/5 rounded-xl p-4">
+                <div key={item.label} className="bg-[var(--c-card)] rounded-xl p-4">
                   <p className="text-xs text-[var(--c-text-muted)]">{item.label}</p>
                   <p className="font-semibold text-[var(--c-text)] text-sm">{item.value}</p>
                 </div>
@@ -283,10 +283,10 @@ export default function AnimalDetailPage() {
             </div>
 
             <div className="flex gap-3 mb-4">
-              <span className={"px-3 py-1 rounded-full text-xs font-medium " + (animal.vaccinated ? "bg-green-500/20 text-green-300" : "bg-white/5 text-[var(--c-text-muted)]")}>
+              <span className={"px-3 py-1 rounded-full text-xs font-medium " + (animal.vaccinated ? "bg-green-500/20 text-green-300" : "bg-[var(--c-card)] text-[var(--c-text-muted)]")}>
                 {animal.vaccinated ? "✓ " + t.animalVaccinated : t.animalNotVaccinated}
               </span>
-              <span className={"px-3 py-1 rounded-full text-xs font-medium " + (animal.sterilized ? "bg-green-500/20 text-green-300" : "bg-white/5 text-[var(--c-text-muted)]")}>
+              <span className={"px-3 py-1 rounded-full text-xs font-medium " + (animal.sterilized ? "bg-green-500/20 text-green-300" : "bg-[var(--c-card)] text-[var(--c-text-muted)]")}>
                 {animal.sterilized ? "✓ " + t.animalSterilized : t.animalNotSterilized}
               </span>
             </div>
@@ -553,7 +553,7 @@ export default function AnimalDetailPage() {
                   <div className="space-y-2 mb-4">
                     {myAnimals.map((myAnimal) => (
                       <button key={myAnimal.id} onClick={() => handleMatch(myAnimal.id)} disabled={matchSending}
-                        className="w-full flex items-center gap-3 p-3 bg-white/5 hover:bg-orange-500/10 rounded-xl transition text-left disabled:opacity-50 border border-[var(--c-border)]">
+                        className="w-full flex items-center gap-3 p-3 bg-[var(--c-card)] hover:bg-orange-500/10 rounded-xl transition text-left disabled:opacity-50 border border-[var(--c-border)]">
                         <div className="w-12 h-12 rounded-full bg-[var(--c-deep)] border-2 border-orange-400 flex items-center justify-center overflow-hidden flex-shrink-0 relative">
                           {myAnimal.photo_url ? (
                             <Image src={myAnimal.photo_url} alt={myAnimal.name} fill className="object-cover" sizes="(max-width: 768px) 48px, 48px" />
@@ -570,7 +570,7 @@ export default function AnimalDetailPage() {
                   </div>
 
                   <button onClick={() => { setShowMatchModal(false); setMatchError(null); }}
-                    className="w-full py-2 bg-white/10 hover:bg-white/20 text-[var(--c-text-muted)] font-medium rounded-xl transition text-sm">
+                    className="w-full py-2 bg-[var(--c-card)] hover:bg-[var(--c-card)] text-[var(--c-text-muted)] font-medium rounded-xl transition text-sm">
                     {t.cancel}
                   </button>
                 </div>

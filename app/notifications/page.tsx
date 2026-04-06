@@ -163,7 +163,7 @@ export default function NotificationsPage() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => router.back()}
-                className="p-1.5 rounded-full hover:bg-white/10 transition"
+                className="p-1.5 rounded-full hover:bg-[var(--c-card)] transition"
                 aria-label="Retour"
               >
                 <svg
@@ -211,7 +211,7 @@ export default function NotificationsPage() {
                   "flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 " +
                   (filter === f.key
                     ? "bg-[var(--c-accent)]/15 border border-[var(--c-accent)]/40 text-[var(--c-accent)]"
-                    : "bg-white/5 border border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-[var(--c-accent)]/30")
+                    : "bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-[var(--c-accent)]/30")
                 }
               >
                 {f.label}

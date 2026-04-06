@@ -195,13 +195,13 @@ export default function EventsPage() {
         <div className="max-w-2xl mx-auto mt-3 flex gap-2 overflow-x-auto pb-1">
           <button onClick={() => setFilterCanton("")}
             className={"flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition " +
-              (!filterCanton ? "bg-orange-500/20 border border-orange-500/40 text-orange-300" : "bg-white/5 border border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-orange-500/30")}>
+              (!filterCanton ? "bg-orange-500/20 border border-orange-500/40 text-orange-300" : "bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-orange-500/30")}>
             {t.eventsAll}
           </button>
           {CANTONS.map(c => (
             <button key={c.code} onClick={() => setFilterCanton(filterCanton === c.code ? "" : c.code)}
               className={"flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition " +
-                (filterCanton === c.code ? "bg-orange-500/20 border border-orange-500/40 text-orange-300" : "bg-white/5 border border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-orange-500/30")}>
+                (filterCanton === c.code ? "bg-orange-500/20 border border-orange-500/40 text-orange-300" : "bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-orange-500/30")}>
               {c.code}
             </button>
           ))}
@@ -263,7 +263,7 @@ export default function EventsPage() {
                   {Object.entries(SPECIES_EMOJI).map(([s, emoji]) => (
                     <button key={s} type="button" onClick={() => toggleSpecies(s)}
                       className={"px-3 py-1.5 rounded-full text-xs border transition " +
-                        (form.species.includes(s) ? "bg-orange-500/20 border-orange-500/40 text-orange-300" : "bg-white/5 border-[var(--c-border)] text-[var(--c-text-muted)]")}>
+                        (form.species.includes(s) ? "bg-orange-500/20 border-orange-500/40 text-orange-300" : "bg-[var(--c-card)] border-[var(--c-border)] text-[var(--c-text-muted)]")}>
                       {emoji} {s.charAt(0).toUpperCase() + s.slice(1)}
                     </button>
                   ))}
@@ -289,7 +289,7 @@ export default function EventsPage() {
 
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowCreate(false)}
-                  className="flex-1 py-2.5 bg-white/5 border border-[var(--c-border)] text-[var(--c-text-muted)] rounded-2xl text-sm">
+                  className="flex-1 py-2.5 bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text-muted)] rounded-2xl text-sm">
                   {t.eventsCancel}
                 </button>
                 <button type="submit" disabled={creating}
@@ -364,7 +364,7 @@ export default function EventsPage() {
                               (event.is_joined
                                 ? "bg-green-500/20 border border-green-500/40 text-green-300 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300"
                                 : isFull
-                                ? "bg-white/5 border border-[var(--c-border)] text-[var(--c-text-muted)] cursor-not-allowed"
+                                ? "bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text-muted)] cursor-not-allowed"
                                 : "bg-orange-500 hover:bg-orange-600 text-white")}>
                             {joining === event.id ? "..." : event.is_joined ? t.eventsJoined : isFull ? t.eventsFull : t.eventsJoin}
                           </button>
@@ -377,10 +377,10 @@ export default function EventsPage() {
                           </span>
                         </div>
                         <div className="flex flex-wrap gap-2 mb-3">
-                          <span className="px-2.5 py-1 bg-white/8 text-[var(--c-text-muted)] rounded-full text-xs">📍 {event.location}</span>
-                          <span className="px-2.5 py-1 bg-white/8 text-[var(--c-text-muted)] rounded-full text-xs">🗺️ {cantonName}</span>
+                          <span className="px-2.5 py-1 bg-[var(--c-card)] text-[var(--c-text-muted)] rounded-full text-xs">📍 {event.location}</span>
+                          <span className="px-2.5 py-1 bg-[var(--c-card)] text-[var(--c-text-muted)] rounded-full text-xs">🗺️ {cantonName}</span>
                           <span className={"px-2.5 py-1 rounded-full text-xs " +
-                            (isFull ? "bg-red-500/15 text-red-400" : spotsLeft <= 3 ? "bg-orange-500/15 text-orange-300" : "bg-white/8 text-[var(--c-text-muted)]")}>
+                            (isFull ? "bg-red-500/15 text-red-400" : spotsLeft <= 3 ? "bg-orange-500/15 text-orange-300" : "bg-[var(--c-card)] text-[var(--c-text-muted)]")}>
                             👥 {event.participant_count}/{event.max_participants}
                             {spotsLeft <= 5 && !isFull && <span className="ml-1 font-semibold">({spotsLeft} {t.eventsSpotsLeft})</span>}
                           </span>
@@ -391,7 +391,7 @@ export default function EventsPage() {
                         )}
 
                         {/* Capacity bar */}
-                        <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                        <div className="w-full h-1 bg-[var(--c-card)] rounded-full overflow-hidden">
                           <div className={"h-full rounded-full transition-all duration-500 " +
                             (isFull ? "bg-red-500" : spotsLeft <= 3 ? "bg-orange-500" : "bg-green-500")}
                             style={{ width: ((event.participant_count || 0) / (event.max_participants || 1) * 100) + "%" }} />

@@ -199,7 +199,7 @@ export default function Navbar() {
                 <button
                   onClick={() => { langDrop.setOpen(o => !o); themeDrop.setOpen(false); }}
                   className={"p-2 rounded-full transition-all duration-200 text-sm " +
-                    (langDrop.open ? "bg-orange-500/15" : isLight ? "hover:bg-gray-100" : "hover:bg-white/10")}
+                    (langDrop.open ? "bg-orange-500/15" : isLight ? "hover:bg-gray-100" : "hover:bg-[var(--c-card)]")}
                 >
                   {currentFlag}
                 </button>
@@ -210,7 +210,7 @@ export default function Navbar() {
                         className={"w-full flex items-center gap-3 px-4 py-2.5 transition-all duration-200 " +
                           (lang === l.code
                             ? "bg-orange-500/10"
-                            : isLight ? "hover:bg-gray-50" : "hover:bg-white/5")}
+                            : isLight ? "hover:bg-gray-50" : "hover:bg-[var(--c-card)]")}
                       >
                         <span className="text-lg">{l.flag}</span>
                         <span className={"text-sm font-medium " + (lang === l.code ? "text-orange-400" : "text-[var(--c-text)]")}>
@@ -228,7 +228,7 @@ export default function Navbar() {
                 <button
                   onClick={() => { themeDrop.setOpen(o => !o); langDrop.setOpen(false); }}
                   className={"p-2 rounded-full transition-all duration-200 text-sm " +
-                    (themeDrop.open ? "bg-orange-500/15" : isLight ? "hover:bg-gray-100" : "hover:bg-white/10")}
+                    (themeDrop.open ? "bg-orange-500/15" : isLight ? "hover:bg-gray-100" : "hover:bg-[var(--c-card)]")}
                 >
                   {currentThemeLabel}
                 </button>
@@ -239,7 +239,7 @@ export default function Navbar() {
                       return (
                         <button key={th.code} onClick={() => { setTheme(th.code as any); themeDrop.setOpen(false); }}
                           className={"w-full flex items-center gap-3 px-4 py-2.5 transition-all duration-200 " +
-                            (active ? "bg-orange-500/10" : isLight ? "hover:bg-gray-50" : "hover:bg-white/5")}
+                            (active ? "bg-orange-500/10" : isLight ? "hover:bg-gray-50" : "hover:bg-[var(--c-card)]")}
                         >
                           <span className="text-base">{th.label}</span>
                           <span className={"text-sm font-medium " + (active ? "text-orange-400" : "text-[var(--c-text)]")}>
@@ -325,7 +325,7 @@ function NL({ href, active, label, light }: { href: string; active: boolean; lab
       "nav-link-f px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 " +
       (active ? "nav-pill-active active text-orange-400 font-semibold"
         : light ? "text-gray-600 hover:text-gray-900 hover:bg-gray-100/50"
-        : "text-gray-400 hover:text-white hover:bg-white/5")
+        : "text-gray-400 hover:text-white hover:bg-[var(--c-card)]")
     }>{label}</Link>
   );
 }

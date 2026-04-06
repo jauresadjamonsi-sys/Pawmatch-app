@@ -159,7 +159,7 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
             {t.matchesChat}
           </Link>
           <button onClick={onClose}
-            className="px-4 py-3 glass text-[var(--c-text-muted)] text-sm hover:bg-white/10 transition-all duration-300">
+            className="px-4 py-3 glass text-[var(--c-text-muted)] text-sm hover:bg-[var(--c-card)] transition-all duration-300">
             {t.matchesLater}
           </button>
         </div>
@@ -262,7 +262,7 @@ export default function MatchesPage() {
     return (
       <div className="flex items-center gap-3">
         <div className="relative">
-          <div className={`w-12 h-12 rounded-full bg-white/5 flex items-center justify-center overflow-hidden flex-shrink-0 ring-2 ${ringClass} transition-all duration-500 relative`}>
+          <div className={`w-12 h-12 rounded-full bg-[var(--c-card)] flex items-center justify-center overflow-hidden flex-shrink-0 ring-2 ${ringClass} transition-all duration-500 relative`}>
             {animal.photo_url
               ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="(max-width: 768px) 48px, 48px" />
               : <span className="text-xl">{EMOJI_MAP[animal.species] || "🐾"}</span>}
@@ -329,7 +329,7 @@ export default function MatchesPage() {
                   transition-all duration-300 flex items-center gap-2
                   ${activeTab === tab.key
                     ? "neon-orange text-orange-300 border-orange-500/40 bg-orange-500/10"
-                    : "text-[var(--c-text-muted)] hover:text-[var(--c-text)] hover:bg-white/5"
+                    : "text-[var(--c-text-muted)] hover:text-[var(--c-text)] hover:bg-[var(--c-card)]"
                   }
                 `}
                 style={activeTab === tab.key ? { borderColor: "rgba(249,115,22,0.4)" } : {}}
@@ -338,7 +338,7 @@ export default function MatchesPage() {
                 {tab.count > 0 && (
                   <span className={`
                     px-1.5 py-0.5 rounded-full text-xs font-bold
-                    ${activeTab === tab.key ? "bg-orange-500/30 text-orange-300" : "bg-white/10 text-[var(--c-text-muted)]"}
+                    ${activeTab === tab.key ? "bg-orange-500/30 text-orange-300" : "bg-[var(--c-card)] text-[var(--c-text-muted)]"}
                   `}>
                     {tab.count}
                   </span>
@@ -379,7 +379,7 @@ export default function MatchesPage() {
                       </button>
                       <button onClick={() => handleRespond(match.id, "rejected")}
                         className="flex-1 py-2.5 glass text-[var(--c-text-muted)] font-semibold rounded-xl transition-all duration-300 text-sm
-                          hover:bg-white/10 hover:text-[var(--c-text)] active:scale-[0.98]">
+                          hover:bg-[var(--c-card)] hover:text-[var(--c-text)] active:scale-[0.98]">
                         {t.matchesDecline}
                       </button>
                     </div>
@@ -437,7 +437,7 @@ export default function MatchesPage() {
           <div className="mb-8 animate-slide-up" style={{ animationDelay: "0.25s" }}>
             <h2 className="text-sm font-semibold text-[var(--c-text-muted)] uppercase tracking-widest mb-3 flex items-center gap-2">
               {t.matchesPending}
-              <span className="px-2 py-0.5 bg-white/10 text-[var(--c-text-muted)] rounded-full normal-case text-xs">
+              <span className="px-2 py-0.5 bg-[var(--c-card)] text-[var(--c-text-muted)] rounded-full normal-case text-xs">
                 {current.pendingSent.length}
               </span>
               <span className="w-2 h-2 rounded-full bg-orange-400 animate-breathe ml-1" />

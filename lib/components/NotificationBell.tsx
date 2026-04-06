@@ -44,7 +44,7 @@ export default function NotificationBell() {
       <style dangerouslySetInnerHTML={{ __html: BELL_CSS }} />
       <button
         onClick={() => router.push("/notifications")}
-        className="relative p-2 rounded-full transition hover:bg-white/10"
+        className="relative p-2 rounded-full transition hover:bg-[var(--c-card)]"
         aria-label={t.notifTitle}
       >
         <svg

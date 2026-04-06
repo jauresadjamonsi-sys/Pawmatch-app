@@ -369,7 +369,7 @@ export default function StoriesPage() {
         className="fixed inset-0 z-[9999] flex items-center justify-center"
         style={{ background: "#000" }}
       >
-        <div className="w-10 h-10 border-4 border-white/20 border-t-white rounded-full animate-spin" />
+        <div className="w-10 h-10 border-4 border-[var(--c-border)] border-t-white rounded-full animate-spin" />
       </div>
     );
   }

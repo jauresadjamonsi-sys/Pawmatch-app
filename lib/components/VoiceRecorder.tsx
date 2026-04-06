@@ -189,7 +189,7 @@ export default function VoiceRecorder({ onRecordingComplete, onCancel }: VoiceRe
         {/* Cancel button */}
         <button
           onClick={handleCancel}
-          className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition flex-shrink-0"
+          className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[var(--c-card)] transition flex-shrink-0"
           title="Annuler"
         >
           <svg className="w-4 h-4 text-[var(--c-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

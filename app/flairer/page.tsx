@@ -425,7 +425,7 @@ export default function FlairerPage() {
           <div className="flex gap-3 justify-center">
             <Link href="/animals" className="btn-futuristic text-sm !py-2.5 !px-5">Explorer</Link>
             <button onClick={() => { setCurrentIndex(0); setStreak(0); setLikeCount(0); }}
-              className="px-5 py-2.5 glass text-[var(--c-text)] rounded-2xl transition-all duration-300 text-sm hover:bg-white/10">
+              className="px-5 py-2.5 glass text-[var(--c-text)] rounded-2xl transition-all duration-300 text-sm hover:bg-[var(--c-card)]">
               Recommencer
             </button>
           </div>
@@ -515,7 +515,7 @@ export default function FlairerPage() {
               {mutualMatchData && (
                 <Link href={"/matches/" + mutualMatchData.id} className="flex-1 py-3 btn-futuristic text-center text-sm">{"💬"} Discuter</Link>
               )}
-              <button onClick={() => setShowCoupDeTruffe(false)} className="px-4 py-3 glass text-[var(--c-text-muted)] text-sm hover:bg-white/10 transition-all duration-300">Plus tard</button>
+              <button onClick={() => setShowCoupDeTruffe(false)} className="px-4 py-3 glass text-[var(--c-text-muted)] text-sm hover:bg-[var(--c-card)] transition-all duration-300">Plus tard</button>
             </div>
           </div>
         </div>
@@ -667,7 +667,7 @@ export default function FlairerPage() {
                   <span className="text-[10px] text-[var(--c-text-muted)] uppercase tracking-wider">Compatibilité avec {activeMyAnimal.name}</span>
                   <span className="text-xs font-bold" style={{ color: compat.color, textShadow: `0 0 10px ${compat.color}60` }}>{compat.score}%</span>
                 </div>
-                <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden relative">
+                <div className="w-full h-2 bg-[var(--c-card)] rounded-full overflow-hidden relative">
                   <div className="score-bar h-full rounded-full relative" style={{ "--score-w": compat.score + "%", backgroundColor: compat.color } as any}>
                     <div className="absolute inset-0 shimmer-bar rounded-full" />
                   </div>
@@ -750,7 +750,7 @@ export default function FlairerPage() {
         <button onClick={() => { if (currentIndex > 0) { setCurrentIndex(i => i - 1); setStreak(0); } }}
           className="w-12 h-12 glass rounded-full flex items-center justify-center
             transition-all duration-300 group
-            hover:bg-white/10 hover:scale-110 active:scale-95"
+            hover:bg-[var(--c-card)] hover:scale-110 active:scale-95"
           style={{ borderColor: "var(--c-border)" }}>
           <svg className="w-4 h-4 text-[var(--c-text-muted)] group-hover:text-[var(--c-text-muted)] transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
@@ -772,7 +772,7 @@ export default function FlairerPage() {
               <a href="/signup" className="w-full py-3 btn-futuristic text-center text-sm">
                 {"🚀"} Créer un compte gratuit
               </a>
-              <a href="/login" className="w-full py-3 glass text-center text-[var(--c-text-muted)] font-bold text-sm hover:bg-white/10 transition-all duration-300">
+              <a href="/login" className="w-full py-3 glass text-center text-[var(--c-text-muted)] font-bold text-sm hover:bg-[var(--c-card)] transition-all duration-300">
                 Déjà un compte ? Se connecter
               </a>
               <button onClick={() => setShowPaywall(false)} className="text-xs text-[var(--c-text-muted)] mt-2 hover:text-[var(--c-text-muted)] transition-colors">
@@ -840,7 +840,7 @@ export default function FlairerPage() {
                   })}
                 </div>
                 <button onClick={() => { setShowMatchModal(false); setMatchError(null); setIsSuperLike(false); setDragX(0); setDragY(0); }}
-                  className="w-full py-2.5 glass text-[var(--c-text-muted)] font-medium rounded-2xl transition-all duration-300 text-sm hover:bg-white/10">
+                  className="w-full py-2.5 glass text-[var(--c-text-muted)] font-medium rounded-2xl transition-all duration-300 text-sm hover:bg-[var(--c-card)]">
                   Annuler
                 </button>
               </>

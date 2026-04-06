@@ -28,15 +28,29 @@ export default function SharePage() {
   const shareText = `🐾 Mon animal a trouvé des copains de balade sur Pawly ! Rejoins la communauté suisse des propriétaires d'animaux → ${shareUrl}`;
   const [storyCardUrl, setStoryCardUrl] = useState<string>("");
 
+  /** Convert canvas to Blob (iOS-safe, avoids data URL fetch issues) */
+  const canvasToBlob = (canvas: HTMLCanvasElement): Promise<Blob> =>
+    new Promise((resolve, reject) => {
+      canvas.toBlob(
+        (blob) => (blob ? resolve(blob) : reject(new Error("toBlob failed"))),
+        "image/jpeg",
+        0.92
+      );
+    });
+
   /** Generate a story-ready image with Ruby + QR code + branding */
-  const generateStoryCard = useCallback(async () => {
-    if (storyCardUrl) return storyCardUrl; // cached
+  const generateStoryCard = useCallback(async (): Promise<{ blob: Blob; dataUrl: string }> => {
+    if (storyCardUrl) {
+      // Re-create blob from cached data URL
+      const res = await fetch(storyCardUrl);
+      return { blob: await res.blob(), dataUrl: storyCardUrl };
+    }
     const canvas = document.createElement("canvas");
     // Instagram story dimensions (9:16)
     canvas.width = 1080;
     canvas.height = 1920;
     const ctx = canvas.getContext("2d");
-    if (!ctx) return "";
+    if (!ctx) throw new Error("No canvas context");
 
     // Background gradient
     const bg = ctx.createLinearGradient(0, 0, 1080, 1920);
@@ -171,9 +185,11 @@ export default function SharePage() {
     ctx.fillStyle = "rgba(255,255,255,0.4)";
     ctx.fillText("pawlyapp.ch", 540, 1780);
 
+    // Use canvas.toBlob for iOS compatibility (avoids data URL size limits)
+    const blob = await canvasToBlob(canvas);
     const url = canvas.toDataURL("image/jpeg", 0.92);
     setStoryCardUrl(url);
-    return url;
+    return { blob, dataUrl: url };
   }, [shareUrl, storyCardUrl]);
 
   useEffect(() => {
@@ -278,24 +294,34 @@ export default function SharePage() {
             className="glass card-futuristic rounded-xl p-4 text-center transition-all duration-300"
             onClick={async () => {
               toast.loading("Creation de la story...", { id: "story" });
-              const cardUrl = await generateStoryCard();
-              // Convert data URL to File for Web Share API
-              const res = await fetch(cardUrl);
-              const blob = await res.blob();
-              const file = new File([blob], "pawly-story.jpg", { type: "image/jpeg" });
-              // Try native share with file (works on iOS/Android — opens share sheet with image)
-              if (typeof navigator.share === "function" && navigator.canShare?.({ files: [file] })) {
-                toast.dismiss("story");
-                try {
-                  await navigator.share({ title: "Pawly", text: shareText, files: [file] });
-                } catch { /* user cancelled */ }
-              } else {
-                // Fallback: download
+              try {
+                const { blob, dataUrl } = await generateStoryCard();
+                const file = new File([blob], "pawly-story.jpg", { type: "image/jpeg" });
+                // Try native share with file (works on iOS/Android — opens share sheet with "Save Image")
+                if (typeof navigator.share === "function") {
+                  try {
+                    if (navigator.canShare?.({ files: [file] })) {
+                      toast.dismiss("story");
+                      await navigator.share({ title: "Pawly", text: shareText, files: [file] });
+                      return;
+                    }
+                  } catch { /* canShare might throw on some browsers */ }
+                  // Try sharing without files
+                  toast.dismiss("story");
+                  try { await navigator.share({ title: "Pawly", text: shareText, url: shareUrl }); return; } catch {}
+                }
+                // Fallback: download via blob URL (not data URL)
+                const blobUrl = URL.createObjectURL(blob);
                 const link = document.createElement("a");
-                link.href = cardUrl;
+                link.href = blobUrl;
                 link.download = "pawly-story.jpg";
+                document.body.appendChild(link);
                 link.click();
+                document.body.removeChild(link);
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
                 toast.success("Image sauvegardee ! Partage-la sur Instagram, TikTok ou autre", { id: "story", duration: 5000 });
+              } catch (err) {
+                toast.error("Erreur lors de la creation", { id: "story" });
               }
             }}
           >
@@ -307,20 +333,21 @@ export default function SharePage() {
             className="glass card-futuristic rounded-xl p-4 text-center transition-all duration-300"
             onClick={async () => {
               toast.loading("Creation de l'image...", { id: "save" });
-              const cardUrl = await generateStoryCard();
-              // Convert data URL to blob for iOS compatibility
-              const res = await fetch(cardUrl);
-              const blob = await res.blob();
-              const file = new File([blob], "pawly-story.jpg", { type: "image/jpeg" });
-              // Use native share API (shows "Save Image" option on iOS)
-              if (typeof navigator.share === "function" && navigator.canShare?.({ files: [file] })) {
-                toast.dismiss("save");
-                try {
-                  await navigator.share({ files: [file] });
-                  toast.success("Image partagee !", { duration: 2000 });
-                } catch { /* user cancelled */ }
-              } else {
-                // Fallback for desktop: use blob URL (not data URL)
+              try {
+                const { blob } = await generateStoryCard();
+                const file = new File([blob], "pawly-story.jpg", { type: "image/jpeg" });
+                // iOS: Use native share API → shows "Save Image" in share sheet
+                if (typeof navigator.share === "function") {
+                  try {
+                    if (navigator.canShare?.({ files: [file] })) {
+                      toast.dismiss("save");
+                      await navigator.share({ files: [file] });
+                      toast.success("Image partagee !", { duration: 2000 });
+                      return;
+                    }
+                  } catch { /* canShare might throw */ }
+                }
+                // Fallback: direct download via blob URL
                 const blobUrl = URL.createObjectURL(blob);
                 const link = document.createElement("a");
                 link.href = blobUrl;
@@ -328,8 +355,10 @@ export default function SharePage() {
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
                 toast.success("Image sauvegardee !", { id: "save", duration: 3000 });
+              } catch (err) {
+                toast.error("Erreur lors de la creation", { id: "save" });
               }
             }}
           >
