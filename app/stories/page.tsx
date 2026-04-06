@@ -440,7 +440,7 @@ export default function StoriesPage() {
       {/* Top bar: pet info + close button */}
       <div className="absolute top-8 left-0 right-0 px-4 flex items-center justify-between z-10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/50 flex-shrink-0">
+          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[var(--c-border)] flex-shrink-0">
             {story.animal.photo_url ? (
               <Image
                 src={story.animal.photo_url}
@@ -459,8 +459,8 @@ export default function StoriesPage() {
             )}
           </div>
           <div>
-            <p className="text-white text-sm font-bold">{story.animal.name}</p>
-            <p className="text-white/60 text-[10px]">{story.subtitle}</p>
+            <p className="text-[var(--c-text)] text-sm font-bold">{story.animal.name}</p>
+            <p className="text-[var(--c-text-muted)] text-[10px]">{story.subtitle}</p>
           </div>
         </div>
 
@@ -469,7 +469,7 @@ export default function StoriesPage() {
             e.stopPropagation();
             router.push("/feed");
           }}
-          className="w-8 h-8 flex items-center justify-center rounded-full text-white"
+          className="w-8 h-8 flex items-center justify-center rounded-full text-[var(--c-text)]"
           style={{ background: "rgba(255,255,255,0.2)" }}
           aria-label={t.storiesBack || "Retour"}
         >
@@ -498,7 +498,7 @@ export default function StoriesPage() {
               : "opacity-0 translate-y-6"
           }`}
         >
-          <h1 className="text-white text-3xl font-black leading-tight whitespace-pre-line drop-shadow-lg">
+          <h1 className="text-[var(--c-text)] text-3xl font-black leading-tight whitespace-pre-line drop-shadow-lg">
             {story.title}
           </h1>
         </div>
@@ -512,7 +512,7 @@ export default function StoriesPage() {
           }`}
         >
           <span
-            className="px-4 py-2 rounded-full text-sm font-semibold text-white"
+            className="px-4 py-2 rounded-full text-sm font-semibold text-[var(--c-text)]"
             style={{ background: "rgba(255,255,255,0.2)", backdropFilter: "blur(10px)" }}
           >
             {story.animal.name} {speciesEmoji}
@@ -530,7 +530,7 @@ export default function StoriesPage() {
               className="rounded-2xl px-5 py-3 text-center"
               style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(10px)" }}
             >
-              <p className="text-white/80 text-xs font-medium">
+              <p className="text-[var(--c-text-muted)] text-xs font-medium">
                 {t.storiesWeekly || "Resume de la semaine"}
               </p>
             </div>
@@ -556,7 +556,7 @@ export default function StoriesPage() {
 
       {/* Bottom: navigation hint */}
       <div className="absolute bottom-8 left-0 right-0 flex justify-center z-10">
-        <p className="text-white/40 text-xs">
+        <p className="text-[var(--c-text-muted)] text-xs">
           {current + 1} / {stories.length}
         </p>
       </div>

@@ -359,7 +359,7 @@ export default function StoryCreatePage() {
                 style={{ background: tmpl.gradient }}
               >
                 <span className="text-4xl mb-3">{tmpl.emoji}</span>
-                <span className="text-white text-sm font-bold drop-shadow-md">
+                <span className="text-[var(--c-text)] text-sm font-bold drop-shadow-md">
                   {t[tmpl.labelKey] || tmpl.fallback}
                 </span>
               </button>
@@ -422,7 +422,7 @@ export default function StoryCreatePage() {
             {/* Template label */}
             <div className="absolute top-4 left-4 z-10">
               <span
-                className="px-3 py-1 rounded-full text-xs font-bold text-white"
+                className="px-3 py-1 rounded-full text-xs font-bold text-[var(--c-text)]"
                 style={{ background: "rgba(255,255,255,0.2)", backdropFilter: "blur(8px)" }}
               >
                 {selectedTemplate.emoji} {t[selectedTemplate.labelKey] || selectedTemplate.fallback}
@@ -442,7 +442,7 @@ export default function StoryCreatePage() {
                   {textOverlay}
                 </p>
               ) : (
-                <p className="text-white/40 text-lg font-medium text-center">
+                <p className="text-[var(--c-text-muted)] text-lg font-medium text-center">
                   {t.storiesTextPlaceholder || "Ecris quelque chose..."}
                 </p>
               )}
@@ -451,7 +451,7 @@ export default function StoryCreatePage() {
             {/* Pet name badge */}
             <div className="absolute bottom-4 left-4 z-10">
               <span
-                className="px-3 py-1.5 rounded-full text-xs font-bold text-white"
+                className="px-3 py-1.5 rounded-full text-xs font-bold text-[var(--c-text)]"
                 style={{ background: "rgba(255,255,255,0.2)", backdropFilter: "blur(8px)" }}
               >
                 {selectedAnimal.name} {EMOJI_MAP[selectedAnimal.species] || "\uD83D\uDC3E"}
@@ -557,7 +557,7 @@ export default function StoryCreatePage() {
         {/* Top bar */}
         <div className="absolute top-8 left-0 right-0 px-4 flex items-center justify-between z-10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/50 flex-shrink-0">
+            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[var(--c-border)] flex-shrink-0">
               {selectedAnimal.photo_url ? (
                 <Image
                   src={selectedAnimal.photo_url}
@@ -575,14 +575,14 @@ export default function StoryCreatePage() {
                 </div>
               )}
             </div>
-            <p className="text-white text-sm font-bold">{selectedAnimal.name}</p>
+            <p className="text-[var(--c-text)] text-sm font-bold">{selectedAnimal.name}</p>
           </div>
         </div>
 
         {/* Template label */}
         <div className="absolute top-20 left-4 z-10">
           <span
-            className="px-3 py-1 rounded-full text-xs font-bold text-white"
+            className="px-3 py-1 rounded-full text-xs font-bold text-[var(--c-text)]"
             style={{ background: "rgba(255,255,255,0.2)", backdropFilter: "blur(8px)" }}
           >
             {selectedTemplate.emoji} {t[selectedTemplate.labelKey] || selectedTemplate.fallback}
