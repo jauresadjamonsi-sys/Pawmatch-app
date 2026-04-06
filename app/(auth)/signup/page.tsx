@@ -84,7 +84,7 @@ export default function SignupPage() {
 
       <div className="w-full max-w-md" style={{ position: "relative", zIndex: 1 }}>
         <div className="text-center mb-8 animate-slide-up">
-          <span className="text-4xl block mb-2" style={{ filter: "drop-shadow(0 0 12px rgba(249,115,22,0.2))" }}>&#x1F43E;</span>
+          <span className="text-4xl block mb-2" style={{ filter: "drop-shadow(0 0 12px rgba(249,115,22,0.2))" }}>🐾</span>
           <h1 className="text-4xl font-bold" style={{
             background: "linear-gradient(135deg, #f97316, #a78bfa)",
             WebkitBackgroundClip: "text",

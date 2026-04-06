@@ -6,7 +6,7 @@ export const LANGS = [
 ];
 
 export const THEMES = [
-  { code: "auto",   label: "💻", name: "Auto"   },
+  { code: "auto",   label: "🔄", name: "Auto"   },
   { code: "nuit",   label: "🌑", name: "Nuit"   },
   { code: "aurore", label: "🌅", name: "Aurore" },
   { code: "ocean",  label: "🌊", name: "Océan"  },

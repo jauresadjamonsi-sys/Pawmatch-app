@@ -121,7 +121,7 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
         <div className="absolute inset-0 rounded-[24px] bg-orange-500/5 blur-2xl" />
 
         {/* Paw */}
-        <div className="paw-beat text-7xl mb-4">&#x1F43E;</div>
+        <div className="paw-beat text-7xl mb-4">🐾</div>
 
         {/* Title */}
         <h2 className="slide-up text-3xl font-extrabold gradient-text-warm mb-1"
@@ -129,7 +129,7 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
           {t.matchesCoup}
         </h2>
         <p className="slide-up text-gray-400 text-sm mb-6" style={{ animationDelay: "0.3s" }}>
-          {t.matchesMutual} &#x1F389;
+          {t.matchesMutual} 🎉
         </p>
 
         {/* Animals */}
@@ -468,11 +468,11 @@ export default function MatchesPage() {
           <div className="text-center py-16 animate-scale-in">
             {/* Floating emojis background */}
             <div className="relative mb-8">
-              <div className="absolute -top-4 left-1/4 text-3xl animate-float" style={{ animationDelay: "0s" }}>&#x1F495;</div>
-              <div className="absolute -top-2 right-1/4 text-2xl animate-float" style={{ animationDelay: "0.5s" }}>&#x1F43E;</div>
-              <div className="absolute top-6 left-1/3 text-2xl animate-float" style={{ animationDelay: "1s" }}>&#x2728;</div>
-              <div className="absolute top-4 right-1/3 text-3xl animate-float" style={{ animationDelay: "1.5s" }}>&#x1F49B;</div>
-              <p className="text-6xl relative z-10 animate-float">&#x1F495;</p>
+              <div className="absolute -top-4 left-1/4 text-3xl animate-float" style={{ animationDelay: "0s" }}>💕</div>
+              <div className="absolute -top-2 right-1/4 text-2xl animate-float" style={{ animationDelay: "0.5s" }}>🐾</div>
+              <div className="absolute top-6 left-1/3 text-2xl animate-float" style={{ animationDelay: "1s" }}>✨</div>
+              <div className="absolute top-4 right-1/3 text-3xl animate-float" style={{ animationDelay: "1.5s" }}>💛</div>
+              <p className="text-6xl relative z-10 animate-float">💕</p>
             </div>
             <p className="text-2xl font-extrabold gradient-text-warm mb-2">{t.matchesNone}</p>
             <p className="text-gray-500 mt-2 text-sm max-w-xs mx-auto">{t.matchesBrowse}</p>
@@ -486,7 +486,7 @@ export default function MatchesPage() {
         {/* Empty filtered state */}
         {matches.length > 0 && current.pendingReceived.length === 0 && current.accepted.length === 0 && current.pendingSent.length === 0 && (
           <div className="text-center py-12 animate-scale-in">
-            <p className="text-4xl mb-3 animate-float">&#x1F50D;</p>
+            <p className="text-4xl mb-3 animate-float">🔍</p>
             <p className="text-gray-500 text-sm">Aucun match dans cette cat\u00E9gorie</p>
           </div>
         )}

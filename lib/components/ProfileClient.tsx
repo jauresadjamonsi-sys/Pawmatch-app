@@ -120,7 +120,7 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
                   className="inline-block mt-1 ml-2 text-xs px-3 py-1 rounded-full font-semibold bg-red-500/20 text-red-400"
                   style={{ boxShadow: "0 0 10px rgba(239,68,68,0.15)" }}
                 >
-                  &#x1F451; Admin
+                  👑 Admin
                 </span>
               )}
             </div>
@@ -173,7 +173,7 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
                 transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
               }}
             >
-              <p className="text-lg font-black" style={{ color: "#a78bfa", textShadow: "0 0 8px rgba(167,139,250,0.3)" }}>&#x1F465;</p>
+              <p className="text-lg font-black" style={{ color: "#a78bfa", textShadow: "0 0 8px rgba(167,139,250,0.3)" }}>👥</p>
               <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Membres</p>
             </Link>
           </div>
@@ -209,21 +209,21 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
           {/* Actions - btn-futuristic */}
           <div className="flex flex-wrap gap-2">
             <Link href="/profile/edit" className="btn-futuristic px-4 py-2 text-sm font-medium rounded-xl">
-              &#x270F;&#xFE0F; Modifier
+              ✏️ Modifier
             </Link>
             <Link
               href="/profile/stats"
               className="btn-futuristic px-4 py-2 text-sm font-medium rounded-xl"
               style={{ borderColor: "rgba(59,130,246,0.25)" }}
             >
-              &#x1F4CA; {t.statsTitle || "Statistiques"}
+              📊 {t.statsTitle || "Statistiques"}
             </Link>
             <PushButton />
             <Link
               href="/pricing"
               className="btn-futuristic px-4 py-2 text-sm font-medium rounded-xl neon-orange"
             >
-              {profile?.subscription === "free" ? "&#x2B50; Passer Premium" : "&#x2699;&#xFE0F; Gerer mon plan"}
+              {profile?.subscription === "free" ? "⭐ Passer Premium" : "⚙️ Gérer mon plan"}
             </Link>
             <form action={logout}>
               <button
@@ -256,7 +256,7 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
 
           {animals.length === 0 ? (
             <div className="text-center py-12 glass-strong gradient-border rounded-2xl">
-              <p className="text-4xl mb-3">&#x1F43E;</p>
+              <p className="text-4xl mb-3">🐾</p>
               <p className="text-[var(--c-text-muted)] text-sm">Aucun compagnon pour l&apos;instant</p>
               <Link href="/profile/animals/new" className="inline-block mt-4 btn-futuristic neon-orange px-5 py-2 text-sm font-bold rounded-xl">
                 + Ajouter mon premier compagnon
@@ -302,7 +302,7 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
                           transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                         }}
                       >
-                        &#x270F;&#xFE0F; Modifier
+                        ✏️ Modifier
                       </Link>
                       <button
                         onClick={() => setDeletingAnimal(animal.id)}
@@ -314,7 +314,7 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
                           transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                         }}
                       >
-                        &#x1F5D1;&#xFE0F; Supprimer
+                        🗑️ Supprimer
                       </button>
                     </div>
                   </div>
@@ -397,7 +397,7 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
           }}
         >
           <h3 className="font-bold text-red-400 text-sm mb-2" style={{ textShadow: "0 0 8px rgba(239,68,68,0.3)" }}>
-            &#x26A0;&#xFE0F; Zone de danger
+            ⚠️ Zone de danger
           </h3>
           <p className="text-xs text-[var(--c-text-muted)] mb-4">La suppression de ton compte est irreversible. Tous tes animaux et matchs seront supprimes.</p>
           <button
@@ -408,7 +408,7 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
               borderColor: "rgba(239,68,68,0.25)",
             }}
           >
-            &#x1F5D1;&#xFE0F; Supprimer mon compte
+            🗑️ Supprimer mon compte
           </button>
         </div>
       </div>
@@ -417,7 +417,7 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
       {deletingAnimal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
           <div className="glass-strong gradient-border rounded-2xl p-6 max-w-sm w-full text-center animate-slide-up">
-            <p className="text-3xl mb-3">&#x1F5D1;&#xFE0F;</p>
+            <p className="text-3xl mb-3">🗑️</p>
             <h3 className="font-bold text-[var(--c-text)] mb-2">Supprimer ce compagnon ?</h3>
             <p className="text-sm text-[var(--c-text-muted)] mb-5">Cette action est irreversible.</p>
             <div className="flex gap-3">
@@ -449,7 +449,7 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
       {showDeleteProfile && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
           <div className="glass-strong gradient-border rounded-2xl p-6 max-w-sm w-full text-center animate-slide-up">
-            <p className="text-3xl mb-3">&#x26A0;&#xFE0F;</p>
+            <p className="text-3xl mb-3">⚠️</p>
             <h3 className="font-bold text-[var(--c-text)] mb-2">Supprimer ton compte ?</h3>
             <p className="text-sm text-[var(--c-text-muted)] mb-5">Tous tes animaux, matchs et messages seront supprimes definitivement.</p>
             <div className="flex gap-3">

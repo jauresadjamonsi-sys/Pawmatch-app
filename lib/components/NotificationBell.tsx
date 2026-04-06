@@ -137,7 +137,15 @@ export default function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-80 max-h-[420px] overflow-y-auto rounded-xl border border-[var(--c-border)] bg-[var(--c-card)] shadow-2xl z-50">
+        <div
+          className="absolute right-0 top-full mt-2 w-80 max-h-[420px] overflow-y-auto rounded-xl border shadow-2xl z-50"
+          style={{
+            background: "var(--c-card)",
+            borderColor: "var(--c-border)",
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+          }}
+        >
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--c-border)]">
             <h3 className="text-sm font-semibold text-[var(--c-text)]">
@@ -165,12 +173,10 @@ export default function NotificationBell() {
                 <li key={notif.id}>
                   <button
                     onClick={() => handleClick(notif)}
-                    className={
-                      "w-full text-left px-4 py-3 flex gap-3 items-start transition hover:bg-white/5 " +
-                      (!notif.read
-                        ? "bg-[var(--c-accent)]/5"
-                        : "")
-                    }
+                    className="w-full text-left px-4 py-3 flex gap-3 items-start transition"
+                    style={{
+                      background: !notif.read ? "rgba(249,115,22,0.06)" : undefined,
+                    }}
                   >
                     <span className="text-lg mt-0.5 shrink-0">
                       {TYPE_ICONS[notif.type] || TYPE_ICONS.system}
