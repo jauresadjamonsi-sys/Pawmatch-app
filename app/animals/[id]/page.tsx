@@ -25,6 +25,7 @@ import BlockReportModal from "@/lib/components/BlockReportModal";
 import { useOnlineStatus } from "@/lib/hooks/useOnlineStatus";
 import PresenceDot from "@/lib/components/PresenceDot";
 import { EMOJI_MAP } from "@/lib/constants";
+import SpotlightButton from "@/lib/components/SpotlightButton";
 
 export default function AnimalDetailPage() {
   const [animal, setAnimal] = useState<AnimalRow | null>(null);
@@ -323,6 +324,15 @@ export default function AnimalDetailPage() {
                   )}
                 </div>
               </div>
+            )}
+
+            {/* Mascot Spotlight */}
+            {isOwner && (
+              <SpotlightButton
+                animalId={animal.id}
+                animalName={animal.name}
+                hasPhoto={!!animal.photo_url}
+              />
             )}
 
             {/* PawCare Hub — CTA prominent */}

@@ -153,6 +153,11 @@ export default function HomePage() {
   const { t, lang } = useAppContext();
   const [totalAnimals, setTotalAnimals] = useState(0);
   const [totalProfiles, setTotalProfiles] = useState(0);
+  const [spotlight, setSpotlight] = useState<{
+    active: boolean; animal_name?: string; animal_photo?: string;
+    animal_id?: string; owner_name?: string; plan?: string; expires_at?: string;
+  } | null>(null);
+  const [spotlightCountdown, setSpotlightCountdown] = useState("");
   const supabase = createClient();
 
   // Scroll reveal refs
@@ -173,9 +178,42 @@ export default function HomePage() {
       setTotalAnimals(ac || 0);
       const { count: pc } = await supabase.from("profiles").select("*", { count: "exact", head: true });
       setTotalProfiles(pc || 0);
+      // Fetch active mascot spotlight
+      try {
+        const res = await fetch("/api/spotlight");
+        const data = await res.json();
+        setSpotlight(data);
+      } catch { setSpotlight({ active: false }); }
     }
     fetchData();
   }, []);
+
+  // Countdown timer for spotlight
+  useEffect(() => {
+    if (!spotlight?.active || !spotlight.expires_at) return;
+    function tick() {
+      const remaining = Math.max(0, Math.ceil((new Date(spotlight!.expires_at!).getTime() - Date.now()) / 1000));
+      if (remaining <= 0) {
+        setSpotlight({ active: false });
+        setSpotlightCountdown("");
+        return;
+      }
+      if (remaining >= 3600) {
+        const h = Math.floor(remaining / 3600);
+        const m = Math.floor((remaining % 3600) / 60);
+        setSpotlightCountdown(`${h}h${m.toString().padStart(2, "0")}`);
+      } else if (remaining >= 60) {
+        const m = Math.floor(remaining / 60);
+        const s = remaining % 60;
+        setSpotlightCountdown(`${m}:${s.toString().padStart(2, "0")}`);
+      } else {
+        setSpotlightCountdown(`${remaining}s`);
+      }
+    }
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, [spotlight?.active, spotlight?.expires_at]);
 
   return (
     <div className="min-h-screen bg-[var(--c-deep)] text-[var(--c-text)] overflow-hidden relative">
@@ -194,17 +232,52 @@ export default function HomePage() {
 
         {/* Main content */}
         <div className="relative z-10 max-w-2xl mx-auto animate-slide-up">
-          {/* Ruby mascot */}
+          {/* Mascot Spotlight — dynamic or Ruby default */}
           <div className="inline-block mb-6 animate-float">
-            <div className="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto rounded-full overflow-hidden" style={{
-              boxShadow: "0 0 30px rgba(249,115,22,0.4), 0 0 60px rgba(249,115,22,0.15)",
-              border: "3px solid rgba(249,115,22,0.5)",
-            }}>
-              <Image src="/ruby-hero.jpg" alt="Ruby — Mascotte Pawly" fill className="object-cover" priority />
-            </div>
-            <p className="text-xs mt-2 font-medium" style={{ color: "var(--c-text-muted)" }}>
-              Ruby 🐾 Mascotte Pawly
-            </p>
+            {spotlight?.active && spotlight.animal_photo ? (
+              <>
+                {/* Spotlight badge */}
+                <div className="mb-2 animate-pulse">
+                  <span style={{
+                    display: "inline-flex", alignItems: "center", gap: 6,
+                    padding: "4px 14px", borderRadius: 50,
+                    background: "linear-gradient(135deg, rgba(249,115,22,0.2), rgba(168,85,247,0.15))",
+                    border: "1px solid rgba(249,115,22,0.3)",
+                    fontSize: 11, fontWeight: 800, color: "#f97316",
+                  }}>
+                    👑 {t.spotlightLive} {spotlightCountdown && <span style={{ fontFamily: "monospace" }}>({spotlightCountdown})</span>}
+                  </span>
+                </div>
+                {/* Spotlight photo — purple/orange glow */}
+                <div className="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto rounded-full overflow-hidden" style={{
+                  boxShadow: "0 0 30px rgba(168,85,247,0.5), 0 0 60px rgba(249,115,22,0.2)",
+                  border: "3px solid rgba(168,85,247,0.6)",
+                }}>
+                  <Image src={spotlight.animal_photo} alt={spotlight.animal_name || "Mascotte"} fill className="object-cover" priority unoptimized />
+                </div>
+                <p className="text-xs mt-2 font-medium" style={{ color: "var(--c-text-muted)" }}>
+                  {spotlight.animal_name} 👑 {t.spotlightMascot}
+                </p>
+                {spotlight.owner_name && (
+                  <p className="text-[10px]" style={{ color: "var(--c-text-muted)", opacity: 0.7 }}>
+                    {t.spotlightBy} {spotlight.owner_name}
+                  </p>
+                )}
+              </>
+            ) : (
+              <>
+                {/* Default Ruby mascot */}
+                <div className="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto rounded-full overflow-hidden" style={{
+                  boxShadow: "0 0 30px rgba(249,115,22,0.4), 0 0 60px rgba(249,115,22,0.15)",
+                  border: "3px solid rgba(249,115,22,0.5)",
+                }}>
+                  <Image src="/ruby-hero.jpg" alt="Ruby — Mascotte Pawly" fill className="object-cover" priority />
+                </div>
+                <p className="text-xs mt-2 font-medium" style={{ color: "var(--c-text-muted)" }}>
+                  Ruby 🐾 {t.spotlightDefault}
+                </p>
+              </>
+            )}
           </div>
 
           {/* Title */}
