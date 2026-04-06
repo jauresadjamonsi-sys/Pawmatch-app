@@ -114,7 +114,7 @@ export default function Navbar() {
   const [hasPendingSwipes, setHasPendingSwipes] = useState(false);
   const pathname = usePathname();
   const supabase = createClient();
-  const { lang, setLang, themePreference, setTheme, t } = useAppContext();
+  const { lang, setLang, theme, themePreference, setTheme, t } = useAppContext();
 
   const langDrop = useDropdown();
   const themeDrop = useDropdown();
@@ -139,7 +139,7 @@ export default function Navbar() {
   }, [pathname]);
 
   const isActive = (p: string) => pathname === p;
-  const isLight = themePreference === "clair" || themePreference === "aurore" || themePreference === "ocean";
+  const isLight = theme === "clair" || theme === "aurore" || theme === "ocean";
   const currentFlag = LANGS.find(l => l.code === lang)?.flag || "🇫🇷";
   const currentThemeLabel = THEMES.find(th => th.code === themePreference)?.label || "🔄";
 

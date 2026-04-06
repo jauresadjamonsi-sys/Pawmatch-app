@@ -183,10 +183,10 @@ export default function SignupPage() {
           {/* Divider */}
           <div className="relative mb-4">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full" style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)" }} />
+              <div className="w-full" style={{ height: 1, background: "var(--c-border)" }} />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 text-gray-500" style={{ background: "var(--c-card, rgba(10,8,18,0.9))" }}>{t.loginOr}</span>
+              <span className="px-4 text-[var(--c-text-muted)]" style={{ background: "var(--c-card)" }}>{t.loginOr}</span>
             </div>
           </div>
 
@@ -194,7 +194,7 @@ export default function SignupPage() {
             <input type="hidden" name="referred_by" value={typeof window !== "undefined" ? localStorage.getItem("pawly_referral") || "" : ""} />
 
             <div className="animate-slide-up" style={{ animationDelay: "0.15s" }}>
-              <label htmlFor="fullName" className="block text-sm font-medium text-gray-300 mb-1">{t.signupName}</label>
+              <label htmlFor="fullName" className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.signupName}</label>
               <input
                 id="fullName"
                 name="fullName"
@@ -206,7 +206,7 @@ export default function SignupPage() {
               />
             </div>
             <div className="animate-slide-up" style={{ animationDelay: "0.2s" }}>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">{t.loginEmail}</label>
+              <label htmlFor="email" className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.loginEmail}</label>
               <input
                 id="email"
                 name="email"
@@ -218,7 +218,7 @@ export default function SignupPage() {
               />
             </div>
             <div className="animate-slide-up" style={{ animationDelay: "0.25s" }}>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">{t.loginPassword}</label>
+              <label htmlFor="password" className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.loginPassword}</label>
               <input
                 id="password"
                 name="password"
@@ -269,7 +269,7 @@ export default function SignupPage() {
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-500 animate-slide-up" style={{ animationDelay: "0.4s" }}>
+          <p className="mt-6 text-center text-sm text-[var(--c-text-muted)] animate-slide-up" style={{ animationDelay: "0.4s" }}>
             {t.signupHasAccount}{" "}
             <Link href="/login" className="gradient-text font-medium" style={{ transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)" }}>
               {t.signupLogin}

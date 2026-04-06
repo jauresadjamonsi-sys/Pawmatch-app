@@ -119,8 +119,8 @@ export function BadgesSection({ matchCount, messageCount, animalCount, daysMembe
       {locked.length > 0 && (
         <div className="flex flex-col gap-2">
           {locked.slice(0, 3).map(b => (
-            <div key={b.id} className="flex items-center gap-3 opacity-50">
-              <span className="text-lg grayscale">{b.emoji}</span>
+            <div key={b.id} className="flex items-center gap-3 opacity-70">
+              <span className="text-lg">{b.emoji}</span>
               <div className="flex-1">
                 <p className="text-xs font-bold text-[var(--c-text)]">{b.name}</p>
                 <p className="text-[10px] text-[var(--c-text-muted)]">{b.description}</p>
