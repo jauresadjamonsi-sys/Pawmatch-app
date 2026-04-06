@@ -228,20 +228,20 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
             <Link
               href="/share"
               className="btn-futuristic px-4 py-2 text-sm font-medium rounded-xl"
-              style={{ borderColor: "rgba(249,115,22,0.25)", color: "#f97316" }}
             >
               🎁 Inviter des amis
             </Link>
             <form action={logout}>
               <button
                 type="submit"
-                className="btn-futuristic px-4 py-2 text-sm font-medium rounded-xl"
+                className="px-4 py-2 text-sm font-medium rounded-xl transition"
                 style={{
-                  borderColor: "rgba(239,68,68,0.25)",
-                  color: "#f87171",
+                  background: "rgba(239,68,68,0.15)",
+                  border: "1px solid rgba(239,68,68,0.4)",
+                  color: "#fca5a5",
                 }}
               >
-                Deconnexion
+                Déconnexion
               </button>
             </form>
           </div>
