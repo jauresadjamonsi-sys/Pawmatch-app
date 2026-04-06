@@ -41,15 +41,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr">
       <head>
-        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem("pawly_theme")||"auto";var e=t;if(t==="auto"){e=window.matchMedia("(prefers-color-scheme: dark)").matches?"nuit":"clair"}var v={"nuit":{"--c-deep":"#1a1530","--c-nav":"#211b3a","--c-card":"#2a2345","--c-border":"#3d3560","--c-text":"#f0eeff","--c-text-muted":"#a89dc5","--c-accent":"#A78BFA"},"aurore":{"--c-deep":"#3d2810","--c-nav":"#4a3018","--c-card":"#503820","--c-border":"#6d5030","--c-text":"#fff0e0","--c-text-muted":"#d4a870","--c-accent":"#F59E0B"},"ocean":{"--c-deep":"#122840","--c-nav":"#163050","--c-card":"#1c3860","--c-border":"#2a4d78","--c-text":"#e0f0ff","--c-text-muted":"#90b8e0","--c-accent":"#38BDF8"},"clair":{"--c-deep":"#FAF8F4","--c-nav":"#FFFFFF","--c-card":"#FFFFFF","--c-border":"#E8E2D9","--c-text":"#1A1714","--c-text-muted":"#3d3833","--c-accent":"#EA580C"}};var c=v[e];if(c){var r=document.documentElement;for(var k in c){r.style.setProperty(k,c[k])}r.setAttribute("data-theme",e)}}catch(x){}}())` }} />
-        <meta name="theme-color" content="#1a1530" />
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem("pawly_theme")||"auto";var e=t;if(t==="auto"){e=window.matchMedia("(prefers-color-scheme: dark)").matches?"nuit":"clair"}var v={"nuit":{"--c-deep":"#241e40","--c-nav":"#2c2550","--c-card":"#352e5a","--c-border":"#4a4070","--c-text":"#f0eeff","--c-text-muted":"#b5aad0","--c-accent":"#A78BFA"},"aurore":{"--c-deep":"#4a3518","--c-nav":"#584020","--c-card":"#604828","--c-border":"#806038","--c-text":"#fff0e0","--c-text-muted":"#d4a870","--c-accent":"#F59E0B"},"ocean":{"--c-deep":"#183555","--c-nav":"#1e4065","--c-card":"#254a75","--c-border":"#356090","--c-text":"#e0f0ff","--c-text-muted":"#90b8e0","--c-accent":"#38BDF8"},"clair":{"--c-deep":"#FAF8F4","--c-nav":"#FFFFFF","--c-card":"#FFFFFF","--c-border":"#E8E2D9","--c-text":"#1A1714","--c-text-muted":"#3d3833","--c-accent":"#EA580C"}};var c=v[e];if(c){var r=document.documentElement;for(var k in c){r.style.setProperty(k,c[k])}r.setAttribute("data-theme",e)}}catch(x){}}())` }} />
+        <meta name="theme-color" content="#241e40" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
       </head>
-      <body className={inter.className + " bg-[#1a1530] text-white min-h-screen"}>
+      <body className={inter.className + " bg-[#241e40] text-white min-h-screen"}>
 <AppProvider>
         <PostHogProvider>
         <PresenceHeartbeat />

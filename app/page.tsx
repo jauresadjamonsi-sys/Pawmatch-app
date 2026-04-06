@@ -67,7 +67,7 @@ function FloatingPaws() {
             fontSize: paw.size,
             animationDelay: paw.delay,
             animationDuration: paw.duration,
-            opacity: 0.15,
+            opacity: 0.35,
           }}
         >
           🐾
