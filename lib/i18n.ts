@@ -310,6 +310,27 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     cardCopyLink: "Copier le lien", cardDownload: "Télécharger", cardCopied: "Lien copié !",
     cardScanProfile: "Scannez pour voir le profil", cardPoweredBy: "Propulsé par Pawly",
     cardDigitalPassport: "Passeport digital",
+
+    // Feed
+    feedGreeting: "Bonjour",
+    feedStreak: "jours de suite",
+    feedStreakMsg3: "Beau debut ! Continue comme ca",
+    feedStreakMsg7: "Une semaine complete ! Ton animal est fier",
+    feedStreakMsg14: "2 semaines ! Tu es un super proprietaire",
+    feedStreakMsg30: "30 jours ! Tu es une legende Pawly",
+    feedMood: "Humeur du jour",
+    feedTip: "Conseil du jour",
+    feedWeekStats: "Cette semaine",
+    feedMatches: "matchs",
+    feedMessages: "messages",
+    feedQuickActions: "Actions rapides",
+    feedNeedVet: "Besoin d'un veto ?",
+
+    // Assistant
+    assistantTitle: "PawBot",
+    assistantWelcome: "Salut ! Je suis PawBot. Pose-moi tes questions sur ton animal, je connais deja son profil !",
+    assistantPlaceholder: "Pose une question...",
+    assistantSend: "Envoyer",
   },
 
   de: {
@@ -581,6 +602,27 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     cardCopyLink: "Link kopieren", cardDownload: "Herunterladen", cardCopied: "Link kopiert!",
     cardScanProfile: "Scannen Sie das Profil", cardPoweredBy: "Powered by Pawly",
     cardDigitalPassport: "Digitaler Reisepass",
+
+    // Feed
+    feedGreeting: "Hallo",
+    feedStreak: "Tage in Folge",
+    feedStreakMsg3: "Guter Start! Weiter so",
+    feedStreakMsg7: "Eine ganze Woche! Dein Tier ist stolz",
+    feedStreakMsg14: "2 Wochen! Du bist ein toller Besitzer",
+    feedStreakMsg30: "30 Tage! Du bist eine Pawly-Legende",
+    feedMood: "Stimmung heute",
+    feedTip: "Tipp des Tages",
+    feedWeekStats: "Diese Woche",
+    feedMatches: "Matches",
+    feedMessages: "Nachrichten",
+    feedQuickActions: "Schnellaktionen",
+    feedNeedVet: "Tierarzt gesucht?",
+
+    // Assistant
+    assistantTitle: "PawBot",
+    assistantWelcome: "Hallo! Ich bin PawBot. Stelle mir Fragen zu deinem Tier, ich kenne sein Profil!",
+    assistantPlaceholder: "Stelle eine Frage...",
+    assistantSend: "Senden",
   },
 
   it: {
@@ -852,6 +894,27 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     cardCopyLink: "Copia link", cardDownload: "Scarica", cardCopied: "Link copiato!",
     cardScanProfile: "Scansiona per il profilo", cardPoweredBy: "Powered by Pawly",
     cardDigitalPassport: "Passaporto digitale",
+
+    // Feed
+    feedGreeting: "Ciao",
+    feedStreak: "giorni consecutivi",
+    feedStreakMsg3: "Buon inizio! Continua cosi",
+    feedStreakMsg7: "Una settimana intera! Il tuo animale e orgoglioso",
+    feedStreakMsg14: "2 settimane! Sei un super proprietario",
+    feedStreakMsg30: "30 giorni! Sei una leggenda Pawly",
+    feedMood: "Umore di oggi",
+    feedTip: "Consiglio del giorno",
+    feedWeekStats: "Questa settimana",
+    feedMatches: "match",
+    feedMessages: "messaggi",
+    feedQuickActions: "Azioni rapide",
+    feedNeedVet: "Cerchi un veterinario?",
+
+    // Assistant
+    assistantTitle: "PawBot",
+    assistantWelcome: "Ciao! Sono PawBot. Chiedimi del tuo animale, conosco gia il suo profilo!",
+    assistantPlaceholder: "Fai una domanda...",
+    assistantSend: "Invia",
   },
 
   en: {
@@ -1123,5 +1186,26 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     cardCopyLink: "Copy link", cardDownload: "Download", cardCopied: "Link copied!",
     cardScanProfile: "Scan to view profile", cardPoweredBy: "Powered by Pawly",
     cardDigitalPassport: "Digital Passport",
+
+    // Feed
+    feedGreeting: "Hello",
+    feedStreak: "days in a row",
+    feedStreakMsg3: "Great start! Keep going",
+    feedStreakMsg7: "A whole week! Your pet is proud",
+    feedStreakMsg14: "2 weeks! You're an amazing owner",
+    feedStreakMsg30: "30 days! You're a Pawly legend",
+    feedMood: "Today's mood",
+    feedTip: "Tip of the day",
+    feedWeekStats: "This week",
+    feedMatches: "matches",
+    feedMessages: "messages",
+    feedQuickActions: "Quick actions",
+    feedNeedVet: "Need a vet?",
+
+    // Assistant
+    assistantTitle: "PawBot",
+    assistantWelcome: "Hey! I'm PawBot. Ask me anything about your pet, I already know their profile!",
+    assistantPlaceholder: "Ask a question...",
+    assistantSend: "Send",
   },
 };

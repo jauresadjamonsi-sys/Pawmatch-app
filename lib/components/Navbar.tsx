@@ -168,11 +168,12 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-1">
               {!loading && (user ? (
                 <>
+                  <NL href="/feed" active={isActive("/feed")} label="Feed" light={isLight} />
                   <NL href="/flairer" active={isActive("/flairer")} label={t.navFlairer} light={isLight} />
-                  <NL href="/events" active={isActive("/events")} label={t.navEvents} light={isLight} />
                   <NL href="/animals" active={isActive("/animals")} label={t.navExplorer} light={isLight} />
                   <NL href="/carte" active={isActive("/carte")} label="🗺️" light={isLight} />
                   <NL href="/matches" active={isActive("/matches")} label={t.navMatches} light={isLight} />
+                  <NL href="/assistant" active={isActive("/assistant")} label="🤖" light={isLight} />
                   <NL href="/profile" active={isActive("/profile")} label={t.navProfil} light={isLight} />
                 </>
               ) : (
@@ -269,8 +270,8 @@ export default function Navbar() {
       }}>
         <div className="bottom-nav-accent-line" />
         <div className="flex items-center justify-around h-14 px-2 relative">
-          <BT href="/" active={isActive("/")} label={t.navHome} light={isLight}>
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive("/") ? 2.5 : 1.5}>
+          <BT href={user ? "/feed" : "/"} active={isActive("/feed") || isActive("/")} label={t.navHome} light={isLight}>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={(isActive("/feed") || isActive("/")) ? 2.5 : 1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
             </svg>
           </BT>
