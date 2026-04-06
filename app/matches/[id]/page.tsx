@@ -415,7 +415,7 @@ export default function ConversationPage() {
                   <p className="text-center text-[10px] text-[var(--c-text-muted)] my-2">{formatTime(msg.created_at)}</p>
                 )}
                 <div className={"flex " + (isMine ? "justify-end" : "justify-start")}>
-                  <div className={"max-w-[75%] rounded-2xl text-sm " +
+                  <div className={"max-w-[85%] sm:max-w-[70%] rounded-2xl text-sm " +
                     (isMine
                       ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-br-md"
                       : "bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text)] rounded-bl-md") +
@@ -494,7 +494,7 @@ export default function ConversationPage() {
       </div>
 
       {/* Input */}
-      <div className="backdrop-blur-xl border-t border-[var(--c-border)] px-4 py-3" style={{ background: "var(--c-deep)" }}>
+      <div className="backdrop-blur-xl border-t border-[var(--c-border)] px-4 py-3 safe-area-bottom" style={{ background: "var(--c-deep)" }}>
         <div className="max-w-3xl mx-auto">
           {error && <p className="text-red-400 text-xs mb-2">{error}</p>}
           {uploadingVoice && (

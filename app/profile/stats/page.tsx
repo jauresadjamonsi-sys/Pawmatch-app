@@ -233,7 +233,7 @@ export default function StatsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[var(--c-bg,var(--c-deep))] px-4 py-8">
+    <div className="min-h-screen bg-[var(--c-bg,var(--c-deep))] px-4 py-6 pb-28">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">

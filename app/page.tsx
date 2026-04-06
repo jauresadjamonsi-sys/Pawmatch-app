@@ -226,7 +226,7 @@ export default function HomePage() {
       {/* ═══════════════════════════════════════
           SECTION 1: HERO
           ═══════════════════════════════════════ */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6">
+      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 md:px-6">
         {/* Floating paw emojis */}
         <FloatingPaws />
 

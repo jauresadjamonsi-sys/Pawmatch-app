@@ -113,7 +113,7 @@ export default function PricingPage() {
   }
 
   return (
-    <div className="min-h-screen py-12 px-4" style={{ background: "var(--c-bg, #f9fafb)" }}>
+    <div className="min-h-screen py-8 px-4 pb-28" style={{ background: "var(--c-bg, #f9fafb)" }}>
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4" style={{ color: "var(--c-text, #111827)" }}>

@@ -72,7 +72,7 @@ export default function EditProfilePage() {
   const cantonCities = selectedCanton ? CITIES[selectedCanton] || [] : [];
 
   return (
-    <div className="min-h-screen px-4 py-8">
+    <div className="min-h-screen px-4 py-6 pb-28">
       <div className="max-w-lg mx-auto">
         <h1 className="text-2xl font-bold text-[var(--c-text)] mb-6">Modifier mon profil</h1>
 

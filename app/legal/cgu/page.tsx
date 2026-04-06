@@ -1,6 +1,6 @@
 export default function CGUPage() {
   return (
-    <div className="min-h-screen px-6 py-12">
+    <div className="min-h-screen px-4 md:px-6 py-8 pb-28">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold text-white mb-2">Conditions Générales d'Utilisation</h1>
         <p className="text-gray-500 text-sm mb-8">Dernière mise à jour : 1er avril 2026</p>

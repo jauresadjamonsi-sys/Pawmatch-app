@@ -128,7 +128,7 @@ export default function NewAnimalPage() {
   }
 
   return (
-    <div className="min-h-screen px-4 py-8">
+    <div className="min-h-screen px-4 py-6 pb-28">
       <div className="max-w-lg mx-auto">
         <h1 className="text-2xl font-bold text-[var(--c-text)] mb-2">{t.animalAddTitle}</h1>
         <p className="text-[var(--c-text-muted)] text-sm mb-6">{t.animalAddSub}</p>

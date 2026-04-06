@@ -76,7 +76,7 @@ export default function AnimalsPage() {
   });
 
   return (
-    <div className="min-h-screen px-6 py-8">
+    <div className="min-h-screen px-4 md:px-6 py-6 pb-28">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold text-[var(--c-text)] mb-2">Ton prochain <span className="text-orange-400">pote</span></h1>
         <p className="text-[var(--c-text-muted)] mb-6">Découvre les compagnons qui t'attendent en Suisse</p>

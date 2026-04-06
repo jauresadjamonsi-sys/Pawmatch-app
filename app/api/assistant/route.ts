@@ -151,7 +151,7 @@ function buildPatterns(animal: Animal): PatternRule[] {
     {
       keywords: ["fatigue", "dort beaucoup", "lethargie", "plus envie", "ne bouge plus"],
       handler: () =>
-        `Si ${name} semble plus fatigue que d'habitude, cela peut etre lie a la saison, a un changement de routine ou a un probleme de sante.${age && age > 7 ? ` A " + age + " ans, c'est normal que ${name} ralentisse un peu.` : ""} ${sp === "chat" ? "Les chats dorment 12 a 16 heures par jour, c'est normal." : ""} Si la fatigue s'accompagne de perte d'appetit ou d'autres symptomes, n'hesite pas a consulter ton veterinaire pour un bilan.`,
+        `Si ${name} semble plus fatigue que d'habitude, cela peut etre lie a la saison, a un changement de routine ou a un probleme de sante.${age && age > 7 ? ` A ${age} ans, c'est normal que ${name} ralentisse un peu.` : ""} ${sp === "chat" ? "Les chats dorment 12 a 16 heures par jour, c'est normal." : ""} Si la fatigue s'accompagne de perte d'appetit ou d'autres symptomes, n'hesite pas a consulter ton veterinaire pour un bilan.`,
     },
     {
       keywords: ["course", "courir", "running", "canicross", "sport"],
@@ -253,7 +253,7 @@ function buildPatterns(animal: Animal): PatternRule[] {
     {
       keywords: ["ete", "chaleur", "chaud", "canicule", "coup de chaleur", "soleil", "temperature"],
       handler: () =>
-        `En ete, protege ${name} de la chaleur ! ${sp === "chien" ? "Ne promene jamais ${name} aux heures les plus chaudes (11h-16h), verifie la temperature de l'asphalte avec ta main, et assure une eau fraiche en permanence. Les races a museau plat sont particulierement vulnerables." : sp === "chat" ? "Laisse toujours de l'eau fraiche a disposition et un endroit ombre pour ${name}. Les chats gerent generalement bien la chaleur en cherchant la fraicheur." : `Assure-toi que ${name} a acces a de l'ombre et de l'eau fraiche.`} Ne laisse JAMAIS ${name} dans une voiture, meme 5 minutes !`,
+        `En ete, protege ${name} de la chaleur ! ${sp === "chien" ? `Ne promene jamais ${name} aux heures les plus chaudes (11h-16h), verifie la temperature de l'asphalte avec ta main, et assure une eau fraiche en permanence. Les races a museau plat sont particulierement vulnerables.` : sp === "chat" ? `Laisse toujours de l'eau fraiche a disposition et un endroit ombre pour ${name}. Les chats gerent generalement bien la chaleur en cherchant la fraicheur.` : `Assure-toi que ${name} a acces a de l'ombre et de l'eau fraiche.`} Ne laisse JAMAIS ${name} dans une voiture, meme 5 minutes !`,
     },
     {
       keywords: ["hiver", "froid", "neige", "gel", "temperature basse", "proteger froid"],
@@ -268,7 +268,7 @@ function buildPatterns(animal: Animal): PatternRule[] {
     {
       keywords: ["automne", "mue", "poils partout", "perd ses poils", "changement pelage"],
       handler: () =>
-        `La mue saisonniere est normale chez ${name}, surtout en automne et au printemps. ${sp === "chat" ? "Les chats perdent beaucoup de poils en automne — brosse ${name} quotidiennement pour eviter les boules de poils." : sp === "chien" ? "Brosse ${name} 2 a 3 fois par semaine pendant la mue pour limiter les poils dans la maison et maintenir un beau pelage." : "Un brossage regulier aide a gerer la mue."} Si la perte de poils est excessive ou par plaques, consulte ton veterinaire.`,
+        `La mue saisonniere est normale chez ${name}, surtout en automne et au printemps. ${sp === "chat" ? `Les chats perdent beaucoup de poils en automne — brosse ${name} quotidiennement pour eviter les boules de poils.` : sp === "chien" ? `Brosse ${name} 2 a 3 fois par semaine pendant la mue pour limiter les poils dans la maison et maintenir un beau pelage.` : "Un brossage regulier aide a gerer la mue."} Si la perte de poils est excessive ou par plaques, consulte ton veterinaire.`,
     },
     {
       keywords: ["orage", "petard", "feu artifice", "bruit fort", "tonnerre", "phobie bruit"],
@@ -326,12 +326,12 @@ function buildPatterns(animal: Animal): PatternRule[] {
     {
       keywords: ["pension", "garde", "garderie", "garder", "pet sitter", "faire garder"],
       handler: () =>
-        `Si tu dois faire garder ${name}, plusieurs options s'offrent a toi : pension specialisee, pet-sitter a domicile, ou un ami de confiance. ${sp === "chat" ? "Les chats preferent generalement rester chez eux avec un pet-sitter qui passe 1-2 fois par jour." : "Visite la pension avant pour verifier les conditions et presente ${name} pour un essai."} Laisse les coordonnees de ton veterinaire et les instructions pour l'alimentation${diet ? ` (actuellement : ${diet})` : ""} et les medicaments eventuels.`,
+        `Si tu dois faire garder ${name}, plusieurs options s'offrent a toi : pension specialisee, pet-sitter a domicile, ou un ami de confiance. ${sp === "chat" ? "Les chats preferent generalement rester chez eux avec un pet-sitter qui passe 1-2 fois par jour." : `Visite la pension avant pour verifier les conditions et presente ${name} pour un essai.`} Laisse les coordonnees de ton veterinaire et les instructions pour l'alimentation${diet ? ` (actuellement : ${diet})` : ""} et les medicaments eventuels.`,
     },
     {
       keywords: ["demenagement", "demenager", "nouvelle maison", "nouvel environnement", "changement maison"],
       handler: () =>
-        `Le demenagement peut etre stressant pour ${name}. ${sp === "chat" ? "Les chats sont tres attaches a leur territoire. Installe ${name} dans une seule piece au debut avec ses affaires familieres et ouvre progressivement l'acces au reste du logement." : sp === "chien" ? "Les chiens s'adaptent generalement bien si leur routine est maintenue. Garde les memes horaires de promenades et de repas." : "Conserve les habitudes et les objets familiers."} Sois patient(e), ${name} peut mettre quelques semaines a s'adapter.`,
+        `Le demenagement peut etre stressant pour ${name}. ${sp === "chat" ? `Les chats sont tres attaches a leur territoire. Installe ${name} dans une seule piece au debut avec ses affaires familieres et ouvre progressivement l'acces au reste du logement.` : sp === "chien" ? "Les chiens s'adaptent generalement bien si leur routine est maintenue. Garde les memes horaires de promenades et de repas." : "Conserve les habitudes et les objets familiers."} Sois patient(e), ${name} peut mettre quelques semaines a s'adapter.`,
     },
     {
       keywords: ["hotel", "hebergement", "camping", "restaurant", "lieu public"],
@@ -399,7 +399,7 @@ function buildPatterns(animal: Animal): PatternRule[] {
     {
       keywords: ["enfant", "bebe humain", "famille", "cohabitation", "securite enfant"],
       handler: () =>
-        `La cohabitation entre ${name} et des enfants peut etre merveilleuse avec les bonnes regles ! ${sp === "chien" ? "Apprends aux enfants a respecter l'espace de ${name} (ne pas le deranger quand il mange ou dort) et supervise toujours les interactions." : sp === "chat" ? "Les enfants doivent apprendre a caresser ${name} doucement et a ne pas le poursuivre. Offre au chat des refuges en hauteur hors de portee." : ""} Ne laisse jamais un jeune enfant seul avec un animal, quelle que soit sa gentillesse. La prevention est la cle d'une relation harmonieuse.`,
+        `La cohabitation entre ${name} et des enfants peut etre merveilleuse avec les bonnes regles ! ${sp === "chien" ? `Apprends aux enfants a respecter l'espace de ${name} (ne pas le deranger quand il mange ou dort) et supervise toujours les interactions.` : sp === "chat" ? `Les enfants doivent apprendre a caresser ${name} doucement et a ne pas le poursuivre. Offre au chat des refuges en hauteur hors de portee.` : ""} Ne laisse jamais un jeune enfant seul avec un animal, quelle que soit sa gentillesse. La prevention est la cle d'une relation harmonieuse.`,
     },
     {
       keywords: ["merci", "cool", "super", "genial", "top", "parfait"],

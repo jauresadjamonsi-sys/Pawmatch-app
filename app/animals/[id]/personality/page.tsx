@@ -62,7 +62,7 @@ export default function PersonalityPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--c-deep)] px-4 py-8">
+    <div className="min-h-screen bg-[var(--c-deep)] px-4 py-6 pb-28">
       <div className="max-w-lg mx-auto">
 
         {/* Retour */}

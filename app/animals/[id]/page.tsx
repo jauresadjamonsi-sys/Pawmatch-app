@@ -116,7 +116,7 @@ export default function AnimalDetailPage() {
   const isOwner = profile?.id === animal.created_by;
 
   return (
-    <div className="min-h-screen px-6 py-8">
+    <div className="min-h-screen px-4 md:px-6 py-6 pb-28">
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-4 mb-6">
           <Link href="/animals" className="text-orange-400 hover:underline text-sm">{t.animalBackCatalog}</Link>

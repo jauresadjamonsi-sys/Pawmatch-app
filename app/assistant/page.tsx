@@ -75,8 +75,8 @@ export default function AssistantPage() {
         id: "welcome",
         role: "assistant",
         content: animal
-          ? `Salut ! Je suis PawBot \uD83D\uDC3E Pose-moi tes questions sur ${animal.name}, je connais deja son profil !`
-          : "Salut ! Je suis PawBot \uD83D\uDC3E Pose-moi tes questions sur ton animal, je connais deja son profil !",
+          ? `Salut ! Je suis PawBot 🐾 Pose-moi tes questions sur ${animal.name}, je connais deja son profil !`
+          : "Salut ! Je suis PawBot 🐾 Pose-moi tes questions sur ton animal, je connais deja son profil !",
         timestamp: new Date(),
       };
       setMessages([welcome]);
@@ -200,7 +200,7 @@ export default function AssistantPage() {
             }}
           >
             <span role="img" aria-label="robot">
-              \uD83E\uDD16
+              🤖
             </span>
           </div>
           <div className="min-w-0">
@@ -261,7 +261,7 @@ export default function AssistantPage() {
                     background: "linear-gradient(135deg, #F97316, #EA580C)",
                   }}
                 >
-                  \uD83D\uDC3E
+                  🐾
                 </div>
               )}
 
@@ -311,7 +311,7 @@ export default function AssistantPage() {
                   background: "linear-gradient(135deg, #F97316, #EA580C)",
                 }}
               >
-                \uD83D\uDC3E
+                🐾
               </div>
               <div
                 className="rounded-2xl rounded-bl-md px-4 py-3 flex items-center gap-1.5"

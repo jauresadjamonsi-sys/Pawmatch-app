@@ -78,7 +78,7 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
     : "bg-[var(--c-border)] text-[var(--c-text-muted)]";
 
   return (
-    <div className="min-h-screen bg-[var(--c-bg,var(--c-deep))] px-4 py-8">
+    <div className="min-h-screen bg-[var(--c-bg,var(--c-deep))] px-4 py-6 pb-28">
       <div className="max-w-2xl mx-auto">
 
         {/* Profile card - glass with gradient border */}
@@ -124,7 +124,7 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
           </div>
 
           {/* Stats engagement - glass cards with neon accents */}
-          <div className="grid grid-cols-4 gap-2 mb-5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5">
             <button
               onClick={() => document.getElementById("compagnons")?.scrollIntoView({ behavior: "smooth" })}
               className="glass rounded-xl p-3 text-center transition cursor-pointer profile-stat-card"
