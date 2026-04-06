@@ -124,26 +124,21 @@ export default function SharePage() {
             <span className="text-2xl block mb-1">💬</span>
             <span className="text-xs font-semibold text-[var(--c-text)]">{t.shareWhatsapp}</span>
           </a>
-          <a
-            href={`https://www.instagram.com/`}
-            target="_blank"
-            rel="noopener"
+          <button
             className="glass card-futuristic rounded-xl p-4 text-center transition-all duration-300"
-            onClick={(e) => { e.preventDefault(); navigator.clipboard.writeText(shareText); toast.success(t.shareInstaCopied); window.open("https://www.instagram.com/", "_blank"); }}
+            onClick={async () => {
+              if (navigator.share) {
+                try { await navigator.share({ title: "Pawly", text: shareText, url: shareUrl }); }
+                catch { /* user cancelled */ }
+              } else {
+                navigator.clipboard.writeText(shareText);
+                toast.success(t.shareInstaCopied);
+              }
+            }}
           >
-            <span className="text-2xl block mb-1">📸</span>
-            <span className="text-xs font-semibold text-[var(--c-text)]">Instagram</span>
-          </a>
-          <a
-            href={`https://www.tiktok.com/`}
-            target="_blank"
-            rel="noopener"
-            className="glass card-futuristic rounded-xl p-4 text-center transition-all duration-300"
-            onClick={(e) => { e.preventDefault(); navigator.clipboard.writeText(shareText); toast.success(t.shareTiktokCopied); window.open("https://www.tiktok.com/", "_blank"); }}
-          >
-            <span className="text-2xl block mb-1">🎵</span>
-            <span className="text-xs font-semibold text-[var(--c-text)]">TikTok</span>
-          </a>
+            <span className="text-2xl block mb-1">📤</span>
+            <span className="text-xs font-semibold text-[var(--c-text)]">Partager</span>
+          </button>
           <a
             href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
             target="_blank"
