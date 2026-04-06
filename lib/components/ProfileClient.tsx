@@ -192,13 +192,13 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
           {(profile?.city || profile?.phone) && (
             <div className="grid grid-cols-2 gap-3 mb-5">
               {profile?.city && (
-                <div className="glass rounded-xl p-3" style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
+                <div className="glass rounded-xl p-3" style={{ border: "1px solid var(--c-border)" }}>
                   <p className="text-xs text-[var(--c-text-muted)] mb-1">Ville</p>
                   <p className="text-sm font-medium text-[var(--c-text)]">{profile.city}</p>
                 </div>
               )}
               {profile?.phone && (
-                <div className="glass rounded-xl p-3" style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
+                <div className="glass rounded-xl p-3" style={{ border: "1px solid var(--c-border)" }}>
                   <p className="text-xs text-[var(--c-text-muted)] mb-1">Telephone</p>
                   <p className="text-sm font-medium text-[var(--c-text)]">{profile.phone}</p>
                 </div>
@@ -276,11 +276,11 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
                   key={animal.id}
                   className="glass card-futuristic rounded-2xl overflow-hidden animate-slide-up"
                   style={{
-                    border: "1px solid rgba(255,255,255,0.06)",
+                    border: "1px solid var(--c-border)",
                     animationDelay: `${0.25 + idx * 0.05}s`,
                   }}
                 >
-                  <div className="h-36 flex items-center justify-center overflow-hidden relative" style={{ background: "rgba(255,255,255,0.02)" }}>
+                  <div className="h-36 flex items-center justify-center overflow-hidden relative" style={{ background: "var(--c-card)" }}>
                     {animal.photo_url
                       ? <img src={animal.photo_url} alt={animal.name} className="w-full h-full object-cover" />
                       : <span className="text-5xl">{EMOJI_MAP[animal.species] || "🐾"}</span>}
@@ -305,7 +305,7 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
                         className="flex-1 py-1.5 text-center text-xs font-bold glass rounded-lg transition"
                         style={{
                           color: "var(--c-text-muted)",
-                          border: "1px solid rgba(255,255,255,0.08)",
+                          border: "1px solid var(--c-border)",
                           transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                         }}
                       >
@@ -331,10 +331,10 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
           )}
         </div>
 
-        {/* Utilisateurs bloques */}
+        {/* Utilisateurs bloqués */}
         <div className="mb-6 animate-slide-up" style={{ animationDelay: "0.3s" }}>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-[var(--c-text)]">Utilisateurs bloques</h2>
+            <h2 className="text-lg font-bold text-[var(--c-text)]">Utilisateurs bloqués</h2>
             <button
               onClick={fetchBlockedUsers}
               className="btn-futuristic px-3 py-1.5 text-xs font-bold rounded-xl"
@@ -344,21 +344,21 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
           </div>
 
           {blockedUsers.length === 0 && !loadingBlocked && (
-            <div className="text-center py-8 glass-strong rounded-2xl" style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
+            <div className="text-center py-8 glass-strong rounded-2xl" style={{ border: "1px solid var(--c-border)" }}>
               <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>
-                Aucun utilisateur bloque
+                Aucun utilisateur bloqué
               </p>
             </div>
           )}
 
           {blockedUsers.length > 0 && (
-            <div className="glass-strong rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
+            <div className="glass-strong rounded-2xl overflow-hidden" style={{ border: "1px solid var(--c-border)" }}>
               {blockedUsers.map((u, i) => (
                 <div
                   key={u.user_id}
                   className="flex items-center gap-3 px-4 py-3"
                   style={{
-                    borderBottom: i < blockedUsers.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none",
+                    borderBottom: i < blockedUsers.length - 1 ? "1px solid var(--c-border)" : "none",
                   }}
                 >
                   <div
@@ -495,7 +495,7 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
         }
         .profile-stat-card:hover {
           transform: translateY(-2px);
-          box-shadow: 0 0 24px rgba(255,255,255,0.06) !important;
+          box-shadow: 0 0 24px var(--c-border) !important;
         }
       `}</style>
     </div>
