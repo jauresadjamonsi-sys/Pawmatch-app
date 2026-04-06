@@ -237,6 +237,6 @@ export async function GET() {
     });
   } catch (err) {
     console.error("Admin stats error:", err);
-    return NextResponse.json({ error: "Erreur serveur: " + (err as Error).message }, { status: 500 });
+    return NextResponse.json({ error: "Erreur serveur interne" }, { status: 500 });
   }
 }

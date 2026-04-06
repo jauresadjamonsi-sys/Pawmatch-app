@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { createClient as createAuthClient } from "@/lib/supabase/server";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -8,7 +9,20 @@ const supabaseAdmin = createClient(
 
 export async function POST(request: Request) {
   try {
+    // Authentication check
+    const supabase = await createAuthClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
+    }
+
     const { referral_code, referred_user_id } = await request.json();
+
+    // Ensure referred_user_id matches the authenticated user
+    if (referred_user_id !== user.id) {
+      return NextResponse.json({ error: "Non autorise" }, { status: 403 });
+    }
 
     if (!referral_code || !referred_user_id) {
       return NextResponse.json({ error: "referral_code et referred_user_id requis" }, { status: 400 });

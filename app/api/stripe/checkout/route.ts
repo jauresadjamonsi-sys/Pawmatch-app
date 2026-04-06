@@ -39,14 +39,16 @@ export async function POST(request: Request) {
         .eq("id", user.id);
     }
 
-    const origin = request.headers.get("origin") || "https://pawlyapp.ch";
+    const origin = request.headers.get("origin");
+    const allowedOrigins = ["https://pawlyapp.ch", "https://www.pawlyapp.ch", "http://localhost:3000"];
+    const baseUrl = allowedOrigins.includes(origin || "") ? origin : "https://pawlyapp.ch";
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${origin}/profile?upgraded=true`,
-      cancel_url: `${origin}/pricing`,
+      success_url: `${baseUrl}/profile?upgraded=true`,
+      cancel_url: `${baseUrl}/pricing`,
       metadata: { supabase_user_id: user.id, plan },
     });
 

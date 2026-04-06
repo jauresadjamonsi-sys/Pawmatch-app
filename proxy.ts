@@ -1,6 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+const PROTECTED_ROUTES = ["/profile", "/matches", "/flairer", "/events", "/carte", "/animals", "/share", "/onboarding"];
+const ADMIN_ROUTES = ["/admin"];
+const AUTH_ROUTES = ["/login", "/signup", "/forgot-password"];
+
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
@@ -29,27 +33,36 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const protectedRoutes = ["/profile", "/admin"];
-  const isProtected = protectedRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
-  );
+  const path = request.nextUrl.pathname;
 
-  if (isProtected && !user) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    url.searchParams.set("redirectTo", request.nextUrl.pathname);
-    return NextResponse.redirect(url);
-  }
-
-  const authRoutes = ["/login", "/signup"];
-  const isAuthRoute = authRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
-  );
-
-  if (isAuthRoute && user) {
+  // Redirect authenticated users away from auth pages
+  if (user && AUTH_ROUTES.some((r) => path.startsWith(r))) {
     const url = request.nextUrl.clone();
     url.pathname = "/profile";
     return NextResponse.redirect(url);
+  }
+
+  // Redirect unauthenticated users from protected routes
+  if (!user && PROTECTED_ROUTES.some((r) => path.startsWith(r))) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("redirectTo", path);
+    return NextResponse.redirect(url);
+  }
+
+  // Admin routes: check if user is admin
+  if (ADMIN_ROUTES.some((r) => path.startsWith(r))) {
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/login";
+      return NextResponse.redirect(url);
+    }
+    const adminEmails = (process.env.ADMIN_EMAILS || "").split(",").map((e) => e.trim().toLowerCase());
+    if (!adminEmails.includes((user.email || "").toLowerCase())) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/";
+      return NextResponse.redirect(url);
+    }
   }
 
   return supabaseResponse;
