@@ -409,10 +409,11 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
           <p className="text-xs text-[var(--c-text-muted)] mb-4">La suppression de ton compte est irreversible. Tous tes animaux et matchs seront supprimes.</p>
           <button
             onClick={() => setShowDeleteProfile(true)}
-            className="btn-futuristic px-4 py-2 text-sm font-bold rounded-xl"
+            className="px-4 py-2 text-sm font-bold rounded-xl transition hover:scale-105"
             style={{
-              color: "#f87171",
-              borderColor: "rgba(239,68,68,0.25)",
+              background: "rgba(239,68,68,0.2)",
+              color: "#fca5a5",
+              border: "1px solid rgba(239,68,68,0.4)",
             }}
           >
             🗑️ Supprimer mon compte
