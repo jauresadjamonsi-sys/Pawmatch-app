@@ -302,17 +302,35 @@ export default function SharePage() {
             <span className="text-2xl block mb-1">📸</span>
             <span className="text-xs font-semibold text-[var(--c-text)]">Story</span>
           </button>
-          {/* Save story card to device */}
+          {/* Save story card to device — iOS compatible */}
           <button
             className="glass card-futuristic rounded-xl p-4 text-center transition-all duration-300"
             onClick={async () => {
               toast.loading("Creation de l'image...", { id: "save" });
               const cardUrl = await generateStoryCard();
-              const link = document.createElement("a");
-              link.href = cardUrl;
-              link.download = "pawly-story.jpg";
-              link.click();
-              toast.success("Image sauvegardee dans tes fichiers !", { id: "save", duration: 3000 });
+              // Convert data URL to blob for iOS compatibility
+              const res = await fetch(cardUrl);
+              const blob = await res.blob();
+              const file = new File([blob], "pawly-story.jpg", { type: "image/jpeg" });
+              // Use native share API (shows "Save Image" option on iOS)
+              if (typeof navigator.share === "function" && navigator.canShare?.({ files: [file] })) {
+                toast.dismiss("save");
+                try {
+                  await navigator.share({ files: [file] });
+                  toast.success("Image partagee !", { duration: 2000 });
+                } catch { /* user cancelled */ }
+              } else {
+                // Fallback for desktop: use blob URL (not data URL)
+                const blobUrl = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = blobUrl;
+                link.download = "pawly-story.jpg";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+                toast.success("Image sauvegardee !", { id: "save", duration: 3000 });
+              }
             }}
           >
             <span className="text-2xl block mb-1">💾</span>
