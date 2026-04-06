@@ -139,7 +139,7 @@ export default function SharePage() {
         </div>
 
         {/* Share buttons */}
-        <div className="grid grid-cols-2 gap-3 mb-6 animate-slide-up" style={{ animationDelay: "0.2s" }}>
+        <div className="grid grid-cols-3 gap-3 mb-6 animate-slide-up" style={{ animationDelay: "0.2s" }}>
           <a
             href={`https://wa.me/?text=${encodeURIComponent(shareText)}`}
             target="_blank"
@@ -150,11 +150,24 @@ export default function SharePage() {
             <span className="text-xs font-semibold text-[var(--c-text)]">{t.shareWhatsapp}</span>
           </a>
           <a
-            href={`sms:?body=${encodeURIComponent(shareText)}`}
+            href={`https://www.instagram.com/`}
+            target="_blank"
+            rel="noopener"
             className="glass card-futuristic rounded-xl p-4 text-center transition-all duration-300"
+            onClick={(e) => { e.preventDefault(); navigator.clipboard.writeText(shareText); alert(t.shareInstaCopied); window.open("https://www.instagram.com/", "_blank"); }}
           >
-            <span className="text-2xl block mb-1">📱</span>
-            <span className="text-xs font-semibold text-[var(--c-text)]">{t.shareSMS}</span>
+            <span className="text-2xl block mb-1">📸</span>
+            <span className="text-xs font-semibold text-[var(--c-text)]">Instagram</span>
+          </a>
+          <a
+            href={`https://www.tiktok.com/`}
+            target="_blank"
+            rel="noopener"
+            className="glass card-futuristic rounded-xl p-4 text-center transition-all duration-300"
+            onClick={(e) => { e.preventDefault(); navigator.clipboard.writeText(shareText); alert(t.shareTiktokCopied); window.open("https://www.tiktok.com/", "_blank"); }}
+          >
+            <span className="text-2xl block mb-1">🎵</span>
+            <span className="text-xs font-semibold text-[var(--c-text)]">TikTok</span>
           </a>
           <a
             href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
@@ -173,6 +186,13 @@ export default function SharePage() {
           >
             <span className="text-2xl block mb-1">✈️</span>
             <span className="text-xs font-semibold text-[var(--c-text)]">{t.shareTelegram}</span>
+          </a>
+          <a
+            href={`sms:?body=${encodeURIComponent(shareText)}`}
+            className="glass card-futuristic rounded-xl p-4 text-center transition-all duration-300"
+          >
+            <span className="text-2xl block mb-1">📱</span>
+            <span className="text-xs font-semibold text-[var(--c-text)]">{t.shareSMS}</span>
           </a>
         </div>
 
