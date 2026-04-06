@@ -75,7 +75,7 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
           type="text"
           readOnly
           value={referralLink}
-          className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-[var(--c-text-muted)] truncate outline-none"
+          className="flex-1 px-3 py-2 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-xs text-[var(--c-text-muted)] truncate outline-none"
         />
         <button
           onClick={copyLink}

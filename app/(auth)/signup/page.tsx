@@ -116,11 +116,11 @@ export default function SignupPage() {
                   transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                   background: s <= step
                     ? "linear-gradient(135deg, rgba(249,115,22,0.8), rgba(167,139,250,0.8))"
-                    : "rgba(255,255,255,0.05)",
+                    : "var(--c-card)",
                   color: s <= step ? "#fff" : "var(--c-text-muted)",
                   border: s <= step
                     ? "1px solid rgba(249,115,22,0.4)"
-                    : "1px solid rgba(255,255,255,0.1)",
+                    : "1px solid var(--c-border)",
                   boxShadow: s <= step ? "0 0 12px rgba(249,115,22,0.2)" : "none",
                 }}
               >
@@ -135,7 +135,7 @@ export default function SignupPage() {
                     transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                     background: s < step
                       ? "linear-gradient(90deg, rgba(249,115,22,0.6), rgba(167,139,250,0.6))"
-                      : "rgba(255,255,255,0.08)",
+                      : "var(--c-border)",
                   }}
                 />
               )}
@@ -144,8 +144,8 @@ export default function SignupPage() {
         </div>
 
         <div className="glass-strong rounded-2xl p-8 animate-slide-up" style={{
-          border: "1px solid rgba(255,255,255,0.08)",
-          boxShadow: "0 8px 32px rgba(0,0,0,0.3), 0 0 60px rgba(167,139,250,0.04)",
+          border: "1px solid var(--c-border)",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.1), 0 0 60px rgba(167,139,250,0.04)",
           animationDelay: "0.1s",
         }}>
           {error && (
@@ -166,9 +166,9 @@ export default function SignupPage() {
           {/* Google signup - glass pill */}
           <button
             onClick={handleGoogleSignup}
-            className="glass w-full py-3 text-white font-semibold rounded-xl flex items-center justify-center gap-3 mb-4"
+            className="glass w-full py-3 text-[var(--c-text)] font-semibold rounded-xl flex items-center justify-center gap-3 mb-4"
             style={{
-              border: "1px solid rgba(255,255,255,0.1)",
+              border: "1px solid var(--c-border)",
               transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
             }}
           >

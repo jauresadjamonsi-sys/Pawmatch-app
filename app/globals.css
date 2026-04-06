@@ -752,3 +752,353 @@ html {
 .bg-black\/50 .text-\[var\(--c-text\)\] {
   color: #fff !important;
 }
+
+/* ============================================
+   23. LIGHT THEMES — EXHAUSTIVE OVERRIDES
+   Catches ALL remaining hover variants,
+   border opacities, text/white opacities,
+   and missing color shades.
+   ============================================ */
+
+/* --- bg-white/8 (used in events badges) --- */
+[data-theme="clair"] .bg-white\/8,
+[data-theme="aurore"] .bg-white\/8,
+[data-theme="ocean"] .bg-white\/8 {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+/* --- hover:bg-white/* → dark hover on light themes --- */
+[data-theme="clair"] .hover\:bg-white\/5:hover,
+[data-theme="aurore"] .hover\:bg-white\/5:hover,
+[data-theme="ocean"] .hover\:bg-white\/5:hover {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="clair"] .hover\:bg-white\/10:hover,
+[data-theme="aurore"] .hover\:bg-white\/10:hover,
+[data-theme="ocean"] .hover\:bg-white\/10:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme="clair"] .hover\:bg-white\/20:hover,
+[data-theme="aurore"] .hover\:bg-white\/20:hover,
+[data-theme="ocean"] .hover\:bg-white\/20:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* --- border-white/* → visible borders on light --- */
+[data-theme="clair"] .border-white\/10,
+[data-theme="aurore"] .border-white\/10,
+[data-theme="ocean"] .border-white\/10 {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme="clair"] .border-white\/20,
+[data-theme="aurore"] .border-white\/20,
+[data-theme="ocean"] .border-white\/20 {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+[data-theme="clair"] .border-white\/30,
+[data-theme="aurore"] .border-white\/30,
+[data-theme="ocean"] .border-white\/30 {
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* --- text-white/* opacity variants → dark text on light --- */
+[data-theme="clair"] .text-white\/40,
+[data-theme="aurore"] .text-white\/40,
+[data-theme="ocean"] .text-white\/40 {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="clair"] .text-white\/50,
+[data-theme="aurore"] .text-white\/50,
+[data-theme="ocean"] .text-white\/50 {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="clair"] .text-white\/60,
+[data-theme="aurore"] .text-white\/60,
+[data-theme="ocean"] .text-white\/60 {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
+[data-theme="clair"] .text-white\/70,
+[data-theme="aurore"] .text-white\/70,
+[data-theme="ocean"] .text-white\/70 {
+  color: rgba(0, 0, 0, 0.7) !important;
+}
+
+[data-theme="clair"] .text-white\/80,
+[data-theme="aurore"] .text-white\/80,
+[data-theme="ocean"] .text-white\/80 {
+  color: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* --- Extra color shades that were missing --- */
+[data-theme="clair"] .text-cyan-300,
+[data-theme="aurore"] .text-cyan-300,
+[data-theme="ocean"] .text-cyan-300 {
+  color: #0e7490 !important; /* cyan-700 */
+}
+
+[data-theme="clair"] .text-cyan-400,
+[data-theme="aurore"] .text-cyan-400,
+[data-theme="ocean"] .text-cyan-400 {
+  color: #0e7490 !important;
+}
+
+[data-theme="clair"] .text-emerald-400,
+[data-theme="aurore"] .text-emerald-400,
+[data-theme="ocean"] .text-emerald-400 {
+  color: #047857 !important; /* emerald-700 */
+}
+
+[data-theme="clair"] .text-amber-400,
+[data-theme="aurore"] .text-amber-400,
+[data-theme="ocean"] .text-amber-400 {
+  color: #b45309 !important; /* amber-700 */
+}
+
+[data-theme="clair"] .text-blue-400,
+[data-theme="aurore"] .text-blue-400,
+[data-theme="ocean"] .text-blue-400 {
+  color: #1d4ed8 !important; /* blue-700 */
+}
+
+[data-theme="clair"] .text-teal-400,
+[data-theme="aurore"] .text-teal-400,
+[data-theme="ocean"] .text-teal-400 {
+  color: #0f766e !important; /* teal-700 */
+}
+
+[data-theme="clair"] .text-yellow-300,
+[data-theme="aurore"] .text-yellow-300,
+[data-theme="ocean"] .text-yellow-300 {
+  color: #a16207 !important; /* yellow-700 */
+}
+
+[data-theme="clair"] .text-yellow-400,
+[data-theme="aurore"] .text-yellow-400,
+[data-theme="ocean"] .text-yellow-400 {
+  color: #a16207 !important;
+}
+
+[data-theme="clair"] .text-indigo-300,
+[data-theme="aurore"] .text-indigo-300,
+[data-theme="ocean"] .text-indigo-300 {
+  color: #4338ca !important; /* indigo-700 */
+}
+
+[data-theme="clair"] .text-indigo-400,
+[data-theme="aurore"] .text-indigo-400,
+[data-theme="ocean"] .text-indigo-400 {
+  color: #4338ca !important;
+}
+
+[data-theme="clair"] .text-violet-300,
+[data-theme="aurore"] .text-violet-300,
+[data-theme="ocean"] .text-violet-300 {
+  color: #6d28d9 !important; /* violet-700 */
+}
+
+[data-theme="clair"] .text-violet-400,
+[data-theme="aurore"] .text-violet-400,
+[data-theme="ocean"] .text-violet-400 {
+  color: #6d28d9 !important;
+}
+
+[data-theme="clair"] .text-rose-300,
+[data-theme="aurore"] .text-rose-300,
+[data-theme="ocean"] .text-rose-300 {
+  color: #be123c !important; /* rose-700 */
+}
+
+[data-theme="clair"] .text-rose-400,
+[data-theme="aurore"] .text-rose-400,
+[data-theme="ocean"] .text-rose-400 {
+  color: #be123c !important;
+}
+
+[data-theme="clair"] .text-lime-300,
+[data-theme="aurore"] .text-lime-300,
+[data-theme="ocean"] .text-lime-300 {
+  color: #4d7c0f !important; /* lime-700 */
+}
+
+[data-theme="clair"] .text-lime-400,
+[data-theme="aurore"] .text-lime-400,
+[data-theme="ocean"] .text-lime-400 {
+  color: #4d7c0f !important;
+}
+
+/* --- Additional bg-*-500/alpha overrides --- */
+[data-theme="clair"] .bg-orange-500\/20,
+[data-theme="aurore"] .bg-orange-500\/20,
+[data-theme="ocean"] .bg-orange-500\/20 {
+  background: rgba(194, 65, 12, 0.12) !important;
+}
+
+[data-theme="clair"] .bg-orange-500\/30,
+[data-theme="aurore"] .bg-orange-500\/30,
+[data-theme="ocean"] .bg-orange-500\/30 {
+  background: rgba(194, 65, 12, 0.15) !important;
+}
+
+[data-theme="clair"] .bg-purple-500\/20,
+[data-theme="aurore"] .bg-purple-500\/20,
+[data-theme="ocean"] .bg-purple-500\/20 {
+  background: rgba(124, 58, 237, 0.1) !important;
+}
+
+[data-theme="clair"] .bg-blue-500\/20,
+[data-theme="aurore"] .bg-blue-500\/20,
+[data-theme="ocean"] .bg-blue-500\/20 {
+  background: rgba(29, 78, 216, 0.1) !important;
+}
+
+[data-theme="clair"] .bg-teal-500\/20,
+[data-theme="aurore"] .bg-teal-500\/20,
+[data-theme="ocean"] .bg-teal-500\/20 {
+  background: rgba(15, 118, 110, 0.1) !important;
+}
+
+[data-theme="clair"] .bg-emerald-500\/20,
+[data-theme="aurore"] .bg-emerald-500\/20,
+[data-theme="ocean"] .bg-emerald-500\/20 {
+  background: rgba(4, 120, 87, 0.1) !important;
+}
+
+[data-theme="clair"] .bg-cyan-500\/20,
+[data-theme="aurore"] .bg-cyan-500\/20,
+[data-theme="ocean"] .bg-cyan-500\/20 {
+  background: rgba(14, 116, 144, 0.1) !important;
+}
+
+/* --- Additional border alpha overrides --- */
+[data-theme="clair"] .border-orange-500\/30,
+[data-theme="aurore"] .border-orange-500\/30,
+[data-theme="ocean"] .border-orange-500\/30 {
+  border-color: rgba(194, 65, 12, 0.25) !important;
+}
+
+[data-theme="clair"] .border-orange-500\/40,
+[data-theme="aurore"] .border-orange-500\/40,
+[data-theme="ocean"] .border-orange-500\/40 {
+  border-color: rgba(194, 65, 12, 0.3) !important;
+}
+
+[data-theme="clair"] .border-green-500\/40,
+[data-theme="aurore"] .border-green-500\/40,
+[data-theme="ocean"] .border-green-500\/40 {
+  border-color: rgba(21, 128, 61, 0.3) !important;
+}
+
+/* --- Placeholder text → readable on light --- */
+[data-theme="clair"] .placeholder-gray-500::placeholder,
+[data-theme="aurore"] .placeholder-gray-500::placeholder,
+[data-theme="ocean"] .placeholder-gray-500::placeholder {
+  color: #9ca3af !important; /* gray-400, subtle but visible on light */
+}
+
+/* --- bg-white/50 for photo dots --- */
+[data-theme="clair"] .bg-white\/50,
+[data-theme="aurore"] .bg-white\/50,
+[data-theme="ocean"] .bg-white\/50 {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+/* --- ring-*-*/60 shimmer shadow overrides --- */
+[data-theme="clair"] [class*="ring-orange-500\/"],
+[data-theme="aurore"] [class*="ring-orange-500\/"],
+[data-theme="ocean"] [class*="ring-orange-500\/"] {
+  --tw-ring-color: rgba(234, 88, 12, 0.5);
+}
+
+/* --- Capacity/progress bar backgrounds --- */
+[data-theme="clair"] .bg-white\/10,
+[data-theme="aurore"] .bg-white\/10,
+[data-theme="ocean"] .bg-white\/10 {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* --- red/orange-500/15 for events badges --- */
+[data-theme="clair"] .bg-red-500\/15,
+[data-theme="aurore"] .bg-red-500\/15,
+[data-theme="ocean"] .bg-red-500\/15 {
+  background: rgba(185, 28, 28, 0.1) !important;
+}
+
+[data-theme="clair"] .bg-orange-500\/15,
+[data-theme="aurore"] .bg-orange-500\/15,
+[data-theme="ocean"] .bg-orange-500\/15 {
+  background: rgba(194, 65, 12, 0.1) !important;
+}
+
+/* --- hover:text-white → dark text on hover on light --- */
+[data-theme="clair"] .hover\:text-white:hover,
+[data-theme="aurore"] .hover\:text-white:hover,
+[data-theme="ocean"] .hover\:text-white:hover {
+  color: #111827 !important; /* gray-900 */
+}
+
+/* --- group-hover:text-gray-300 → dark on light --- */
+[data-theme="clair"] .group-hover\:text-gray-300:hover,
+[data-theme="clair"] .group:hover .group-hover\:text-gray-300,
+[data-theme="aurore"] .group:hover .group-hover\:text-gray-300,
+[data-theme="ocean"] .group:hover .group-hover\:text-gray-300 {
+  color: #374151 !important; /* gray-700 */
+}
+
+/* --- hover:text-red-300 / hover:text-green-300 → dark on light --- */
+[data-theme="clair"] .hover\:text-red-300:hover,
+[data-theme="aurore"] .hover\:text-red-300:hover,
+[data-theme="ocean"] .hover\:text-red-300:hover {
+  color: #b91c1c !important;
+}
+
+[data-theme="clair"] .hover\:text-green-300:hover,
+[data-theme="aurore"] .hover\:text-green-300:hover,
+[data-theme="ocean"] .hover\:text-green-300:hover {
+  color: #15803d !important;
+}
+
+/* --- hover:bg-red-500/20 and hover:border-red-500/40 for "leave event" --- */
+[data-theme="clair"] .hover\:bg-red-500\/20:hover,
+[data-theme="aurore"] .hover\:bg-red-500\/20:hover,
+[data-theme="ocean"] .hover\:bg-red-500\/20:hover {
+  background: rgba(185, 28, 28, 0.1) !important;
+}
+
+[data-theme="clair"] .hover\:border-red-500\/40:hover,
+[data-theme="aurore"] .hover\:border-red-500\/40:hover,
+[data-theme="ocean"] .hover\:border-red-500\/40:hover {
+  border-color: rgba(185, 28, 28, 0.3) !important;
+}
+
+/* --- hover:bg-orange-500/10 --- */
+[data-theme="clair"] .hover\:bg-orange-500\/10:hover,
+[data-theme="aurore"] .hover\:bg-orange-500\/10:hover,
+[data-theme="ocean"] .hover\:bg-orange-500\/10:hover {
+  background: rgba(194, 65, 12, 0.08) !important;
+}
+
+/* --- Neon glow tones subdued for light --- */
+[data-theme="clair"] .neon-orange,
+[data-theme="aurore"] .neon-orange,
+[data-theme="ocean"] .neon-orange {
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.12), 0 0 30px rgba(249, 115, 22, 0.06);
+}
+
+[data-theme="clair"] .neon-purple,
+[data-theme="aurore"] .neon-purple,
+[data-theme="ocean"] .neon-purple {
+  box-shadow: 0 0 10px rgba(167, 139, 250, 0.12), 0 0 30px rgba(167, 139, 250, 0.06);
+}
+
+[data-theme="clair"] .neon-cyan,
+[data-theme="aurore"] .neon-cyan,
+[data-theme="ocean"] .neon-cyan {
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.12), 0 0 30px rgba(56, 189, 248, 0.06);
+}

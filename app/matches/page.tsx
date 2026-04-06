@@ -137,7 +137,7 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
                 ? <Image src={match.sender_animal.photo_url} alt={match.sender_animal.name} fill className="object-cover" sizes="(max-width: 768px) 64px, 64px" />
                 : <span className="text-2xl">{EMOJI_MAP[match.sender_animal.species] || "🐾"}</span>}
             </div>
-            <p className="text-xs text-white font-semibold">{match.sender_animal.name}</p>
+            <p className="text-xs text-[var(--c-text)] font-semibold">{match.sender_animal.name}</p>
           </div>
 
           <div className="text-3xl paw-beat">💥</div>
@@ -148,7 +148,7 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
                 ? <Image src={match.receiver_animal.photo_url} alt={match.receiver_animal.name} fill className="object-cover" sizes="(max-width: 768px) 64px, 64px" />
                 : <span className="text-2xl">{EMOJI_MAP[match.receiver_animal.species] || "🐾"}</span>}
             </div>
-            <p className="text-xs text-white font-semibold">{match.receiver_animal.name}</p>
+            <p className="text-xs text-[var(--c-text)] font-semibold">{match.receiver_animal.name}</p>
           </div>
         </div>
 

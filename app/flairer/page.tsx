@@ -497,7 +497,7 @@ export default function FlairerPage() {
       {/* Streak */}
       {showStreak && (
         <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[150] streak-pop">
-          <div className="glass-strong neon-orange text-white font-extrabold text-xl px-6 py-3 shadow-2xl">
+          <div className="glass-strong neon-orange text-[var(--c-text)] font-extrabold text-xl px-6 py-3 shadow-2xl">
             {streakLabel}
           </div>
         </div>
