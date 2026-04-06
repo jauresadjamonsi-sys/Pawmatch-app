@@ -8,11 +8,7 @@ import { getMyMatches, respondToMatch, MatchWithAnimals } from "@/lib/services/m
 import { useOnlineStatus } from "@/lib/hooks/useOnlineStatus";
 import PresenceDot from "@/lib/components/PresenceDot";
 import Link from "next/link";
-
-const EMOJI_MAP: Record<string, string> = {
-  chien: "🐕", chat: "🐱", lapin: "🐰",
-  oiseau: "🐦", rongeur: "🐹", autre: "🐾",
-};
+import { EMOJI_MAP } from "@/lib/constants";
 
 const SPECIES_GLOW: Record<string, string> = {
   chien: "neon-orange",
@@ -128,7 +124,7 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
           style={{ animationDelay: "0.2s" }}>
           {t.matchesCoup}
         </h2>
-        <p className="slide-up text-gray-400 text-sm mb-6" style={{ animationDelay: "0.3s" }}>
+        <p className="slide-up text-[var(--c-text-muted)] text-sm mb-6" style={{ animationDelay: "0.3s" }}>
           {t.matchesMutual} 🎉
         </p>
 
@@ -162,12 +158,12 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
             {t.matchesChat}
           </Link>
           <button onClick={onClose}
-            className="px-4 py-3 glass text-gray-400 text-sm hover:bg-white/10 transition-all duration-300">
+            className="px-4 py-3 glass text-[var(--c-text-muted)] text-sm hover:bg-white/10 transition-all duration-300">
             {t.matchesLater}
           </button>
         </div>
 
-        <p className="text-[10px] text-gray-600 mt-4">{t.matchesAutoClose}</p>
+        <p className="text-[10px] text-[var(--c-text-muted)] mt-4">{t.matchesAutoClose}</p>
       </div>
     </div>
   );
@@ -228,7 +224,7 @@ export default function MatchesPage() {
             <div className="w-14 h-14 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
             <div className="absolute inset-0 w-14 h-14 rounded-full neon-orange animate-breathe" />
           </div>
-          <p className="text-gray-500 text-sm animate-breathe">{t.loading}</p>
+          <p className="text-[var(--c-text-muted)] text-sm animate-breathe">{t.loading}</p>
         </div>
       </div>
     );
@@ -241,7 +237,7 @@ export default function MatchesPage() {
         <div className="glass-strong p-8 text-center max-w-md animate-scale-in">
           <div className="gradient-border absolute inset-0 pointer-events-none rounded-[24px]" />
           <h2 className="text-xl font-bold gradient-text mb-2">{t.matchesLoginRequired}</h2>
-          <p className="text-gray-500">{t.matchesLoginMsg}</p>
+          <p className="text-[var(--c-text-muted)]">{t.matchesLoginMsg}</p>
         </div>
       </div>
     );
@@ -278,7 +274,7 @@ export default function MatchesPage() {
         </div>
         <div>
           <p className="font-semibold text-[var(--c-text,white)] text-sm">{animal.name}</p>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-[var(--c-text-muted)]">
             {animal.species.charAt(0).toUpperCase() + animal.species.slice(1)}
             {animal.breed ? " · " + animal.breed : ""}
           </p>
@@ -307,7 +303,7 @@ export default function MatchesPage() {
         <h1 className="text-3xl font-extrabold gradient-text mb-2 animate-slide-up">
           {t.matchesTitle}
         </h1>
-        <p className="text-gray-500 text-sm mb-6 animate-slide-up" style={{ animationDelay: "0.05s" }}>
+        <p className="text-[var(--c-text-muted)] text-sm mb-6 animate-slide-up" style={{ animationDelay: "0.05s" }}>
           {matches.length > 0
             ? `${matches.length} match${matches.length > 1 ? "s" : ""}`
             : ""}
@@ -332,7 +328,7 @@ export default function MatchesPage() {
                   transition-all duration-300 flex items-center gap-2
                   ${activeTab === tab.key
                     ? "neon-orange text-orange-300 border-orange-500/40 bg-orange-500/10"
-                    : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
+                    : "text-[var(--c-text-muted)] hover:text-[var(--c-text)] hover:bg-white/5"
                   }
                 `}
                 style={activeTab === tab.key ? { borderColor: "rgba(249,115,22,0.4)" } : {}}
@@ -341,7 +337,7 @@ export default function MatchesPage() {
                 {tab.count > 0 && (
                   <span className={`
                     px-1.5 py-0.5 rounded-full text-xs font-bold
-                    ${activeTab === tab.key ? "bg-orange-500/30 text-orange-300" : "bg-white/10 text-gray-500"}
+                    ${activeTab === tab.key ? "bg-orange-500/30 text-orange-300" : "bg-white/10 text-[var(--c-text-muted)]"}
                   `}>
                     {tab.count}
                   </span>
@@ -354,7 +350,7 @@ export default function MatchesPage() {
         {/* Demandes reçues */}
         {current.pendingReceived.length > 0 && (
           <div className="mb-8 animate-slide-up" style={{ animationDelay: "0.15s" }}>
-            <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-[var(--c-text-muted)] uppercase tracking-widest mb-3 flex items-center gap-2">
               {t.matchesReceived}
               <span className="px-2 py-0.5 bg-orange-500/20 text-orange-300 rounded-full normal-case text-xs neon-orange">
                 {current.pendingReceived.length}
@@ -370,7 +366,7 @@ export default function MatchesPage() {
                       <span className="text-orange-500 font-bold animate-float">→</span>
                       <AnimalBadge animal={match.receiver_animal} userId={match.receiver_user_id} />
                     </div>
-                    <p className="text-sm text-gray-500 mb-4">
+                    <p className="text-sm text-[var(--c-text-muted)] mb-4">
                       {match.sender_profile.full_name || match.sender_profile.email} {t.matchesWants} {match.sender_animal.name} {t.matchesMeet} {match.receiver_animal.name}
                     </p>
                     <div className="flex gap-3">
@@ -381,8 +377,8 @@ export default function MatchesPage() {
                         {t.matchesAccept}
                       </button>
                       <button onClick={() => handleRespond(match.id, "rejected")}
-                        className="flex-1 py-2.5 glass text-gray-400 font-semibold rounded-xl transition-all duration-300 text-sm
-                          hover:bg-white/10 hover:text-gray-300 active:scale-[0.98]">
+                        className="flex-1 py-2.5 glass text-[var(--c-text-muted)] font-semibold rounded-xl transition-all duration-300 text-sm
+                          hover:bg-white/10 hover:text-[var(--c-text)] active:scale-[0.98]">
                         {t.matchesDecline}
                       </button>
                     </div>
@@ -396,7 +392,7 @@ export default function MatchesPage() {
         {/* Matchs confirmés */}
         {current.accepted.length > 0 && (
           <div className="mb-8 animate-slide-up" style={{ animationDelay: "0.2s" }}>
-            <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-[var(--c-text-muted)] uppercase tracking-widest mb-3 flex items-center gap-2">
               {t.matchesConfirmed}
               <span className="px-2 py-0.5 bg-green-500/20 text-green-400 rounded-full normal-case text-xs">
                 {current.accepted.length}
@@ -438,9 +434,9 @@ export default function MatchesPage() {
         {/* En attente */}
         {current.pendingSent.length > 0 && (
           <div className="mb-8 animate-slide-up" style={{ animationDelay: "0.25s" }}>
-            <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-[var(--c-text-muted)] uppercase tracking-widest mb-3 flex items-center gap-2">
               {t.matchesPending}
-              <span className="px-2 py-0.5 bg-white/10 text-gray-400 rounded-full normal-case text-xs">
+              <span className="px-2 py-0.5 bg-white/10 text-[var(--c-text-muted)] rounded-full normal-case text-xs">
                 {current.pendingSent.length}
               </span>
               <span className="w-2 h-2 rounded-full bg-orange-400 animate-breathe ml-1" />
@@ -450,10 +446,10 @@ export default function MatchesPage() {
                 <div key={match.id} className="glass card-futuristic p-5">
                   <div className="flex items-center gap-3">
                     <AnimalBadge animal={match.sender_animal} userId={match.sender_user_id} />
-                    <span className="text-gray-500 font-bold animate-breathe">→</span>
+                    <span className="text-[var(--c-text-muted)] font-bold animate-breathe">→</span>
                     <AnimalBadge animal={match.receiver_animal} userId={match.receiver_user_id} />
                   </div>
-                  <p className="text-xs text-gray-500 mt-3 flex items-center gap-2">
+                  <p className="text-xs text-[var(--c-text-muted)] mt-3 flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-breathe" />
                     {t.matchesWaiting} {match.receiver_profile.full_name || match.receiver_profile.email}
                   </p>
@@ -475,7 +471,7 @@ export default function MatchesPage() {
               <p className="text-6xl relative z-10 animate-float">💕</p>
             </div>
             <p className="text-2xl font-extrabold gradient-text-warm mb-2">{t.matchesNone}</p>
-            <p className="text-gray-500 mt-2 text-sm max-w-xs mx-auto">{t.matchesBrowse}</p>
+            <p className="text-[var(--c-text-muted)] mt-2 text-sm max-w-xs mx-auto">{t.matchesBrowse}</p>
             <Link href="/animals"
               className="inline-block mt-6 btn-futuristic animate-pulse-glow">
               {t.matchesDiscover}
@@ -487,7 +483,7 @@ export default function MatchesPage() {
         {matches.length > 0 && current.pendingReceived.length === 0 && current.accepted.length === 0 && current.pendingSent.length === 0 && (
           <div className="text-center py-12 animate-scale-in">
             <p className="text-4xl mb-3 animate-float">🔍</p>
-            <p className="text-gray-500 text-sm">Aucun match dans cette catégorie</p>
+            <p className="text-[var(--c-text-muted)] text-sm">Aucun match dans cette catégorie</p>
           </div>
         )}
       </div>

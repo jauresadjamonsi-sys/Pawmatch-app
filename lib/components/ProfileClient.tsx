@@ -8,11 +8,7 @@ import PushButton from "./PushButton";
 import { useAppContext } from "@/lib/contexts/AppContext";
 import { BadgesSection } from "./Badges";
 import ReferralCard from "./ReferralCard";
-
-const EMOJI_MAP: Record<string, string> = {
-  chien: "🐕", chat: "🐱", lapin: "🐰",
-  oiseau: "🐦", rongeur: "🐹", autre: "🐾",
-};
+import { EMOJI_MAP } from "@/lib/constants";
 
 interface Props {
   profile: any;

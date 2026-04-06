@@ -55,14 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-const EMOJI_MAP: Record<string, string> = {
-  chien: "🐕",
-  chat: "🐱",
-  lapin: "🐰",
-  oiseau: "🐦",
-  rongeur: "🐹",
-  autre: "🐾",
-};
+import { EMOJI_MAP } from "@/lib/constants";
 
 type AnimalCard = {
   id: string;

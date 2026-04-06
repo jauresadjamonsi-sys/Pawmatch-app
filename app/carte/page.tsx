@@ -4,11 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import dynamic from "next/dynamic";
 import { useAppContext } from "@/lib/contexts/AppContext";
-
-const EMOJI_MAP: Record<string, string> = {
-  chien: "🐕", chat: "🐱", lapin: "🐰",
-  oiseau: "🐦", rongeur: "🐹", autre: "🐾",
-};
+import { EMOJI_MAP } from "@/lib/constants";
 
 const CANTON_COORDS: Record<string, [number, number]> = {
   VD: [46.6, 6.6], GE: [46.2, 6.15], BE: [46.95, 7.45], ZH: [47.37, 8.54],

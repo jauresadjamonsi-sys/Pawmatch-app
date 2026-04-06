@@ -339,7 +339,7 @@ export default function FlairerPage() {
             <div className="text-5xl mb-4 animate-float">{"🐾"}</div>
             <div className="absolute inset-0 blur-xl bg-orange-500/20 rounded-full animate-breathe" />
           </div>
-          <p className="text-gray-500 text-sm animate-breathe mt-2">Calcul des compatibilités...</p>
+          <p className="text-[var(--c-text-muted)] text-sm animate-breathe mt-2">Calcul des compatibilités...</p>
         </div>
       </div>
     );
@@ -493,12 +493,12 @@ export default function FlairerPage() {
             <div className="absolute inset-0 rounded-[24px] gradient-border pointer-events-none" />
             <div className="text-7xl mb-4 animate-float">{"🐾"}</div>
             <h2 className="text-3xl font-extrabold gradient-text-warm mb-1">Coup de Truffe !</h2>
-            <p className="text-gray-400 text-sm mb-6">Match mutuel avec {animal?.name} {"🎉"}</p>
+            <p className="text-[var(--c-text-muted)] text-sm mb-6">Match mutuel avec {animal?.name} {"🎉"}</p>
             <div className="flex gap-3">
               {mutualMatchData && (
                 <Link href={"/matches/" + mutualMatchData.id} className="flex-1 py-3 btn-futuristic text-center text-sm">{"💬"} Discuter</Link>
               )}
-              <button onClick={() => setShowCoupDeTruffe(false)} className="px-4 py-3 glass text-gray-400 text-sm hover:bg-white/10 transition-all duration-300">Plus tard</button>
+              <button onClick={() => setShowCoupDeTruffe(false)} className="px-4 py-3 glass text-[var(--c-text-muted)] text-sm hover:bg-white/10 transition-all duration-300">Plus tard</button>
             </div>
           </div>
         </div>
@@ -525,7 +525,7 @@ export default function FlairerPage() {
         )}
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500">{animals.length - currentIndex} restants</span>
+          <span className="text-xs text-[var(--c-text-muted)]">{animals.length - currentIndex} restants</span>
           <div className="w-16 h-1.5 glass rounded-full overflow-hidden">
             <div className="h-full rounded-full transition-all duration-500"
               style={{
@@ -544,7 +544,7 @@ export default function FlairerPage() {
             <div className="w-full h-full bg-[var(--c-deep,#1a1225)] flex items-center justify-center">
               {nextAnimal.photo_url
                 ? <img src={nextAnimal.photo_url} alt="" className="w-full h-full object-cover opacity-50" draggable={false} />
-                : <span className="text-gray-600 text-4xl font-bold">{(nextAnimal as Animal).name?.charAt(0)}</span>}
+                : <span className="text-[var(--c-text-muted)] text-4xl font-bold">{(nextAnimal as Animal).name?.charAt(0)}</span>}
             </div>
           </div>
         )}
@@ -596,7 +596,7 @@ export default function FlairerPage() {
           <div className="h-[55%] relative overflow-hidden bg-[var(--c-deep,#1a1225)]">
             {animal.photo_url
               ? <img src={animal.photo_url} alt={animal.name} className="w-full h-full object-cover" draggable={false} />
-              : <div className="w-full h-full flex items-center justify-center text-6xl font-bold text-gray-600">{animal.name?.charAt(0)}</div>}
+              : <div className="w-full h-full flex items-center justify-center text-6xl font-bold text-[var(--c-text-muted)]">{animal.name?.charAt(0)}</div>}
 
             {/* Gradient overlay at bottom */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
@@ -623,7 +623,7 @@ export default function FlairerPage() {
                     borderColor: compat.color + "50",
                   }}>
                   <div className="w-2 h-2 rounded-full animate-breathe" style={{ backgroundColor: compat.color, boxShadow: `0 0 8px ${compat.color}` }} />
-                  <span className="text-white font-bold text-xs">{compat.score}%</span>
+                  <span className="text-[var(--c-text)] font-bold text-xs">{compat.score}%</span>
                   <span className="text-xs font-medium" style={{ color: compat.color }}>{compat.label}</span>
                 </div>
               </div>
@@ -635,8 +635,8 @@ export default function FlairerPage() {
 
             {/* Glass info overlay at bottom of photo */}
             <div className="absolute bottom-0 left-0 right-0 p-5 backdrop-blur-sm bg-black/20">
-              <h2 className="text-2xl font-extrabold text-white drop-shadow-lg">{animal.name}</h2>
-              <p className="text-sm text-gray-300">{SPECIES[animal.species] || animal.species}{animal.breed ? " · " + animal.breed : ""}</p>
+              <h2 className="text-2xl font-extrabold text-[var(--c-text)] drop-shadow-lg">{animal.name}</h2>
+              <p className="text-sm text-[var(--c-text-muted)]">{SPECIES[animal.species] || animal.species}{animal.breed ? " · " + animal.breed : ""}</p>
             </div>
           </div>
 
@@ -647,7 +647,7 @@ export default function FlairerPage() {
             {compat && activeMyAnimal && (
               <div className="mb-3 p-3 glass rounded-2xl">
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-[10px] text-gray-500 uppercase tracking-wider">Compatibilité avec {activeMyAnimal.name}</span>
+                  <span className="text-[10px] text-[var(--c-text-muted)] uppercase tracking-wider">Compatibilité avec {activeMyAnimal.name}</span>
                   <span className="text-xs font-bold" style={{ color: compat.color, textShadow: `0 0 10px ${compat.color}60` }}>{compat.score}%</span>
                 </div>
                 <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden relative">
@@ -658,7 +658,7 @@ export default function FlairerPage() {
                 {compat.reasons.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-2">
                     {compat.reasons.map(r => (
-                      <span key={r} className="text-[10px] px-2 py-0.5 glass text-gray-400 rounded-full">{r}</span>
+                      <span key={r} className="text-[10px] px-2 py-0.5 glass text-[var(--c-text-muted)] rounded-full">{r}</span>
                     ))}
                   </div>
                 )}
@@ -668,9 +668,9 @@ export default function FlairerPage() {
             <div className="flex flex-wrap gap-1.5 mb-2">
               {animal.canton && <span className="px-2.5 py-1 glass text-orange-300 rounded-full text-xs font-medium" style={{ borderColor: "rgba(249,115,22,0.2)" }}>{cantonName || animal.canton}</span>}
               {userCanton && animal.canton && <span className="px-2.5 py-1 glass text-green-400 rounded-full text-xs font-bold" style={{ borderColor: "rgba(52,211,153,0.2)" }}>{getProximityLabel(userCanton, animal.canton)}</span>}
-              {animal.city && <span className="px-2.5 py-1 glass text-gray-300 rounded-full text-xs">{animal.city}</span>}
-              <span className="px-2.5 py-1 glass text-gray-300 rounded-full text-xs">{formatAge(animal.age_months)}</span>
-              <span className="px-2.5 py-1 glass text-gray-300 rounded-full text-xs">{animal.gender === "male" ? "Mâle" : animal.gender === "femelle" ? "Femelle" : "Inconnu"}</span>
+              {animal.city && <span className="px-2.5 py-1 glass text-[var(--c-text-muted)] rounded-full text-xs">{animal.city}</span>}
+              <span className="px-2.5 py-1 glass text-[var(--c-text-muted)] rounded-full text-xs">{formatAge(animal.age_months)}</span>
+              <span className="px-2.5 py-1 glass text-[var(--c-text-muted)] rounded-full text-xs">{animal.gender === "male" ? "Mâle" : animal.gender === "femelle" ? "Femelle" : "Inconnu"}</span>
             </div>
             {animal.traits?.length > 0 && (
               <div className="flex flex-wrap gap-1 mb-2">
@@ -679,7 +679,7 @@ export default function FlairerPage() {
                 ))}
               </div>
             )}
-            {animal.description && <p className="text-gray-400 text-xs leading-relaxed line-clamp-2">{animal.description}</p>}
+            {animal.description && <p className="text-[var(--c-text-muted)] text-xs leading-relaxed line-clamp-2">{animal.description}</p>}
           </div>
         </div>
       </div>
@@ -692,8 +692,8 @@ export default function FlairerPage() {
             transition-all duration-300 group
             hover:shadow-[0_0_25px_rgba(239,68,68,0.4),0_0_50px_rgba(239,68,68,0.15)]
             hover:border-red-500/40 hover:scale-110 active:scale-95"
-          style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-          <svg className="w-6 h-6 text-gray-400 group-hover:text-red-400 transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          style={{ borderColor: "var(--c-border)" }}>
+          <svg className="w-6 h-6 text-[var(--c-text-muted)] group-hover:text-red-400 transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
@@ -727,14 +727,14 @@ export default function FlairerPage() {
           className="w-12 h-12 glass rounded-full flex items-center justify-center
             transition-all duration-300 group
             hover:bg-white/10 hover:scale-110 active:scale-95"
-          style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-          <svg className="w-4 h-4 text-gray-500 group-hover:text-gray-300 transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          style={{ borderColor: "var(--c-border)" }}>
+          <svg className="w-4 h-4 text-[var(--c-text-muted)] group-hover:text-[var(--c-text-muted)] transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
           </svg>
         </button>
       </div>
 
-      <p className="text-gray-600 text-[10px] mt-3 relative z-10">{"←"} Passer {"·"} {"❤️"} Flairer {"·"} {"⚡"} Super Flair (swipe haut)</p>
+      <p className="text-[var(--c-text-muted)] text-[10px] mt-3 relative z-10">{"←"} Passer {"·"} {"❤️"} Flairer {"·"} {"⚡"} Super Flair (swipe haut)</p>
 
       {/* Paywall modal */}
       {showPaywall && (
@@ -751,7 +751,7 @@ export default function FlairerPage() {
               <a href="/login" className="w-full py-3 glass text-center text-[var(--c-text-muted)] font-bold text-sm hover:bg-white/10 transition-all duration-300">
                 Déjà un compte ? Se connecter
               </a>
-              <button onClick={() => setShowPaywall(false)} className="text-xs text-[var(--c-text-muted)] mt-2 hover:text-gray-300 transition-colors">
+              <button onClick={() => setShowPaywall(false)} className="text-xs text-[var(--c-text-muted)] mt-2 hover:text-[var(--c-text-muted)] transition-colors">
                 Continuer sans compte (limité)
               </button>
             </div>
@@ -768,7 +768,7 @@ export default function FlairerPage() {
               <div className="text-center py-4">
                 <div className="text-5xl mb-3 animate-float">{isSuperLike ? "⚡" : "❤️"}</div>
                 <h3 className="text-xl font-bold gradient-text-warm mb-1">{isSuperLike ? "Super Flair envoyé !" : "Flair envoyé !"}</h3>
-                <p className="text-gray-400 text-sm">{animal.name} sera bientôt prévenu</p>
+                <p className="text-[var(--c-text-muted)] text-sm">{animal.name} sera bientôt prévenu</p>
                 {streak >= 3 && <p className="text-sm font-bold mt-2 gradient-text-warm">{"🔥"} Streak {"×"}{streak} !</p>}
               </div>
             ) : (
@@ -777,7 +777,7 @@ export default function FlairerPage() {
                   {isSuperLike && <span className="text-2xl">{"⚡"}</span>}
                   <div>
                     <h3 className="text-lg font-bold gradient-text">Avec quel compagnon ?</h3>
-                    <p className="text-sm text-gray-400">Qui va rencontrer {animal.name} ?</p>
+                    <p className="text-sm text-[var(--c-text-muted)]">Qui va rencontrer {animal.name} ?</p>
                   </div>
                 </div>
                 {compat && (
@@ -786,7 +786,7 @@ export default function FlairerPage() {
                     <span className="text-2xl">{"🤝"}</span>
                     <div>
                       <p className="text-sm font-bold" style={{ color: compat.color, textShadow: `0 0 8px ${compat.color}40` }}>{compat.score}% {"—"} {compat.label}</p>
-                      <p className="text-xs text-gray-500">{compat.reasons[0]}</p>
+                      <p className="text-xs text-[var(--c-text-muted)]">{compat.reasons[0]}</p>
                     </div>
                   </div>
                 )}
@@ -801,22 +801,22 @@ export default function FlairerPage() {
                           shadow-[0_0_10px_rgba(249,115,22,0.2)]">
                           {myAnimal.photo_url
                             ? <img src={myAnimal.photo_url} alt={myAnimal.name} className="w-full h-full object-cover" />
-                            : <span className="text-sm font-bold text-gray-500">{myAnimal.name?.charAt(0)}</span>}
+                            : <span className="text-sm font-bold text-[var(--c-text-muted)]">{myAnimal.name?.charAt(0)}</span>}
                         </div>
                         <div className="flex-1">
                           <p className="font-semibold text-[var(--c-text,white)] text-sm">{myAnimal.name}</p>
-                          <p className="text-xs text-gray-500">{myAnimal.species}{myAnimal.breed ? " · " + myAnimal.breed : ""}</p>
+                          <p className="text-xs text-[var(--c-text-muted)]">{myAnimal.species}{myAnimal.breed ? " · " + myAnimal.breed : ""}</p>
                         </div>
                         <div className="text-right">
                           <span className="text-xs font-bold" style={{ color: c.color, textShadow: `0 0 8px ${c.color}40` }}>{c.score}%</span>
-                          <p className="text-[10px] text-gray-600">{c.label}</p>
+                          <p className="text-[10px] text-[var(--c-text-muted)]">{c.label}</p>
                         </div>
                       </button>
                     );
                   })}
                 </div>
                 <button onClick={() => { setShowMatchModal(false); setMatchError(null); setIsSuperLike(false); setDragX(0); setDragY(0); }}
-                  className="w-full py-2.5 glass text-gray-400 font-medium rounded-2xl transition-all duration-300 text-sm hover:bg-white/10">
+                  className="w-full py-2.5 glass text-[var(--c-text-muted)] font-medium rounded-2xl transition-all duration-300 text-sm hover:bg-white/10">
                   Annuler
                 </button>
               </>

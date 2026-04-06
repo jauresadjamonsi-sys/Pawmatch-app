@@ -10,7 +10,7 @@ export default function Footer() {
     <footer
       style={{
         position: "relative",
-        background: "rgba(10, 8, 18, 0.9)",
+        background: "var(--c-deep)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
         padding: "40px 20px 28px",
@@ -100,7 +100,7 @@ export default function Footer() {
               fontWeight: 700,
               border: "1px solid rgba(249,115,22,0.15)",
               color: "var(--c-text-muted)",
-              background: "rgba(255,255,255,0.04)",
+              background: "var(--c-card)",
               backdropFilter: "blur(10px)",
               WebkitBackdropFilter: "blur(10px)",
               boxShadow: "0 0 12px rgba(249,115,22,0.06), inset 0 0 12px rgba(255,255,255,0.02)",
@@ -121,7 +121,7 @@ export default function Footer() {
               fontWeight: 700,
               border: "1px solid rgba(167,139,250,0.15)",
               color: "var(--c-text-muted)",
-              background: "rgba(255,255,255,0.04)",
+              background: "var(--c-card)",
               backdropFilter: "blur(10px)",
               WebkitBackdropFilter: "blur(10px)",
               boxShadow: "0 0 12px rgba(167,139,250,0.06), inset 0 0 12px rgba(255,255,255,0.02)",
@@ -200,7 +200,7 @@ export default function Footer() {
             letterSpacing: "0.02em",
           }}
         >
-          &copy; 2025 Pawly &mdash; pawlyapp.ch
+          &copy; {new Date().getFullYear()} Pawly &mdash; pawlyapp.ch
         </p>
       </div>
 

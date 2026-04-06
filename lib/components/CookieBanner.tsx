@@ -20,8 +20,8 @@ export function CookieBanner() {
   return (
     <div style={{
       position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 9999,
-      background: "rgba(26,18,37,0.95)", backdropFilter: "blur(12px)",
-      borderTop: "1px solid rgba(255,255,255,0.1)",
+      background: "var(--c-deep)", backdropFilter: "blur(12px)",
+      borderTop: "1px solid var(--c-border)",
       padding: "14px 20px", display: "flex", alignItems: "center",
       justifyContent: "center", gap: 16, flexWrap: "wrap",
     }}>

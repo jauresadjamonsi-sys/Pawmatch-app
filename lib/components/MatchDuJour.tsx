@@ -3,11 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { detectPersonality } from "@/lib/services/personality";
-
-const EMOJI_MAP: Record<string, string> = {
-  chien: "🐕", chat: "🐱", lapin: "🐰",
-  oiseau: "🐦", rongeur: "🐹", autre: "🐾",
-};
+import { EMOJI_MAP } from "@/lib/constants";
 
 const LABELS: Record<string, Record<string, string>> = {
   fr: { title: "Match du jour", sub: "Notre recommandation pour", cta: "Voir le profil →", loading: "Recherche en cours..." },

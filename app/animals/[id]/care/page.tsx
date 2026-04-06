@@ -8,6 +8,7 @@ import { detectPersonality } from "@/lib/services/personality";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useAppContext } from "@/lib/contexts/AppContext";
+import { EMOJI_MAP } from "@/lib/constants";
 
 // --- Types ---
 
@@ -34,11 +35,6 @@ const MOODS = [
   { value: "tired", emoji: "😴", label: "Fatigué", color: "#f97316", score: 2 },
   { value: "sick", emoji: "🤒", label: "Malade", color: "#ef4444", score: 1 },
 ];
-
-const EMOJI_MAP: Record<string, string> = {
-  chien: "🐕", chat: "🐱", lapin: "🐰",
-  oiseau: "🐦", rongeur: "🐹", autre: "🐾",
-};
 
 // --- Helpers ---
 

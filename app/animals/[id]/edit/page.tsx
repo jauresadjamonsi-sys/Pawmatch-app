@@ -146,8 +146,8 @@ export default function EditAnimalPage() {
     router.push("/animals/" + params.id);
   }
 
-  if (loading) return <p className="text-center py-12 text-gray-500">Chargement...</p>;
-  if (!animal) return <p className="text-center py-12 text-gray-500">Animal introuvable</p>;
+  if (loading) return <p className="text-center py-12 text-[var(--c-text-muted)]">Chargement...</p>;
+  if (!animal) return <p className="text-center py-12 text-[var(--c-text-muted)]">Animal introuvable</p>;
 
   const breedList = BREEDS[species] || [];
   const traitList = TRAITS[species] || [];
@@ -156,16 +156,16 @@ export default function EditAnimalPage() {
   return (
     <div className="min-h-screen px-4 py-8">
       <div className="max-w-lg mx-auto">
-        <h1 className="text-2xl font-bold text-white mb-2">{t.animalSaveButton} — {animal.name}</h1>
-        <p className="text-gray-400 text-sm mb-6">{t.animalAddSub}</p>
+        <h1 className="text-2xl font-bold text-[var(--c-text)] mb-2">{t.animalSaveButton} — {animal.name}</h1>
+        <p className="text-[var(--c-text-muted)] text-sm mb-6">{t.animalAddSub}</p>
 
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+        <div className="bg-white/5 border border-[var(--c-border)] rounded-2xl p-6">
           {error && <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-sm">{error}</div>}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Photos section */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">{t.animalPhoto} *</label>
+              <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-2">{t.animalPhoto} *</label>
 
               {/* Owner photo requirement banner */}
               <div className={"mb-3 p-3 rounded-xl border text-sm " + (hasOwnerPhoto ? "bg-green-500/10 border-green-500/20 text-green-400" : "bg-amber-500/10 border-amber-500/20 text-amber-400")}>
@@ -176,13 +176,13 @@ export default function EditAnimalPage() {
               {/* Photo grid */}
               <div className="flex flex-wrap gap-3 mb-3">
                 {photos.map((photo, i) => (
-                  <div key={i} className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-white/10">
+                  <div key={i} className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-[var(--c-border)]">
                     <img src={photo.preview} alt={`photo-${i}`} className="w-full h-full object-cover" />
-                    <span className={"absolute bottom-0 left-0 right-0 text-[9px] font-bold text-center py-0.5 " + (photo.tag === "with_owner" ? "bg-green-600 text-white" : "bg-white/80 text-gray-700")}>
+                    <span className={"absolute bottom-0 left-0 right-0 text-[9px] font-bold text-center py-0.5 " + (photo.tag === "with_owner" ? "bg-green-600 text-[var(--c-text)]" : "bg-white/80 text-gray-700")}>
                       {photo.tag === "with_owner" ? t.animalPhotoTagOwner : t.animalPhotoTagAnimal}
                     </span>
                     <button type="button" onClick={() => removePhoto(i)}
-                      className="absolute top-0.5 right-0.5 w-5 h-5 bg-red-500 text-white rounded-full text-xs font-bold flex items-center justify-center">×</button>
+                      className="absolute top-0.5 right-0.5 w-5 h-5 bg-red-500 text-[var(--c-text)] rounded-full text-xs font-bold flex items-center justify-center">×</button>
                   </div>
                 ))}
               </div>
@@ -190,48 +190,48 @@ export default function EditAnimalPage() {
               {/* Add photo buttons */}
               {photos.length < 5 && (
                 <div className="space-y-2">
-                  <div className={"flex gap-2 p-2 rounded-xl border " + (!hasOwnerPhoto ? "border-amber-500/40 bg-amber-500/5" : "border-white/10 bg-white/5")}>
-                    <span className="text-xs text-gray-400 flex items-center gap-1 w-28 shrink-0">🤝 {t.animalPhotoTagOwner}</span>
-                    <label className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-gray-300 text-xs rounded-lg transition cursor-pointer border border-white/10">
+                  <div className={"flex gap-2 p-2 rounded-xl border " + (!hasOwnerPhoto ? "border-amber-500/40 bg-amber-500/5" : "border-[var(--c-border)] bg-white/5")}>
+                    <span className="text-xs text-[var(--c-text-muted)] flex items-center gap-1 w-28 shrink-0">🤝 {t.animalPhotoTagOwner}</span>
+                    <label className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-[var(--c-text-muted)] text-xs rounded-lg transition cursor-pointer border border-[var(--c-border)]">
                       {t.animalGallery}
                       <input type="file" accept="image/*" onChange={(e) => handleAddPhoto(e, "with_owner")} className="hidden" />
                     </label>
-                    <label className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-gray-300 text-xs rounded-lg transition cursor-pointer border border-white/10">
+                    <label className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-[var(--c-text-muted)] text-xs rounded-lg transition cursor-pointer border border-[var(--c-border)]">
                       {t.animalCamera}
                       <input type="file" accept="image/*" capture="environment" onChange={(e) => handleAddPhoto(e, "with_owner")} className="hidden" />
                     </label>
                   </div>
-                  <div className="flex gap-2 p-2 rounded-xl border border-white/10 bg-white/5">
-                    <span className="text-xs text-gray-400 flex items-center gap-1 w-28 shrink-0">🐾 {t.animalPhotoTagAnimal}</span>
-                    <label className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-gray-300 text-xs rounded-lg transition cursor-pointer border border-white/10">
+                  <div className="flex gap-2 p-2 rounded-xl border border-[var(--c-border)] bg-white/5">
+                    <span className="text-xs text-[var(--c-text-muted)] flex items-center gap-1 w-28 shrink-0">🐾 {t.animalPhotoTagAnimal}</span>
+                    <label className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-[var(--c-text-muted)] text-xs rounded-lg transition cursor-pointer border border-[var(--c-border)]">
                       {t.animalGallery}
                       <input type="file" accept="image/*" onChange={(e) => handleAddPhoto(e, "animal_only")} className="hidden" />
                     </label>
-                    <label className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-gray-300 text-xs rounded-lg transition cursor-pointer border border-white/10">
+                    <label className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-[var(--c-text-muted)] text-xs rounded-lg transition cursor-pointer border border-[var(--c-border)]">
                       {t.animalCamera}
                       <input type="file" accept="image/*" capture="environment" onChange={(e) => handleAddPhoto(e, "animal_only")} className="hidden" />
                     </label>
                   </div>
                 </div>
               )}
-              <p className="text-[10px] text-gray-500 mt-1">{photos.length}/5 — {t.animalMaxPhotos}</p>
+              <p className="text-[10px] text-[var(--c-text-muted)] mt-1">{photos.length}/5 — {t.animalMaxPhotos}</p>
             </div>
 
             {/* Nom */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalName} *</label>
+              <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.animalName} *</label>
               <input name="name" type="text" required defaultValue={animal.name}
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition" />
+                className="w-full px-4 py-3 bg-white/5 border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition" />
             </div>
 
             {/* Espèce */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">{t.animalSpecies} *</label>
+              <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-2">{t.animalSpecies} *</label>
               <div className="grid grid-cols-3 gap-2">
                 {SPECIES_LIST.map((s) => (
                   <button key={s.value} type="button" onClick={() => { setSpecies(s.value); setCustomBreed(false); setSelectedTraits([]); }}
                     className={"px-3 py-2 rounded-xl text-sm font-medium transition border " +
-                      (species === s.value ? "bg-orange-500/20 border-orange-500/50 text-orange-300" : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10")}>
+                      (species === s.value ? "bg-orange-500/20 border-orange-500/50 text-orange-300" : "bg-white/5 border-[var(--c-border)] text-[var(--c-text-muted)] hover:bg-white/10")}>
                     {s.label}
                   </button>
                 ))}
@@ -240,16 +240,16 @@ export default function EditAnimalPage() {
 
             {/* Race */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalBreed}</label>
+              <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.animalBreed}</label>
               {customBreed ? (
                 <input name="breed_custom" type="text" defaultValue={animal.breed || ""}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition" />
+                  className="w-full px-4 py-3 bg-white/5 border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition" />
               ) : (
                 <select name="breed" defaultValue={animal.breed || ""} onChange={(e) => { if (e.target.value === "__other") setCustomBreed(true); }}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-gray-300 focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
-                  <option value="" className="bg-[#1a1225]">{t.animalSelect}</option>
-                  {breedList.map((b: string) => (<option key={b} value={b} className="bg-[#1a1225]">{b}</option>))}
-                  <option value="__other" className="bg-[#1a1225]">{t.animalOtherBreed}</option>
+                  className="w-full px-4 py-3 bg-white/5 border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                  <option value="" className="bg-[var(--c-deep)]">{t.animalSelect}</option>
+                  {breedList.map((b: string) => (<option key={b} value={b} className="bg-[var(--c-deep)]">{b}</option>))}
+                  <option value="__other" className="bg-[var(--c-deep)]">{t.animalOtherBreed}</option>
                 </select>
               )}
             </div>
@@ -257,47 +257,47 @@ export default function EditAnimalPage() {
             {/* Âge + Genre + Poids */}
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalAge}</label>
+                <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.animalAge}</label>
                 <input name="age_months" type="number" min="0" defaultValue={animal.age_months || ""}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-orange-500 outline-none transition" />
+                  className="w-full px-4 py-3 bg-white/5 border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-2 focus:ring-orange-500 outline-none transition" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalGender}</label>
+                <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.animalGender}</label>
                 <select name="gender" defaultValue={animal.gender}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-gray-300 focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
-                  <option value="inconnu" className="bg-[#1a1225]">{t.animalUnknown}</option>
-                  <option value="male" className="bg-[#1a1225]">{t.animalMale}</option>
-                  <option value="femelle" className="bg-[#1a1225]">{t.animalFemale}</option>
+                  className="w-full px-4 py-3 bg-white/5 border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                  <option value="inconnu" className="bg-[var(--c-deep)]">{t.animalUnknown}</option>
+                  <option value="male" className="bg-[var(--c-deep)]">{t.animalMale}</option>
+                  <option value="femelle" className="bg-[var(--c-deep)]">{t.animalFemale}</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalWeight}</label>
+                <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.animalWeight}</label>
                 <input name="weight_kg" type="number" step="0.1" min="0" defaultValue={animal.weight_kg || ""}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-orange-500 outline-none transition" />
+                  className="w-full px-4 py-3 bg-white/5 border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-2 focus:ring-orange-500 outline-none transition" />
               </div>
             </div>
 
             {/* Canton + Ville */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalCanton}</label>
+                <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.animalCanton}</label>
                 <select name="canton" value={selectedCanton} onChange={(e) => { setSelectedCanton(e.target.value); setCustomCity(false); }}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-gray-300 focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
-                  <option value="" className="bg-[#1a1225]">{t.animalCanton}</option>
-                  {CANTONS.map((c) => (<option key={c.code} value={c.code} className="bg-[#1a1225]">{c.name}</option>))}
+                  className="w-full px-4 py-3 bg-white/5 border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                  <option value="" className="bg-[var(--c-deep)]">{t.animalCanton}</option>
+                  {CANTONS.map((c) => (<option key={c.code} value={c.code} className="bg-[var(--c-deep)]">{c.name}</option>))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalCity}</label>
+                <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.animalCity}</label>
                 {customCity ? (
                   <input name="city_custom" type="text" defaultValue={animal.city || ""}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-orange-500 outline-none transition" />
+                    className="w-full px-4 py-3 bg-white/5 border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-2 focus:ring-orange-500 outline-none transition" />
                 ) : (
                   <select name="city" defaultValue={animal.city || ""} onChange={(e) => { if (e.target.value === "__other") setCustomCity(true); }}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-gray-300 focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
-                    <option value="" className="bg-[#1a1225]">{t.animalCity}</option>
-                    {cantonCities.map((c: string) => (<option key={c} value={c} className="bg-[#1a1225]">{c}</option>))}
-                    <option value="__other" className="bg-[#1a1225]">{t.animalOther}</option>
+                    className="w-full px-4 py-3 bg-white/5 border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                    <option value="" className="bg-[var(--c-deep)]">{t.animalCity}</option>
+                    {cantonCities.map((c: string) => (<option key={c} value={c} className="bg-[var(--c-deep)]">{c}</option>))}
+                    <option value="__other" className="bg-[var(--c-deep)]">{t.animalOther}</option>
                   </select>
                 )}
               </div>
@@ -306,24 +306,24 @@ export default function EditAnimalPage() {
             {/* Santé */}
             <div className="flex gap-6">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" name="vaccinated" defaultChecked={animal.vaccinated} className="w-4 h-4 rounded bg-white/5 border-white/10 text-orange-500 focus:ring-orange-500" />
-                <span className="text-sm text-gray-300">{t.animalVaccinated}</span>
+                <input type="checkbox" name="vaccinated" defaultChecked={animal.vaccinated} className="w-4 h-4 rounded bg-white/5 border-[var(--c-border)] text-orange-500 focus:ring-orange-500" />
+                <span className="text-sm text-[var(--c-text-muted)]">{t.animalVaccinated}</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" name="sterilized" defaultChecked={animal.sterilized} className="w-4 h-4 rounded bg-white/5 border-white/10 text-orange-500 focus:ring-orange-500" />
-                <span className="text-sm text-gray-300">{t.animalSterilized}</span>
+                <input type="checkbox" name="sterilized" defaultChecked={animal.sterilized} className="w-4 h-4 rounded bg-white/5 border-[var(--c-border)] text-orange-500 focus:ring-orange-500" />
+                <span className="text-sm text-[var(--c-text-muted)]">{t.animalSterilized}</span>
               </label>
             </div>
 
             {/* Traits */}
             {traitList.length > 0 && (
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">{t.animalCharacter}</label>
+                <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-2">{t.animalCharacter}</label>
                 <div className="flex flex-wrap gap-2">
                   {traitList.map((trait: string) => (
                     <button key={trait} type="button" onClick={() => toggleTrait(trait)}
                       className={"px-3 py-1.5 rounded-full text-xs font-medium transition border " +
-                        (selectedTraits.includes(trait) ? "bg-orange-500/20 border-orange-500/50 text-orange-300" : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10")}>
+                        (selectedTraits.includes(trait) ? "bg-orange-500/20 border-orange-500/50 text-orange-300" : "bg-white/5 border-[var(--c-border)] text-[var(--c-text-muted)] hover:bg-white/10")}>
                       {trait}
                     </button>
                   ))}
@@ -332,14 +332,14 @@ export default function EditAnimalPage() {
             )}
 
             {/* Alimentation */}
-            <div className="border-t border-white/10 pt-5">
+            <div className="border-t border-[var(--c-border)] pt-5">
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-lg">🍖</span>
-                <label className="text-sm font-bold text-gray-200">{t.dietTitle}</label>
+                <label className="text-sm font-bold text-[var(--c-text)]">{t.dietTitle}</label>
               </div>
 
               <div className="mb-3">
-                <label className="block text-sm font-medium text-gray-300 mb-2">{t.dietType}</label>
+                <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-2">{t.dietType}</label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
                     { value: "croquettes", label: `🥣 ${t.dietCroquettes}` },
@@ -354,7 +354,7 @@ export default function EditAnimalPage() {
                       className={"px-3 py-2 rounded-xl text-sm font-medium transition border " +
                         (dietType === d.value
                           ? "bg-teal-500/20 border-teal-500/50 text-teal-300"
-                          : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10")
+                          : "bg-white/5 border-[var(--c-border)] text-[var(--c-text-muted)] hover:bg-white/10")
                       }>
                       {d.label}
                     </button>
@@ -364,32 +364,32 @@ export default function EditAnimalPage() {
               </div>
 
               <div className="mb-3">
-                <label className="block text-sm font-medium text-gray-300 mb-1">{t.dietBrand}</label>
+                <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.dietBrand}</label>
                 <input name="food_brand" type="text" defaultValue={animal.food_brand || ""}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                  className="w-full px-4 py-3 bg-white/5 border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
                   placeholder={t.dietBrandPlaceholder} />
               </div>
 
               <div className="mb-3">
-                <label className="block text-sm font-medium text-gray-300 mb-1">{t.dietTreats}</label>
+                <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.dietTreats}</label>
                 <input name="treats" type="text" defaultValue={animal.treats || ""}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                  className="w-full px-4 py-3 bg-white/5 border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
                   placeholder={t.dietTreatsPlaceholder} />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">{t.dietAllergies}</label>
+                <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.dietAllergies}</label>
                 <input name="allergies" type="text" defaultValue={animal.allergies || ""}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                  className="w-full px-4 py-3 bg-white/5 border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
                   placeholder={t.dietAllergiesPlaceholder} />
               </div>
             </div>
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">{t.animalDescription}</label>
+              <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.animalDescription}</label>
               <textarea name="description" rows={3} defaultValue={animal.description || ""}
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 outline-none transition resize-none" />
+                className="w-full px-4 py-3 bg-white/5 border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 outline-none transition resize-none" />
             </div>
 
             {/* Actions */}
@@ -398,12 +398,12 @@ export default function EditAnimalPage() {
                 className={"flex-1 py-3 font-semibold rounded-xl transition " +
                   (hasOwnerPhoto
                     ? "bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50"
-                    : "bg-gray-600 text-gray-400 cursor-not-allowed")
+                    : "bg-gray-600 text-[var(--c-text-muted)] cursor-not-allowed")
                 }>
                 {saving ? t.animalSaving : !hasOwnerPhoto ? t.animalPhotoWithOwner : t.animalSaveButton}
               </button>
               <button type="button" onClick={() => router.push("/animals/" + params.id)}
-                className="px-6 py-3 bg-white/10 hover:bg-white/20 text-gray-300 font-medium rounded-xl transition border border-white/10">
+                className="px-6 py-3 bg-white/10 hover:bg-white/20 text-[var(--c-text-muted)] font-medium rounded-xl transition border border-[var(--c-border)]">
                 {t.animalCancel}
               </button>
             </div>

@@ -23,11 +23,7 @@ import { ActivityAlert } from "@/lib/components/ActivityAlert";
 import BlockReportModal from "@/lib/components/BlockReportModal";
 import { useOnlineStatus } from "@/lib/hooks/useOnlineStatus";
 import PresenceDot from "@/lib/components/PresenceDot";
-
-const EMOJI_MAP: Record<string, string> = {
-  chien: "🐕", chat: "🐱", lapin: "🐰",
-  oiseau: "🐦", rongeur: "🐹", autre: "🐾",
-};
+import { EMOJI_MAP } from "@/lib/constants";
 
 export default function AnimalDetailPage() {
   const [animal, setAnimal] = useState<AnimalRow | null>(null);
@@ -110,8 +106,8 @@ export default function AnimalDetailPage() {
     return y + " " + (y > 1 ? t.animalYears : t.animalYear) + (r > 0 ? " " + r + " " + t.animalMonths : "");
   }
 
-  if (loading) return <p className="text-center py-12 text-gray-500">{t.loading}</p>;
-  if (!animal) return <p className="text-center py-12 text-gray-500">{t.animalNotFound}</p>;
+  if (loading) return <p className="text-center py-12 text-[var(--c-text-muted)]">{t.loading}</p>;
+  if (!animal) return <p className="text-center py-12 text-[var(--c-text-muted)]">{t.animalNotFound}</p>;
 
   const cantonName = animal.canton ? CANTONS.find((c) => c.code === animal.canton)?.name || animal.canton : null;
   const traits: string[] = animal.traits || [];
@@ -222,8 +218,8 @@ export default function AnimalDetailPage() {
             )}
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-          <div className="h-72 bg-[#2a1f3a] flex items-center justify-center overflow-hidden">
+        <div className="bg-white/5 border border-[var(--c-border)] rounded-2xl overflow-hidden">
+          <div className="h-72 bg-[var(--c-card)] flex items-center justify-center overflow-hidden">
             {(() => {
               const photos = [animal.photo_url, ...(animal.photos || [])].filter(Boolean);
               if (photos.length === 0) return <span className="text-8xl">{EMOJI_MAP[animal.species] || "🐾"}</span>;
@@ -252,7 +248,7 @@ export default function AnimalDetailPage() {
           <div className="p-8">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
-                <h1 className="text-3xl font-bold text-white">{animal.name}</h1>
+                <h1 className="text-3xl font-bold text-[var(--c-text)]">{animal.name}</h1>
                 {animal.created_by && !isOwner && (
                   <PresenceDot isOnline={ownerOnlineMap.get(animal.created_by) ?? false} size="lg" />
                 )}
@@ -278,17 +274,17 @@ export default function AnimalDetailPage() {
                 { label: t.animalLocationLabel, value: [animal.city, cantonName ? cantonName + " (" + animal.canton + ")" : ""].filter(Boolean).join(", ") || t.animalNotSpecifiedF },
               ].map((item) => (
                 <div key={item.label} className="bg-white/5 rounded-xl p-4">
-                  <p className="text-xs text-gray-500">{item.label}</p>
-                  <p className="font-semibold text-white text-sm">{item.value}</p>
+                  <p className="text-xs text-[var(--c-text-muted)]">{item.label}</p>
+                  <p className="font-semibold text-[var(--c-text)] text-sm">{item.value}</p>
                 </div>
               ))}
             </div>
 
             <div className="flex gap-3 mb-4">
-              <span className={"px-3 py-1 rounded-full text-xs font-medium " + (animal.vaccinated ? "bg-green-500/20 text-green-300" : "bg-white/5 text-gray-500")}>
+              <span className={"px-3 py-1 rounded-full text-xs font-medium " + (animal.vaccinated ? "bg-green-500/20 text-green-300" : "bg-white/5 text-[var(--c-text-muted)]")}>
                 {animal.vaccinated ? "✓ " + t.animalVaccinated : t.animalNotVaccinated}
               </span>
-              <span className={"px-3 py-1 rounded-full text-xs font-medium " + (animal.sterilized ? "bg-green-500/20 text-green-300" : "bg-white/5 text-gray-500")}>
+              <span className={"px-3 py-1 rounded-full text-xs font-medium " + (animal.sterilized ? "bg-green-500/20 text-green-300" : "bg-white/5 text-[var(--c-text-muted)]")}>
                 {animal.sterilized ? "✓ " + t.animalSterilized : t.animalNotSterilized}
               </span>
             </div>
@@ -302,25 +298,25 @@ export default function AnimalDetailPage() {
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   {animal.diet_type && (
                     <div>
-                      <span className="text-gray-500 text-xs">{t.animalRegime}</span>
-                      <p className="text-gray-200 font-medium capitalize">{animal.diet_type.replace("_", " ")}</p>
+                      <span className="text-[var(--c-text-muted)] text-xs">{t.animalRegime}</span>
+                      <p className="text-[var(--c-text)] font-medium capitalize">{animal.diet_type.replace("_", " ")}</p>
                     </div>
                   )}
                   {animal.food_brand && (
                     <div>
-                      <span className="text-gray-500 text-xs">{t.animalBrandLabel}</span>
-                      <p className="text-gray-200 font-medium">{animal.food_brand}</p>
+                      <span className="text-[var(--c-text-muted)] text-xs">{t.animalBrandLabel}</span>
+                      <p className="text-[var(--c-text)] font-medium">{animal.food_brand}</p>
                     </div>
                   )}
                   {animal.treats && (
                     <div>
-                      <span className="text-gray-500 text-xs">{t.animalTreatsLabel}</span>
-                      <p className="text-gray-200 font-medium">{animal.treats}</p>
+                      <span className="text-[var(--c-text-muted)] text-xs">{t.animalTreatsLabel}</span>
+                      <p className="text-[var(--c-text)] font-medium">{animal.treats}</p>
                     </div>
                   )}
                   {animal.allergies && (
                     <div>
-                      <span className="text-gray-500 text-xs">{t.animalAllergiesLabel}</span>
+                      <span className="text-[var(--c-text-muted)] text-xs">{t.animalAllergiesLabel}</span>
                       <p className="text-red-300 font-medium">{animal.allergies}</p>
                     </div>
                   )}
@@ -358,7 +354,7 @@ export default function AnimalDetailPage() {
 
             {traits.length > 0 && (
               <div className="mb-6">
-                <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">{t.animalCharacter}</h2>
+                <h2 className="text-sm font-semibold text-[var(--c-text-muted)] uppercase tracking-wider mb-3">{t.animalCharacter}</h2>
                 <div className="flex flex-wrap gap-2">
                   {traits.map((trait) => (
                     <span key={trait} className="px-3 py-1.5 bg-orange-500/10 text-orange-300 rounded-full text-xs font-medium">{trait}</span>
@@ -369,8 +365,8 @@ export default function AnimalDetailPage() {
 
             {animal.description && (
               <div className="mb-6">
-                <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">{t.animalDescription}</h2>
-                <p className="text-gray-300 leading-relaxed text-sm">{animal.description}</p>
+                <h2 className="text-sm font-semibold text-[var(--c-text-muted)] uppercase tracking-wider mb-2">{t.animalDescription}</h2>
+                <p className="text-[var(--c-text-muted)] leading-relaxed text-sm">{animal.description}</p>
               </div>
             )}
 
@@ -523,17 +519,17 @@ export default function AnimalDetailPage() {
             {/* Modal */}
             {showMatchModal && (
               <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-                <div className="bg-[#2a1f3a] border border-white/10 rounded-2xl max-w-md w-full p-6">
-                  <h3 className="text-lg font-bold text-white mb-2">{t.animalWithWhich}</h3>
-                  <p className="text-sm text-gray-400 mb-4">{t.animalChooseWhich} {animal.name}</p>
+                <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl max-w-md w-full p-6">
+                  <h3 className="text-lg font-bold text-[var(--c-text)] mb-2">{t.animalWithWhich}</h3>
+                  <p className="text-sm text-[var(--c-text-muted)] mb-4">{t.animalChooseWhich} {animal.name}</p>
 
                   {matchError && <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-sm">{matchError}</div>}
 
                   <div className="space-y-2 mb-4">
                     {myAnimals.map((myAnimal) => (
                       <button key={myAnimal.id} onClick={() => handleMatch(myAnimal.id)} disabled={matchSending}
-                        className="w-full flex items-center gap-3 p-3 bg-white/5 hover:bg-orange-500/10 rounded-xl transition text-left disabled:opacity-50 border border-white/5">
-                        <div className="w-12 h-12 rounded-full bg-[#1a1225] border-2 border-orange-400 flex items-center justify-center overflow-hidden flex-shrink-0">
+                        className="w-full flex items-center gap-3 p-3 bg-white/5 hover:bg-orange-500/10 rounded-xl transition text-left disabled:opacity-50 border border-[var(--c-border)]">
+                        <div className="w-12 h-12 rounded-full bg-[var(--c-deep)] border-2 border-orange-400 flex items-center justify-center overflow-hidden flex-shrink-0">
                           {myAnimal.photo_url ? (
                             <img src={myAnimal.photo_url} alt={myAnimal.name} className="w-full h-full object-cover" />
                           ) : (
@@ -541,15 +537,15 @@ export default function AnimalDetailPage() {
                           )}
                         </div>
                         <div>
-                          <p className="font-semibold text-white text-sm">{myAnimal.name}</p>
-                          <p className="text-xs text-gray-500">{myAnimal.species} {myAnimal.breed ? "· " + myAnimal.breed : ""}</p>
+                          <p className="font-semibold text-[var(--c-text)] text-sm">{myAnimal.name}</p>
+                          <p className="text-xs text-[var(--c-text-muted)]">{myAnimal.species} {myAnimal.breed ? "· " + myAnimal.breed : ""}</p>
                         </div>
                       </button>
                     ))}
                   </div>
 
                   <button onClick={() => { setShowMatchModal(false); setMatchError(null); }}
-                    className="w-full py-2 bg-white/10 hover:bg-white/20 text-gray-300 font-medium rounded-xl transition text-sm">
+                    className="w-full py-2 bg-white/10 hover:bg-white/20 text-[var(--c-text-muted)] font-medium rounded-xl transition text-sm">
                     {t.cancel}
                   </button>
                 </div>

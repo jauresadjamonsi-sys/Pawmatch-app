@@ -9,11 +9,7 @@ import Link from "next/link";
 import BlockReportModal from "@/lib/components/BlockReportModal";
 import { useOnlineStatus } from "@/lib/hooks/useOnlineStatus";
 import PresenceDot from "@/lib/components/PresenceDot";
-
-const EMOJI_MAP: Record<string, string> = {
-  chien: "🐕", chat: "🐱", lapin: "🐰",
-  oiseau: "🐦", rongeur: "🐹", autre: "🐾",
-};
+import { EMOJI_MAP } from "@/lib/constants";
 
 // Suggestions statiques par contexte (fallback + instantané)
 function getStaticSuggestions(messages: MessageRow[], myAnimalName: string, theirAnimalName: string, profileId: string) {
@@ -254,20 +250,20 @@ export default function ConversationPage() {
   }
 
   if (loading) return (
-    <div className="min-h-screen bg-[#1a1225] flex items-center justify-center">
+    <div className="min-h-screen bg-[var(--c-deep)] flex items-center justify-center">
       <div className="text-center">
         <div className="w-8 h-8 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin mx-auto mb-3" />
-        <p className="text-gray-500 text-sm">Chargement...</p>
+        <p className="text-[var(--c-text-muted)] text-sm">Chargement...</p>
       </div>
     </div>
   );
 
   if (!match || match.status !== "accepted") {
     return (
-      <div className="min-h-screen bg-[#1a1225] flex items-center justify-center">
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center max-w-md">
-          <h2 className="text-xl font-bold text-white mb-2">Conversation indisponible</h2>
-          <p className="text-gray-400">Ce match n'existe pas ou n'a pas encore été accepté.</p>
+      <div className="min-h-screen bg-[var(--c-deep)] flex items-center justify-center">
+        <div className="bg-white/5 border border-[var(--c-border)] rounded-2xl p-8 text-center max-w-md">
+          <h2 className="text-xl font-bold text-[var(--c-text)] mb-2">Conversation indisponible</h2>
+          <p className="text-[var(--c-text-muted)]">Ce match n'existe pas ou n'a pas encore été accepté.</p>
           <Link href="/matches" className="inline-block mt-4 text-orange-500 font-medium">← Retour</Link>
         </div>
       </div>
@@ -290,7 +286,7 @@ export default function ConversationPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#1a1225] flex flex-col">
+    <div className="min-h-screen bg-[var(--c-deep)] flex flex-col">
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes suggestionIn {
           from { opacity: 0; transform: translateY(8px) scale(0.95); }
@@ -320,21 +316,21 @@ export default function ConversationPage() {
       `}} />
 
       {/* Header */}
-      <div className="bg-[#1a1225]/90 backdrop-blur-xl border-b border-white/5 px-4 py-3 sticky top-0 z-10">
+      <div className="backdrop-blur-xl border-b border-[var(--c-border)] px-4 py-3 sticky top-0 z-10" style={{ background: "var(--c-deep)" }}>
         <div className="max-w-3xl mx-auto flex items-center gap-3">
-          <Link href="/matches" className="text-gray-400 hover:text-white transition p-1">
+          <Link href="/matches" className="text-[var(--c-text-muted)] hover:text-[var(--c-text)] transition p-1">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </Link>
-          <div className="w-9 h-9 rounded-full bg-[#241d33] border border-orange-500/30 flex items-center justify-center overflow-hidden flex-shrink-0">
+          <div className="w-9 h-9 rounded-full bg-[var(--c-card)] border border-orange-500/30 flex items-center justify-center overflow-hidden flex-shrink-0">
             {theirAnimal.photo_url
               ? <img src={theirAnimal.photo_url} alt={theirAnimal.name} className="w-full h-full object-cover" />
               : <span className="text-base">{EMOJI_MAP[theirAnimal.species] || "🐾"}</span>}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-white text-sm truncate">{otherProfile.full_name || otherProfile.email}</p>
-            <p className="text-xs text-gray-500">{theirAnimal.name} × {myAnimal.name}</p>
+            <p className="font-semibold text-[var(--c-text)] text-sm truncate">{otherProfile.full_name || otherProfile.email}</p>
+            <p className="text-xs text-[var(--c-text-muted)]">{theirAnimal.name} × {myAnimal.name}</p>
           </div>
           <PresenceDot isOnline={isOtherOnline} size="sm" />
           <button
@@ -342,7 +338,7 @@ export default function ConversationPage() {
             className="p-1.5 rounded-full hover:bg-red-500/10 transition flex-shrink-0"
             title="Signaler ou bloquer"
           >
-            <svg className="w-4.5 h-4.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-4.5 h-4.5 text-[var(--c-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
             </svg>
           </button>
@@ -355,8 +351,8 @@ export default function ConversationPage() {
           {messages.length === 0 && (
             <div className="text-center py-12">
               <div className="text-4xl mb-3">🐾</div>
-              <p className="text-white font-semibold">C'est un match !</p>
-              <p className="text-gray-500 text-sm mt-1">
+              <p className="text-[var(--c-text)] font-semibold">C'est un match !</p>
+              <p className="text-[var(--c-text-muted)] text-sm mt-1">
                 {myAnimal.name} et {theirAnimal.name} n'attendent que vous
               </p>
             </div>
@@ -370,13 +366,13 @@ export default function ConversationPage() {
             return (
               <div key={msg.id}>
                 {showTime && (
-                  <p className="text-center text-[10px] text-gray-600 my-2">{formatTime(msg.created_at)}</p>
+                  <p className="text-center text-[10px] text-[var(--c-text-muted)] my-2">{formatTime(msg.created_at)}</p>
                 )}
                 <div className={"flex " + (isMine ? "justify-end" : "justify-start")}>
                   <div className={"max-w-[75%] rounded-2xl text-sm " +
                     (isMine
                       ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-br-md"
-                      : "bg-[#241d33] border border-white/8 text-gray-100 rounded-bl-md") +
+                      : "bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text)] rounded-bl-md") +
                     (msg.image_url ? " p-1.5" : " px-4 py-2.5")}>
                     {msg.image_url ? (
                       <div>
@@ -410,7 +406,7 @@ export default function ConversationPage() {
           {/* Typing indicator */}
           {otherTyping && (
             <div className="flex justify-start">
-              <div className="bg-[#241d33] border border-white/8 rounded-2xl rounded-bl-md px-4 py-3 flex items-center gap-1.5">
+              <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl rounded-bl-md px-4 py-3 flex items-center gap-1.5">
                 <span className="typing-dot" />
                 <span className="typing-dot" />
                 <span className="typing-dot" />
@@ -434,7 +430,7 @@ export default function ConversationPage() {
                 key={s + i}
                 onClick={() => handleSuggestionTap(s)}
                 disabled={sending}
-                className="suggestion-chip flex-shrink-0 px-3 py-1.5 bg-[#241d33] border border-white/10 hover:border-orange-500/40 hover:bg-orange-500/10 text-gray-300 hover:text-white rounded-full text-xs transition-all duration-150 active:scale-95 whitespace-nowrap"
+                className="suggestion-chip flex-shrink-0 px-3 py-1.5 bg-[var(--c-card)] border border-[var(--c-border)] hover:border-orange-500/40 hover:bg-orange-500/10 text-[var(--c-text-muted)] hover:text-[var(--c-text)] rounded-full text-xs transition-all duration-150 active:scale-95 whitespace-nowrap"
                 style={{ animationDelay: i * 0.05 + "s" }}>
                 {aiReady && i === 0 && <span className="mr-1 text-orange-400">✦</span>}
                 {s}
@@ -445,7 +441,7 @@ export default function ConversationPage() {
       </div>
 
       {/* Input */}
-      <div className="bg-[#1a1225]/90 backdrop-blur-xl border-t border-white/5 px-4 py-3">
+      <div className="backdrop-blur-xl border-t border-[var(--c-border)] px-4 py-3" style={{ background: "var(--c-deep)" }}>
         <div className="max-w-3xl mx-auto">
           {error && <p className="text-red-400 text-xs mb-2">{error}</p>}
           <div className="flex gap-2 items-end">
@@ -461,12 +457,12 @@ export default function ConversationPage() {
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={uploadingPhoto}
-              className="w-10 h-10 bg-[#241d33] border border-white/10 hover:border-orange-500/30 hover:bg-orange-500/10 rounded-2xl flex items-center justify-center transition active:scale-95 flex-shrink-0"
+              className="w-10 h-10 bg-[var(--c-card)] border border-[var(--c-border)] hover:border-orange-500/30 hover:bg-orange-500/10 rounded-2xl flex items-center justify-center transition active:scale-95 flex-shrink-0"
               title="Envoyer une photo"
             >
               {uploadingPhoto
                 ? <div className="w-4 h-4 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
-                : <svg className="w-4.5 h-4.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                : <svg className="w-4.5 h-4.5 text-[var(--c-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
                     <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
                   </svg>}
@@ -479,7 +475,7 @@ export default function ConversationPage() {
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
               placeholder="Message..."
               maxLength={2000}
-              className="flex-1 px-4 py-2.5 bg-[#241d33] border border-white/10 rounded-2xl text-white placeholder-gray-600 focus:ring-1 focus:ring-orange-500/50 focus:border-orange-500/30 outline-none text-sm transition"
+              className="flex-1 px-4 py-2.5 bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-1 focus:ring-orange-500/50 focus:border-orange-500/30 outline-none text-sm transition"
             />
             <button
               onClick={() => handleSend()}

@@ -155,8 +155,6 @@ function AdminPageInner() {
   if (!stats) return null;
 
   const handleExport = () => {
-    console.log("=== EXPORT ADMIN DATA ===");
-    console.log("Stats:", { totalUsers: stats.totalUsers, totalAnimals: stats.totalAnimals, totalMatches: stats.totalMatches, estimatedMRR: stats.estimatedMRR });
     alert("Données exportées dans la console (F12)");
   };
 

@@ -536,7 +536,7 @@ export default function HomePage() {
           <a href="https://pawdirectory.ch" target="_blank" rel="noopener" className="text-[11px] hover:underline" style={{ color: "var(--c-text-muted)" }}>PawDirectory</a>
         </div>
         <p className="text-[10px]" style={{ color: "var(--c-text-muted)", opacity: 0.6 }}>
-          © 2026 Pawly · Canton de Vaud, Suisse
+          © {new Date().getFullYear()} Pawly · Canton de Vaud, Suisse
         </p>
       </footer>
     </div>
