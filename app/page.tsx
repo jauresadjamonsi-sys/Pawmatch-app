@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
+import Image from "next/image";
 import { useAppContext } from "@/lib/contexts/AppContext";
 
 /* ──────────────────────────────────────────
@@ -193,11 +194,17 @@ export default function HomePage() {
 
         {/* Main content */}
         <div className="relative z-10 max-w-2xl mx-auto animate-slide-up">
-          {/* Glowing paw icon */}
-          <div className="inline-block mb-6">
-            <span className="text-6xl animate-float block" style={{ filter: "drop-shadow(0 0 20px rgba(249,115,22,0.4))" }}>
-              🐾
-            </span>
+          {/* Ruby mascot */}
+          <div className="inline-block mb-6 animate-float">
+            <div className="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto rounded-full overflow-hidden" style={{
+              boxShadow: "0 0 30px rgba(249,115,22,0.4), 0 0 60px rgba(249,115,22,0.15)",
+              border: "3px solid rgba(249,115,22,0.5)",
+            }}>
+              <Image src="/ruby-hero.jpg" alt="Ruby — Mascotte Pawly" fill className="object-cover" priority />
+            </div>
+            <p className="text-xs mt-2 font-medium" style={{ color: "var(--c-text-muted)" }}>
+              Ruby 🐾 Mascotte Pawly
+            </p>
           </div>
 
           {/* Title */}
