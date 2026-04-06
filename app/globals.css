@@ -94,12 +94,16 @@ html {
 }
 
 /* Light theme glass */
-[data-theme="clair"] .glass {
+[data-theme="clair"] .glass,
+[data-theme="aurore"] .glass,
+[data-theme="ocean"] .glass {
   background: rgba(255, 255, 255, 0.7);
   border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-[data-theme="clair"] .glass-strong {
+[data-theme="clair"] .glass-strong,
+[data-theme="aurore"] .glass-strong,
+[data-theme="ocean"] .glass-strong {
   background: rgba(255, 255, 255, 0.85);
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
