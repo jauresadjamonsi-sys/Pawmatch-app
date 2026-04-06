@@ -36,7 +36,7 @@ export default function PricingPage() {
       key: "premium",
       name: "PawPlus",
       emoji: "✨",
-      price: "CHF 19.90",
+      price: "CHF 4.90",
       period: t.pricingMonth,
       popular: true,
       features: [
@@ -57,7 +57,7 @@ export default function PricingPage() {
       key: "pro",
       name: "PawPro",
       emoji: "🚀",
-      price: "CHF 49.90",
+      price: "CHF 9.90",
       period: t.pricingMonth,
       features: [
         t.pricingFeatUnlimitedAnimals,
