@@ -139,7 +139,7 @@ export default function Navbar() {
   }, [pathname]);
 
   const isActive = (p: string) => pathname === p;
-  const isLight = themePreference === "clair";
+  const isLight = themePreference === "clair" || themePreference === "aurore" || themePreference === "ocean";
   const currentFlag = LANGS.find(l => l.code === lang)?.flag || "🇫🇷";
   const currentThemeLabel = THEMES.find(th => th.code === themePreference)?.label || "🔄";
 
