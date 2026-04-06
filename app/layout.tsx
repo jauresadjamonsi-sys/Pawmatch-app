@@ -10,6 +10,7 @@ import { WelcomeModal } from "@/lib/components/WelcomeModal";
 import { PostHogProvider } from "@/lib/components/PostHogProvider";
 import PresenceHeartbeat from "@/lib/components/PresenceHeartbeat";
 import { ServiceWorkerRegistrar } from "@/lib/components/ServiceWorkerRegistrar";
+import { AchievementProvider } from "@/lib/components/AchievementToast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -98,11 +99,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className + " min-h-screen"} style={{ background: "var(--c-deep, #F0ECE4)", color: "var(--c-text, #1A1714)" }}>
 <AppProvider>
         <PostHogProvider>
+        <AchievementProvider>
         <PresenceHeartbeat />
         <Navbar />
         {children}
         <Footer />
         <WelcomeModal />
+        </AchievementProvider>
         </PostHogProvider>
       </AppProvider>
   <CookieBanner />

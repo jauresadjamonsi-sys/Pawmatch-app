@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useAppContext } from "@/lib/contexts/AppContext";
 import { LANGS, THEMES } from "@/lib/i18n";
 import NotificationBell from "@/lib/components/NotificationBell";
+import PawScoreBadge from "@/lib/components/PawScoreBadge";
 
 const NAV_CSS = `
 @keyframes navPulse {
@@ -191,7 +192,10 @@ export default function Navbar() {
             {/* Right controls */}
             <div className="flex items-center gap-1.5">
               {!loading && user && (
-                <div className={hasNewMatches ? "bell-pulse" : ""}><NotificationBell /></div>
+                <>
+                  <PawScoreBadge />
+                  <div className={hasNewMatches ? "bell-pulse" : ""}><NotificationBell /></div>
+                </>
               )}
 
               {/* 🌐 Language dropdown */}

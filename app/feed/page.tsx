@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import Image from "next/image";
 import { EMOJI_MAP } from "@/lib/constants";
+import StoriesRing from "@/lib/components/StoriesRing";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -556,6 +557,9 @@ export default function FeedPage() {
   return (
     <main className="min-h-screen px-4 pt-6 pb-32" style={{ background: "var(--c-deep)" }}>
       <div className="mx-auto max-w-lg space-y-5 stagger-children">
+
+        {/* ====== 0. STORIES RING ====== */}
+        <StoriesRing />
 
         {/* ====== 1. DAILY GREETING ====== */}
         <section className="glass rounded-2xl p-5 relative overflow-hidden">
