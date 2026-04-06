@@ -421,6 +421,43 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════
+          SECTION 5b: WHY PAWLY (compact)
+          ═══════════════════════════════════════ */}
+      <section className="relative z-10 max-w-4xl mx-auto px-6 mb-24">
+        <h2 className="text-center text-xs font-bold uppercase tracking-[0.2em] mb-2" style={{ color: "var(--c-text-muted)" }}>
+          {t.whyTitle}
+        </h2>
+        <div className="h-1 w-16 mx-auto rounded-full mb-8" style={{ background: "linear-gradient(90deg, #F97316, #A78BFA, #38BDF8)" }} />
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          {/* Google */}
+          <div className="glass p-5 text-center">
+            <span className="text-2xl block mb-2">🔍</span>
+            <h3 className="font-bold text-sm mb-1" style={{ color: "var(--c-text)" }}>Google</h3>
+            <p className="text-xs leading-relaxed" style={{ color: "var(--c-text-muted)" }}>{t.whyGoogle}</p>
+          </div>
+          {/* ChatGPT */}
+          <div className="glass p-5 text-center">
+            <span className="text-2xl block mb-2">🤖</span>
+            <h3 className="font-bold text-sm mb-1" style={{ color: "var(--c-text)" }}>ChatGPT</h3>
+            <p className="text-xs leading-relaxed" style={{ color: "var(--c-text-muted)" }}>{t.whyChatGPT}</p>
+          </div>
+          {/* Pawly */}
+          <div className="glass gradient-border p-5 text-center">
+            <span className="text-2xl block mb-2">🐾</span>
+            <h3 className="font-bold text-sm mb-1" style={{ color: "var(--c-accent, #f97316)" }}>Pawly</h3>
+            <p className="text-xs leading-relaxed font-medium" style={{ color: "var(--c-text)" }}>{t.whySwiss}</p>
+          </div>
+        </div>
+
+        <div className="text-center">
+          <Link href="/pricing" className="glass px-6 py-2.5 font-semibold text-xs hover:scale-105 transition-transform inline-block" style={{ borderRadius: 40, color: "var(--c-accent, #f97316)" }}>
+            {t.whyTitle} →
+          </Link>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════
           SECTION 6: FINAL CTA
           ═══════════════════════════════════════ */}
       <section

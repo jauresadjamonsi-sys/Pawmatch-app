@@ -236,6 +236,81 @@ export default function PricingPage() {
             {t.pricingSecure}
           </p>
         </div>
+
+        {/* ═══════════════════════════════════════
+            WHY PAWLY VS GOOGLE / CHATGPT
+            ═══════════════════════════════════════ */}
+        <div className="mt-20 mb-8">
+          <h2 className="text-2xl sm:text-3xl font-black text-center mb-3" style={{ color: "var(--c-text, #111827)" }}>
+            {t.whyTitle}
+          </h2>
+          <p className="text-center text-sm mb-10 max-w-lg mx-auto" style={{ color: "var(--c-text-muted, #6b7280)" }}>
+            {t.whySwiss}
+          </p>
+
+          {/* Comparison table */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {/* Google */}
+            <div className="rounded-2xl border-2 p-6" style={{ background: "var(--c-card, #ffffff)", borderColor: "var(--c-border, #f3f4f6)" }}>
+              <div className="text-center mb-5">
+                <span className="text-3xl block mb-2">🔍</span>
+                <h3 className="font-bold text-lg" style={{ color: "var(--c-text, #111827)" }}>Google</h3>
+                <p className="text-xs mt-1" style={{ color: "var(--c-text-muted, #9ca3af)" }}>{t.whyGoogle}</p>
+              </div>
+              <ul className="space-y-2.5 text-sm" style={{ color: "var(--c-text-muted, #6b7280)" }}>
+                {[t.whyFeat1, t.whyFeat2, t.whyFeat3, t.whyFeat4, t.whyFeat5, t.whyFeat6, t.whyFeat7, t.whyFeat8].map((feat, i) => (
+                  <li key={i} className="flex items-center gap-2.5">
+                    <span className={i < 2 ? "text-yellow-500" : "text-red-400"}>{i < 2 ? "⚠️" : "❌"}</span>
+                    <span className={i >= 2 ? "line-through opacity-50" : ""}>{feat}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* ChatGPT */}
+            <div className="rounded-2xl border-2 p-6" style={{ background: "var(--c-card, #ffffff)", borderColor: "var(--c-border, #f3f4f6)" }}>
+              <div className="text-center mb-5">
+                <span className="text-3xl block mb-2">🤖</span>
+                <h3 className="font-bold text-lg" style={{ color: "var(--c-text, #111827)" }}>ChatGPT</h3>
+                <p className="text-xs mt-1" style={{ color: "var(--c-text-muted, #9ca3af)" }}>{t.whyChatGPT}</p>
+              </div>
+              <ul className="space-y-2.5 text-sm" style={{ color: "var(--c-text-muted, #6b7280)" }}>
+                {[t.whyFeat1, t.whyFeat2, t.whyFeat3, t.whyFeat4, t.whyFeat5, t.whyFeat6, t.whyFeat7, t.whyFeat8].map((feat, i) => (
+                  <li key={i} className="flex items-center gap-2.5">
+                    <span className={i >= 6 ? "text-yellow-500" : "text-red-400"}>{i >= 6 ? "⚠️" : "❌"}</span>
+                    <span className={i < 6 ? "line-through opacity-50" : ""}>{feat}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Pawly */}
+            <div className="rounded-2xl border-2 p-6 relative" style={{ background: "rgba(249,115,22,0.04)", borderColor: "rgba(249,115,22,0.4)" }}>
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-orange-500 text-white text-xs font-bold rounded-full uppercase tracking-wide">
+                Pawly
+              </div>
+              <div className="text-center mb-5">
+                <span className="text-3xl block mb-2">🐾</span>
+                <h3 className="font-bold text-lg" style={{ color: "var(--c-text, #111827)" }}>Pawly</h3>
+                <p className="text-xs mt-1 font-semibold" style={{ color: "var(--c-accent, #f97316)" }}>{t.whySwiss}</p>
+              </div>
+              <ul className="space-y-2.5 text-sm" style={{ color: "var(--c-text, #374151)" }}>
+                {[t.whyFeat1, t.whyFeat2, t.whyFeat3, t.whyFeat4, t.whyFeat5, t.whyFeat6, t.whyFeat7, t.whyFeat8].map((feat, i) => (
+                  <li key={i} className="flex items-center gap-2.5">
+                    <span className="text-green-500">✅</span>
+                    <span className="font-medium">{feat}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="text-center mt-8">
+            <Link href="/signup" className="inline-block px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition text-sm">
+              {t.heroStartFree}
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

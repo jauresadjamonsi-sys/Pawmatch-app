@@ -225,6 +225,13 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
             >
               {profile?.subscription === "free" ? "⭐ Passer Premium" : "⚙️ Gérer mon plan"}
             </Link>
+            <Link
+              href="/share"
+              className="btn-futuristic px-4 py-2 text-sm font-medium rounded-xl"
+              style={{ borderColor: "rgba(249,115,22,0.25)", color: "#f97316" }}
+            >
+              🎁 Inviter des amis
+            </Link>
             <form action={logout}>
               <button
                 type="submit"
