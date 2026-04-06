@@ -5,9 +5,7 @@ export const animalSchema = z.object({
     .string()
     .min(1, "Le nom est requis")
     .max(100, "Le nom ne peut pas depasser 100 caracteres"),
-  species: z.enum(["chien", "chat", "lapin", "oiseau", "rongeur", "autre"], {
-    errorMap: () => ({ message: "Espece invalide" }),
-  }),
+  species: z.literal("chien").or(z.literal("chat")).or(z.literal("lapin")).or(z.literal("oiseau")).or(z.literal("rongeur")).or(z.literal("autre")),
   breed: z.string().max(100).nullable().optional(),
   age_months: z
     .number()

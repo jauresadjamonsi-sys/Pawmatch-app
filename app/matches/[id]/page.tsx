@@ -367,15 +367,15 @@ export default function ConversationPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </Link>
-          <div className="w-9 h-9 rounded-full bg-[var(--c-card)] border border-orange-500/30 flex items-center justify-center overflow-hidden flex-shrink-0 relative">
+          <Link href={"/animals/" + theirAnimal.id} className="w-9 h-9 rounded-full bg-[var(--c-card)] border border-orange-500/30 flex items-center justify-center overflow-hidden flex-shrink-0 relative">
             {theirAnimal.photo_url
               ? <Image src={theirAnimal.photo_url} alt={theirAnimal.name} fill className="object-cover" sizes="(max-width: 768px) 36px, 36px" />
               : <span className="text-base">{EMOJI_MAP[theirAnimal.species] || "🐾"}</span>}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="font-semibold text-[var(--c-text)] text-sm truncate">{otherProfile.full_name || otherProfile.email}</p>
+          </Link>
+          <Link href={"/animals/" + theirAnimal.id} className="flex-1 min-w-0 no-underline">
+            <p className="font-semibold text-[var(--c-text)] text-sm truncate hover:text-orange-400 transition">{otherProfile.full_name || otherProfile.email}</p>
             <p className="text-xs text-[var(--c-text-muted)]">{theirAnimal.name} × {myAnimal.name}</p>
-          </div>
+          </Link>
           <PresenceDot isOnline={isOtherOnline} size="sm" />
           <button
             onClick={() => setShowBlockReport(true)}

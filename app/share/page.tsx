@@ -273,47 +273,50 @@ export default function SharePage() {
             <span className="text-2xl block mb-1">💬</span>
             <span className="text-xs font-semibold text-[var(--c-text)]">{t.shareWhatsapp}</span>
           </a>
-          {/* Instagram — generate story card, download, open app */}
+          {/* Instagram/TikTok — share image via Web Share API or save */}
           <button
             className="glass card-futuristic rounded-xl p-4 text-center transition-all duration-300"
             onClick={async () => {
-              toast.loading("Preparation de la story...", { id: "story" });
+              toast.loading("Creation de la story...", { id: "story" });
               const cardUrl = await generateStoryCard();
-              // Download the story card image
-              const link = document.createElement("a");
-              link.href = cardUrl;
-              link.download = "pawly-story.jpg";
-              link.click();
-              toast.success("Image telechargee ! Ouvre Instagram → Story → choisis l'image depuis ta galerie", { id: "story", duration: 6000 });
-              // Open Instagram after download
-              setTimeout(() => {
-                window.location.href = "instagram://library";
-                setTimeout(() => { window.open("https://www.instagram.com/", "_blank"); }, 2000);
-              }, 1500);
+              // Convert data URL to File for Web Share API
+              const res = await fetch(cardUrl);
+              const blob = await res.blob();
+              const file = new File([blob], "pawly-story.jpg", { type: "image/jpeg" });
+              // Try native share with file (works on iOS/Android — opens share sheet with image)
+              if (typeof navigator.share === "function" && navigator.canShare?.({ files: [file] })) {
+                toast.dismiss("story");
+                try {
+                  await navigator.share({ title: "Pawly", text: shareText, files: [file] });
+                } catch { /* user cancelled */ }
+              } else {
+                // Fallback: download
+                const link = document.createElement("a");
+                link.href = cardUrl;
+                link.download = "pawly-story.jpg";
+                link.click();
+                toast.success("Image sauvegardee ! Partage-la sur Instagram, TikTok ou autre", { id: "story", duration: 5000 });
+              }
             }}
           >
             <span className="text-2xl block mb-1">📸</span>
-            <span className="text-xs font-semibold text-[var(--c-text)]">Instagram</span>
+            <span className="text-xs font-semibold text-[var(--c-text)]">Story</span>
           </button>
-          {/* TikTok — generate story card, download, open app */}
+          {/* Save story card to device */}
           <button
             className="glass card-futuristic rounded-xl p-4 text-center transition-all duration-300"
             onClick={async () => {
-              toast.loading("Preparation de la story...", { id: "story" });
+              toast.loading("Creation de l'image...", { id: "save" });
               const cardUrl = await generateStoryCard();
               const link = document.createElement("a");
               link.href = cardUrl;
               link.download = "pawly-story.jpg";
               link.click();
-              toast.success("Image telechargee ! Ouvre TikTok → + → choisis l'image depuis ta galerie", { id: "story", duration: 6000 });
-              setTimeout(() => {
-                window.location.href = "snssdk1233://";
-                setTimeout(() => { window.open("https://www.tiktok.com/", "_blank"); }, 2000);
-              }, 1500);
+              toast.success("Image sauvegardee dans tes fichiers !", { id: "save", duration: 3000 });
             }}
           >
-            <span className="text-2xl block mb-1">🎵</span>
-            <span className="text-xs font-semibold text-[var(--c-text)]">TikTok</span>
+            <span className="text-2xl block mb-1">💾</span>
+            <span className="text-xs font-semibold text-[var(--c-text)]">Sauvegarder</span>
           </button>
           <a
             href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}

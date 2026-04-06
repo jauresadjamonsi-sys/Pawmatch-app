@@ -331,8 +331,8 @@ export default function EventsPage() {
                 <div className="space-y-3">
                   {periodEvents.map((event, i) => {
                     const date = formatDate(event.event_date);
-                    const isFull = event.participant_count >= event.max_participants;
-                    const spotsLeft = event.max_participants - event.participant_count;
+                    const isFull = (event.participant_count || 0) >= (event.max_participants || 0);
+                    const spotsLeft = (event.max_participants || 0) - (event.participant_count || 0);
                     const cantonName = CANTONS.find(c => c.code === event.canton)?.name || event.canton;
                     const colorClass = CANTON_COLORS[event.canton.charCodeAt(0) % CANTON_COLORS.length];
 
@@ -394,7 +394,7 @@ export default function EventsPage() {
                         <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
                           <div className={"h-full rounded-full transition-all duration-500 " +
                             (isFull ? "bg-red-500" : spotsLeft <= 3 ? "bg-orange-500" : "bg-green-500")}
-                            style={{ width: (event.participant_count / event.max_participants * 100) + "%" }} />
+                            style={{ width: ((event.participant_count || 0) / (event.max_participants || 1) * 100) + "%" }} />
                         </div>
 
                         <p className="text-[10px] text-[var(--c-text-muted)] mt-2">

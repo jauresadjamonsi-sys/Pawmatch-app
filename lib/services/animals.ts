@@ -10,6 +10,7 @@ export type AnimalRow = {
   gender: string;
   description: string | null;
   photo_url: string | null;
+  photos: string[] | null;
   status: string;
   city: string | null;
   canton: string | null;
@@ -20,6 +21,21 @@ export type AnimalRow = {
   created_by: string | null;
   created_at: string;
   updated_at: string;
+  // Diet & health
+  diet_type: string | null;
+  food_brand: string | null;
+  treats: string | null;
+  allergies: string | null;
+  // Health
+  next_vaccine_date: string | null;
+  last_vet_visit: string | null;
+  // Extended fields
+  energy_level: string | null;
+  sociability: string | null;
+  training_level: string | null;
+  favorite_activities: string[] | null;
+  microchip_id: string | null;
+  insurance: string | null;
 };
 
 type ServiceResult<T> = {

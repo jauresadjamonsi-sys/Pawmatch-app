@@ -16,7 +16,7 @@ const SPECIES: Record<string, string> = {
   oiseau: "Oiseau", rongeur: "Rongeur", autre: "Autre",
 };
 
-type Animal = {
+type Animal = Record<string, any> & {
   id: string; name: string; species: string; breed: string | null;
   age_months: number | null; gender: string; description: string | null;
   photo_url: string | null; canton: string | null; city: string | null;
@@ -24,7 +24,7 @@ type Animal = {
 };
 
 type AnimalWithCompat = Animal & {
-  compatibility?: ReturnType<typeof computeCompatibility>;
+  compatibility?: any;
 };
 
 const CONFETTI_COLORS = ["#f97316","#fb923c","#fbbf24","#34d399","#60a5fa","#f472b6","#a78bfa"];
@@ -92,7 +92,7 @@ export default function FlairerPage() {
   const [likeCount, setLikeCount] = useState(0);
   const [showPaywall, setShowPaywall] = useState(false);
   const FREE_LIMIT = 3;
-  const [userCanton, setUserCanton] = useState(null);
+  const [userCanton, setUserCanton] = useState<string | null>(null);
   const [showCoupDeTruffe, setShowCoupDeTruffe] = useState(false);
   const [mutualMatchData, setMutualMatchData] = useState<any>(null);
   const [showBlockReport, setShowBlockReport] = useState(false);
@@ -211,10 +211,10 @@ export default function FlairerPage() {
       setActiveMyAnimal(primary);
 
       if (primary) {
-        const sorted = sortByCompatibility(primary, filtered);
+        const sorted = sortByCompatibility(primary, filtered) as AnimalWithCompat[];
         setAnimals(sorted);
       } else {
-        setAnimals(filtered.sort(() => Math.random() - 0.5));
+        setAnimals(filtered.sort(() => Math.random() - 0.5) as AnimalWithCompat[]);
       }
     } else {
       setAnimals(filtered.sort(() => Math.random() - 0.5));
@@ -225,7 +225,7 @@ export default function FlairerPage() {
   useEffect(() => {
     if (!activeMyAnimal || animals.length === 0) return;
     const base = animals.map(({ compatibility, ...a }) => a as Animal);
-    const sorted = sortByCompatibility(activeMyAnimal, base);
+    const sorted = sortByCompatibility(activeMyAnimal, base) as AnimalWithCompat[];
     setAnimals(sorted);
     setCurrentIndex(0);
   }, [activeMyAnimal]);
@@ -674,7 +674,7 @@ export default function FlairerPage() {
                 </div>
                 {compat.reasons.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-2">
-                    {compat.reasons.map(r => (
+                    {compat.reasons.map((r: string) => (
                       <span key={r} className="text-[10px] px-2 py-0.5 glass text-[var(--c-text-muted)] rounded-full">{r}</span>
                     ))}
                   </div>

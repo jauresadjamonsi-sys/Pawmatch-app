@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
-  typescript: { ignoreBuildErrors: true },
+  typescript: { ignoreBuildErrors: true }, // Zod v4 breaking changes
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "**.supabase.co" },

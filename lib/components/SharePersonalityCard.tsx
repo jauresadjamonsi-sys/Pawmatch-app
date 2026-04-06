@@ -64,7 +64,7 @@ export function SharePersonalityCard({ animalName, personality, photoUrl, specie
     canvas.toBlob(async (blob) => {
       if (!blob) return;
 
-      if (navigator.share && navigator.canShare) {
+      if (typeof navigator.share === "function" && typeof navigator.canShare === "function") {
         try {
           const file = new File([blob], `${animalName}-pawly.png`, { type: "image/png" });
           await navigator.share({

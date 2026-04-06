@@ -97,14 +97,9 @@ export default function PersonalityPage() {
         <div className="mb-6">
           <SharePersonalityCard
             animalName={animal.name}
-            breed={animal.breed || animal.species || ""}
+            personality={{ name: personality.name, emoji: personality.emoji, color: personality.color, description: personality.tagline }}
             photoUrl={animal.photo_url}
-            personalityEmoji={personality.emoji}
-            personalityName={personality.name}
-            personalityTagline={personality.tagline}
-            personalityColor={personality.color}
-            traits={animal.traits || []}
-            lang={lang}
+            species={animal.species}
           />
         </div>
 
@@ -150,7 +145,7 @@ export default function PersonalityPage() {
 
         {/* ═══ INVITATION AMIS ═══ */}
         <div className="mb-6">
-          <InviteFriendCard animalName={animal.name} lang={lang} />
+          <InviteFriendCard />
         </div>
 
         {/* CTA */}

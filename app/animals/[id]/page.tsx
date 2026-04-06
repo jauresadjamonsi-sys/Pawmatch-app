@@ -209,7 +209,7 @@ export default function AnimalDetailPage() {
                 </div>
                 {compatibility.reasons.length > 0 && (
                   <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
-                    {compatibility.reasons.map((r, i) => (
+                    {compatibility.reasons.map((r: string, i: number) => (
                       <span key={i} className="px-3 py-1 rounded-full text-xs font-bold border" style={{ color: compatibility.color, borderColor: compatibility.color + '40', background: compatibility.bgColor || compatibility.color + '15' }}>
                         ✓ {r}
                       </span>
@@ -227,7 +227,7 @@ export default function AnimalDetailPage() {
               if (photos.length === 0) return <span className="text-8xl">{EMOJI_MAP[animal.species] || "🐾"}</span>;
               return (
                 <div className="relative w-full h-full">
-                  <Image src={photos[activePhoto] || photos[0]} alt={animal.name} fill className="object-cover" sizes="(max-width: 768px) 100vw, 600px" />
+                  <Image src={photos[activePhoto] || photos[0] || ""} alt={animal.name} fill className="object-cover" sizes="(max-width: 768px) 100vw, 600px" />
                   {photos.length > 1 && (
                     <>
                       <button onClick={() => setActivePhoto(p => (p - 1 + photos.length) % photos.length)}
@@ -580,8 +580,8 @@ export default function AnimalDetailPage() {
             {/* Simulation modal */}
             {showSimulation && compatibility && myAnimals.length > 0 && (
               <SimulationRencontre
-                myAnimal={myAnimals[0]}
-                otherAnimal={animal}
+                myAnimal={myAnimals[0] as any}
+                otherAnimal={animal as any}
                 compatibilityScore={compatibility.score}
                 onClose={() => setShowSimulation(false)}
                 lang={lang}

@@ -9,34 +9,75 @@ import Footer from "@/lib/components/Footer";
 import { WelcomeModal } from "@/lib/components/WelcomeModal";
 import { PostHogProvider } from "@/lib/components/PostHogProvider";
 import PresenceHeartbeat from "@/lib/components/PresenceHeartbeat";
+import { ServiceWorkerRegistrar } from "@/lib/components/ServiceWorkerRegistrar";
 
 const inter = Inter({ subsets: ["latin"] });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://pawlyapp.ch";
+
 export const metadata: Metadata = {
-  title: "Pawly — Ton compagnon de sortie en Suisse",
-  description: "La premiere app qui connecte les proprietaires d'animaux en Suisse. Matching par compatibilite, 26 cantons, toutes les especes.",
-  keywords: ["animaux", "suisse", "chien", "chat", "matching", "balade", "pawly"],
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Pawly — Ton compagnon de sortie en Suisse",
+    template: "%s | Pawly",
+  },
+  description:
+    "La premiere app qui connecte les proprietaires d'animaux en Suisse. Matching par compatibilite, 26 cantons, toutes les especes.",
+  keywords: [
+    "animaux",
+    "suisse",
+    "chien",
+    "chat",
+    "matching",
+    "balade",
+    "pawly",
+    "animaux de compagnie",
+    "promenade chien",
+    "rencontre animaux",
+  ],
+  authors: [{ name: "Pawly" }],
+  creator: "Pawly",
+  publisher: "Pawly",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
   openGraph: {
     title: "Pawly — Ton compagnon de sortie en Suisse",
-    description: "Connecte-toi avec des proprietaires d'animaux pres de chez toi. Gratuit.",
-    url: "https://pawly.ch",
+    description:
+      "Connecte-toi avec des proprietaires d'animaux pres de chez toi. Gratuit.",
+    url: SITE_URL,
     siteName: "Pawly",
     locale: "fr_CH",
     type: "website",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Pawly — Trouve des copains pour ton animal",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Pawly — Ton compagnon de sortie en Suisse",
-    description: "Connecte-toi avec des proprietaires d'animaux pres de chez toi.",
+    description:
+      "Connecte-toi avec des proprietaires d'animaux pres de chez toi.",
+    images: ["/opengraph-image"],
   },
   manifest: "/manifest.json",
-  };
+  alternates: {
+    canonical: SITE_URL,
+  },
+};
 
 export const viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  };
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -48,6 +89,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
+        {/* Preconnect hints for faster resource loading */}
+        <link rel="preconnect" href="https://crpgrbfekusgannqbdyr.supabase.co" />
+        <link rel="dns-prefetch" href="https://crpgrbfekusgannqbdyr.supabase.co" />
+        <link rel="preconnect" href="https://unpkg.com" crossOrigin="anonymous" />
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
       </head>
       <body className={inter.className + " min-h-screen"} style={{ background: "var(--c-deep, #F0ECE4)", color: "var(--c-text, #1A1714)" }}>
@@ -62,6 +107,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </AppProvider>
   <CookieBanner />
         <Toaster position="top-center" richColors />
+        <ServiceWorkerRegistrar />
       </body>
     </html>
   );

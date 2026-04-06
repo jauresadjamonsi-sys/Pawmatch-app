@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import Image from "next/image";
 import QRCode from "qrcode";
 
 type QRProps = {
