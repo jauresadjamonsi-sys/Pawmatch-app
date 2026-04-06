@@ -112,10 +112,13 @@ function PromoContent() {
 
         {/* ---- Frames ---- */}
         <div className="frames-container">
-          {/* Frame 1: Big emoji + question */}
+          {/* Frame 1: Ruby photo + question */}
           <div className={`frame frame-1 ${frame === 0 ? "frame-active" : ""}`}>
-            <div className="big-emoji">{ANIMAL_EMOJIS[emojiIdx]}</div>
+            <div className="ruby-photo-ring">
+              <img src="/ruby-hero.jpg" alt="Ruby" className="ruby-photo" />
+            </div>
             <h1 className="frame-title">Ton animal a besoin d&apos;amis&nbsp;?</h1>
+            <p className="frame-subtitle">Rejoins Ruby et des milliers d&apos;animaux</p>
           </div>
 
           {/* Frame 2: Tagline */}
@@ -356,13 +359,47 @@ function PromoContent() {
           pointer-events: auto;
         }
 
-        .frame-1.frame-active .big-emoji {
-          animation: fadeInUp 0.6s ease forwards, bounce 2s ease-in-out 0.6s infinite;
+        .frame-1.frame-active .ruby-photo-ring {
+          animation: fadeInUp 0.6s ease forwards, pulse 3s ease-in-out 0.6s infinite;
         }
 
         .frame-1.frame-active .frame-title {
           animation: fadeInUp 0.6s ease 0.2s forwards;
           opacity: 0;
+        }
+
+        .frame-1.frame-active .frame-subtitle {
+          animation: fadeInUp 0.6s ease 0.4s forwards;
+          opacity: 0;
+        }
+
+        .ruby-photo-ring {
+          width: 160px;
+          height: 160px;
+          border-radius: 50%;
+          padding: 4px;
+          background: linear-gradient(135deg, #f97316, #a78bfa, #38bdf8, #f97316);
+          background-size: 300% 300%;
+          animation: gradientShift 4s ease infinite;
+          margin-bottom: 24px;
+          box-shadow: 0 0 40px rgba(249, 115, 22, 0.4), 0 0 80px rgba(167, 139, 250, 0.2);
+        }
+
+        .ruby-photo {
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 3px solid rgba(0, 0, 0, 0.3);
+        }
+
+        .frame-subtitle {
+          font-size: 18px;
+          font-weight: 600;
+          color: rgba(255, 255, 255, 0.7);
+          text-align: center;
+          margin-top: 12px;
+          text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
         }
 
         .big-emoji {
