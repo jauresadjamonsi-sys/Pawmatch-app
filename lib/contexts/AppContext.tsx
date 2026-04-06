@@ -18,8 +18,8 @@ interface AppContextType {
 
 export const THEME_VARS: Record<Theme, Record<string, string>> = {
     nuit:   { "--c-deep": "#0f0c1a", "--c-nav": "#130f22", "--c-card": "#1e1830", "--c-border": "#2d2545", "--c-text": "#f0eeff", "--c-text-muted": "#9b93b8", "--c-accent": "#A78BFA" },
-  aurore: { "--c-deep": "#1a0f05", "--c-nav": "#150c04", "--c-card": "#261508", "--c-border": "#3d2510", "--c-text": "#fff0e0", "--c-text-muted": "#b89070", "--c-accent": "#F59E0B" },
-  ocean:  { "--c-deep": "#080f1a", "--c-nav": "#060d18", "--c-card": "#0d1a2e", "--c-border": "#152840", "--c-text": "#e0f0ff", "--c-text-muted": "#7099bb", "--c-accent": "#38BDF8" },
+  aurore: { "--c-deep": "#2d1a08", "--c-nav": "#3a2010", "--c-card": "#3d2815", "--c-border": "#5a3d20", "--c-text": "#fff0e0", "--c-text-muted": "#c9a070", "--c-accent": "#F59E0B" },
+  ocean:  { "--c-deep": "#0c1a2e", "--c-nav": "#0f1f35", "--c-card": "#132640", "--c-border": "#1e3a5c", "--c-text": "#e0f0ff", "--c-text-muted": "#80aad0", "--c-accent": "#38BDF8" },
   clair:  { "--c-deep": "#FAF8F4", "--c-nav": "#FFFFFF", "--c-card": "#FFFFFF", "--c-border": "#E8E2D9", "--c-text": "#1A1714", "--c-text-muted": "#3d3833", "--c-accent": "#EA580C" },
 };
 

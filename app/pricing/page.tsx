@@ -17,7 +17,7 @@ export default function PricingPage() {
     {
       key: "free",
       name: "Paw",
-      emoji: "\u{1F43E}",
+      emoji: "🐾",
       price: t.pricingFree,
       period: "",
       features: [
@@ -34,7 +34,7 @@ export default function PricingPage() {
     {
       key: "premium",
       name: "PawPlus",
-      emoji: "\u2728",
+      emoji: "✨",
       price: "CHF 4.90",
       period: t.pricingMonth,
       popular: true,
@@ -54,7 +54,7 @@ export default function PricingPage() {
     {
       key: "pro",
       name: "PawPro",
-      emoji: "\u{1F680}",
+      emoji: "🚀",
       price: "CHF 9.90",
       period: t.pricingMonth,
       features: [

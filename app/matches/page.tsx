@@ -10,8 +10,8 @@ import PresenceDot from "@/lib/components/PresenceDot";
 import Link from "next/link";
 
 const EMOJI_MAP: Record<string, string> = {
-  chien: "\u{1F415}", chat: "\u{1F431}", lapin: "\u{1F430}",
-  oiseau: "\u{1F426}", rongeur: "\u{1F439}", autre: "\u{1F43E}",
+  chien: "🐕", chat: "🐱", lapin: "🐰",
+  oiseau: "🐦", rongeur: "🐹", autre: "🐾",
 };
 
 const SPECIES_GLOW: Record<string, string> = {
@@ -103,9 +103,9 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
               transform: `rotate(${c.rotation}deg)`,
               fontSize: c.shape === "heart" ? c.size * 1.2 + "px" : c.shape === "paw" ? c.size * 1.2 + "px" : c.shape === "star" ? c.size * 1.2 + "px" : undefined,
             }}>
-            {c.shape === "heart" && "\u2764\uFE0F"}
-            {c.shape === "star" && "\u2728"}
-            {c.shape === "paw" && "\u{1F43E}"}
+            {c.shape === "heart" && "❤️"}
+            {c.shape === "star" && "✨"}
+            {c.shape === "paw" && "🐾"}
           </div>
         ))}
       </div>
@@ -138,7 +138,7 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
             <div className="w-16 h-16 rounded-full bg-orange-500/20 ring-2 ring-orange-500/50 flex items-center justify-center overflow-hidden mx-auto mb-1 ring-pulse">
               {match.sender_animal.photo_url
                 ? <img src={match.sender_animal.photo_url} alt={match.sender_animal.name} className="w-full h-full object-cover" />
-                : <span className="text-2xl">{EMOJI_MAP[match.sender_animal.species] || "\u{1F43E}"}</span>}
+                : <span className="text-2xl">{EMOJI_MAP[match.sender_animal.species] || "🐾"}</span>}
             </div>
             <p className="text-xs text-white font-semibold">{match.sender_animal.name}</p>
           </div>
@@ -149,7 +149,7 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
             <div className="w-16 h-16 rounded-full bg-pink-500/20 ring-2 ring-pink-500/50 flex items-center justify-center overflow-hidden mx-auto mb-1 ring-pulse">
               {match.receiver_animal.photo_url
                 ? <img src={match.receiver_animal.photo_url} alt={match.receiver_animal.name} className="w-full h-full object-cover" />
-                : <span className="text-2xl">{EMOJI_MAP[match.receiver_animal.species] || "\u{1F43E}"}</span>}
+                : <span className="text-2xl">{EMOJI_MAP[match.receiver_animal.species] || "🐾"}</span>}
             </div>
             <p className="text-xs text-white font-semibold">{match.receiver_animal.name}</p>
           </div>
@@ -268,7 +268,7 @@ export default function MatchesPage() {
           <div className={`w-12 h-12 rounded-full bg-white/5 flex items-center justify-center overflow-hidden flex-shrink-0 ring-2 ${ringClass} transition-all duration-500`}>
             {animal.photo_url
               ? <img src={animal.photo_url} alt={animal.name} className="w-full h-full object-cover" />
-              : <span className="text-xl">{EMOJI_MAP[animal.species] || "\u{1F43E}"}</span>}
+              : <span className="text-xl">{EMOJI_MAP[animal.species] || "🐾"}</span>}
           </div>
           {userId && (
             <span className="absolute -bottom-0.5 -right-0.5">
@@ -280,7 +280,7 @@ export default function MatchesPage() {
           <p className="font-semibold text-[var(--c-text,white)] text-sm">{animal.name}</p>
           <p className="text-xs text-gray-500">
             {animal.species.charAt(0).toUpperCase() + animal.species.slice(1)}
-            {animal.breed ? " \u00B7 " + animal.breed : ""}
+            {animal.breed ? " · " + animal.breed : ""}
           </p>
         </div>
       </div>
@@ -289,8 +289,8 @@ export default function MatchesPage() {
 
   const tabs = [
     { key: "all" as const, label: t.matchesTitle || "Tous", count: matches.length },
-    { key: "received" as const, label: t.matchesReceived || "Re\u00E7us", count: pendingReceived.length },
-    { key: "confirmed" as const, label: t.matchesConfirmed || "Confirm\u00E9s", count: accepted.length },
+    { key: "received" as const, label: t.matchesReceived || "Reçus", count: pendingReceived.length },
+    { key: "confirmed" as const, label: t.matchesConfirmed || "Confirmés", count: accepted.length },
     { key: "pending" as const, label: t.matchesPending || "En attente", count: pendingSent.length },
   ];
 
@@ -351,7 +351,7 @@ export default function MatchesPage() {
           </div>
         )}
 
-        {/* Demandes re\u00E7ues */}
+        {/* Demandes reçues */}
         {current.pendingReceived.length > 0 && (
           <div className="mb-8 animate-slide-up" style={{ animationDelay: "0.15s" }}>
             <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
@@ -367,7 +367,7 @@ export default function MatchesPage() {
                   <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-4">
                       <AnimalBadge animal={match.sender_animal} isNew userId={match.sender_user_id} />
-                      <span className="text-orange-500 font-bold animate-float">\u2192</span>
+                      <span className="text-orange-500 font-bold animate-float">→</span>
                       <AnimalBadge animal={match.receiver_animal} userId={match.receiver_user_id} />
                     </div>
                     <p className="text-sm text-gray-500 mb-4">
@@ -393,7 +393,7 @@ export default function MatchesPage() {
           </div>
         )}
 
-        {/* Matchs confirm\u00E9s */}
+        {/* Matchs confirmés */}
         {current.accepted.length > 0 && (
           <div className="mb-8 animate-slide-up" style={{ animationDelay: "0.2s" }}>
             <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
@@ -413,7 +413,7 @@ export default function MatchesPage() {
                     style={{ borderColor: "rgba(52,211,153,0.2)" }}>
                     <div className="flex items-center gap-3 mb-3">
                       <AnimalBadge animal={myAnimal} />
-                      <span className="text-green-400 font-bold text-lg animate-breathe">\u2665</span>
+                      <span className="text-green-400 font-bold text-lg animate-breathe">♥</span>
                       <AnimalBadge animal={theirAnimal} userId={isMe ? match.receiver_user_id : match.sender_user_id} />
                     </div>
                     <div className="flex gap-3 mt-3">
@@ -421,7 +421,7 @@ export default function MatchesPage() {
                         className="px-4 py-2 glass text-orange-300 rounded-xl text-xs font-semibold
                           hover:neon-orange hover:bg-orange-500/10 transition-all duration-300"
                         style={{ borderColor: "rgba(249,115,22,0.3)" }}>
-                        {"\u{1F43E} " + t.matchesCoup}
+                        {"🐾 " + t.matchesCoup}
                       </button>
                       <Link href={"/matches/" + match.id}
                         className="flex-1 py-2 btn-futuristic text-center text-sm">
@@ -450,7 +450,7 @@ export default function MatchesPage() {
                 <div key={match.id} className="glass card-futuristic p-5">
                   <div className="flex items-center gap-3">
                     <AnimalBadge animal={match.sender_animal} userId={match.sender_user_id} />
-                    <span className="text-gray-500 font-bold animate-breathe">\u2192</span>
+                    <span className="text-gray-500 font-bold animate-breathe">→</span>
                     <AnimalBadge animal={match.receiver_animal} userId={match.receiver_user_id} />
                   </div>
                   <p className="text-xs text-gray-500 mt-3 flex items-center gap-2">
@@ -487,7 +487,7 @@ export default function MatchesPage() {
         {matches.length > 0 && current.pendingReceived.length === 0 && current.accepted.length === 0 && current.pendingSent.length === 0 && (
           <div className="text-center py-12 animate-scale-in">
             <p className="text-4xl mb-3 animate-float">🔍</p>
-            <p className="text-gray-500 text-sm">Aucun match dans cette cat\u00E9gorie</p>
+            <p className="text-gray-500 text-sm">Aucun match dans cette catégorie</p>
           </div>
         )}
       </div>

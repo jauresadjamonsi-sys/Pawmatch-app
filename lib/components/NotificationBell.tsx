@@ -15,11 +15,11 @@ interface Notification {
 }
 
 const TYPE_ICONS: Record<Notification["type"], string> = {
-  match: "\u{1F91D}",
-  message: "\u{1F4AC}",
-  event: "\u{1F4C5}",
-  system: "\u{1F514}",
-  reminder: "\u{1F48A}",
+  match: "🤝",
+  message: "💬",
+  event: "📅",
+  system: "🔔",
+  reminder: "💊",
 };
 
 const POLL_INTERVAL = 30_000;

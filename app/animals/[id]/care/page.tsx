@@ -28,16 +28,16 @@ type AnimalWithHealth = AnimalRow & {
 // --- Constants ---
 
 const MOODS = [
-  { value: "excellent", emoji: "\u{1F929}", label: "Super", color: "#22c55e", score: 5 },
-  { value: "happy", emoji: "\u{1F60A}", label: "Content", color: "#84cc16", score: 4 },
-  { value: "neutral", emoji: "\u{1F610}", label: "Normal", color: "#f59e0b", score: 3 },
-  { value: "tired", emoji: "\u{1F634}", label: "Fatigué", color: "#f97316", score: 2 },
-  { value: "sick", emoji: "\u{1F912}", label: "Malade", color: "#ef4444", score: 1 },
+  { value: "excellent", emoji: "🤩", label: "Super", color: "#22c55e", score: 5 },
+  { value: "happy", emoji: "😊", label: "Content", color: "#84cc16", score: 4 },
+  { value: "neutral", emoji: "😐", label: "Normal", color: "#f59e0b", score: 3 },
+  { value: "tired", emoji: "😴", label: "Fatigué", color: "#f97316", score: 2 },
+  { value: "sick", emoji: "🤒", label: "Malade", color: "#ef4444", score: 1 },
 ];
 
 const EMOJI_MAP: Record<string, string> = {
-  chien: "\u{1F415}", chat: "\u{1F431}", lapin: "\u{1F430}",
-  oiseau: "\u{1F426}", rongeur: "\u{1F439}", autre: "\u{1F43E}",
+  chien: "🐕", chat: "🐱", lapin: "🐰",
+  oiseau: "🐦", rongeur: "🐹", autre: "🐾",
 };
 
 // --- Helpers ---
@@ -131,14 +131,14 @@ function generateAlerts(animal: AnimalWithHealth, moodEntries: MoodEntry[]): Ale
     const days = daysUntil(animal.next_vaccine_date);
     if (days < 0) {
       alerts.push({
-        icon: "\u{1F6A8}", title: "Vaccin en retard",
+        icon: "🚨", title: "Vaccin en retard",
         description: `Le vaccin est en retard de ${Math.abs(days)} jours. Prenez rendez-vous rapidement.`,
         severity: "red",
         cta: { label: "Trouver un véto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
       });
     } else if (days <= 30) {
       alerts.push({
-        icon: "\u{1F489}", title: "Rappel vaccin",
+        icon: "💉", title: "Rappel vaccin",
         description: `Prochain vaccin dans ${days} jours. Pensez à prendre rendez-vous.`,
         severity: "orange",
         cta: { label: "Trouver un véto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
@@ -151,14 +151,14 @@ function generateAlerts(animal: AnimalWithHealth, moodEntries: MoodEntry[]): Ale
     const months = monthsSince(animal.last_vet_visit);
     if (months > 12) {
       alerts.push({
-        icon: "\u{1F3E5}", title: "Visite vétérinaire recommandée",
+        icon: "🏥", title: "Visite vétérinaire recommandée",
         description: `Dernière visite il y a ${months} mois. Un bilan de santé annuel est recommandé.`,
         severity: "red",
         cta: { label: "Trouver un véto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
       });
     } else if (months > 6) {
       alerts.push({
-        icon: "\u{1F3E5}", title: "Visite vétérinaire recommandée",
+        icon: "🏥", title: "Visite vétérinaire recommandée",
         description: `Dernière visite il y a ${months} mois. Pensez au check-up semestriel.`,
         severity: "orange",
         cta: { label: "Trouver un véto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
@@ -166,7 +166,7 @@ function generateAlerts(animal: AnimalWithHealth, moodEntries: MoodEntry[]): Ale
     }
   } else {
     alerts.push({
-      icon: "\u{1F3E5}", title: "Visite vétérinaire inconnue",
+      icon: "🏥", title: "Visite vétérinaire inconnue",
       description: "Renseignez la date de dernière visite pour un meilleur suivi.",
       severity: "orange",
     });
@@ -178,7 +178,7 @@ function generateAlerts(animal: AnimalWithHealth, moodEntries: MoodEntry[]): Ale
     const isDecline = recent3[0] < recent3[1] && recent3[1] < recent3[2];
     if (isDecline) {
       alerts.push({
-        icon: "\u{1F614}", title: "Humeur en baisse",
+        icon: "😔", title: "Humeur en baisse",
         description: `L'humeur de ${animal.name} semble décliner ces derniers jours. Surveillez son comportement.`,
         severity: "orange",
       });
@@ -186,7 +186,7 @@ function generateAlerts(animal: AnimalWithHealth, moodEntries: MoodEntry[]): Ale
     const avg = recent3.reduce((a, b) => a + b, 0) / 3;
     if (avg <= 2) {
       alerts.push({
-        icon: "\u{1F912}", title: "Humeur préoccupante",
+        icon: "🤒", title: "Humeur préoccupante",
         description: `${animal.name} ne semble pas en forme. Consultez un vétérinaire si cela persiste.`,
         severity: "red",
         cta: { label: "Trouver un véto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
@@ -202,14 +202,14 @@ function generateAlerts(animal: AnimalWithHealth, moodEntries: MoodEntry[]): Ale
       const diff = ((animal.weight_kg - mid) / mid) * 100;
       if (diff > 25) {
         alerts.push({
-          icon: "\u{2696}\u{FE0F}", title: "Poids à surveiller",
+          icon: "⚖️", title: "Poids à surveiller",
           description: `${animal.weight_kg} kg — en surpoids significatif. Consultez votre véto pour un régime adapté.`,
           severity: "red",
           cta: { label: "Trouver un véto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
         });
       } else if (diff > 10) {
         alerts.push({
-          icon: "\u{2696}\u{FE0F}", title: "Poids à surveiller",
+          icon: "⚖️", title: "Poids à surveiller",
           description: `${animal.weight_kg} kg — légèrement au-dessus du poids idéal. Surveillez l'alimentation.`,
           severity: "orange",
         });
@@ -220,7 +220,7 @@ function generateAlerts(animal: AnimalWithHealth, moodEntries: MoodEntry[]): Ale
   // Deworming reminder (dogs every 3 months)
   if (animal.species === "chien") {
     alerts.push({
-      icon: "\u{1F48A}", title: "Vermifuge recommandé",
+      icon: "💊", title: "Vermifuge recommandé",
       description: "Les chiens doivent être vermifugés tous les 3 mois. Vérifiez la date du dernier traitement.",
       severity: "green",
     });
@@ -229,7 +229,7 @@ function generateAlerts(animal: AnimalWithHealth, moodEntries: MoodEntry[]): Ale
   // All good
   if (alerts.length === 0) {
     alerts.push({
-      icon: "\u{2705}", title: "Tout va bien !",
+      icon: "✅", title: "Tout va bien !",
       description: `${animal.name} est en bonne santé. Continuez ainsi !`,
       severity: "green",
     });
@@ -280,7 +280,7 @@ function buildTimeline(animal: AnimalWithHealth, moodEntries: MoodEntry[]): Time
       type: "vaccine",
       label: "Prochain vaccin",
       color: "#8b5cf6",
-      emoji: "\u{1F489}",
+      emoji: "💉",
     });
   }
 
@@ -290,7 +290,7 @@ function buildTimeline(animal: AnimalWithHealth, moodEntries: MoodEntry[]): Time
       type: "vet",
       label: "Visite vétérinaire",
       color: "#3b82f6",
-      emoji: "\u{1F3E5}",
+      emoji: "🏥",
     });
   }
 
@@ -301,7 +301,7 @@ function buildTimeline(animal: AnimalWithHealth, moodEntries: MoodEntry[]): Time
       type: "mood",
       label: `Humeur : ${moodData?.label || entry.mood}`,
       color: moodData?.color || "#9ca3af",
-      emoji: moodData?.emoji || "\u{1F610}",
+      emoji: moodData?.emoji || "😐",
     });
   });
 
@@ -441,7 +441,7 @@ export default function PawCareHubPage() {
             {animal.photo_url ? (
               <img src={animal.photo_url} alt={animal.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : (
-              <span style={{ fontSize: 32 }}>{EMOJI_MAP[animal.species] || "\u{1F43E}"}</span>
+              <span style={{ fontSize: 32 }}>{EMOJI_MAP[animal.species] || "🐾"}</span>
             )}
           </div>
 
@@ -449,7 +449,7 @@ export default function PawCareHubPage() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <h1 style={{ fontSize: 22, fontWeight: 900, color: "var(--c-text)", margin: 0 }}>{animal.name}</h1>
             <p style={{ fontSize: 13, color: "var(--c-text-muted)", margin: "2px 0 0" }}>
-              {animal.breed || animal.species} {animal.age_months ? `\u00B7 ${Math.floor(animal.age_months / 12)} ans` : ""}
+              {animal.breed || animal.species} {animal.age_months ? `· ${Math.floor(animal.age_months / 12)} ans` : ""}
             </p>
           </div>
 
@@ -484,7 +484,7 @@ export default function PawCareHubPage() {
         {/* ====== SMART ALERTS ====== */}
         <div style={{ marginBottom: 20 }}>
           <h2 style={{ fontSize: 15, fontWeight: 800, color: "var(--c-text)", marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 18 }}>{"\u{1F514}"}</span> Alertes intelligentes
+            <span style={{ fontSize: 18 }}>{"🔔"}</span> Alertes intelligentes
           </h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {alerts.map((alert, i) => (
@@ -524,13 +524,13 @@ export default function PawCareHubPage() {
         }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
             <h2 style={{ fontSize: 15, fontWeight: 800, color: "var(--c-text)", margin: 0, display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 18 }}>{"\u{1F60A}"}</span> Humeur de {animal.name}
+              <span style={{ fontSize: 18 }}>{"😊"}</span> Humeur de {animal.name}
             </h2>
             <span style={{
               fontSize: 18,
               color: moodTrend === "up" ? "#22c55e" : moodTrend === "down" ? "#ef4444" : "#f59e0b",
             }}>
-              {moodTrend === "up" ? "\u2197\uFE0F" : moodTrend === "down" ? "\u2198\uFE0F" : "\u27A1\uFE0F"}
+              {moodTrend === "up" ? "↗️" : moodTrend === "down" ? "↘️" : "➡️"}
             </span>
           </div>
 
@@ -647,7 +647,7 @@ export default function PawCareHubPage() {
             padding: 20, marginBottom: 20,
           }}>
             <h2 style={{ fontSize: 15, fontWeight: 800, color: "var(--c-text)", marginBottom: 14, display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 18 }}>{"\u{1F4C5}"}</span> Timeline santé
+              <span style={{ fontSize: 18 }}>{"📅"}</span> Timeline santé
             </h2>
             <div style={{ position: "relative", paddingLeft: 24 }}>
               {/* Vertical line */}
@@ -681,14 +681,14 @@ export default function PawCareHubPage() {
         {/* ====== QUICK ACTIONS ====== */}
         <div style={{ marginBottom: 20 }}>
           <h2 style={{ fontSize: 15, fontWeight: 800, color: "var(--c-text)", marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 18 }}>{"\u26A1"}</span> Actions rapides
+            <span style={{ fontSize: 18 }}>{"⚡"}</span> Actions rapides
           </h2>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
             {[
-              { emoji: "\u{1F3E5}", label: "Trouver un véto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
-              { emoji: "\u2702\uFE0F", label: "Trouver un toiletteur", href: "https://pawdirectory.ch/annuaire?category=Toiletteur" },
-              { emoji: "\u{1F393}", label: "Trouver un dresseur", href: "https://pawdirectory.ch/annuaire?category=Dresseur" },
-              { emoji: "\u{1F9AE}", label: "Trouver un garde", href: "https://pawdirectory.ch/annuaire?category=Garde+%26+Promeneur" },
+              { emoji: "🏥", label: "Trouver un véto", href: "https://pawdirectory.ch/annuaire?category=V%C3%A9t%C3%A9rinaire" },
+              { emoji: "✂️", label: "Trouver un toiletteur", href: "https://pawdirectory.ch/annuaire?category=Toiletteur" },
+              { emoji: "🎓", label: "Trouver un dresseur", href: "https://pawdirectory.ch/annuaire?category=Dresseur" },
+              { emoji: "🦮", label: "Trouver un garde", href: "https://pawdirectory.ch/annuaire?category=Garde+%26+Promeneur" },
             ].map((action, i) => (
               <a key={i} href={action.href} target="_blank" rel="noopener noreferrer" style={{
                 display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
@@ -717,7 +717,7 @@ export default function PawCareHubPage() {
           padding: 20, marginBottom: 20,
         }}>
           <h2 style={{ fontSize: 15, fontWeight: 800, color: "var(--c-text)", marginBottom: 12, display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 18 }}>{"\u{1F4CB}"}</span> Profil de {animal.name}
+            <span style={{ fontSize: 18 }}>{"📋"}</span> Profil de {animal.name}
           </h2>
 
           {/* Progress bar */}

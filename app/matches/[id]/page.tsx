@@ -397,7 +397,7 @@ export default function ConversationPage() {
                     {isMine && (
                       <div className={"flex justify-end mt-0.5 " + (msg.image_url ? "px-2 pb-1" : "")}>
                         <span className={"text-[10px] font-medium " + (msg.read_at ? "text-blue-300" : "text-white/40")}>
-                          {msg.read_at ? "\u2713\u2713" : "\u2713"}
+                          {msg.read_at ? "✓✓" : "✓"}
                         </span>
                       </div>
                     )}

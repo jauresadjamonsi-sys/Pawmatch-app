@@ -117,7 +117,7 @@ export default function FlairerPage() {
         if (state.includes('Vaud')) detected = 'VD';
         else if (state.includes('Gen')) detected = 'GE';
         else if (state.includes('Bern')) detected = 'BE';
-        else if (state.includes('Z\u00FCrich') || state.includes('Zurich')) detected = 'ZH';
+        else if (state.includes('Zürich') || state.includes('Zurich')) detected = 'ZH';
         else if (state.includes('Fribourg') || state.includes('Freiburg')) detected = 'FR';
         else if (state.includes('Valais') || state.includes('Wallis')) detected = 'VS';
         else if (state.includes('Neuch')) detected = 'NE';
@@ -127,7 +127,7 @@ export default function FlairerPage() {
         else if (state.includes('Luzern') || state.includes('Lucerne')) detected = 'LU';
         else if (state.includes('St. Gallen') || state.includes('Saint-Gall')) detected = 'SG';
         else if (state.includes('Aargau') || state.includes('Argovie')) detected = 'AG';
-        else if (state.includes('Graub\u00FCnden') || state.includes('Grisons')) detected = 'GR';
+        else if (state.includes('Graubünden') || state.includes('Grisons')) detected = 'GR';
         else if (state.includes('Thurgau') || state.includes('Thurgovie')) detected = 'TG';
         else if (state.includes('Solothurn') || state.includes('Soleure')) detected = 'SO';
         else if (state.includes('Schwyz')) detected = 'SZ';
@@ -217,7 +217,7 @@ export default function FlairerPage() {
     const colors = type === "like" ? ["#f97316","#fb923c","#fbbf24","#f472b6","#ef4444"]
       : type === "super" ? ["#60a5fa","#a78bfa","#34d399","#fbbf24","#f97316"]
       : ["#6b7280","#9ca3af"];
-    const emojis = type === "like" ? ["\u2764\uFE0F","\u{1F43E}","\u2728","\u{1F49B}","\u{1F9E1}"] : type === "super" ? ["\u26A1","\u{1F499}","\u{1F31F}","\u{1F4AB}","\u{1F525}"] : [];
+    const emojis = type === "like" ? ["❤️","🐾","✨","💛","🧡"] : type === "super" ? ["⚡","💙","🌟","💫","🔥"] : [];
     const count = type === "pass" ? 8 : 20;
     const newP: Particle[] = Array.from({ length: count }, (_, i) => ({
       id: Date.now() + i, x, y,
@@ -232,7 +232,7 @@ export default function FlairerPage() {
   }
 
   function triggerStreak(count: number) {
-    const labels: Record<number, string> = { 3:"\u{1F525} x3 En feu !", 5:"\u26A1 x5 Instinct !", 7:"\u{1F31F} x7 Magn\u00E9tique !", 10:"\u{1F4A5} x10 L\u00C9GENDAIRE !" };
+    const labels: Record<number, string> = { 3:"🔥 x3 En feu !", 5:"⚡ x5 Instinct !", 7:"🌟 x7 Magnétique !", 10:"💥 x10 LÉGENDAIRE !" };
     if (labels[count]) {
       setStreakLabel(labels[count]); setShowStreak(true);
       playSound("streak"); vibrate([50,30,50]);
@@ -324,7 +324,7 @@ export default function FlairerPage() {
   }
 
   function formatAge(months: number | null) {
-    if (!months) return "\u00C2ge inconnu";
+    if (!months) return "Âge inconnu";
     if (months < 12) return months + " mois";
     const y = Math.floor(months / 12);
     return y + " an" + (y > 1 ? "s" : "");
@@ -336,10 +336,10 @@ export default function FlairerPage() {
         <div className="aurora-bg" />
         <div className="text-center">
           <div className="relative">
-            <div className="text-5xl mb-4 animate-float">{"\u{1F43E}"}</div>
+            <div className="text-5xl mb-4 animate-float">{"🐾"}</div>
             <div className="absolute inset-0 blur-xl bg-orange-500/20 rounded-full animate-breathe" />
           </div>
-          <p className="text-gray-500 text-sm animate-breathe mt-2">Calcul des compatibilit\u00E9s...</p>
+          <p className="text-gray-500 text-sm animate-breathe mt-2">Calcul des compatibilités...</p>
         </div>
       </div>
     );
@@ -356,7 +356,7 @@ export default function FlairerPage() {
         <div className="aurora-bg" />
         <div className="text-center max-w-sm animate-scale-in">
           <div className="relative mb-6">
-            <div className="text-6xl animate-float">{"\u{1F43E}"}</div>
+            <div className="text-6xl animate-float">{"🐾"}</div>
             <div className="absolute inset-0 blur-2xl bg-orange-500/15 rounded-full animate-breathe" />
           </div>
           <h2 className="text-2xl font-bold gradient-text-warm mb-2">Ajoute ton premier compagnon !</h2>
@@ -379,28 +379,28 @@ export default function FlairerPage() {
         <div className="text-center max-w-sm animate-scale-in">
           {/* Floating emojis */}
           <div className="relative mb-8 h-20">
-            <div className="absolute -top-6 left-1/4 text-3xl animate-float" style={{ animationDelay: "0s" }}>{"\u{1F43E}"}</div>
-            <div className="absolute -top-2 right-1/4 text-2xl animate-float" style={{ animationDelay: "0.6s" }}>{"\u2728"}</div>
-            <div className="absolute top-8 left-[15%] text-2xl animate-float" style={{ animationDelay: "1.2s" }}>{"\u{1F495}"}</div>
-            <div className="absolute top-6 right-[15%] text-3xl animate-float" style={{ animationDelay: "0.3s" }}>{"\u{1F31F}"}</div>
-            <div className="text-6xl relative z-10 pt-2">{"\u{1F43E}"}</div>
+            <div className="absolute -top-6 left-1/4 text-3xl animate-float" style={{ animationDelay: "0s" }}>{"🐾"}</div>
+            <div className="absolute -top-2 right-1/4 text-2xl animate-float" style={{ animationDelay: "0.6s" }}>{"✨"}</div>
+            <div className="absolute top-8 left-[15%] text-2xl animate-float" style={{ animationDelay: "1.2s" }}>{"💕"}</div>
+            <div className="absolute top-6 right-[15%] text-3xl animate-float" style={{ animationDelay: "0.3s" }}>{"🌟"}</div>
+            <div className="text-6xl relative z-10 pt-2">{"🐾"}</div>
           </div>
-          <h2 className="text-2xl font-bold gradient-text mb-2">Tu as tout flair\u00E9 !</h2>
+          <h2 className="text-2xl font-bold gradient-text mb-2">Tu as tout flairé !</h2>
           <p className="text-[var(--c-text-muted)] mb-2 text-sm">Reviens demain pour de nouveaux profils.</p>
-          {likeCount > 0 && <p className="text-[var(--c-text-muted)] mb-2 text-sm">Tu as flair\u00E9 <span className="font-bold gradient-text-warm">{likeCount}</span> compagnons.</p>}
+          {likeCount > 0 && <p className="text-[var(--c-text-muted)] mb-2 text-sm">Tu as flairé <span className="font-bold gradient-text-warm">{likeCount}</span> compagnons.</p>}
           {streak >= 3 && <p className="text-sm font-semibold mb-4 gradient-text-warm">Streak max : {streak} !</p>}
 
           <div className="glass-strong p-5 mt-6 mb-4 text-left">
             <p className="text-xs font-semibold text-[var(--c-text-muted)] uppercase tracking-wider mb-3">En attendant...</p>
             <div className="flex flex-col gap-3 stagger-children">
               <Link href="/events" className="flex items-center gap-3 text-sm text-[var(--c-text)] hover:text-orange-400 transition-colors duration-300">
-                <span className="text-lg">{"\u{1F4C5}"}</span> D\u00E9couvre les \u00E9v\u00E9nements pr\u00E8s de toi
+                <span className="text-lg">{"📅"}</span> Découvre les événements près de toi
               </Link>
               <Link href="/carte" className="flex items-center gap-3 text-sm text-[var(--c-text)] hover:text-orange-400 transition-colors duration-300">
-                <span className="text-lg">{"\u{1F5FA}\uFE0F"}</span> Explore la carte des animaux
+                <span className="text-lg">{"🗺️"}</span> Explore la carte des animaux
               </Link>
               <Link href="/matches" className="flex items-center gap-3 text-sm text-[var(--c-text)] hover:text-orange-400 transition-colors duration-300">
-                <span className="text-lg">{"\u{1F4AC}"}</span> Consulte tes matchs
+                <span className="text-lg">{"💬"}</span> Consulte tes matchs
               </Link>
             </div>
           </div>
@@ -491,12 +491,12 @@ export default function FlairerPage() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md" onClick={() => setShowCoupDeTruffe(false)}>
           <div className="relative glass-strong neon-orange p-10 text-center max-w-sm mx-4 animate-scale-in" onClick={e => e.stopPropagation()}>
             <div className="absolute inset-0 rounded-[24px] gradient-border pointer-events-none" />
-            <div className="text-7xl mb-4 animate-float">{"\u{1F43E}"}</div>
+            <div className="text-7xl mb-4 animate-float">{"🐾"}</div>
             <h2 className="text-3xl font-extrabold gradient-text-warm mb-1">Coup de Truffe !</h2>
-            <p className="text-gray-400 text-sm mb-6">Match mutuel avec {animal?.name} {"\u{1F389}"}</p>
+            <p className="text-gray-400 text-sm mb-6">Match mutuel avec {animal?.name} {"🎉"}</p>
             <div className="flex gap-3">
               {mutualMatchData && (
-                <Link href={"/matches/" + mutualMatchData.id} className="flex-1 py-3 btn-futuristic text-center text-sm">{"\u{1F4AC}"} Discuter</Link>
+                <Link href={"/matches/" + mutualMatchData.id} className="flex-1 py-3 btn-futuristic text-center text-sm">{"💬"} Discuter</Link>
               )}
               <button onClick={() => setShowCoupDeTruffe(false)} className="px-4 py-3 glass text-gray-400 text-sm hover:bg-white/10 transition-all duration-300">Plus tard</button>
             </div>
@@ -511,12 +511,12 @@ export default function FlairerPage() {
           {streak >= 3 && (
             <span className="px-2 py-0.5 glass text-orange-300 rounded-full text-xs font-bold neon-orange"
               style={{ borderColor: "rgba(249,115,22,0.3)" }}>
-              {"\u{1F525}"} {"\u00D7"}{streak}
+              {"🔥"} {"×"}{streak}
             </span>
           )}
         </div>
 
-        {/* S\u00E9lecteur animal actif */}
+        {/* Sélecteur animal actif */}
         {myAnimals.length > 1 && (
           <select value={activeMyAnimal?.id || ""} onChange={e => setActiveMyAnimal(myAnimals.find(a => a.id === e.target.value) || null)}
             className="text-xs input-futuristic !py-1 !px-3 !rounded-full">
@@ -558,7 +558,7 @@ export default function FlairerPage() {
               boxShadow: `0 0 ${30 * likeOpacity}px rgba(52,211,153,0.5)`,
               border: "2px solid rgba(52,211,153,0.6)",
             }}>
-            {"\u2764\uFE0F"} FLAIRER !
+            {"❤️"} FLAIRER !
           </div>
         )}
         {passOpacity > 0.2 && (
@@ -569,7 +569,7 @@ export default function FlairerPage() {
               boxShadow: `0 0 ${30 * passOpacity}px rgba(239,68,68,0.5)`,
               border: "2px solid rgba(239,68,68,0.6)",
             }}>
-            PASSER {"\u2715"}
+            PASSER {"✕"}
           </div>
         )}
         {superOpacity > 0.2 && (
@@ -580,7 +580,7 @@ export default function FlairerPage() {
               boxShadow: `0 0 ${30 * superOpacity}px rgba(167,139,250,0.5)`,
               border: "2px solid rgba(167,139,250,0.6)",
             }}>
-            {"\u26A1"} SUPER FLAIR !
+            {"⚡"} SUPER FLAIR !
           </div>
         )}
 
@@ -636,7 +636,7 @@ export default function FlairerPage() {
             {/* Glass info overlay at bottom of photo */}
             <div className="absolute bottom-0 left-0 right-0 p-5 backdrop-blur-sm bg-black/20">
               <h2 className="text-2xl font-extrabold text-white drop-shadow-lg">{animal.name}</h2>
-              <p className="text-sm text-gray-300">{SPECIES[animal.species] || animal.species}{animal.breed ? " \u00B7 " + animal.breed : ""}</p>
+              <p className="text-sm text-gray-300">{SPECIES[animal.species] || animal.species}{animal.breed ? " · " + animal.breed : ""}</p>
             </div>
           </div>
 
@@ -647,7 +647,7 @@ export default function FlairerPage() {
             {compat && activeMyAnimal && (
               <div className="mb-3 p-3 glass rounded-2xl">
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-[10px] text-gray-500 uppercase tracking-wider">Compatibilit\u00E9 avec {activeMyAnimal.name}</span>
+                  <span className="text-[10px] text-gray-500 uppercase tracking-wider">Compatibilité avec {activeMyAnimal.name}</span>
                   <span className="text-xs font-bold" style={{ color: compat.color, textShadow: `0 0 10px ${compat.color}60` }}>{compat.score}%</span>
                 </div>
                 <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden relative">
@@ -670,7 +670,7 @@ export default function FlairerPage() {
               {userCanton && animal.canton && <span className="px-2.5 py-1 glass text-green-400 rounded-full text-xs font-bold" style={{ borderColor: "rgba(52,211,153,0.2)" }}>{getProximityLabel(userCanton, animal.canton)}</span>}
               {animal.city && <span className="px-2.5 py-1 glass text-gray-300 rounded-full text-xs">{animal.city}</span>}
               <span className="px-2.5 py-1 glass text-gray-300 rounded-full text-xs">{formatAge(animal.age_months)}</span>
-              <span className="px-2.5 py-1 glass text-gray-300 rounded-full text-xs">{animal.gender === "male" ? "M\u00E2le" : animal.gender === "femelle" ? "Femelle" : "Inconnu"}</span>
+              <span className="px-2.5 py-1 glass text-gray-300 rounded-full text-xs">{animal.gender === "male" ? "Mâle" : animal.gender === "femelle" ? "Femelle" : "Inconnu"}</span>
             </div>
             {animal.traits?.length > 0 && (
               <div className="flex flex-wrap gap-1 mb-2">
@@ -705,7 +705,7 @@ export default function FlairerPage() {
             hover:shadow-[0_0_25px_rgba(167,139,250,0.4),0_0_50px_rgba(167,139,250,0.15)]
             hover:border-purple-500/40 hover:scale-110 active:scale-95"
           style={{ borderColor: "rgba(167,139,250,0.3)", background: "rgba(167,139,250,0.08)" }}>
-          <span className="text-xl group-hover:scale-110 transition-transform duration-300">{"\u26A1"}</span>
+          <span className="text-xl group-hover:scale-110 transition-transform duration-300">{"⚡"}</span>
         </button>
 
         {/* Like button - green/orange neon glow */}
@@ -734,28 +734,28 @@ export default function FlairerPage() {
         </button>
       </div>
 
-      <p className="text-gray-600 text-[10px] mt-3 relative z-10">{"\u2190"} Passer {"\u00B7"} {"\u2764\uFE0F"} Flairer {"\u00B7"} {"\u26A1"} Super Flair (swipe haut)</p>
+      <p className="text-gray-600 text-[10px] mt-3 relative z-10">{"←"} Passer {"·"} {"❤️"} Flairer {"·"} {"⚡"} Super Flair (swipe haut)</p>
 
       {/* Paywall modal */}
       {showPaywall && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-md p-4">
           <div className="relative glass-strong neon-orange p-8 max-w-sm w-full text-center animate-scale-in">
             <div className="absolute inset-0 rounded-[24px] gradient-border pointer-events-none" />
-            <div className="text-5xl mb-4 animate-float">{"\u{1F43E}"}</div>
-            <h2 className="text-xl font-extrabold gradient-text-warm mb-2">3 matchs gratuits utilis\u00E9s !</h2>
-            <p className="text-sm text-[var(--c-text-muted)] mb-6">Cr\u00E9e un compte gratuit pour continuer \u00E0 flairer sans limite.</p>
+            <div className="text-5xl mb-4 animate-float">{"🐾"}</div>
+            <h2 className="text-xl font-extrabold gradient-text-warm mb-2">3 matchs gratuits utilisés !</h2>
+            <p className="text-sm text-[var(--c-text-muted)] mb-6">Crée un compte gratuit pour continuer à flairer sans limite.</p>
             <div className="flex flex-col gap-3">
               <a href="/signup" className="w-full py-3 btn-futuristic text-center text-sm">
-                {"\u{1F680}"} Cr\u00E9er un compte gratuit
+                {"🚀"} Créer un compte gratuit
               </a>
               <a href="/login" className="w-full py-3 glass text-center text-[var(--c-text-muted)] font-bold text-sm hover:bg-white/10 transition-all duration-300">
-                D\u00E9j\u00E0 un compte ? Se connecter
+                Déjà un compte ? Se connecter
               </a>
               <button onClick={() => setShowPaywall(false)} className="text-xs text-[var(--c-text-muted)] mt-2 hover:text-gray-300 transition-colors">
-                Continuer sans compte (limit\u00E9)
+                Continuer sans compte (limité)
               </button>
             </div>
-            <p className="text-[10px] text-[var(--c-text-muted)] mt-4">{"\u2713"} Gratuit {"\u00B7"} {"\u2713"} Sans carte {"\u00B7"} {"\u2713"} Matchs illimit\u00E9s</p>
+            <p className="text-[10px] text-[var(--c-text-muted)] mt-4">{"✓"} Gratuit {"·"} {"✓"} Sans carte {"·"} {"✓"} Matchs illimités</p>
           </div>
         </div>
       )}
@@ -766,15 +766,15 @@ export default function FlairerPage() {
           <div className="glass-strong max-w-md w-full p-6 shadow-2xl animate-scale-in">
             {matchSuccess ? (
               <div className="text-center py-4">
-                <div className="text-5xl mb-3 animate-float">{isSuperLike ? "\u26A1" : "\u2764\uFE0F"}</div>
-                <h3 className="text-xl font-bold gradient-text-warm mb-1">{isSuperLike ? "Super Flair envoy\u00E9 !" : "Flair envoy\u00E9 !"}</h3>
-                <p className="text-gray-400 text-sm">{animal.name} sera bient\u00F4t pr\u00E9venu</p>
-                {streak >= 3 && <p className="text-sm font-bold mt-2 gradient-text-warm">{"\u{1F525}"} Streak {"\u00D7"}{streak} !</p>}
+                <div className="text-5xl mb-3 animate-float">{isSuperLike ? "⚡" : "❤️"}</div>
+                <h3 className="text-xl font-bold gradient-text-warm mb-1">{isSuperLike ? "Super Flair envoyé !" : "Flair envoyé !"}</h3>
+                <p className="text-gray-400 text-sm">{animal.name} sera bientôt prévenu</p>
+                {streak >= 3 && <p className="text-sm font-bold mt-2 gradient-text-warm">{"🔥"} Streak {"×"}{streak} !</p>}
               </div>
             ) : (
               <>
                 <div className="flex items-center gap-3 mb-4">
-                  {isSuperLike && <span className="text-2xl">{"\u26A1"}</span>}
+                  {isSuperLike && <span className="text-2xl">{"⚡"}</span>}
                   <div>
                     <h3 className="text-lg font-bold gradient-text">Avec quel compagnon ?</h3>
                     <p className="text-sm text-gray-400">Qui va rencontrer {animal.name} ?</p>
@@ -783,9 +783,9 @@ export default function FlairerPage() {
                 {compat && (
                   <div className="mb-4 p-3 glass rounded-2xl flex items-center gap-3"
                     style={{ borderColor: compat.color + "40", boxShadow: `0 0 15px ${compat.color}15` }}>
-                    <span className="text-2xl">{"\u{1F91D}"}</span>
+                    <span className="text-2xl">{"🤝"}</span>
                     <div>
-                      <p className="text-sm font-bold" style={{ color: compat.color, textShadow: `0 0 8px ${compat.color}40` }}>{compat.score}% {"\u2014"} {compat.label}</p>
+                      <p className="text-sm font-bold" style={{ color: compat.color, textShadow: `0 0 8px ${compat.color}40` }}>{compat.score}% {"—"} {compat.label}</p>
                       <p className="text-xs text-gray-500">{compat.reasons[0]}</p>
                     </div>
                   </div>
@@ -805,7 +805,7 @@ export default function FlairerPage() {
                         </div>
                         <div className="flex-1">
                           <p className="font-semibold text-[var(--c-text,white)] text-sm">{myAnimal.name}</p>
-                          <p className="text-xs text-gray-500">{myAnimal.species}{myAnimal.breed ? " \u00B7 " + myAnimal.breed : ""}</p>
+                          <p className="text-xs text-gray-500">{myAnimal.species}{myAnimal.breed ? " · " + myAnimal.breed : ""}</p>
                         </div>
                         <div className="text-right">
                           <span className="text-xs font-bold" style={{ color: c.color, textShadow: `0 0 8px ${c.color}40` }}>{c.score}%</span>

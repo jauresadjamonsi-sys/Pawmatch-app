@@ -10,8 +10,8 @@ import { BadgesSection } from "./Badges";
 import ReferralCard from "./ReferralCard";
 
 const EMOJI_MAP: Record<string, string> = {
-  chien: "\u{1F415}", chat: "\u{1F431}", lapin: "\u{1F430}",
-  oiseau: "\u{1F426}", rongeur: "\u{1F439}", autre: "\u{1F43E}",
+  chien: "🐕", chat: "🐱", lapin: "🐰",
+  oiseau: "🐦", rongeur: "🐹", autre: "🐾",
 };
 
 interface Props {
@@ -276,7 +276,7 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
                   <div className="h-36 flex items-center justify-center overflow-hidden relative" style={{ background: "rgba(255,255,255,0.02)" }}>
                     {animal.photo_url
                       ? <img src={animal.photo_url} alt={animal.name} className="w-full h-full object-cover" />
-                      : <span className="text-5xl">{EMOJI_MAP[animal.species] || "\u{1F43E}"}</span>}
+                      : <span className="text-5xl">{EMOJI_MAP[animal.species] || "🐾"}</span>}
                   </div>
                   <div className="p-3">
                     <p className="font-bold text-[var(--c-text)] text-sm truncate">{animal.name}</p>
