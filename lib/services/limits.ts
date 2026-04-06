@@ -8,11 +8,27 @@ const LIMITS = {
 
 type Plan = "free" | "premium" | "pro";
 
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "jaures.adjamonsi@gmail.com")
+  .split(",").map(e => e.trim().toLowerCase());
+
+/** Check if user is admin — bypasses all limits */
+export async function isAdmin(supabase: SupabaseClient, userId: string): Promise<boolean> {
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role, email")
+    .eq("id", userId)
+    .single();
+  if (!profile) return false;
+  return profile.role === "admin" || ADMIN_EMAILS.includes((profile.email || "").toLowerCase());
+}
+
 export async function checkAnimalLimit(
   supabase: SupabaseClient,
   userId: string,
   subscription: string
 ): Promise<{ allowed: boolean; error: string | null }> {
+  // Admin bypass
+  if (await isAdmin(supabase, userId)) return { allowed: true, error: null };
   const plan = (subscription || "free") as Plan;
   const limit = LIMITS[plan].animals;
   if (limit === -1) return { allowed: true, error: null };
@@ -36,6 +52,8 @@ export async function checkMatchLimit(
   userId: string,
   subscription: string
 ): Promise<{ allowed: boolean; error: string | null }> {
+  // Admin bypass
+  if (await isAdmin(supabase, userId)) return { allowed: true, error: null };
   const plan = (subscription || "free") as Plan;
   const limit = LIMITS[plan].matchesPerDay;
   if (limit === -1) return { allowed: true, error: null };
@@ -63,6 +81,8 @@ export async function checkMessageLimit(
   userId: string,
   subscription: string
 ): Promise<{ allowed: boolean; error: string | null }> {
+  // Admin bypass
+  if (await isAdmin(supabase, userId)) return { allowed: true, error: null };
   const plan = (subscription || "free") as Plan;
   const limit = LIMITS[plan].messagesPerDay;
   if (limit === -1) return { allowed: true, error: null };

@@ -489,3 +489,234 @@ html {
   border-radius: inherit;
   pointer-events: none;
 }
+
+/* ============================================
+   22. LIGHT THEMES — COMPREHENSIVE OVERRIDES
+   Fixes ALL text-*-300 colors, bg-white/*
+   backgrounds, and hardcoded dark-only values.
+   Applies to: aurore, ocean, clair
+   ============================================ */
+
+/* --- Container backgrounds: bg-white/5, bg-white/10 → visible on light --- */
+[data-theme="clair"] .bg-white\/5,
+[data-theme="aurore"] .bg-white\/5,
+[data-theme="ocean"] .bg-white\/5 {
+  background: rgba(0, 0, 0, 0.03) !important;
+}
+
+[data-theme="clair"] .bg-white\/10,
+[data-theme="aurore"] .bg-white\/10,
+[data-theme="ocean"] .bg-white\/10 {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="clair"] .bg-white\/20,
+[data-theme="aurore"] .bg-white\/20,
+[data-theme="ocean"] .bg-white\/20 {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* --- Status text colors: -300 shades → darker for readability --- */
+[data-theme="clair"] .text-orange-300,
+[data-theme="aurore"] .text-orange-300,
+[data-theme="ocean"] .text-orange-300 {
+  color: #c2410c !important; /* orange-700 */
+}
+
+[data-theme="clair"] .text-orange-400,
+[data-theme="aurore"] .text-orange-400,
+[data-theme="ocean"] .text-orange-400 {
+  color: #c2410c !important;
+}
+
+[data-theme="clair"] .text-green-300,
+[data-theme="aurore"] .text-green-300,
+[data-theme="ocean"] .text-green-300 {
+  color: #15803d !important; /* green-700 */
+}
+
+[data-theme="clair"] .text-green-400,
+[data-theme="aurore"] .text-green-400,
+[data-theme="ocean"] .text-green-400 {
+  color: #15803d !important;
+}
+
+[data-theme="clair"] .text-teal-300,
+[data-theme="aurore"] .text-teal-300,
+[data-theme="ocean"] .text-teal-300 {
+  color: #0f766e !important; /* teal-700 */
+}
+
+[data-theme="clair"] .text-purple-300,
+[data-theme="aurore"] .text-purple-300,
+[data-theme="ocean"] .text-purple-300 {
+  color: #7c3aed !important; /* violet-600 */
+}
+
+[data-theme="clair"] .text-purple-400,
+[data-theme="aurore"] .text-purple-400,
+[data-theme="ocean"] .text-purple-400 {
+  color: #7c3aed !important;
+}
+
+[data-theme="clair"] .text-red-300,
+[data-theme="aurore"] .text-red-300,
+[data-theme="ocean"] .text-red-300 {
+  color: #b91c1c !important; /* red-700 */
+}
+
+[data-theme="clair"] .text-red-400,
+[data-theme="aurore"] .text-red-400,
+[data-theme="ocean"] .text-red-400 {
+  color: #b91c1c !important;
+}
+
+[data-theme="clair"] .text-pink-400,
+[data-theme="aurore"] .text-pink-400,
+[data-theme="ocean"] .text-pink-400 {
+  color: #be185d !important; /* pink-700 */
+}
+
+[data-theme="clair"] .text-blue-300,
+[data-theme="aurore"] .text-blue-300,
+[data-theme="ocean"] .text-blue-300 {
+  color: #1d4ed8 !important; /* blue-700 */
+}
+
+/* --- Gray overrides for light themes --- */
+[data-theme="clair"] .text-gray-300,
+[data-theme="aurore"] .text-gray-300,
+[data-theme="ocean"] .text-gray-300 {
+  color: #374151 !important; /* gray-700 */
+}
+
+[data-theme="clair"] .text-gray-400,
+[data-theme="aurore"] .text-gray-400,
+[data-theme="ocean"] .text-gray-400 {
+  color: #4b5563 !important; /* gray-600 */
+}
+
+[data-theme="clair"] .text-gray-500,
+[data-theme="aurore"] .text-gray-500,
+[data-theme="ocean"] .text-gray-500 {
+  color: #6b7280 !important; /* keep gray-500, fine on light */
+}
+
+/* --- Badge backgrounds: green/orange/pink/red/teal with alpha --- */
+[data-theme="clair"] .bg-green-500\/10,
+[data-theme="aurore"] .bg-green-500\/10,
+[data-theme="ocean"] .bg-green-500\/10 {
+  background: rgba(21, 128, 61, 0.1) !important;
+}
+
+[data-theme="clair"] .bg-green-500\/20,
+[data-theme="aurore"] .bg-green-500\/20,
+[data-theme="ocean"] .bg-green-500\/20 {
+  background: rgba(21, 128, 61, 0.12) !important;
+}
+
+[data-theme="clair"] .bg-orange-500\/10,
+[data-theme="aurore"] .bg-orange-500\/10,
+[data-theme="ocean"] .bg-orange-500\/10 {
+  background: rgba(194, 65, 12, 0.08) !important;
+}
+
+[data-theme="clair"] .bg-pink-500\/20,
+[data-theme="aurore"] .bg-pink-500\/20,
+[data-theme="ocean"] .bg-pink-500\/20 {
+  background: rgba(190, 24, 93, 0.1) !important;
+}
+
+[data-theme="clair"] .bg-red-500\/10,
+[data-theme="aurore"] .bg-red-500\/10,
+[data-theme="ocean"] .bg-red-500\/10 {
+  background: rgba(185, 28, 28, 0.08) !important;
+}
+
+[data-theme="clair"] .bg-teal-500\/5,
+[data-theme="aurore"] .bg-teal-500\/5,
+[data-theme="ocean"] .bg-teal-500\/5 {
+  background: rgba(15, 118, 110, 0.06) !important;
+}
+
+/* --- Border overrides --- */
+[data-theme="clair"] .border-green-500\/20,
+[data-theme="aurore"] .border-green-500\/20,
+[data-theme="ocean"] .border-green-500\/20 {
+  border-color: rgba(21, 128, 61, 0.25) !important;
+}
+
+[data-theme="clair"] .border-green-500\/30,
+[data-theme="aurore"] .border-green-500\/30,
+[data-theme="ocean"] .border-green-500\/30 {
+  border-color: rgba(21, 128, 61, 0.3) !important;
+}
+
+[data-theme="clair"] .border-orange-500\/20,
+[data-theme="aurore"] .border-orange-500\/20,
+[data-theme="ocean"] .border-orange-500\/20 {
+  border-color: rgba(194, 65, 12, 0.2) !important;
+}
+
+[data-theme="clair"] .border-pink-500\/30,
+[data-theme="aurore"] .border-pink-500\/30,
+[data-theme="ocean"] .border-pink-500\/30 {
+  border-color: rgba(190, 24, 93, 0.25) !important;
+}
+
+[data-theme="clair"] .border-red-500\/20,
+[data-theme="aurore"] .border-red-500\/20,
+[data-theme="ocean"] .border-red-500\/20 {
+  border-color: rgba(185, 28, 28, 0.2) !important;
+}
+
+[data-theme="clair"] .border-teal-500\/15,
+[data-theme="aurore"] .border-teal-500\/15,
+[data-theme="ocean"] .border-teal-500\/15 {
+  border-color: rgba(15, 118, 110, 0.2) !important;
+}
+
+/* --- Card futuristic border on light themes --- */
+[data-theme="clair"] .card-futuristic,
+[data-theme="aurore"] .card-futuristic,
+[data-theme="ocean"] .card-futuristic {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* --- Input futuristic for aurore and ocean too --- */
+[data-theme="aurore"] .input-futuristic,
+[data-theme="ocean"] .input-futuristic {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="aurore"] .input-futuristic:focus,
+[data-theme="ocean"] .input-futuristic:focus {
+  border-color: rgba(249, 115, 22, 0.4);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.08);
+}
+
+/* --- Glass overrides for aurore and ocean card-futuristic hover --- */
+[data-theme="aurore"] .card-futuristic:hover,
+[data-theme="ocean"] .card-futuristic:hover {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 0 40px rgba(249, 115, 22, 0.08);
+}
+
+/* --- Scrollbar for aurore and ocean --- */
+[data-theme="aurore"] ::-webkit-scrollbar-thumb,
+[data-theme="ocean"] ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* --- Glass strong for aurore and ocean --- */
+[data-theme="aurore"] .glass-strong,
+[data-theme="ocean"] .glass-strong {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* --- Ensure text on bg-black/* modals stays white --- */
+.bg-black\/70 .text-\[var\(--c-text\)\],
+.bg-black\/50 .text-\[var\(--c-text\)\] {
+  color: #fff !important;
+}

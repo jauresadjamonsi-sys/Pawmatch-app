@@ -35,7 +35,7 @@ function MapInner({ animals, userPos, t }: { animals: any[]; userPos: [number, n
   }, [animals]);
 
   return (
-    <MapContainer center={userPos || [46.8, 7.5]} zoom={8} style={{ width: "100%", height: "100%" }} scrollWheelZoom>
+    <MapContainer center={userPos || [46.8, 8.2]} zoom={8} style={{ width: "100%", height: "100%" }} scrollWheelZoom maxBounds={[[45.7, 5.9], [47.9, 10.6]]} minZoom={7}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; OSM' />
       {animals.map((a: any) => {
         const coords = a.canton ? CANTON_COORDS[a.canton] : null;
@@ -84,25 +84,51 @@ export default function CartePage() {
   }, [filter]);
 
   return (
-    <div style={{ height: "100dvh", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
       <div style={{ padding: "10px 16px", background: "var(--c-nav)", borderBottom: "1px solid var(--c-border)", display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
         <span style={{ fontSize: 13, fontWeight: 800, color: "var(--c-text)" }}>🗺️ {t.mapTitle}</span>
         <div style={{ display: "flex", gap: 4, marginLeft: "auto" }}>
           {[{ v: "", l: t.mapAll, e: "🐾" }, { v: "chien", l: t.mapDogs, e: "🐕" }, { v: "chat", l: t.mapCats, e: "🐱" }, { v: "lapin", l: t.mapRabbits, e: "🐰" }].map(s => (
             <button key={s.v} onClick={() => setFilter(s.v)}
-              style={{ padding: "4px 10px", borderRadius: 50, border: "none", cursor: "pointer", fontSize: 10, fontWeight: 700,
-                background: filter === s.v ? "#f97316" : "var(--c-card)", color: filter === s.v ? "#fff" : "var(--c-text-muted)" }}>
+              style={{ padding: "4px 10px", borderRadius: 50, border: "1px solid var(--c-border)", cursor: "pointer", fontSize: 10, fontWeight: 700,
+                background: filter === s.v ? "#f97316" : "var(--c-card)", color: filter === s.v ? "#fff" : "var(--c-text)" }}>
               {s.e} {s.l}
             </button>
           ))}
         </div>
       </div>
-      <div style={{ flex: 1, minHeight: 0 }}>
+      {/* Map with fixed max height to allow scrolling */}
+      <div style={{ height: "60vh", maxHeight: 500, minHeight: 300 }}>
         {loading ? <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}><span style={{ fontSize: 40 }} className="animate-pulse">🗺️</span></div>
           : <MapComponent animals={animals} userPos={userPos} t={t} />}
       </div>
-      <div style={{ padding: "6px 16px", background: "var(--c-nav)", borderTop: "1px solid var(--c-border)", textAlign: "center" }}>
-        <span style={{ fontSize: 10, color: "var(--c-text-muted)", fontWeight: 700 }}>🐾 {animals.length} {t.mapCompanions}</span>
+      <div style={{ padding: "8px 16px", background: "var(--c-nav)", borderTop: "1px solid var(--c-border)", textAlign: "center" }}>
+        <span style={{ fontSize: 11, color: "var(--c-text-muted)", fontWeight: 700 }}>🐾 {animals.length} {t.mapCompanions}</span>
+      </div>
+      {/* Animals list below map */}
+      <div style={{ padding: "16px", flex: 1 }}>
+        <h3 style={{ fontSize: 14, fontWeight: 800, color: "var(--c-text)", marginBottom: 12 }}>
+          {t.mapCompanions} ({animals.length})
+        </h3>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 10 }}>
+          {animals.slice(0, 20).map(a => (
+            <a key={a.id} href={"/animals/" + a.id} style={{
+              display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
+              padding: 12, borderRadius: 14, textDecoration: "none",
+              background: "var(--c-card)", border: "1px solid var(--c-border)",
+              transition: "all 0.2s",
+            }}>
+              {a.photo_url ? (
+                <Image src={a.photo_url} alt={a.name} width={48} height={48}
+                  style={{ borderRadius: "50%", objectFit: "cover", width: 48, height: 48 }} sizes="48px" />
+              ) : (
+                <span style={{ fontSize: 28 }}>{EMOJI_MAP[a.species] || "🐾"}</span>
+              )}
+              <span style={{ fontSize: 12, fontWeight: 700, color: "var(--c-text)", textAlign: "center" }}>{a.name}</span>
+              <span style={{ fontSize: 10, color: "var(--c-text-muted)" }}>{a.canton || ""}</span>
+            </a>
+          ))}
+        </div>
       </div>
     </div>
   );

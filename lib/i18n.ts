@@ -257,6 +257,7 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     pricingFeatUnlimitedAnimals: "Animaux illimités", pricingFeatAllPlus: "Tout PawPlus inclus",
     pricingFeatHighlight: "Profil mis en avant", pricingFeatStats: "Statistiques de visites",
     pricingFeatSupport: "Support prioritaire", pricingFeatVIP: "Accès événements VIP",
+    pricingFeatSpotlight1m: "👑 Mascotte Pawly 1 minute", pricingFeatSpotlight24h: "👑 Mascotte Pawly 24 heures",
     pricingChoosePlus: "Choisir PawPlus", pricingChoosePro: "Choisir PawPro",
 
     // Onboarding
@@ -530,6 +531,7 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     pricingFeatUnlimitedAnimals: "Unbegrenzte Tiere", pricingFeatAllPlus: "Alles von PawPlus",
     pricingFeatHighlight: "Hervorgehobenes Profil", pricingFeatStats: "Besuchsstatistiken",
     pricingFeatSupport: "Prioritäts-Support", pricingFeatVIP: "VIP-Veranstaltungen",
+    pricingFeatSpotlight1m: "👑 Pawly-Maskottchen 1 Minute", pricingFeatSpotlight24h: "👑 Pawly-Maskottchen 24 Stunden",
     pricingChoosePlus: "PawPlus wählen", pricingChoosePro: "PawPro wählen",
 
     onboardWelcome: "Willkommen bei Pawly!", onboardSpecies: "Fügen wir dein erstes Tier hinzu. Welche Tierart?",
@@ -800,6 +802,7 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     pricingFeatUnlimitedAnimals: "Animali illimitati", pricingFeatAllPlus: "Tutto PawPlus incluso",
     pricingFeatHighlight: "Profilo in evidenza", pricingFeatStats: "Statistiche visite",
     pricingFeatSupport: "Supporto prioritario", pricingFeatVIP: "Accesso eventi VIP",
+    pricingFeatSpotlight1m: "👑 Mascotte Pawly 1 minuto", pricingFeatSpotlight24h: "👑 Mascotte Pawly 24 ore",
     pricingChoosePlus: "Scegli PawPlus", pricingChoosePro: "Scegli PawPro",
 
     onboardWelcome: "Benvenuto su Pawly!", onboardSpecies: "Aggiungiamo il tuo primo compagno. Che specie è?",
@@ -1070,6 +1073,7 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     pricingFeatUnlimitedAnimals: "Unlimited animals", pricingFeatAllPlus: "Everything in PawPlus",
     pricingFeatHighlight: "Highlighted profile", pricingFeatStats: "Visit statistics",
     pricingFeatSupport: "Priority support", pricingFeatVIP: "VIP event access",
+    pricingFeatSpotlight1m: "👑 Pawly Mascot for 1 minute", pricingFeatSpotlight24h: "👑 Pawly Mascot for 24 hours",
     pricingChoosePlus: "Choose PawPlus", pricingChoosePro: "Choose PawPro",
 
     onboardWelcome: "Welcome to Pawly!", onboardSpecies: "Let's add your first companion. What species?",

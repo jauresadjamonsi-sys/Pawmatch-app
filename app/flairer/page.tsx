@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/hooks/useAuth";
-import { sendMatch } from "@/lib/services/matches";
+import { sendMatchWithLimit } from "@/lib/services/matches";
 import { computeCompatibility, sortByCompatibility, getProximityLabel } from "@/lib/services/compatibility";
 import { CANTONS } from "@/lib/cantons";
 import Link from "next/link";
@@ -186,7 +186,22 @@ export default function FlairerPage() {
 
     const { data: allAnimals } = await supabase
       .from("animals").select("*").eq("status", "disponible").order("created_at", { ascending: false });
-    const filtered = (allAnimals || []).filter((a: Animal) => a.created_by !== profile?.id && !blocked.includes(a.created_by || ""));
+
+    // Get already-liked animal IDs to exclude them
+    let alreadyLiked: string[] = [];
+    if (profile) {
+      const { data: sentMatches } = await supabase
+        .from("matches")
+        .select("receiver_animal_id")
+        .eq("sender_user_id", profile.id);
+      alreadyLiked = (sentMatches || []).map((m: any) => m.receiver_animal_id);
+    }
+
+    const filtered = (allAnimals || []).filter((a: Animal) =>
+      a.created_by !== profile?.id &&
+      !blocked.includes(a.created_by || "") &&
+      !alreadyLiked.includes(a.id)
+    );
 
     if (profile) {
       const { data: mine } = await supabase.from("animals").select("*").eq("created_by", profile.id);
@@ -271,9 +286,9 @@ export default function FlairerPage() {
   async function handleMatch(myAnimalId: string) {
     const animal = animals[currentIndex];
     if (!animal || !profile) return;
-    if (!isAuthenticated && likeCount >= FREE_LIMIT) { setShowPaywall(true); return; }
+    if (likeCount >= FREE_LIMIT && (!profile?.subscription || profile.subscription === "free")) { setShowPaywall(true); return; }
     setMatchError(null);
-    const result = await sendMatch(supabase, myAnimalId, animal.id, profile.id, animal.created_by || "NONE");
+    const result = await sendMatchWithLimit(supabase, myAnimalId, animal.id, profile.id, animal.created_by || "NONE", profile.subscription || "free");
     if (result.error) { setMatchError(result.error); return; }
     try { const { posthog } = require("@/lib/posthog"); posthog.capture("animal_liked", { animal_id: animal.id, species: animal.species, canton: animal.canton, is_super: isSuperLike, mutual: !!result.mutualMatch }); } catch {}
 
