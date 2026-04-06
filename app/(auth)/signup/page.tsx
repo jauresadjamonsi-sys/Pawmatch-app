@@ -12,6 +12,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [referralCode, setReferralCode] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const supabase = createClient();
   const { t } = useAppContext();
 
@@ -253,9 +254,32 @@ export default function SignupPage() {
               </div>
             )}
 
+            {/* Consent checkbox */}
+            <div className="flex items-start gap-3 animate-slide-up" style={{ animationDelay: "0.3s" }}>
+              <input
+                type="checkbox"
+                id="acceptTerms"
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                className="mt-1 accent-orange-500"
+                style={{ width: 16, height: 16, flexShrink: 0 }}
+              />
+              <label htmlFor="acceptTerms" className="text-xs text-[var(--c-text-muted)] leading-relaxed cursor-pointer">
+                J&apos;accepte les{" "}
+                <a href="/legal/cgu" target="_blank" className="underline text-orange-400 hover:text-orange-300">
+                  Conditions Generales d&apos;Utilisation
+                </a>{" "}
+                et la{" "}
+                <a href="/legal/privacy" target="_blank" className="underline text-orange-400 hover:text-orange-300">
+                  Politique de Confidentialite
+                </a>
+                . Je confirme avoir au moins 18 ans.
+              </label>
+            </div>
+
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !acceptedTerms}
               className="btn-futuristic neon-orange w-full py-3 font-semibold rounded-xl disabled:opacity-50 animate-slide-up"
               style={{
                 background: "linear-gradient(135deg, rgba(249,115,22,0.85), rgba(234,88,12,0.95))",

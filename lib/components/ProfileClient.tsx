@@ -391,6 +391,35 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
           )}
         </div>
 
+        {/* RGPD - Export des donnees */}
+        <div
+          className="glass rounded-2xl p-5 animate-slide-up"
+          style={{
+            border: "1px solid rgba(13,148,136,0.2)",
+            boxShadow: "0 0 20px rgba(13,148,136,0.05)",
+            animationDelay: "0.35s",
+          }}
+        >
+          <h3 className="font-bold text-teal-400 text-sm mb-2" style={{ textShadow: "0 0 8px rgba(13,148,136,0.3)" }}>
+            📋 Mes donnees (RGPD/nLPD)
+          </h3>
+          <p className="text-xs text-[var(--c-text-muted)] mb-4">
+            Tu as le droit d&apos;exporter toutes tes donnees personnelles conformement au RGPD (art. 20) et a la nLPD suisse.
+          </p>
+          <a
+            href="/api/user/export"
+            download
+            className="px-4 py-2 text-sm font-bold rounded-xl transition hover:scale-105 inline-block"
+            style={{
+              background: "rgba(13,148,136,0.15)",
+              color: "#5eead4",
+              border: "1px solid rgba(13,148,136,0.3)",
+            }}
+          >
+            📥 Exporter mes donnees (JSON)
+          </a>
+        </div>
+
         {/* Zone danger - glass with red neon edge */}
         <div
           className="glass rounded-2xl p-5 animate-slide-up"

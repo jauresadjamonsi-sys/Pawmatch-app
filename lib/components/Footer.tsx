@@ -158,6 +158,18 @@ export default function Footer() {
           >
             {t.footerPrivacy}
           </Link>
+          <Link
+            href="/legal/mentions-legales"
+            className="footer-link"
+            style={{
+              fontSize: 12,
+              color: "var(--c-text-muted)",
+              textDecoration: "none",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            }}
+          >
+            Mentions legales
+          </Link>
           <a
             href="mailto:contact@pawlyapp.ch"
             className="footer-link"

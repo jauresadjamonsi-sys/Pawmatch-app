@@ -43,7 +43,7 @@ export default function CGUPage() {
           </section>
           <section>
             <h2 className="text-lg font-semibold text-white mb-2">10. Contact</h2>
-            <p>contact@pawly.ch</p>
+            <p>contact@pawlyapp.ch</p>
           </section>
         </div>
       </div>
