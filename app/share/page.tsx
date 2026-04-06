@@ -124,20 +124,37 @@ export default function SharePage() {
             <span className="text-2xl block mb-1">💬</span>
             <span className="text-xs font-semibold text-[var(--c-text)]">{t.shareWhatsapp}</span>
           </a>
+          {/* Instagram — copy text then open app */}
           <button
             className="glass card-futuristic rounded-xl p-4 text-center transition-all duration-300"
-            onClick={async () => {
-              if (navigator.share) {
-                try { await navigator.share({ title: "Pawly", text: shareText, url: shareUrl }); }
-                catch { /* user cancelled */ }
-              } else {
-                navigator.clipboard.writeText(shareText);
-                toast.success(t.shareInstaCopied);
-              }
+            onClick={() => {
+              navigator.clipboard.writeText(shareText);
+              toast.success(t.shareInstaCopied, { duration: 4000 });
+              // Small delay so user sees the toast before Instagram opens
+              setTimeout(() => {
+                window.location.href = "instagram://app";
+                // Fallback if app not installed
+                setTimeout(() => { window.open("https://www.instagram.com/", "_blank"); }, 1500);
+              }, 800);
             }}
           >
-            <span className="text-2xl block mb-1">📤</span>
-            <span className="text-xs font-semibold text-[var(--c-text)]">Partager</span>
+            <span className="text-2xl block mb-1">📸</span>
+            <span className="text-xs font-semibold text-[var(--c-text)]">Instagram</span>
+          </button>
+          {/* TikTok — copy text then open app */}
+          <button
+            className="glass card-futuristic rounded-xl p-4 text-center transition-all duration-300"
+            onClick={() => {
+              navigator.clipboard.writeText(shareText);
+              toast.success(t.shareTiktokCopied, { duration: 4000 });
+              setTimeout(() => {
+                window.location.href = "snssdk1233://";
+                setTimeout(() => { window.open("https://www.tiktok.com/", "_blank"); }, 1500);
+              }, 800);
+            }}
+          >
+            <span className="text-2xl block mb-1">🎵</span>
+            <span className="text-xs font-semibold text-[var(--c-text)]">TikTok</span>
           </button>
           <a
             href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
@@ -164,6 +181,19 @@ export default function SharePage() {
             <span className="text-2xl block mb-1">📱</span>
             <span className="text-xs font-semibold text-[var(--c-text)]">{t.shareSMS}</span>
           </a>
+          {/* Native share (other apps) */}
+          {typeof navigator !== "undefined" && "share" in navigator && (
+            <button
+              className="glass card-futuristic rounded-xl p-4 text-center transition-all duration-300"
+              onClick={async () => {
+                try { await navigator.share({ title: "Pawly", text: shareText, url: shareUrl }); }
+                catch { /* cancelled */ }
+              }}
+            >
+              <span className="text-2xl block mb-1">📤</span>
+              <span className="text-xs font-semibold text-[var(--c-text)]">{t.shareMore || "Plus"}</span>
+            </button>
+          )}
         </div>
 
         {/* QR Code */}
