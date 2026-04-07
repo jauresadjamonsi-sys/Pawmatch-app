@@ -126,7 +126,10 @@ export default function EditAnimalPage() {
       name: form.get("name") as string,
       species,
       breed,
-      age_months: form.get("age_months") ? Number(form.get("age_months")) : null,
+      age_months: (form.get("age_years") || form.get("age_extra_months"))
+        ? (parseInt(form.get("age_years") as string || "0", 10) * 12 +
+           parseInt(form.get("age_extra_months") as string || "0", 10))
+        : null,
       gender: form.get("gender") as string,
       description: (form.get("description") as string) || null,
       photo_url,
@@ -259,8 +262,20 @@ export default function EditAnimalPage() {
             <div className="grid grid-cols-3 gap-3">
               <div>
                 <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.animalAge}</label>
-                <input name="age_months" type="number" min="0" defaultValue={animal.age_months || ""}
-                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-2 focus:ring-orange-500 outline-none transition" />
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <label className="block text-xs text-[var(--c-text-muted)] mb-1">Années</label>
+                    <input name="age_years" type="number" min="0" max="30" placeholder="0"
+                      defaultValue={animal.age_months ? Math.floor(animal.age_months / 12) : ""}
+                      className="w-full px-3 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition" />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-xs text-[var(--c-text-muted)] mb-1">Mois</label>
+                    <input name="age_extra_months" type="number" min="0" max="11" placeholder="0"
+                      defaultValue={animal.age_months ? animal.age_months % 12 : ""}
+                      className="w-full px-3 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition" />
+                  </div>
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.animalGender}</label>

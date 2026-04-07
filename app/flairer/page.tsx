@@ -10,6 +10,7 @@ import Link from "next/link";
 import Image from "next/image";
 import BlockReportModal from "@/lib/components/BlockReportModal";
 import CompatibilityBadge from "@/lib/components/CompatibilityBadge";
+import { formatAge } from "@/lib/utils";
 
 const SPECIES: Record<string, string> = {
   chien: "Chien", chat: "Chat", lapin: "Lapin",
@@ -348,13 +349,6 @@ export default function FlairerPage() {
     else if (dragX > 100) { handleLike(); if (!isAuthenticated || myAnimals.length === 0) { setDragX(0); setDragY(0); } }
     else if (dragX < -100) { handlePass(); }
     else { setDragX(0); setDragY(0); }
-  }
-
-  function formatAge(months: number | null) {
-    if (!months) return "Âge inconnu";
-    if (months < 12) return months + " mois";
-    const y = Math.floor(months / 12);
-    return y + " an" + (y > 1 ? "s" : "");
   }
 
   if (loading || authLoading) {

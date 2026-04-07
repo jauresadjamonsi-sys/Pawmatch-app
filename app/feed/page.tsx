@@ -22,6 +22,7 @@ import {
   getNewlyEarnedBadges,
   getEarnedBadges,
 } from "@/lib/feed/badges";
+import { formatAge } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -103,15 +104,6 @@ function greetingWord(): string {
   if (h < 12) return "Bonjour";
   if (h < 18) return "Bon apr\u00e8s-midi";
   return "Bonsoir";
-}
-
-function formatAge(months: number | null): string {
-  if (months === null) return "";
-  if (months >= 12) {
-    const y = Math.floor(months / 12);
-    return `${y} an${y > 1 ? "s" : ""}`;
-  }
-  return `${months} mois`;
 }
 
 // ---------------------------------------------------------------------------

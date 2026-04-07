@@ -26,6 +26,7 @@ import { useOnlineStatus } from "@/lib/hooks/useOnlineStatus";
 import PresenceDot from "@/lib/components/PresenceDot";
 import { EMOJI_MAP } from "@/lib/constants";
 import SpotlightButton from "@/lib/components/SpotlightButton";
+import { formatAge } from "@/lib/utils";
 
 export default function AnimalDetailPage() {
   const [animal, setAnimal] = useState<AnimalRow | null>(null);
@@ -98,14 +99,6 @@ export default function AnimalDetailPage() {
     const result = await sendMatchWithLimit(supabase, myAnimalId, animal.id, profile.id, animal.created_by || "NONE", profile.subscription || "free");
     if (result.error) { setMatchError(result.error); } else { setMatchSuccess(true); setShowMatchModal(false); }
     setMatchSending(false);
-  }
-
-  function formatAge(months: number | null) {
-    if (!months) return t.animalUnknown;
-    if (months < 12) return months + " " + t.animalMonths;
-    const y = Math.floor(months / 12);
-    const r = months % 12;
-    return y + " " + (y > 1 ? t.animalYears : t.animalYear) + (r > 0 ? " " + r + " " + t.animalMonths : "");
   }
 
   if (loading) return <p className="text-center py-12 text-[var(--c-text-muted)]">{t.loading}</p>;

@@ -10,6 +10,7 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useAppContext } from "@/lib/contexts/AppContext";
 import { EMOJI_MAP } from "@/lib/constants";
+import { formatAge } from "@/lib/utils";
 
 // --- Types ---
 
@@ -446,7 +447,7 @@ export default function PawCareHubPage() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <h1 style={{ fontSize: 22, fontWeight: 900, color: "var(--c-text)", margin: 0 }}>{animal.name}</h1>
             <p style={{ fontSize: 13, color: "var(--c-text-muted)", margin: "2px 0 0" }}>
-              {animal.breed || animal.species} {animal.age_months ? `· ${Math.floor(animal.age_months / 12)} ans` : ""}
+              {animal.breed || animal.species} {animal.age_months ? `· ${formatAge(animal.age_months)}` : ""}
             </p>
           </div>
 
