@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
+import { createClient } from "@/lib/supabase/client";
 
 /* ────────────────────────────────────────────── Types ── */
 
@@ -1510,10 +1511,7 @@ function VerificationTab() {
 
   async function fetchVerifications() {
     setVLoading(true);
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabase = createClient();
     let query = supabase
       .from("profiles")
       .select("id, full_name, email, avatar_url, verification_photo_url, verification_status, verification_note, verification_submitted_at, verification_reviewed_at, created_at")
@@ -1530,10 +1528,7 @@ function VerificationTab() {
 
   async function updateStatus(profileId: string, status: "approved" | "rejected", note?: string) {
     setProcessingId(profileId);
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabase = createClient();
     await supabase.from("profiles").update({
       verification_status: status,
       verification_reviewed_at: new Date().toISOString(),
