@@ -2,24 +2,45 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { ensureProfile } from "@/lib/supabase/admin";
+import { createAdminClient, ensureProfile } from "@/lib/supabase/admin";
 
 export async function login(formData: FormData) {
   const supabase = await createClient();
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
-  });
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
+    // If email not confirmed → auto-confirm via admin and retry
     if (error.message.includes("Email not confirmed")) {
-      return { error: "Ton email n'est pas encore confirme. Verifie ta boite mail (et les spams) pour le lien de confirmation." };
-    }
-    if (error.message.includes("Invalid login credentials")) {
+      try {
+        const admin = createAdminClient();
+        const { data: profile } = await admin
+          .from("profiles")
+          .select("id")
+          .eq("email", email)
+          .single();
+
+        if (profile) {
+          await admin.auth.admin.updateUser(profile.id, { email_confirm: true });
+          // Retry login after confirming
+          const { error: retryError } = await supabase.auth.signInWithPassword({ email, password });
+          if (retryError) {
+            return { error: "Email ou mot de passe incorrect." };
+          }
+          // Success — continue below
+        } else {
+          return { error: "Compte introuvable. Cree un compte d'abord." };
+        }
+      } catch {
+        return { error: "Erreur lors de la confirmation. Reessaie." };
+      }
+    } else if (error.message.includes("Invalid login credentials")) {
       return { error: "Email ou mot de passe incorrect." };
+    } else {
+      return { error: error.message };
     }
-    return { error: error.message };
   }
 
   // Ensure profile exists (service role = bypasses RLS)
@@ -38,35 +59,51 @@ export async function login(formData: FormData) {
 
 export async function signup(formData: FormData) {
   const supabase = await createClient();
+  const admin = createAdminClient();
 
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const fullName = formData.get("fullName") as string;
   const referredBy = formData.get("referred_by") as string | null;
 
-  const { data: signupData, error } = await supabase.auth.signUp({
+  // Use admin API to create user — auto-confirmed, NO confirmation email needed
+  const { data: userData, error: createError } = await admin.auth.admin.createUser({
     email,
     password,
-    options: {
-      data: {
-        full_name: fullName,
-        ...(referredBy && { referred_by: referredBy }),
-      },
+    email_confirm: true,
+    user_metadata: {
+      full_name: fullName,
+      ...(referredBy && { referred_by: referredBy }),
     },
   });
 
-  if (error) {
-    return { error: error.message };
+  if (createError) {
+    if (
+      createError.message.includes("already been registered") ||
+      createError.message.includes("already exists") ||
+      createError.message.includes("duplicate")
+    ) {
+      return { error: "Cet email est deja utilise. Essaie de te connecter." };
+    }
+    return { error: createError.message };
   }
 
-  // If user is immediately confirmed (no email confirmation),
-  // create profile and go to onboarding
-  if (signupData?.user && signupData.session) {
-    await ensureProfile(signupData.user);
-    redirect("/onboarding");
+  // Create profile row
+  if (userData?.user) {
+    await ensureProfile(userData.user);
   }
 
-  redirect("/login?message=Verifie ton email pour confirmer ton compte");
+  // Sign them in immediately (sets session cookie)
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (signInError) {
+    return { error: signInError.message };
+  }
+
+  redirect("/onboarding");
 }
 
 export async function logout() {
