@@ -605,9 +605,10 @@ export default function FeedPage() {
                 const fact = getDailyFact(animal.species);
 
                 return (
-                  <div
+                  <Link
+                    href={`/animals/${animal.id}`}
                     key={animal.id}
-                    className="glass card-futuristic holographic-shimmer rounded-2xl p-4 flex-shrink-0 w-[85vw] max-w-[340px]"
+                    className="glass card-futuristic holographic-shimmer rounded-2xl p-4 flex-shrink-0 w-[85vw] max-w-[340px] block transition-transform active:scale-[0.98]"
                   >
                     {/* Top row: photo + info */}
                     <div className="flex gap-3 items-start">
@@ -673,7 +674,7 @@ export default function FeedPage() {
                       </span>{" "}
                       {fact}
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
             </div>
@@ -776,13 +777,14 @@ export default function FeedPage() {
           </h2>
           <div className="grid grid-cols-3 gap-3">
             {[
-              { label: "Matchs", value: matchCount, icon: "\uD83D\uDC95", glow: "rgba(244,114,182,0.15)" },
-              { label: "Messages", value: messageCount, icon: "\uD83D\uDCAC", glow: "rgba(96,165,250,0.15)" },
-              { label: "Animaux", value: animals.length, icon: "\uD83D\uDC3E", glow: "rgba(249,115,22,0.15)" },
+              { label: "Matchs", value: matchCount, icon: "\uD83D\uDC95", glow: "rgba(244,114,182,0.15)", href: "/matches" },
+              { label: "Messages", value: messageCount, icon: "\uD83D\uDCAC", glow: "rgba(96,165,250,0.15)", href: "/matches" },
+              { label: "Animaux", value: animals.length, icon: "\uD83D\uDC3E", glow: "rgba(249,115,22,0.15)", href: "/profile" },
             ].map((stat) => (
-              <div
+              <Link
+                href={stat.href}
                 key={stat.label}
-                className="rounded-xl p-3 text-center"
+                className="rounded-xl p-3 text-center block transition-transform active:scale-95 hover:scale-105"
                 style={{ background: stat.glow }}
               >
                 <div className="text-xl mb-1">{stat.icon}</div>
@@ -792,7 +794,7 @@ export default function FeedPage() {
                 <div className="text-[10px] font-semibold mt-0.5" style={{ color: "var(--c-text-muted)" }}>
                   {stat.label}
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </section>

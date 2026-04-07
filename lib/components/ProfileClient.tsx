@@ -86,17 +86,24 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
           <div className="flex items-center gap-4 mb-5">
             {/* Avatar with animated gradient border */}
             <div className="gradient-border flex-shrink-0" style={{ borderRadius: "50%", padding: 2 }}>
-              <div
-                className="w-16 h-16 rounded-full flex items-center justify-center"
-                style={{
-                  background: "rgba(249,115,22,0.15)",
-                  boxShadow: isPremium
-                    ? "0 0 20px rgba(249,115,22,0.3), 0 0 40px rgba(167,139,250,0.15)"
-                    : "none",
-                }}
-              >
-                <span className="text-xl font-bold text-orange-400">{initials}</span>
-              </div>
+              {profile?.avatar_url ? (
+                <div className="w-16 h-16 rounded-full overflow-hidden relative"
+                  style={{ boxShadow: isPremium ? "0 0 20px rgba(249,115,22,0.3), 0 0 40px rgba(167,139,250,0.15)" : "none" }}>
+                  <Image src={profile.avatar_url} alt="Avatar" fill className="object-cover" sizes="64px" />
+                </div>
+              ) : (
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center"
+                  style={{
+                    background: "rgba(249,115,22,0.15)",
+                    boxShadow: isPremium
+                      ? "0 0 20px rgba(249,115,22,0.3), 0 0 40px rgba(167,139,250,0.15)"
+                      : "none",
+                  }}
+                >
+                  <span className="text-xl font-bold text-orange-400">{initials}</span>
+                </div>
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <h1
@@ -124,7 +131,7 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
           </div>
 
           {/* Stats engagement - glass cards with neon accents */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5">
+          <div className={`grid gap-2 mb-5 ${profile?.role === "admin" ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-3"}`}>
             <button
               onClick={() => document.getElementById("compagnons")?.scrollIntoView({ behavior: "smooth" })}
               className="glass rounded-xl p-3 text-center transition cursor-pointer profile-stat-card"
@@ -161,18 +168,20 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
               <p className="text-lg font-black" style={{ color: "#3b82f6", textShadow: "0 0 8px rgba(59,130,246,0.3)" }}>{stats.messages}</p>
               <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Messages</p>
             </Link>
-            <Link
-              href="/admin?tab=members"
-              className="glass rounded-xl p-3 text-center transition cursor-pointer block profile-stat-card"
-              style={{
-                border: "1px solid rgba(167,139,250,0.15)",
-                boxShadow: "0 0 12px rgba(167,139,250,0.05)",
-                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-              }}
-            >
-              <p className="text-lg font-black" style={{ color: "#a78bfa", textShadow: "0 0 8px rgba(167,139,250,0.3)" }}>👥</p>
-              <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Membres</p>
-            </Link>
+            {profile?.role === "admin" && (
+              <Link
+                href="/admin?tab=members"
+                className="glass rounded-xl p-3 text-center transition cursor-pointer block profile-stat-card"
+                style={{
+                  border: "1px solid rgba(167,139,250,0.15)",
+                  boxShadow: "0 0 12px rgba(167,139,250,0.05)",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                }}
+              >
+                <p className="text-lg font-black" style={{ color: "#a78bfa", textShadow: "0 0 8px rgba(167,139,250,0.3)" }}>👥</p>
+                <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Membres</p>
+              </Link>
+            )}
           </div>
 
           {/* Badges */}
@@ -277,14 +286,18 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
                     animationDelay: `${0.25 + idx * 0.05}s`,
                   }}
                 >
-                  <div className="h-36 flex items-center justify-center overflow-hidden relative" style={{ background: "var(--c-card)" }}>
-                    {animal.photo_url
-                      ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="(max-width: 768px) 50vw, 200px" />
-                      : <span className="text-5xl">{EMOJI_MAP[animal.species] || "🐾"}</span>}
-                  </div>
-                  <div className="p-3">
-                    <p className="font-bold text-[var(--c-text)] text-sm truncate">{animal.name}</p>
-                    <p className="text-xs text-[var(--c-text-muted)] truncate">{animal.breed || animal.species}</p>
+                  <Link href={`/animals/${animal.id}`} className="block">
+                    <div className="h-36 flex items-center justify-center overflow-hidden relative" style={{ background: "var(--c-card)" }}>
+                      {animal.photo_url
+                        ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="(max-width: 768px) 50vw, 200px" />
+                        : <span className="text-5xl">{EMOJI_MAP[animal.species] || "🐾"}</span>}
+                    </div>
+                    <div className="p-3">
+                      <p className="font-bold text-[var(--c-text)] text-sm truncate">{animal.name}</p>
+                      <p className="text-xs text-[var(--c-text-muted)] truncate">{animal.breed || animal.species}</p>
+                    </div>
+                  </Link>
+                  <div className="px-3 pb-3">
                     {animal.canton && (
                       <span
                         className="inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full neon-orange"
