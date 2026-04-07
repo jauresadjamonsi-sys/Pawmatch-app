@@ -10,7 +10,7 @@ export async function GET() {
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("stripe_customer_id, subscription")
+      .select("*")
       .eq("id", user.id)
       .single();
 

@@ -80,7 +80,7 @@ export async function POST(request: Request) {
 
           const { data: profile } = await supabaseAdmin
             .from("profiles")
-            .select("id")
+            .select("*")
             .eq("stripe_customer_id", customerId)
             .single();
 
@@ -104,7 +104,7 @@ export async function POST(request: Request) {
         if (customerId) {
           const { data: profile } = await supabaseAdmin
             .from("profiles")
-            .select("id")
+            .select("*")
             .eq("stripe_customer_id", customerId)
             .single();
 
@@ -124,7 +124,7 @@ export async function POST(request: Request) {
 
         const { data: profile } = await supabaseAdmin
           .from("profiles")
-          .select("id")
+          .select("*")
           .eq("stripe_customer_id", customerId)
           .single();
 

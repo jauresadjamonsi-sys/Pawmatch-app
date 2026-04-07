@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     // Get or create Stripe customer
     const { data: profile } = await supabase
       .from("profiles")
-      .select("stripe_customer_id, email")
+      .select("*")
       .eq("id", user.id)
       .single();
 
