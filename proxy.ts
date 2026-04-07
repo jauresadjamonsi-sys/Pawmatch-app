@@ -65,6 +65,12 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  // Prevent HTML caching so new JS chunk references are always served
+  if (request.headers.get("accept")?.includes("text/html")) {
+    supabaseResponse.headers.set("Cache-Control", "no-cache, no-store, must-revalidate");
+    supabaseResponse.headers.set("Pragma", "no-cache");
+  }
+
   return supabaseResponse;
 }
 

@@ -60,7 +60,7 @@ export default function AnimalDetailPage() {
       if (result.data) setAnimal(result.data);
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const { data: animals } = await supabase.from("animals").select("id, name, species, breed, photo_url, traits, canton, city, energy_level, sociability, age_months, gender").eq("created_by", user.id);
+        const { data: animals } = await supabase.from("animals").select("*").eq("created_by", user.id);
         setMyAnimals(animals || []);
       }
       setLoading(false);

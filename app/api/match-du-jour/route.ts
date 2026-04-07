@@ -9,10 +9,8 @@ export async function GET() {
     if (!user) return NextResponse.json({ match: null });
 
     // Récupérer mes animaux
-    const ANIMAL_COLS = "id, name, species, breed, age_months, gender, photo_url, canton, city, traits, created_by, energy_level, sociability, weight_kg";
-
     const { data: myAnimals } = await supabase
-      .from("animals").select(ANIMAL_COLS).eq("created_by", user.id).limit(5);
+      .from("animals").select("*").eq("created_by", user.id).limit(5);
 
     if (!myAnimals || myAnimals.length === 0) {
       return NextResponse.json({ match: null });
@@ -22,7 +20,7 @@ export async function GET() {
 
     // Récupérer les autres animaux (limité pour performance)
     const { data: others } = await supabase
-      .from("animals").select(ANIMAL_COLS).neq("created_by", user.id).eq("status", "disponible").limit(100);
+      .from("animals").select("*").neq("created_by", user.id).limit(100);
 
     if (!others || others.length === 0) {
       return NextResponse.json({ match: null });
