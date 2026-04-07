@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -5,6 +6,61 @@ import PushButton from "@/lib/components/PushButton";
 import ProfileClient from "@/lib/components/ProfileClient";
 
 const SPECIES: Record<string, string> = { chien: "Chien", chat: "Chat", lapin: "Lapin", oiseau: "Oiseau", rongeur: "Rongeur", autre: "Autre" };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return {
+      title: "Mon profil",
+      description: "Connectez-vous pour acceder a votre profil Pawly.",
+    };
+  }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name, avatar_url")
+    .eq("id", user.id)
+    .single();
+
+  const { count: animalCount } = await supabase
+    .from("animals")
+    .select("*", { count: "exact", head: true })
+    .eq("created_by", user.id);
+
+  const name = profile?.full_name || "Mon profil";
+  const title = `${name} - Profil`;
+  const description = `Profil de ${name} sur Pawly.${animalCount ? ` ${animalCount} ${animalCount === 1 ? "animal enregistre" : "animaux enregistres"}.` : ""} Gerez vos animaux et vos balades.`;
+
+  return {
+    title,
+    description,
+    robots: {
+      index: false,
+      follow: false,
+    },
+    openGraph: {
+      title: `${name} | Pawly`,
+      description,
+      siteName: "Pawly",
+      locale: "fr_CH",
+      type: "profile",
+      ...(profile?.avatar_url
+        ? {
+            images: [
+              {
+                url: profile.avatar_url,
+                width: 200,
+                height: 200,
+                alt: `${name} sur Pawly`,
+              },
+            ],
+          }
+        : {}),
+    },
+  };
+}
 
 export default async function ProfilePage() {
   const supabase = await createClient();

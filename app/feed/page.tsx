@@ -515,13 +515,14 @@ export default function FeedPage() {
   // -------------------------------------------------------------------------
   if (loading) {
     return (
-      <main className="min-h-screen px-4 pt-6 pb-32" style={{ background: "var(--c-deep)" }}>
+      <main id="main-content" className="min-h-screen px-4 pt-6 pb-32" style={{ background: "var(--c-deep)" }} aria-busy="true" aria-label="Chargement du feed">
         <div className="mx-auto max-w-lg space-y-6 stagger-children">
           {[...Array(5)].map((_, i) => (
             <div
               key={i}
               className="glass rounded-2xl p-6 animate-breathe"
               style={{ height: i === 1 ? 220 : 100, animationDelay: `${i * 0.15}s` }}
+              aria-hidden="true"
             />
           ))}
         </div>
@@ -534,9 +535,9 @@ export default function FeedPage() {
   // -------------------------------------------------------------------------
   if (!profile) {
     return (
-      <main className="min-h-screen flex items-center justify-center px-4" style={{ background: "var(--c-deep)" }}>
+      <main id="main-content" className="min-h-screen flex items-center justify-center px-4" style={{ background: "var(--c-deep)" }}>
         <div className="glass-strong rounded-3xl p-8 text-center max-w-sm animate-scale-in">
-          <div className="text-5xl mb-4">{"\uD83D\uDC3E"}</div>
+          <div className="text-5xl mb-4" aria-hidden="true">{"\uD83D\uDC3E"}</div>
           <h1 className="text-2xl font-extrabold mb-2" style={{ color: "var(--c-text)" }}>
             Bienvenue sur Pawly
           </h1>
@@ -555,15 +556,15 @@ export default function FeedPage() {
   // Main Feed
   // -------------------------------------------------------------------------
   return (
-    <main className="min-h-screen px-4 pt-6 pb-32" style={{ background: "var(--c-deep)" }}>
+    <main id="main-content" className="min-h-screen px-4 pt-6 pb-32" style={{ background: "var(--c-deep)" }}>
       <div className="mx-auto max-w-lg space-y-5 stagger-children">
 
         {/* ====== 0. STORIES RING ====== */}
         <StoriesRing />
 
         {/* ====== 1. DAILY GREETING ====== */}
-        <section className="glass rounded-2xl p-5 relative overflow-hidden">
-          <div className="absolute -top-6 -right-6 text-[80px] opacity-10 pointer-events-none select-none animate-paw-drift">
+        <section className="glass rounded-2xl p-5 relative overflow-hidden" aria-label="Accueil quotidien">
+          <div className="absolute -top-6 -right-6 text-[80px] opacity-10 pointer-events-none select-none animate-paw-drift" aria-hidden="true">
             {"\uD83D\uDC3E"}
           </div>
           <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: "var(--c-text-muted)" }}>
@@ -581,7 +582,7 @@ export default function FeedPage() {
 
         {/* ====== 2. PET CARDS CAROUSEL ====== */}
         {animals.length > 0 && (
-          <section>
+          <section aria-label="Mes compagnons">
             <h2 className="text-sm font-bold uppercase tracking-wider mb-3 px-1" style={{ color: "var(--c-text-muted)" }}>
               Mes compagnons
             </h2>

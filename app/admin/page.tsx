@@ -79,7 +79,7 @@ interface AdminStats {
   totalReports: number;
 }
 
-type TabKey = "overview" | "members" | "animals" | "revenue" | "reports";
+type TabKey = "overview" | "members" | "animals" | "revenue" | "reports" | "feedback";
 
 const SPECIES_EMOJI: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
@@ -166,6 +166,7 @@ function AdminPageInner() {
     { key: "animals", label: "Animaux" },
     { key: "revenue", label: "Revenue" },
     { key: "reports", label: "Signalements" },
+    { key: "feedback", label: "💡 Feedback" },
   ];
 
   return (
@@ -225,6 +226,7 @@ function AdminPageInner() {
         {activeTab === "animals" && <AnimalsTab stats={stats} />}
         {activeTab === "revenue" && <RevenueTab stats={stats} />}
         {activeTab === "reports" && <ReportsTab stats={stats} onRefresh={fetchStats} />}
+        {activeTab === "feedback" && <FeedbackTab />}
 
       </div>
     </div>
@@ -1191,6 +1193,301 @@ function ReportsTab({ stats, onRefresh }: { stats: AdminStats; onRefresh: () => 
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+/* ────────────────────────────────────── Tab: Feedback ── */
+
+interface FeedbackRow {
+  id: string;
+  user_id: string | null;
+  user_email: string | null;
+  user_name: string | null;
+  type: string;
+  category: string | null;
+  title: string;
+  description: string;
+  priority: string;
+  status: string;
+  admin_notes: string | null;
+  page_url: string | null;
+  device: string | null;
+  app_source: string;
+  created_at: string;
+}
+
+function FeedbackTab() {
+  const [feedbacks, setFeedbacks] = useState<FeedbackRow[]>([]);
+  const [fbLoading, setFbLoading] = useState(true);
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterType, setFilterType] = useState("all");
+  const [filterApp, setFilterApp] = useState("all");
+  const [editingNotes, setEditingNotes] = useState<string | null>(null);
+  const [notesText, setNotesText] = useState("");
+  const [processingFbId, setProcessingFbId] = useState<string | null>(null);
+
+  const fetchFeedbacks = useCallback(async () => {
+    try {
+      const { createClient } = await import("@/lib/supabase/client");
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("feedback")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(200);
+      if (error) throw error;
+      setFeedbacks(data || []);
+    } catch {
+      toast.error("Erreur chargement feedback");
+    } finally {
+      setFbLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchFeedbacks(); }, [fetchFeedbacks]);
+
+  async function updateFbStatus(id: string, status: string) {
+    setProcessingFbId(id);
+    try {
+      const { createClient } = await import("@/lib/supabase/client");
+      const supabase = createClient();
+      const { error } = await supabase
+        .from("feedback")
+        .update({ status, updated_at: new Date().toISOString() })
+        .eq("id", id);
+      if (error) throw error;
+      setFeedbacks(prev => prev.map(f => f.id === id ? { ...f, status } : f));
+      toast.success(`Statut → ${status}`);
+    } catch {
+      toast.error("Erreur mise à jour");
+    } finally {
+      setProcessingFbId(null);
+    }
+  }
+
+  async function saveFbNotes(id: string) {
+    setProcessingFbId(id);
+    try {
+      const { createClient } = await import("@/lib/supabase/client");
+      const supabase = createClient();
+      const { error } = await supabase
+        .from("feedback")
+        .update({ admin_notes: notesText, updated_at: new Date().toISOString() })
+        .eq("id", id);
+      if (error) throw error;
+      setFeedbacks(prev => prev.map(f => f.id === id ? { ...f, admin_notes: notesText } : f));
+      setEditingNotes(null);
+      toast.success("Notes sauvegardées");
+    } catch {
+      toast.error("Erreur sauvegarde");
+    } finally {
+      setProcessingFbId(null);
+    }
+  }
+
+  const filtered = feedbacks.filter(f => {
+    if (filterStatus !== "all" && f.status !== filterStatus) return false;
+    if (filterType !== "all" && f.type !== filterType) return false;
+    if (filterApp !== "all" && f.app_source !== filterApp) return false;
+    return true;
+  });
+
+  const countNew = feedbacks.filter(f => f.status === "new").length;
+  const countInProgress = feedbacks.filter(f => f.status === "in_progress").length;
+
+  const FB_TYPE_COLORS: Record<string, string> = {
+    bug: "#ef4444", suggestion: "#3b82f6", feature: "#8b5cf6",
+    praise: "#22c55e", complaint: "#f59e0b",
+  };
+  const FB_TYPE_ICONS: Record<string, string> = {
+    bug: "🐛", suggestion: "💡", feature: "✨", praise: "👏", complaint: "⚠️",
+  };
+  const FB_STATUS_COLORS: Record<string, string> = {
+    new: "#3b82f6", read: "#8b5cf6", in_progress: "#f59e0b",
+    done: "#22c55e", rejected: "#6b7280",
+  };
+  const FB_STATUS_LABELS: Record<string, string> = {
+    new: "Nouveau", read: "Lu", in_progress: "En cours",
+    done: "Fait", rejected: "Rejeté",
+  };
+
+  if (fbLoading) {
+    return <div style={{ textAlign: "center", padding: 60, color: "var(--c-text-muted, #9b93b8)" }}>Chargement des feedbacks...</div>;
+  }
+
+  return (
+    <>
+      {/* KPI */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, marginBottom: 20 }}>
+        <div style={{ ...cardStyle, padding: 20 }}>
+          <p style={{ fontSize: 28, fontWeight: 800, color: "var(--c-accent, #A78BFA)" }}>{feedbacks.length}</p>
+          <p style={{ fontSize: 12, color: "var(--c-text-muted)", marginTop: 4 }}>Total feedbacks</p>
+        </div>
+        <div style={{ ...cardStyle, padding: 20 }}>
+          <p style={{ fontSize: 28, fontWeight: 800, color: "#3b82f6" }}>{countNew}</p>
+          <p style={{ fontSize: 12, color: "var(--c-text-muted)", marginTop: 4 }}>Nouveaux</p>
+        </div>
+        <div style={{ ...cardStyle, padding: 20 }}>
+          <p style={{ fontSize: 28, fontWeight: 800, color: "#f59e0b" }}>{countInProgress}</p>
+          <p style={{ fontSize: 12, color: "var(--c-text-muted)", marginTop: 4 }}>En cours</p>
+        </div>
+        <div style={{ ...cardStyle, padding: 20 }}>
+          <p style={{ fontSize: 28, fontWeight: 800, color: "#22c55e" }}>{feedbacks.filter(f => f.status === "done").length}</p>
+          <p style={{ fontSize: 12, color: "var(--c-text-muted)", marginTop: 4 }}>Terminés</p>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
+        <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}
+          style={{ padding: "8px 12px", borderRadius: 10, background: "var(--c-card)", border: "1px solid var(--c-border)", color: "var(--c-text)", fontSize: 13 }}>
+          <option value="all">Tous statuts</option>
+          <option value="new">Nouveau ({countNew})</option>
+          <option value="read">Lu</option>
+          <option value="in_progress">En cours ({countInProgress})</option>
+          <option value="done">Fait</option>
+          <option value="rejected">Rejeté</option>
+        </select>
+        <select value={filterType} onChange={(e) => setFilterType(e.target.value)}
+          style={{ padding: "8px 12px", borderRadius: 10, background: "var(--c-card)", border: "1px solid var(--c-border)", color: "var(--c-text)", fontSize: 13 }}>
+          <option value="all">Tous types</option>
+          <option value="bug">🐛 Bug</option>
+          <option value="suggestion">💡 Suggestion</option>
+          <option value="feature">✨ Feature</option>
+          <option value="praise">👏 Compliment</option>
+          <option value="complaint">⚠️ Plainte</option>
+        </select>
+        <select value={filterApp} onChange={(e) => setFilterApp(e.target.value)}
+          style={{ padding: "8px 12px", borderRadius: 10, background: "var(--c-card)", border: "1px solid var(--c-border)", color: "var(--c-text)", fontSize: 13 }}>
+          <option value="all">Toutes apps</option>
+          <option value="pawly">🐾 Pawly</option>
+          <option value="pawdirectory">📂 PawDirectory</option>
+        </select>
+      </div>
+
+      {/* Feedback list */}
+      {filtered.length === 0 ? (
+        <div style={{ textAlign: "center", padding: 60 }}>
+          <p style={{ fontSize: 40, marginBottom: 12 }}>📭</p>
+          <p style={{ color: "var(--c-text-muted)", fontSize: 14 }}>Aucun feedback avec ces filtres</p>
+        </div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {filtered.map((fb) => (
+            <div key={fb.id} style={{ ...cardStyle, padding: 20 }}>
+              {/* Header */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 12, flexWrap: "wrap" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1, minWidth: 0 }}>
+                  <span style={{ fontSize: 20 }}>{FB_TYPE_ICONS[fb.type] || "💬"}</span>
+                  <div style={{ minWidth: 0 }}>
+                    <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "var(--c-text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {fb.title}
+                    </h3>
+                    <p style={{ margin: 0, fontSize: 12, color: "var(--c-text-muted)", marginTop: 2 }}>
+                      {fb.user_email || "Anonyme"} • {fb.category || "—"} • {new Date(fb.created_at).toLocaleDateString("fr-CH", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                    </p>
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: 6, flexShrink: 0, alignItems: "center" }}>
+                  <span style={{
+                    padding: "3px 8px", borderRadius: 20, fontSize: 10, fontWeight: 700,
+                    background: fb.app_source === "pawly" ? "rgba(139,92,246,0.15)" : "rgba(13,148,136,0.15)",
+                    color: fb.app_source === "pawly" ? "#A78BFA" : "#0D9488",
+                    border: `1px solid ${fb.app_source === "pawly" ? "#A78BFA" : "#0D9488"}30`,
+                  }}>
+                    {fb.app_source === "pawly" ? "Pawly" : "PawDirectory"}
+                  </span>
+                  <span style={{
+                    padding: "3px 8px", borderRadius: 20, fontSize: 10, fontWeight: 700,
+                    color: FB_TYPE_COLORS[fb.type] || "#9ca3af",
+                    background: (FB_TYPE_COLORS[fb.type] || "#9ca3af") + "18",
+                    border: `1px solid ${(FB_TYPE_COLORS[fb.type] || "#9ca3af")}30`,
+                  }}>
+                    {fb.type}
+                  </span>
+                  <span style={{
+                    padding: "3px 8px", borderRadius: 20, fontSize: 10, fontWeight: 700,
+                    color: FB_STATUS_COLORS[fb.status] || "#9ca3af",
+                    background: (FB_STATUS_COLORS[fb.status] || "#9ca3af") + "18",
+                    border: `1px solid ${(FB_STATUS_COLORS[fb.status] || "#9ca3af")}30`,
+                  }}>
+                    {FB_STATUS_LABELS[fb.status] || fb.status}
+                  </span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--c-text)", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
+                {fb.description}
+              </p>
+
+              {fb.page_url && (
+                <p style={{ margin: "0 0 14px", fontSize: 11, color: "var(--c-text-muted)" }}>
+                  📍 {fb.page_url}
+                </p>
+              )}
+
+              {/* Admin notes */}
+              {editingNotes === fb.id ? (
+                <div style={{ marginBottom: 14 }}>
+                  <textarea value={notesText} onChange={(e) => setNotesText(e.target.value)} rows={3} placeholder="Notes admin..."
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--c-deep, #0f0c1a)", border: "1px solid var(--c-border)", borderRadius: 10, color: "var(--c-text)", fontSize: 13, resize: "vertical", boxSizing: "border-box" }}
+                  />
+                  <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
+                    <button onClick={() => saveFbNotes(fb.id)} disabled={processingFbId === fb.id}
+                      style={{ padding: "5px 14px", borderRadius: 8, background: "rgba(34,197,94,0.15)", border: "1px solid rgba(34,197,94,0.3)", color: "#22c55e", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
+                      {processingFbId === fb.id ? "..." : "Sauver"}
+                    </button>
+                    <button onClick={() => setEditingNotes(null)}
+                      style={{ padding: "5px 14px", borderRadius: 8, background: "var(--c-card)", border: "1px solid var(--c-border)", color: "var(--c-text-muted)", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
+                      Annuler
+                    </button>
+                  </div>
+                </div>
+              ) : fb.admin_notes ? (
+                <div onClick={() => { setEditingNotes(fb.id); setNotesText(fb.admin_notes || ""); }}
+                  style={{ marginBottom: 14, padding: "10px 12px", background: "rgba(139,92,246,0.08)", borderRadius: 10, border: "1px solid rgba(139,92,246,0.15)", cursor: "pointer" }}>
+                  <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: "var(--c-accent, #A78BFA)", marginBottom: 4 }}>📝 Notes admin</p>
+                  <p style={{ margin: 0, fontSize: 12, color: "var(--c-text-muted)" }}>{fb.admin_notes}</p>
+                </div>
+              ) : null}
+
+              {/* Actions */}
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                {fb.status === "new" && (
+                  <button onClick={() => updateFbStatus(fb.id, "read")} disabled={processingFbId === fb.id}
+                    style={{ padding: "5px 12px", borderRadius: 8, background: "rgba(139,92,246,0.1)", border: "1px solid rgba(139,92,246,0.3)", color: "#A78BFA", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
+                    👁 Marquer lu
+                  </button>
+                )}
+                {(fb.status === "new" || fb.status === "read") && (
+                  <button onClick={() => updateFbStatus(fb.id, "in_progress")} disabled={processingFbId === fb.id}
+                    style={{ padding: "5px 12px", borderRadius: 8, background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.3)", color: "#f59e0b", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
+                    🔧 En cours
+                  </button>
+                )}
+                {fb.status !== "done" && (
+                  <button onClick={() => updateFbStatus(fb.id, "done")} disabled={processingFbId === fb.id}
+                    style={{ padding: "5px 12px", borderRadius: 8, background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.3)", color: "#22c55e", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
+                    ✅ Fait
+                  </button>
+                )}
+                {fb.status !== "rejected" && (
+                  <button onClick={() => updateFbStatus(fb.id, "rejected")} disabled={processingFbId === fb.id}
+                    style={{ padding: "5px 12px", borderRadius: 8, background: "rgba(107,114,128,0.1)", border: "1px solid rgba(107,114,128,0.3)", color: "#6b7280", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
+                    ✗ Rejeter
+                  </button>
+                )}
+                <button onClick={() => { setEditingNotes(fb.id); setNotesText(fb.admin_notes || ""); }}
+                  style={{ padding: "5px 12px", borderRadius: 8, background: "var(--c-deep, #0f0c1a)", border: "1px solid var(--c-border)", color: "var(--c-text-muted)", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
+                  📝 Notes
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </>

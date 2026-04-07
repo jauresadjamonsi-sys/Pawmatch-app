@@ -63,10 +63,15 @@ function PromoContent() {
   const [copied, setCopied] = useState(false);
   const [saving, setSaving] = useState(false);
   const storyRef = useRef<HTMLDivElement>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  /* Cycle through frames */
+  /* Cycle through frames (paused while saving GIF) */
   useEffect(() => {
-    const interval = setInterval(() => {
+    if (saving) {
+      if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
+      return;
+    }
+    intervalRef.current = setInterval(() => {
       setFrame((prev) => {
         const next = (prev + 1) % 4;
         if (next === 0) setEmojiIdx((e) => (e + 1) % ANIMAL_EMOJIS.length);
@@ -74,8 +79,8 @@ function PromoContent() {
         return next;
       });
     }, (CYCLE_DURATION / 4) * 1000);
-    return () => clearInterval(interval);
-  }, []);
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+  }, [saving]);
 
   const copyLink = useCallback(async () => {
     try {
@@ -99,46 +104,87 @@ function PromoContent() {
   const saveStory = useCallback(async () => {
     if (!storyRef.current || saving) return;
     setSaving(true);
+    toast.info("Capture des 4 frames...");
+
     try {
-      // Dynamic import html2canvas
       const html2canvas = (await import("html2canvas")).default;
-      const canvas = await html2canvas(storyRef.current, {
-        backgroundColor: null,
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
+      const { GIFEncoder, quantize, applyPalette } = await import("gifenc");
+
+      // We'll capture all 4 frames by forcing each frame state
+      const frameElements = storyRef.current.querySelectorAll<HTMLElement>(".frame");
+      const frames: ImageData[] = [];
+      let gifWidth = 0;
+      let gifHeight = 0;
+
+      for (let i = 0; i < 4; i++) {
+        // Show only frame i
+        frameElements.forEach((el, idx) => {
+          el.style.opacity = idx === i ? "1" : "0";
+          el.style.pointerEvents = idx === i ? "auto" : "none";
+        });
+
+        // Let the browser repaint
+        await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+        await new Promise((r) => setTimeout(r, 150));
+
+        // Capture this frame
+        const canvas = await html2canvas(storyRef.current, {
+          backgroundColor: null,
+          scale: 1.5,
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+        });
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) throw new Error("No canvas context");
+
+        gifWidth = canvas.width;
+        gifHeight = canvas.height;
+        frames.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+      }
+
+      // Restore original frame cycling (CSS classes will take over)
+      frameElements.forEach((el) => {
+        el.style.opacity = "";
+        el.style.pointerEvents = "";
       });
 
-      // Convert to blob using native toBlob (iOS compatible)
-      const blob = await new Promise<Blob>((resolve, reject) => {
-        canvas.toBlob(
-          (b) => (b ? resolve(b) : reject(new Error("toBlob failed"))),
-          "image/png",
-          1
-        );
-      });
+      toast.info("Encodage GIF...");
 
-      const file = new File([blob], "pawly-story.png", { type: "image/png" });
+      // Encode animated GIF
+      const gif = GIFEncoder();
 
-      // Try Web Share API first (best for iOS)
+      for (const imgData of frames) {
+        const palette = quantize(imgData.data, 256);
+        const index = applyPalette(imgData.data, palette);
+        gif.writeFrame(index, gifWidth, gifHeight, {
+          palette,
+          delay: 2000, // 2 seconds per frame
+        });
+      }
+      gif.finish();
+
+      const gifData = gif.bytes();
+      const blob = new Blob([new Uint8Array(gifData)], { type: "image/gif" });
+      const file = new File([blob], "pawly-story.gif", { type: "image/gif" });
+
+      // Share or download
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
         await navigator.share({ files: [file], title: "Pawly Story" });
         toast.success("Story partagée !");
       } else {
-        // Fallback: download the image
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "pawly-story.png";
+        a.download = "pawly-story.gif";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        toast.success("Image sauvegardée !");
+        toast.success("GIF animé sauvegardé !");
       }
     } catch (err: any) {
-      // If share was cancelled, not an error
       if (err?.name === "AbortError") return;
       console.error("Save error:", err);
       toast.error("Erreur — essaie une capture d'écran");
@@ -148,9 +194,9 @@ function PromoContent() {
   }, [saving]);
 
   return (
-    <div className="promo-wrapper">
+    <div className="promo-wrapper" role="main" aria-label="Promotion Pawly">
       {/* ---- Story frame (9:16) ---- */}
-      <div className="story-frame" ref={storyRef}>
+      <div className="story-frame" ref={storyRef} aria-label="Story promotionnelle Pawly">
         {/* Gradient background */}
         <div className="story-bg" />
 
@@ -168,7 +214,7 @@ function PromoContent() {
           {/* Frame 1: Ruby photo + question */}
           <div className={`frame frame-1 ${frame === 0 ? "frame-active" : ""}`}>
             <div className="ruby-photo-ring">
-              <img src="/ruby-hero.jpg" alt="Ruby" className="ruby-photo" />
+              <img src="/ruby-hero.jpg" alt="Ruby, mascotte Pawly" className="ruby-photo" />
             </div>
             <h1 className="frame-title">Ton animal a besoin d&apos;amis&nbsp;?</h1>
             <p className="frame-subtitle">Rejoins Ruby et des milliers d&apos;animaux</p>
@@ -197,9 +243,9 @@ function PromoContent() {
         </div>
 
         {/* Progress dots */}
-        <div className="progress-dots">
+        <div className="progress-dots" role="tablist" aria-label="Progression de la story">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className={`dot ${frame === i ? "dot-active" : ""}`} />
+            <div key={i} role="tab" aria-selected={frame === i} aria-label={`Slide ${i + 1} sur 4`} className={`dot ${frame === i ? "dot-active" : ""}`} />
           ))}
         </div>
 
@@ -211,19 +257,20 @@ function PromoContent() {
       </div>
 
       {/* ---- Action buttons (outside story) ---- */}
-      <div className="actions-bar">
+      <div className="actions-bar" role="group" aria-label="Actions de partage">
         <button
           onClick={saveStory}
           disabled={saving}
           className="action-btn save-btn"
+          aria-label={saving ? "Sauvegarde en cours" : "Enregistrer le GIF animé"}
         >
-          {saving ? "⏳ Sauvegarde..." : "📥 Enregistrer"}
+          {saving ? "Capture..." : "🎬 GIF animé"}
         </button>
-        <button onClick={openInstagram} className="action-btn ig-btn">
-          📱 Partager sur Instagram
+        <button onClick={openInstagram} className="action-btn ig-btn" aria-label="Partager sur Instagram">
+          Instagram
         </button>
-        <button onClick={copyLink} className="action-btn copy-btn">
-          {copied ? "✅ Copié !" : "🔗 Copier le lien"}
+        <button onClick={copyLink} className="action-btn copy-btn" aria-label={copied ? "Lien copie" : "Copier le lien de partage"}>
+          {copied ? "Copié !" : "🔗 Lien"}
         </button>
       </div>
 

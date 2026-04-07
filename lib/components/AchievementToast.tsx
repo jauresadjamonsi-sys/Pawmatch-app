@@ -87,6 +87,9 @@ function AchievementToastUI({ notif, onDone }: { notif: AchievementNotif; onDone
   return (
     <div
       className="fixed top-4 left-1/2 z-[200] pointer-events-none"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
       style={{
         transform: `translateX(-50%) translateY(${translateY})`,
         opacity,
@@ -115,7 +118,7 @@ function AchievementToastUI({ notif, onDone }: { notif: AchievementNotif; onDone
 
         {/* Content */}
         <div className="relative flex items-center gap-3">
-          <div className="text-3xl flex-shrink-0" style={{
+          <div className="text-3xl flex-shrink-0" aria-hidden="true" style={{
             animation: "achieveBounce 0.6s 0.3s ease-out both",
           }}>
             {notif.emoji}

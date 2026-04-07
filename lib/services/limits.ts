@@ -9,7 +9,7 @@ const LIMITS = {
 type Plan = "free" | "premium" | "pro";
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "jaures.adjamonsi@gmail.com")
-  .split(",").map(e => e.trim().toLowerCase());
+  .split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
 
 /** Check if user is admin — bypasses all limits */
 export async function isAdmin(supabase: SupabaseClient, userId: string): Promise<boolean> {

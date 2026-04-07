@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useAppContext } from "@/lib/contexts/AppContext";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
@@ -122,6 +122,35 @@ export default function FeedbackWidget() {
     return () => window.removeEventListener("keydown", handler);
   }, [open]);
 
+  // Focus trap for modal
+  useEffect(() => {
+    if (!open || !modalRef.current) return;
+    const modal = modalRef.current;
+    const focusableSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    const focusableEls = modal.querySelectorAll<HTMLElement>(focusableSelector);
+    const firstEl = focusableEls[0];
+    const lastEl = focusableEls[focusableEls.length - 1];
+
+    firstEl?.focus();
+
+    const trapHandler = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      if (e.shiftKey) {
+        if (document.activeElement === firstEl) {
+          e.preventDefault();
+          lastEl?.focus();
+        }
+      } else {
+        if (document.activeElement === lastEl) {
+          e.preventDefault();
+          firstEl?.focus();
+        }
+      }
+    };
+    modal.addEventListener("keydown", trapHandler);
+    return () => modal.removeEventListener("keydown", trapHandler);
+  }, [open]);
+
   async function handleSubmit() {
     if (!title.trim() || !description.trim()) return;
     setSending(true);
@@ -154,18 +183,18 @@ export default function FeedbackWidget() {
 
   const pillStyle: React.CSSProperties = {
     position: "fixed",
-    bottom: 24,
-    right: 24,
+    bottom: 90,
+    right: 16,
     zIndex: 80,
     display: "flex",
     alignItems: "center",
-    gap: 6,
-    padding: "10px 18px",
+    gap: 4,
+    padding: "8px 14px",
     background: "var(--c-accent)",
     color: "#fff",
     border: "none",
     borderRadius: 50,
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: 600,
     cursor: "pointer",
     boxShadow: "0 4px 20px rgba(0,0,0,0.25)",
@@ -287,10 +316,10 @@ export default function FeedbackWidget() {
             if (e.target === e.currentTarget) setOpen(false);
           }}
         >
-          <div ref={modalRef} style={modalStyle}>
+          <div ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="feedback-modal-title" style={modalStyle}>
             {/* Header */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "var(--c-text)" }}>
+              <h2 id="feedback-modal-title" style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "var(--c-text)" }}>
                 {"\uD83D\uDCA1"} {l.feedback}
               </h2>
               <button
@@ -311,13 +340,15 @@ export default function FeedbackWidget() {
             </div>
 
             {/* Type selector */}
-            <div style={{ marginBottom: 16 }}>
-              <span style={labelStyle}>{l.type}</span>
+            <div style={{ marginBottom: 16 }} role="radiogroup" aria-label={l.type}>
+              <span style={labelStyle} id="feedback-type-label">{l.type}</span>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {TYPES.map((t) => (
                   <button
                     key={t.value}
                     onClick={() => setType(t.value)}
+                    role="radio"
+                    aria-checked={type === t.value}
                     style={type === t.value ? chipActiveStyle : chipBaseStyle}
                   >
                     {t.icon} {t.label[lang] || t.label.fr}
@@ -327,13 +358,15 @@ export default function FeedbackWidget() {
             </div>
 
             {/* Category selector */}
-            <div style={{ marginBottom: 16 }}>
-              <span style={labelStyle}>{l.category}</span>
+            <div style={{ marginBottom: 16 }} role="radiogroup" aria-label={l.category}>
+              <span style={labelStyle} id="feedback-category-label">{l.category}</span>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                 {CATEGORIES.map((c) => (
                   <button
                     key={c}
                     onClick={() => setCategory(c)}
+                    role="radio"
+                    aria-checked={category === c}
                     style={category === c ? chipActiveStyle : chipBaseStyle}
                   >
                     {c}

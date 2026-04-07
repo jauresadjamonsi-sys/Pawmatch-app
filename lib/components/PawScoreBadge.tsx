@@ -32,13 +32,15 @@ export default function PawScoreBadge({ userId, size = "sm" }: PawScoreBadgeProp
   const strokeDashoffset = circumference * (1 - (mounted ? progress : 0));
 
   return (
-    <Link href="/score" className="group flex items-center gap-1.5 no-underline" title="PawScore">
+    <Link href="/score" className="group flex items-center gap-1.5 no-underline" aria-label={`PawScore: ${score} points`} title="PawScore">
       <div className="relative flex items-center justify-center" style={{ width: ringSize, height: ringSize }}>
         <svg
           width={ringSize}
           height={ringSize}
           className="absolute inset-0"
           style={{ transform: "rotate(-90deg)" }}
+          aria-hidden="true"
+          role="img"
         >
           {/* Background ring */}
           <circle
@@ -67,6 +69,7 @@ export default function PawScoreBadge({ userId, size = "sm" }: PawScoreBadgeProp
         {/* Emoji center */}
         <span
           className="relative"
+          aria-hidden="true"
           style={{
             fontSize: isSm ? 14 : 18,
             transform: mounted ? "scale(1)" : "scale(0)",

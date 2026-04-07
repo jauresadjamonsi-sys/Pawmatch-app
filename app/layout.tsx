@@ -92,8 +92,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
         {/* Preconnect hints for faster resource loading */}
-        <link rel="preconnect" href="https://crpgrbfekusgannqbdyr.supabase.co" />
-        <link rel="dns-prefetch" href="https://crpgrbfekusgannqbdyr.supabase.co" />
+        {process.env.NEXT_PUBLIC_SUPABASE_URL && (
+          <>
+            <link rel="preconnect" href={process.env.NEXT_PUBLIC_SUPABASE_URL} />
+            <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SUPABASE_URL} />
+          </>
+        )}
         <link rel="preconnect" href="https://unpkg.com" crossOrigin="anonymous" />
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
       </head>

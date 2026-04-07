@@ -23,7 +23,7 @@ export const profileSchema = z.object({
 export function validateProfile(data: unknown) {
   const result = profileSchema.safeParse(data);
   if (!result.success) {
-    return { data: null, error: result.error.errors[0].message };
+    return { data: null, error: result.error.issues[0].message };
   }
   return { data: result.data, error: null };
 }

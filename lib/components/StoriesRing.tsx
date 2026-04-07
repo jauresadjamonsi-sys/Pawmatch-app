@@ -82,7 +82,7 @@ export default function StoriesRing() {
   if (!loaded || animals.length === 0) return null;
 
   return (
-    <section className="mb-5">
+    <section className="mb-5" aria-label={t.petStoriesTitle || "Stories"}>
       <h2
         className="text-sm font-bold uppercase tracking-wider mb-3 px-1"
         style={{ color: "var(--c-text-muted)" }}
@@ -92,12 +92,16 @@ export default function StoriesRing() {
 
       <div
         className="flex gap-4 overflow-x-auto -mx-4 px-4 pb-2"
+        role="list"
+        aria-label={t.petStoriesTitle || "Stories"}
         style={{ scrollbarWidth: "none" }}
       >
         {/* Create story button */}
         <button
           onClick={() => router.push("/stories/create")}
           className="flex flex-col items-center gap-1.5 flex-shrink-0"
+          role="listitem"
+          aria-label={t.storiesNewStory || "Nouvelle story"}
         >
           <div
             className="relative w-[68px] h-[68px] rounded-full flex items-center justify-center"
@@ -110,6 +114,7 @@ export default function StoriesRing() {
               width="24" height="24" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
               style={{ color: "var(--c-accent)" }}
+              aria-hidden="true"
             >
               <path d="M12 5v14M5 12h14" />
             </svg>
@@ -132,6 +137,8 @@ export default function StoriesRing() {
               key={animal.id}
               onClick={() => handleStoryClick(animal.id)}
               className="flex flex-col items-center gap-1.5 flex-shrink-0"
+              role="listitem"
+              aria-label={`Story de ${animal.name}${isSeen ? " (vue)" : " (nouvelle)"}`}
             >
               {/* Gradient ring wrapper */}
               <div

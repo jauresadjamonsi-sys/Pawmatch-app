@@ -4,17 +4,21 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { getMessages, sendMessageWithLimit, sendImageMessage, sendVoiceMessage, markAsRead, MessageRow } from "@/lib/services/messages";
+import { useRealtimeMessages } from "@/lib/hooks/useRealtimeMessages";
+import { useTypingIndicator } from "@/lib/hooks/useTypingIndicator";
+import { useRealtimePresence } from "@/lib/hooks/useRealtimePresence";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import BlockReportModal from "@/lib/components/BlockReportModal";
-import { useOnlineStatus } from "@/lib/hooks/useOnlineStatus";
 import PresenceDot from "@/lib/components/PresenceDot";
 import VoiceRecorder, { getFileExtension, getSupportedMimeType } from "@/lib/components/VoiceRecorder";
 import VoiceMessage from "@/lib/components/VoiceMessage";
 import { EMOJI_MAP } from "@/lib/constants";
 
-// Suggestions statiques par contexte (fallback + instantané)
+// ──────────────────────────────────────────────────
+// Static suggestion helpers (unchanged)
+// ──────────────────────────────────────────────────
 function getStaticSuggestions(messages: MessageRow[], myAnimalName: string, theirAnimalName: string, profileId: string) {
   if (messages.length === 0) {
     return [
@@ -76,6 +80,9 @@ async function fetchAISuggestions(
   return [];
 }
 
+// ──────────────────────────────────────────────────
+// Main conversation page
+// ──────────────────────────────────────────────────
 export default function ConversationPage() {
   const [messages, setMessages] = useState<MessageRow[]>([]);
   const [match, setMatch] = useState<any>(null);
@@ -87,76 +94,85 @@ export default function ConversationPage() {
   const [loadingAI, setLoadingAI] = useState(false);
   const [aiReady, setAiReady] = useState(false);
   const [showBlockReport, setShowBlockReport] = useState(false);
-  const [otherTyping, setOtherTyping] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
   const [isRecordingVoice, setIsRecordingVoice] = useState(false);
   const [uploadingVoice, setUploadingVoice] = useState(false);
+  const [reconnecting, setReconnecting] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const lastTypingSent = useRef<number>(0);
   const params = useParams();
+  const matchId = params.id as string;
   const supabase = createClient();
   const { profile } = useAuth();
 
-  // Compute other user ID early (before early returns) for hooks rule compliance
+  // ── Derived values (must come before hooks for rules-of-hooks) ──
   const otherUserIdEarly = match
     ? (match.sender_user_id === profile?.id ? match.receiver_user_id : match.sender_user_id)
     : null;
-  const { onlineMap: chatOnlineMap } = useOnlineStatus(otherUserIdEarly ? [otherUserIdEarly] : []);
 
-  useEffect(() => {
-    if (profile) {
-      fetchMatch();
-      fetchMessages();
-      const interval = setInterval(fetchMessages, 5000);
-      return () => clearInterval(interval);
-    }
-  }, [profile]);
+  // ── Realtime Presence (replaces useOnlineStatus polling) ──
+  const { onlineMap: chatOnlineMap } = useRealtimePresence(
+    profile?.id ?? null,
+    otherUserIdEarly ? [otherUserIdEarly] : []
+  );
 
-  async function fetchMatch() {
-    const { data } = await supabase
-      .from("matches")
-      .select(`*, sender_animal:sender_animal_id(id,name,species,breed,photo_url), receiver_animal:receiver_animal_id(id,name,species,breed,photo_url), sender_profile:sender_user_id(id,full_name,email), receiver_profile:receiver_user_id(id,full_name,email)`)
-      .eq("id", params.id)
-      .single();
-    setMatch(data);
-    setLoading(false);
-  }
+  // ── Realtime Typing (replaces REST polling piggybacked on fetchMessages) ──
+  const { isOtherTyping, sendTyping } = useTypingIndicator(matchId, profile?.id ?? null);
 
-  async function fetchMessages() {
-    const matchId = params.id as string;
+  // ── Fetch messages once on mount ──
+  const fetchAllMessages = useCallback(async () => {
     const result = await getMessages(supabase, matchId);
     if (result.data) {
       setMessages(result.data);
       if (profile) await markAsRead(supabase, matchId, profile.id);
     }
-    // Piggyback typing status on message poll
-    try {
-      const res = await fetch(`/api/chat/typing?match_id=${matchId}`);
-      const data = await res.json();
-      setOtherTyping(!!data.typing);
-    } catch {
-      // Silent
+  }, [matchId, profile?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Realtime Messages (replaces setInterval polling) ──
+  useRealtimeMessages(matchId, {
+    onNewMessage: useCallback(
+      (msg: MessageRow) => {
+        setMessages((prev) => {
+          // Guard against duplicates (e.g. optimistic + realtime race)
+          if (prev.some((m) => m.id === msg.id)) return prev;
+          return [...prev, msg];
+        });
+        // Auto-mark as read if the message is from the other person
+        if (profile && msg.sender_id !== profile.id) {
+          markAsRead(supabase, matchId, profile.id).catch(() => {});
+        }
+        setReconnecting(false);
+      },
+      [matchId, profile?.id] // eslint-disable-line react-hooks/exhaustive-deps
+    ),
+    onReconnect: useCallback(() => {
+      // Channel reconnected after a drop -- re-fetch all messages to fill any gap
+      setReconnecting(true);
+      fetchAllMessages().finally(() => setReconnecting(false));
+    }, [fetchAllMessages]),
+  });
+
+  // ── Fetch match metadata and initial messages ──
+  useEffect(() => {
+    if (profile) {
+      fetchMatch();
+      fetchAllMessages();
     }
+  }, [profile]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function fetchMatch() {
+    const { data } = await supabase
+      .from("matches")
+      .select(`*, sender_animal:sender_animal_id(id,name,species,breed,photo_url), receiver_animal:receiver_animal_id(id,name,species,breed,photo_url), sender_profile:sender_user_id(id,full_name,email), receiver_profile:receiver_user_id(id,full_name,email)`)
+      .eq("id", matchId)
+      .single();
+    setMatch(data);
+    setLoading(false);
   }
 
-  async function notifyTyping() {
-    const now = Date.now();
-    if (now - lastTypingSent.current < 3000) return;
-    lastTypingSent.current = now;
-    try {
-      await fetch("/api/chat/typing", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ match_id: params.id }),
-      });
-    } catch {
-      // Silent
-    }
-  }
-
+  // ── Photo upload ──
   async function handlePhotoSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file || !profile) return;
@@ -171,7 +187,7 @@ export default function ConversationPage() {
 
     try {
       const ext = file.name.split(".").pop() || "jpg";
-      const path = `${params.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+      const path = `${matchId}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
 
       const { error: uploadError } = await supabase.storage
         .from("chat-images")
@@ -186,14 +202,13 @@ export default function ConversationPage() {
       const { data: urlData } = supabase.storage.from("chat-images").getPublicUrl(path);
 
       const result = await sendImageMessage(
-        supabase, params.id as string, profile.id, urlData.publicUrl, profile.subscription || "free"
+        supabase, matchId, profile.id, urlData.publicUrl, profile.subscription || "free"
       );
 
       if (result.error) {
         setError(result.error);
-      } else {
-        fetchMessages();
       }
+      // No need to fetchMessages -- realtime will push the new message
     } catch {
       setError("Erreur inattendue lors de l'envoi de la photo.");
     }
@@ -202,6 +217,7 @@ export default function ConversationPage() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
+  // ── Voice upload ──
   async function handleVoiceComplete(blob: Blob) {
     if (!profile) return;
     setIsRecordingVoice(false);
@@ -211,7 +227,7 @@ export default function ConversationPage() {
     try {
       const mimeType = getSupportedMimeType();
       const ext = getFileExtension(mimeType);
-      const path = `voice/${params.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+      const path = `voice/${matchId}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
 
       const { error: uploadError } = await supabase.storage
         .from("voice-messages")
@@ -226,14 +242,13 @@ export default function ConversationPage() {
       const { data: urlData } = supabase.storage.from("voice-messages").getPublicUrl(path);
 
       const result = await sendVoiceMessage(
-        supabase, params.id as string, profile.id, urlData.publicUrl, profile.subscription || "free"
+        supabase, matchId, profile.id, urlData.publicUrl, profile.subscription || "free"
       );
 
       if (result.error) {
         setError(result.error);
-      } else {
-        fetchMessages();
       }
+      // No need to fetchMessages -- realtime will push the new message
     } catch {
       setError("Erreur inattendue lors de l'envoi du message vocal.");
     }
@@ -241,19 +256,17 @@ export default function ConversationPage() {
     setUploadingVoice(false);
   }
 
-  // Charger suggestions statiques immédiatement, IA en arrière-plan
+  // ── Smart suggestions ──
   useEffect(() => {
     if (!match || !profile) return;
     const isMe = match.sender_user_id === profile.id;
     const myAnimal = isMe ? match.sender_animal : match.receiver_animal;
     const theirAnimal = isMe ? match.receiver_animal : match.sender_animal;
 
-    // Statique instantané
     const staticSuggestions = getStaticSuggestions(messages, myAnimal.name, theirAnimal.name, profile.id);
     setSuggestions(staticSuggestions);
     setAiReady(false);
 
-    // IA en arrière-plan
     setLoadingAI(true);
     fetchAISuggestions(messages, myAnimal.name, theirAnimal.name, myAnimal.species, theirAnimal.species, profile.id)
       .then(aiSuggestions => {
@@ -263,12 +276,14 @@ export default function ConversationPage() {
         }
       })
       .finally(() => setLoadingAI(false));
-  }, [messages.length, match, profile]);
+  }, [messages.length, match, profile]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // ── Auto-scroll on new messages or typing indicator ──
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, isOtherTyping]);
 
+  // ── Send message ──
   async function handleSend(text?: string) {
     const content = text || newMessage;
     if (!content.trim() || !profile) return;
@@ -276,14 +291,21 @@ export default function ConversationPage() {
     setError(null);
 
     const result = await sendMessageWithLimit(
-      supabase, params.id as string, profile.id, content, profile.subscription || "free"
+      supabase, matchId, profile.id, content, profile.subscription || "free"
     );
 
     if (result.error) {
       setError(result.error);
     } else {
       setNewMessage("");
-      fetchMessages();
+      // Realtime will deliver the message, but we also optimistically add it
+      // to avoid a visible delay if the realtime event is slightly slow
+      if (result.data) {
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === result.data!.id)) return prev;
+          return [...prev, result.data!];
+        });
+      }
     }
     setSending(false);
     inputRef.current?.focus();
@@ -293,6 +315,7 @@ export default function ConversationPage() {
     handleSend(suggestion);
   }
 
+  // ── Loading state ──
   if (loading) return (
     <div className="min-h-screen bg-[var(--c-deep)] flex items-center justify-center">
       <div className="text-center">
@@ -352,11 +375,21 @@ export default function ConversationPage() {
         }
         .typing-dot {
           width: 6px; height: 6px; border-radius: 50%;
-          background: #9ca3af; display: inline-block;
+          background: var(--c-text-muted, #9ca3af); display: inline-block;
           animation: bounce-dot 1.2s infinite;
         }
         .typing-dot:nth-child(2) { animation-delay: 0.15s; }
         .typing-dot:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes fadeSlideIn {
+          from { opacity: 0; transform: translateY(4px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .typing-indicator-enter { animation: fadeSlideIn 0.2s ease-out forwards; }
+        @keyframes reconnectPulse {
+          0%, 100% { opacity: 0.7; }
+          50% { opacity: 1; }
+        }
+        .reconnect-banner { animation: reconnectPulse 1.5s ease-in-out infinite; }
       `}} />
 
       {/* Header */}
@@ -373,8 +406,17 @@ export default function ConversationPage() {
               : <span className="text-base">{EMOJI_MAP[theirAnimal.species] || "🐾"}</span>}
           </Link>
           <Link href={"/animals/" + theirAnimal.id} className="flex-1 min-w-0 no-underline">
-            <p className="font-semibold text-[var(--c-text)] text-sm truncate hover:text-orange-400 transition">{otherProfile.full_name || otherProfile.email}</p>
-            <p className="text-xs text-[var(--c-text-muted)]">{theirAnimal.name} × {myAnimal.name}</p>
+            <p className="font-semibold text-[var(--c-text)] text-sm truncate hover:text-orange-400 transition">
+              {otherProfile.full_name || otherProfile.email}
+            </p>
+            <p className="text-xs text-[var(--c-text-muted)]">
+              {theirAnimal.name} x {myAnimal.name}
+              {isOtherTyping && (
+                <span className="ml-1.5 text-[var(--c-accent,#f97316)]">
+                  -- est en train d'ecrire...
+                </span>
+              )}
+            </p>
           </Link>
           <PresenceDot isOnline={isOtherOnline} size="sm" />
           <button
@@ -388,6 +430,15 @@ export default function ConversationPage() {
           </button>
         </div>
       </div>
+
+      {/* Reconnection banner */}
+      {reconnecting && (
+        <div className="reconnect-banner bg-[var(--c-accent,#f97316)]/10 border-b border-[var(--c-accent,#f97316)]/20 px-4 py-1.5 text-center">
+          <p className="text-xs text-[var(--c-accent,#f97316)] font-medium">
+            Reconnexion en cours...
+          </p>
+        </div>
+      )}
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4">
@@ -457,8 +508,8 @@ export default function ConversationPage() {
           })}
 
           {/* Typing indicator */}
-          {otherTyping && (
-            <div className="flex justify-start">
+          {isOtherTyping && (
+            <div className="flex justify-start typing-indicator-enter">
               <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl rounded-bl-md px-4 py-3 flex items-center gap-1.5">
                 <span className="typing-dot" />
                 <span className="typing-dot" />
@@ -539,7 +590,7 @@ export default function ConversationPage() {
                   ref={inputRef}
                   type="text"
                   value={newMessage}
-                  onChange={(e) => { setNewMessage(e.target.value); notifyTyping(); }}
+                  onChange={(e) => { setNewMessage(e.target.value); sendTyping(); }}
                   onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
                   placeholder="Message..."
                   maxLength={2000}

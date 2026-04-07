@@ -154,8 +154,17 @@ export default function Navbar() {
     <>
       <style dangerouslySetInnerHTML={{ __html: NAV_CSS }} />
 
+      {/* Skip to content link */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[200] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-bold"
+        style={{ background: "var(--c-accent)", color: "#fff" }}
+      >
+        Aller au contenu principal
+      </a>
+
       {/* ═══ TOP NAVBAR ═══ */}
-      <nav className="sticky top-0 z-50" style={{
+      <nav className="sticky top-0 z-50" role="navigation" aria-label="Navigation principale" style={{
         background: isLight ? "rgba(255,255,255,0.78)" : "rgba(15,12,26,0.7)",
         backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
         borderBottom: "1px solid transparent",
@@ -163,7 +172,7 @@ export default function Navbar() {
       }}>
         <div className="max-w-6xl mx-auto px-4 md:px-6">
           <div className="flex items-center justify-between h-12">
-            <Link href="/" className="logo-gradient font-extrabold text-xl tracking-tight select-none">Pawly</Link>
+            <Link href="/" className="logo-gradient font-extrabold text-xl tracking-tight select-none" aria-label="Pawly - Accueil">Pawly</Link>
 
             {/* Desktop links */}
             <div className="hidden md:flex items-center gap-1">
@@ -202,15 +211,18 @@ export default function Navbar() {
               <div ref={langDrop.ref} className="relative">
                 <button
                   onClick={() => { langDrop.setOpen(o => !o); themeDrop.setOpen(false); }}
+                  aria-label="Changer la langue"
+                  aria-expanded={langDrop.open}
+                  aria-haspopup="listbox"
                   className={"p-2 rounded-full transition-all duration-200 text-sm " +
                     (langDrop.open ? "bg-orange-500/15" : isLight ? "hover:bg-gray-100" : "hover:bg-[var(--c-card)]")}
                 >
                   {currentFlag}
                 </button>
                 {langDrop.open && (
-                  <div className="drop-in absolute right-0 top-full mt-1.5 w-40 rounded-xl border shadow-xl z-50 overflow-hidden" style={dropBg}>
+                  <div className="drop-in absolute right-0 top-full mt-1.5 w-40 rounded-xl border shadow-xl z-50 overflow-hidden" role="listbox" aria-label="Langues disponibles" style={dropBg}>
                     {LANGS.map(l => (
-                      <button key={l.code} onClick={() => { setLang(l.code as any); langDrop.setOpen(false); }}
+                      <button key={l.code} role="option" aria-selected={lang === l.code} onClick={() => { setLang(l.code as any); langDrop.setOpen(false); }}
                         className={"w-full flex items-center gap-3 px-4 py-2.5 transition-all duration-200 " +
                           (lang === l.code
                             ? "bg-orange-500/10"
@@ -231,17 +243,20 @@ export default function Navbar() {
               <div ref={themeDrop.ref} className="relative">
                 <button
                   onClick={() => { themeDrop.setOpen(o => !o); langDrop.setOpen(false); }}
+                  aria-label="Changer le theme"
+                  aria-expanded={themeDrop.open}
+                  aria-haspopup="listbox"
                   className={"p-2 rounded-full transition-all duration-200 text-sm " +
                     (themeDrop.open ? "bg-orange-500/15" : isLight ? "hover:bg-gray-100" : "hover:bg-[var(--c-card)]")}
                 >
                   {currentThemeLabel}
                 </button>
                 {themeDrop.open && (
-                  <div className="drop-in absolute right-0 top-full mt-1.5 w-48 rounded-xl border shadow-xl z-50 overflow-hidden" style={dropBg}>
+                  <div className="drop-in absolute right-0 top-full mt-1.5 w-48 rounded-xl border shadow-xl z-50 overflow-hidden" role="listbox" aria-label="Themes disponibles" style={dropBg}>
                     {THEMES.map(th => {
                       const active = themePreference === th.code;
                       return (
-                        <button key={th.code} onClick={() => { setTheme(th.code as any); themeDrop.setOpen(false); }}
+                        <button key={th.code} role="option" aria-selected={active} onClick={() => { setTheme(th.code as any); themeDrop.setOpen(false); }}
                           className={"w-full flex items-center gap-3 px-4 py-2.5 transition-all duration-200 " +
                             (active ? "bg-orange-500/10" : isLight ? "hover:bg-gray-50" : "hover:bg-[var(--c-card)]")}
                         >
@@ -268,7 +283,7 @@ export default function Navbar() {
       </nav>
 
       {/* ═══ MOBILE BOTTOM NAV ═══ */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 safe-area-bottom" style={{
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 safe-area-bottom" role="navigation" aria-label="Navigation mobile" style={{
         background: isLight ? "rgba(255,255,255,0.9)" : "rgba(15,12,26,0.88)",
         backdropFilter: "blur(30px)", WebkitBackdropFilter: "blur(30px)",
       }}>
@@ -317,7 +332,7 @@ export default function Navbar() {
             </>
           )}
         </div>
-      </div>
+      </nav>
       <div className="md:hidden h-16 safe-area-bottom" />
     </>
   );
@@ -325,7 +340,7 @@ export default function Navbar() {
 
 function NL({ href, active, label, light }: { href: string; active: boolean; label: string; light?: boolean }) {
   return (
-    <Link href={href} className={
+    <Link href={href} aria-current={active ? "page" : undefined} className={
       "nav-link-f px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 " +
       (active ? "nav-pill-active active text-orange-400 font-semibold"
         : light ? "text-gray-600 hover:text-gray-900 hover:bg-gray-100/50"
@@ -341,7 +356,7 @@ function BT({ href, active, label, featured, pulse, badge, light, children }: {
 }) {
   if (featured) {
     return (
-      <Link href={href} className="flex flex-col items-center -mt-5 relative">
+      <Link href={href} aria-label={label} aria-current={active ? "page" : undefined} className="flex flex-col items-center -mt-5 relative">
         <div className={"featured-btn-ring transition-all duration-300 " + (pulse ? "nav-pulse" : "")}>
           <div className={
             "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 " +
@@ -350,19 +365,19 @@ function BT({ href, active, label, featured, pulse, badge, light, children }: {
             style={active ? { boxShadow: "0 0 20px rgba(249,115,22,0.5)" } : undefined}
           >{children}</div>
         </div>
-        <span className={"text-[9px] mt-1 font-medium " + (active ? "text-orange-400 font-bold" : "text-gray-500")}>{label}</span>
+        <span aria-hidden="true" className={"text-[9px] mt-1 font-medium " + (active ? "text-orange-400 font-bold" : "text-gray-500")}>{label}</span>
       </Link>
     );
   }
   return (
-    <Link href={href} className="flex flex-col items-center py-1 px-2 relative group">
+    <Link href={href} aria-label={label} aria-current={active ? "page" : undefined} className="flex flex-col items-center py-1 px-2 relative group">
       {active && <span className="absolute -top-0 left-1/2 -translate-x-1/2 w-6 h-[3px] rounded-full" style={{ background: "linear-gradient(90deg, #f97316, #a78bfa)", boxShadow: "0 0 8px rgba(249,115,22,0.5)" }} />}
       <span className={"transition-all duration-300 " + (active ? "text-orange-400 scale-110 glow-float" : light ? "text-gray-500 group-hover:text-gray-700" : "text-gray-500 group-hover:text-gray-300")}
         style={active ? { filter: "drop-shadow(0 0 6px rgba(249,115,22,0.4))" } : undefined}
       >{children}</span>
-      {badge && !active && <span className="badge-pulse absolute top-0 right-1 w-2.5 h-2.5 rounded-full" style={{ background: "linear-gradient(135deg, #ef4444, #f97316)", boxShadow: "0 0 8px rgba(239,68,68,0.6)" }} />}
+      {badge && !active && <span aria-label="Nouvelles notifications" className="badge-pulse absolute top-0 right-1 w-2.5 h-2.5 rounded-full" style={{ background: "linear-gradient(135deg, #ef4444, #f97316)", boxShadow: "0 0 8px rgba(239,68,68,0.6)" }} />}
       {active && <div className="bottom-tab-active-glow" />}
-      <span className={"text-[9px] mt-0.5 " + (active ? "text-orange-400 font-bold" : light ? "text-gray-400" : "text-gray-500")}>{label}</span>
+      <span aria-hidden="true" className={"text-[9px] mt-0.5 " + (active ? "text-orange-400 font-bold" : light ? "text-gray-400" : "text-gray-500")}>{label}</span>
     </Link>
   );
 }

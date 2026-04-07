@@ -45,7 +45,7 @@ export function useAuth() {
     fetchProfile();
   }, []);
 
-  const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "jaures.adjamonsi@gmail.com").split(",").map(e => e.trim().toLowerCase());
+  const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "jaures.adjamonsi@gmail.com").split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
 
   return {
     profile,

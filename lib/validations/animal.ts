@@ -5,7 +5,7 @@ export const animalSchema = z.object({
     .string()
     .min(1, "Le nom est requis")
     .max(100, "Le nom ne peut pas depasser 100 caracteres"),
-  species: z.literal("chien").or(z.literal("chat")).or(z.literal("lapin")).or(z.literal("oiseau")).or(z.literal("rongeur")).or(z.literal("autre")),
+  species: z.enum(["chien", "chat", "lapin", "oiseau", "rongeur", "autre"]),
   breed: z.string().max(100).nullable().optional(),
   age_months: z
     .number()
@@ -44,7 +44,7 @@ export type AnimalInput = z.infer<typeof animalSchema>;
 export function validateAnimal(data: unknown) {
   const result = animalSchema.safeParse(data);
   if (!result.success) {
-    const firstError = result.error.errors[0];
+    const firstError = result.error.issues[0];
     return { data: null, error: firstError.message };
   }
   return { data: result.data, error: null };
