@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { ensureProfile } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -13,22 +14,8 @@ export async function GET(request: Request) {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          // ENSURE profile exists (fallback if DB trigger didn't fire)
-          const { data: existingProfile } = await supabase
-            .from("profiles")
-            .select("id")
-            .eq("id", user.id)
-            .single();
-
-          if (!existingProfile) {
-            await supabase.from("profiles").insert({
-              id: user.id,
-              email: user.email,
-              full_name: user.user_metadata?.full_name || "",
-              role: "adoptant",
-              subscription: "free",
-            });
-          }
+          // Create profile if missing (uses service role = bypasses RLS)
+          await ensureProfile(user);
 
           // Send welcome email (fire and forget)
           if (user.email) {
@@ -45,7 +32,9 @@ export async function GET(request: Request) {
             return NextResponse.redirect(origin + "/onboarding");
           }
         }
-      } catch {}
+      } catch (e) {
+        console.error("Auth callback error:", e);
+      }
       return NextResponse.redirect(origin + "/profile");
     }
   }

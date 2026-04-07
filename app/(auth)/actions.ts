@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { ensureProfile } from "@/lib/supabase/admin";
 
 export async function login(formData: FormData) {
   const supabase = await createClient();
@@ -12,9 +13,8 @@ export async function login(formData: FormData) {
   });
 
   if (error) {
-    // Better error messages in French
     if (error.message.includes("Email not confirmed")) {
-      return { error: "Ton email n'est pas encore confirmé. Vérifie ta boîte mail (et les spams) pour le lien de confirmation." };
+      return { error: "Ton email n'est pas encore confirme. Verifie ta boite mail (et les spams) pour le lien de confirmation." };
     }
     if (error.message.includes("Invalid login credentials")) {
       return { error: "Email ou mot de passe incorrect." };
@@ -22,26 +22,11 @@ export async function login(formData: FormData) {
     return { error: error.message };
   }
 
-  // Ensure profile exists (fallback if DB trigger didn't fire)
+  // Ensure profile exists (service role = bypasses RLS)
   const { data: { user } } = await supabase.auth.getUser();
   if (user) {
-    const { data: existingProfile } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("id", user.id)
-      .single();
+    await ensureProfile(user);
 
-    if (!existingProfile) {
-      await supabase.from("profiles").insert({
-        id: user.id,
-        email: user.email,
-        full_name: user.user_metadata?.full_name || "",
-        role: "adoptant",
-        subscription: "free",
-      });
-    }
-
-    // Check if user has animals — if not, redirect to onboarding
     const { count } = await supabase.from("animals").select("id", { count: "exact", head: true }).eq("created_by", user.id);
     if (!count || count === 0) {
       redirect("/onboarding");
@@ -74,25 +59,10 @@ export async function signup(formData: FormData) {
     return { error: error.message };
   }
 
-  // If user is immediately confirmed (no email confirmation required),
-  // create profile and redirect to onboarding
+  // If user is immediately confirmed (no email confirmation),
+  // create profile and go to onboarding
   if (signupData?.user && signupData.session) {
-    const { data: existingProfile } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("id", signupData.user.id)
-      .single();
-
-    if (!existingProfile) {
-      await supabase.from("profiles").insert({
-        id: signupData.user.id,
-        email: signupData.user.email,
-        full_name: fullName || "",
-        role: "adoptant",
-        subscription: "free",
-      });
-    }
-
+    await ensureProfile(signupData.user);
     redirect("/onboarding");
   }
 
