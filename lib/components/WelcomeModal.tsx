@@ -1,29 +1,37 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 const STORAGE_KEY = "pawly_welcome_dismissed";
 
 export function WelcomeModal() {
   const [show, setShow] = useState(false);
-  const [dontShowAgain, setDontShowAgain] = useState(false);
 
   useEffect(() => {
+    // Don't show if already dismissed
     try {
-      const dismissed = localStorage.getItem(STORAGE_KEY);
-      if (!dismissed) {
-        // Small delay so the page renders first
-        const timer = setTimeout(() => setShow(true), 800);
-        return () => clearTimeout(timer);
+      if (localStorage.getItem(STORAGE_KEY)) return;
+    } catch { return; }
+
+    // Don't show for logged-in users — they've already been onboarded
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        // User is logged in → dismiss permanently, never show again
+        try { localStorage.setItem(STORAGE_KEY, "1"); } catch {}
+        return;
       }
-    } catch {}
+      // New visitor → show after 800ms
+      const timer = setTimeout(() => setShow(true), 800);
+      return () => clearTimeout(timer);
+    });
   }, []);
 
   function handleClose() {
     setShow(false);
-    if (dontShowAgain) {
-      try { localStorage.setItem(STORAGE_KEY, "1"); } catch {}
-    }
+    // Always save dismissal — the modal has served its purpose
+    try { localStorage.setItem(STORAGE_KEY, "1"); } catch {}
   }
 
   if (!show) return null;
@@ -72,11 +80,7 @@ export function WelcomeModal() {
             C'est parti !
           </button>
 
-          <label className="flex items-center justify-center gap-2 mt-4 cursor-pointer">
-            <input type="checkbox" checked={dontShowAgain} onChange={(e) => setDontShowAgain(e.target.checked)}
-              className="w-3.5 h-3.5 rounded border-[var(--c-border)] text-orange-500 focus:ring-orange-500" />
-            <span className="text-xs text-[var(--c-text-muted)]">Ne plus afficher</span>
-          </label>
+          {/* Dismissal is automatic — no checkbox needed */}
         </div>
       </div>
     </>

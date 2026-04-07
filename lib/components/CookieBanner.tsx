@@ -2,16 +2,24 @@
 
 import { useState, useEffect } from "react";
 
+const STORAGE_KEY = "pawly_cookies_ok";
+
 export function CookieBanner() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    const accepted = localStorage.getItem("cookies_accepted");
-    if (!accepted) setShow(true);
+    try {
+      // Check both old and new keys for backwards compat
+      if (localStorage.getItem(STORAGE_KEY) || localStorage.getItem("cookies_accepted")) return;
+      setShow(true);
+    } catch {}
   }, []);
 
   function accept() {
-    localStorage.setItem("cookies_accepted", "true");
+    try {
+      localStorage.setItem(STORAGE_KEY, "1");
+      localStorage.setItem("cookies_accepted", "true");
+    } catch {}
     setShow(false);
   }
 
@@ -20,19 +28,23 @@ export function CookieBanner() {
   return (
     <div style={{
       position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 9999,
-      background: "var(--c-deep)", backdropFilter: "blur(12px)",
+      background: "var(--c-card)", backdropFilter: "blur(20px)",
+      WebkitBackdropFilter: "blur(20px)",
       borderTop: "1px solid var(--c-border)",
-      padding: "14px 20px", display: "flex", alignItems: "center",
+      padding: "16px 20px",
+      paddingBottom: "max(16px, env(safe-area-inset-bottom))",
+      display: "flex", alignItems: "center",
       justifyContent: "center", gap: 16, flexWrap: "wrap",
     }}>
-      <p style={{ fontSize: 12, color: "#d1d5db", margin: 0, maxWidth: 500 }}>
-        🍪 Ce site utilise uniquement des cookies essentiels (session, préférences). Aucun cookie publicitaire.{" "}
+      <p style={{ fontSize: 12, color: "var(--c-text-muted)", margin: 0, maxWidth: 500 }}>
+        🍪 Cookies essentiels uniquement (session, preferences). Aucun tracking publicitaire.{" "}
         <a href="/legal/privacy" style={{ color: "#f97316", textDecoration: "underline" }}>En savoir plus</a>
       </p>
       <button onClick={accept} style={{
-        padding: "8px 24px", background: "#f97316", color: "#fff",
-        border: "none", borderRadius: 50, fontWeight: 700, fontSize: 12,
+        padding: "10px 28px", background: "#f97316", color: "#fff",
+        border: "none", borderRadius: 50, fontWeight: 700, fontSize: 13,
         cursor: "pointer", whiteSpace: "nowrap",
+        minHeight: 44, /* iOS minimum tap target */
       }}>
         Compris
       </button>

@@ -23,7 +23,7 @@ export default function VerificationBanner() {
       if (!user) return;
       const { data } = await supabase
         .from("profiles")
-        .select("verification_status")
+        .select("*")
         .eq("id", user.id)
         .single();
       if (data) {
@@ -55,20 +55,38 @@ export default function VerificationBanner() {
     try {
       const ext = file.name.split('.').pop() || 'jpg';
       const path = `verifications/${user.id}-${Date.now()}.${ext}`;
-      const { error } = await supabase.storage.from("photos").upload(path, file, { cacheControl: "3600", upsert: false });
-      if (error) throw error;
-      const { data: urlData } = supabase.storage.from("photos").getPublicUrl(path);
 
-      await supabase.from("profiles").update({
+      // Try uploading to "photos" bucket, fallback to "avatars" if it doesn't exist
+      let uploadError: any = null;
+      let bucket = "photos";
+
+      const { error: err1 } = await supabase.storage.from("photos").upload(path, file, { cacheControl: "3600", upsert: true });
+      if (err1) {
+        // If "photos" bucket fails, try "avatars" bucket
+        const { error: err2 } = await supabase.storage.from("avatars").upload(path, file, { cacheControl: "3600", upsert: true });
+        if (err2) {
+          uploadError = err1;
+        } else {
+          bucket = "avatars";
+        }
+      }
+
+      if (uploadError) throw new Error(uploadError.message || "Upload echoue");
+
+      const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(path);
+
+      const { error: updateError } = await supabase.from("profiles").update({
         verification_photo_url: urlData.publicUrl,
         verification_status: "submitted",
         verification_submitted_at: new Date().toISOString(),
       }).eq("id", user.id);
 
+      if (updateError) throw new Error(updateError.message || "Mise a jour profil echouee");
+
       setDone(true);
       setTimeout(() => setShow(false), 3000);
-    } catch {
-      alert("Erreur lors de l'envoi. Reessaie.");
+    } catch (e: any) {
+      alert("Erreur : " + (e?.message || "Reessaie."));
     }
     setUploading(false);
   }
