@@ -1067,7 +1067,7 @@ html {
   background: rgba(0, 0, 0, 0.2) !important;
 }
 
-/* --- ring-*-*/60 shimmer shadow overrides --- */
+/* --- ring / shimmer shadow overrides --- */
 [data-theme="clair"] [class*="ring-orange-500\/"],
 [data-theme="aurore"] [class*="ring-orange-500\/"],
 [data-theme="ocean"] [class*="ring-orange-500\/"] {
