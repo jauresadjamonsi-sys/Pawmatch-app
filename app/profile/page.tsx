@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import PushButton from "@/lib/components/PushButton";
@@ -66,15 +67,18 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ProfilePage() {
   const supabase = await createClient();
+  const admin = createAdminClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
-  const { data: profile } = await supabase.from("profiles").select("id, email, full_name, avatar_url, city, canton, phone, subscription, role, bio, created_at").eq("id", user.id).single();
-  const { data: animals } = await supabase.from("animals").select("id, name, species, breed, age_months, gender, photo_url, canton, city, traits, energy_level, sociability, sterilized, weight_kg, description, created_by, status, created_at").eq("created_by", user.id).order("created_at", { ascending: false });
 
-  // Stats engagement — use "id" instead of "*" for count queries
+  // Use admin client to bypass RLS (server-side cookies can lose auth context)
+  const { data: profile } = await admin.from("profiles").select("id, email, full_name, avatar_url, city, canton, phone, subscription, role, bio, created_at").eq("id", user.id).single();
+  const { data: animals } = await admin.from("animals").select("id, name, species, breed, age_months, gender, photo_url, canton, city, traits, energy_level, sociability, sterilized, weight_kg, description, created_by, status, created_at").eq("created_by", user.id).order("created_at", { ascending: false });
+
+  // Stats engagement
   const [{ count: matchCount }, { count: messageCount }] = await Promise.all([
-    supabase.from("matches").select("id", { count: "exact", head: true }).or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`),
-    supabase.from("messages").select("id", { count: "exact", head: true }).eq("sender_id", user.id),
+    admin.from("matches").select("id", { count: "exact", head: true }).or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`),
+    admin.from("messages").select("id", { count: "exact", head: true }).eq("sender_id", user.id),
   ]);
   const daysSinceJoin = profile?.created_at ? Math.floor((Date.now() - new Date(profile.created_at).getTime()) / 86400000) : 0;
   const stats = { matches: matchCount || 0, messages: messageCount || 0, days: daysSinceJoin, animals: (animals || []).length };
