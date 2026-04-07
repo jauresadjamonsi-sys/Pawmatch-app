@@ -2,12 +2,19 @@
   "name": "Pawly",
   "short_name": "Pawly",
   "description": "Ton compagnon de sortie en Suisse",
-  "start_url": "/",
+  "start_url": "/feed",
+  "scope": "/",
+  "id": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait",
-  "background_color": "#1a1225",
-  "theme_color": "#1a1225",
+  "background_color": "#2a2248",
+  "theme_color": "#2a2248",
   "categories": ["social", "lifestyle"],
+  "prefer_related_applications": false,
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
   "icons": [
     { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" },
     { "src": "/icons/icon-72.png", "sizes": "72x72", "type": "image/png" },

@@ -36,6 +36,33 @@ const CANTON_COLORS = [
   "from-pink-500/20 to-pink-600/10",
 ];
 
+// Approximate canton center coordinates for geolocation matching
+const CANTON_COORDS: Record<string, { lat: number; lng: number }> = {
+  AG: { lat: 47.39, lng: 8.04 }, AI: { lat: 47.33, lng: 9.41 },
+  AR: { lat: 47.38, lng: 9.28 }, BE: { lat: 46.95, lng: 7.45 },
+  BL: { lat: 47.48, lng: 7.73 }, BS: { lat: 47.56, lng: 7.59 },
+  FR: { lat: 46.80, lng: 7.15 }, GE: { lat: 46.20, lng: 6.14 },
+  GL: { lat: 47.04, lng: 9.07 }, GR: { lat: 46.85, lng: 9.53 },
+  JU: { lat: 47.35, lng: 7.16 }, LU: { lat: 47.05, lng: 8.31 },
+  NE: { lat: 46.99, lng: 6.93 }, NW: { lat: 46.96, lng: 8.37 },
+  OW: { lat: 46.90, lng: 8.25 }, SG: { lat: 47.42, lng: 9.37 },
+  SH: { lat: 47.70, lng: 8.64 }, SO: { lat: 47.21, lng: 7.54 },
+  SZ: { lat: 47.02, lng: 8.65 }, TG: { lat: 47.57, lng: 9.10 },
+  TI: { lat: 46.19, lng: 8.95 }, UR: { lat: 46.88, lng: 8.64 },
+  VD: { lat: 46.52, lng: 6.63 }, VS: { lat: 46.23, lng: 7.36 },
+  ZG: { lat: 47.17, lng: 8.52 }, ZH: { lat: 47.38, lng: 8.54 },
+};
+
+function findNearestCanton(lat: number, lng: number): string {
+  let nearest = "";
+  let minDist = Infinity;
+  for (const [code, coords] of Object.entries(CANTON_COORDS)) {
+    const d = Math.sqrt((lat - coords.lat) ** 2 + (lng - coords.lng) ** 2);
+    if (d < minDist) { minDist = d; nearest = code; }
+  }
+  return nearest;
+}
+
 export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,6 +80,24 @@ export default function EventsPage() {
   });
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
+  const [detectedCanton, setDetectedCanton] = useState<string | null>(null);
+  const [geoStatus, setGeoStatus] = useState<"idle" | "loading" | "done" | "denied">("idle");
+
+  // Geolocation: auto-detect canton on mount
+  useEffect(() => {
+    if (!("geolocation" in navigator)) return;
+    setGeoStatus("loading");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const canton = findNearestCanton(pos.coords.latitude, pos.coords.longitude);
+        setDetectedCanton(canton);
+        setFilterCanton(canton);
+        setGeoStatus("done");
+      },
+      () => { setGeoStatus("denied"); },
+      { timeout: 8000, maximumAge: 300000 }
+    );
+  }, []);
 
   useEffect(() => { fetchEvents(); }, [filterCanton]);
 
@@ -60,7 +105,7 @@ export default function EventsPage() {
     setLoading(true);
     let query = supabase
       .from("events")
-      .select("*, organizer:created_by(full_name, email)")
+      .select("*, organizer:created_by(*)")
       .gte("event_date", new Date().toISOString())
       .order("event_date", { ascending: true });
 
@@ -198,6 +243,19 @@ export default function EventsPage() {
               (!filterCanton ? "bg-orange-500/20 border border-orange-500/40 text-orange-300" : "bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-orange-500/30")}>
             {t.eventsAll}
           </button>
+          {/* Geolocation button */}
+          {detectedCanton && (
+            <button onClick={() => setFilterCanton(detectedCanton)}
+              className={"flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition " +
+                (filterCanton === detectedCanton ? "bg-green-500/20 border border-green-500/40 text-green-300" : "bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-green-500/30")}>
+              {"\uD83D\uDCCD"} Pr&egrave;s de moi ({detectedCanton})
+            </button>
+          )}
+          {geoStatus === "loading" && (
+            <span className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs text-[var(--c-text-muted)] animate-pulse">
+              {"\uD83D\uDCCD"} Localisation...
+            </span>
+          )}
           {CANTONS.map(c => (
             <button key={c.code} onClick={() => setFilterCanton(filterCanton === c.code ? "" : c.code)}
               className={"flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition " +
@@ -343,7 +401,12 @@ export default function EventsPage() {
                         {/* Top row */}
                         <div className="flex items-start justify-between gap-3 mb-3">
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
+                            <div className="flex items-center gap-2 mb-1 flex-wrap">
+                              {detectedCanton && event.canton === detectedCanton && (
+                                <span className="px-2 py-0.5 bg-green-500/20 border border-green-500/30 text-green-300 rounded-full text-[10px] font-bold">
+                                  {"\uD83D\uDCCD"} Pr&egrave;s de toi
+                                </span>
+                              )}
                               {date.urgent && (
                                 <span className="px-2 py-0.5 bg-orange-500/20 border border-orange-500/30 text-orange-300 rounded-full text-[10px] font-bold pulse-green">
                                   {date.soon}

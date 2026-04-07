@@ -55,6 +55,64 @@ body, #__next {
   display: none;
 }
 
+/* ============================================
+   APP-LIKE BEHAVIOR (PWA)
+   ============================================ */
+
+/* Prevent overscroll bounce (native app feel) */
+html, body {
+  overscroll-behavior-y: contain;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Standalone PWA: extra top padding for status bar */
+@media all and (display-mode: standalone) {
+  body {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+}
+
+/* Disable text selection on interactive UI (like native apps) */
+nav, button, a, .no-select {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Touch feedback on interactive elements */
+button:active, a:active, [role="button"]:active {
+  transform: scale(0.97);
+  transition: transform 0.1s ease;
+}
+
+/* Smooth momentum scrolling everywhere */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Page transitions */
+.page-enter {
+  animation: pageIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.page-exit {
+  animation: pageOut 0.12s ease-in forwards;
+}
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pageOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-4px); }
+}
+
+/* Pull-to-refresh prevention in standalone mode */
+@media all and (display-mode: standalone) {
+  body {
+    overscroll-behavior-y: none;
+  }
+}
+
 /* === THEME MODES === */
 .theme-clair,
 [data-theme="clair"] {
