@@ -236,7 +236,7 @@ function PromoContent() {
           {/* Frame 4: CTA */}
           <div className={`frame frame-4 ${frame === 3 ? "frame-active" : ""}`}>
             <h1 className="frame-title cta-title">Télécharge Pawly</h1>
-            <div className="cta-domain">pawlyapp.ch</div>
+            <a href="https://pawlyapp.ch" target="_blank" rel="noopener noreferrer" className="cta-domain">pawlyapp.ch</a>
             {ref && <div className="ref-code">Code : {ref.slice(0, 8)}</div>}
             <div className="gratuit-badge">Gratuit</div>
           </div>
@@ -253,7 +253,7 @@ function PromoContent() {
         <div className="swiss-badge">Conçu en Suisse 🇨🇭</div>
 
         {/* Watermark */}
-        <div className="watermark">pawlyapp.ch</div>
+        <a href="https://pawlyapp.ch" target="_blank" rel="noopener noreferrer" className="watermark">pawlyapp.ch</a>
       </div>
 
       {/* ---- Action buttons (outside story) ---- */}
@@ -582,6 +582,15 @@ function PromoContent() {
           margin-bottom: 16px;
           border: 1px solid rgba(255,255,255,0.2);
           text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+          text-decoration: none;
+          display: inline-block;
+          cursor: pointer;
+          transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta-domain:hover {
+          transform: scale(1.05);
+          box-shadow: 0 0 20px rgba(249,115,22,0.4);
         }
 
         .ref-code {
