@@ -56,7 +56,7 @@ export async function POST(request: Request) {
           const { Resend } = await import("resend");
           const resend = new Resend(apiKey);
           await resend.emails.send({
-            from: "Pawly <onboarding@resend.dev>",
+            from: "Pawly <contact@pawlyapp.ch>",
             to: email,
             subject: "🐾 Ton compagnon t'attend sur Pawly !",
             html: `<div style="max-width:500px;margin:0 auto;font-family:-apple-system,sans-serif;background:#1a1225;color:#fff;border-radius:16px;overflow:hidden">
