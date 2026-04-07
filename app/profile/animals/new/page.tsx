@@ -152,7 +152,7 @@ export default function NewAnimalPage() {
                 {photos.map((photo, i) => (
                   <div key={i} className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-[var(--c-border)]">
                     <Image src={photo.preview} alt={`photo-${i}`} fill className="object-cover" unoptimized sizes="80px" />
-                    <span className={"absolute bottom-0 left-0 right-0 text-[9px] font-bold text-center py-0.5 " + (photo.tag === "with_owner" ? "bg-green-600 text-[var(--c-text)]" : "bg-[var(--c-card)]0 text-gray-700")}>
+                    <span className={"absolute bottom-0 left-0 right-0 text-[9px] font-bold text-center py-0.5 " + (photo.tag === "with_owner" ? "bg-green-600 text-[var(--c-text)]" : "bg-[var(--c-card)] text-gray-700")}>
                       {photo.tag === "with_owner" ? t.animalPhotoTagOwner : t.animalPhotoTagAnimal}
                     </span>
                     <button type="button" onClick={() => removePhoto(i)}
@@ -396,12 +396,14 @@ export default function NewAnimalPage() {
 
             {/* Submit */}
             <button type="submit" disabled={loading || !hasOwnerPhoto}
-              className={"w-full py-3 font-semibold rounded-xl transition text-lg " +
-                (hasOwnerPhoto
-                  ? "bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50"
-                  : "bg-gray-600 text-[var(--c-text-muted)] cursor-not-allowed")
-              }>
-              {loading ? t.animalCreating : !hasOwnerPhoto ? t.animalPhotoWithOwner : t.animalAddButton}
+              className="w-full py-3 font-semibold rounded-xl transition text-lg disabled:opacity-70"
+              style={{
+                background: hasOwnerPhoto ? "#f97316" : "rgba(249,115,22,0.15)",
+                color: hasOwnerPhoto ? "#fff" : "#f97316",
+                border: hasOwnerPhoto ? "none" : "2px dashed rgba(249,115,22,0.4)",
+                cursor: hasOwnerPhoto ? "pointer" : "not-allowed",
+              }}>
+              {loading ? t.animalCreating : !hasOwnerPhoto ? "📸 " + t.animalPhotoWithOwner : t.animalAddButton}
             </button>
           </form>
         </div>

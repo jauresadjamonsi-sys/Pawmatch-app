@@ -237,7 +237,7 @@ export default function AnimalDetailPage() {
                       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
                         {photos.map((_: any, i: number) => (
                           <button key={i} onClick={() => setActivePhoto(i)}
-                            className={"w-2 h-2 rounded-full transition-all " + (i === activePhoto ? "bg-white scale-125" : "bg-[var(--c-card)]0")} />
+                            className={"w-2 h-2 rounded-full transition-all " + (i === activePhoto ? "bg-white scale-125" : "bg-white/40")} />
                         ))}
                       </div>
                     </>
