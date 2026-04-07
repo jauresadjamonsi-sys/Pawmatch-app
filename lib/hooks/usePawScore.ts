@@ -160,17 +160,16 @@ export function usePawScore(userId?: string): PawScoreResult {
       // Fetch all data in parallel
       const [animalsRes, matchesRes, messagesRes, profileRes, eventsRes] = await Promise.all([
         // Animals count
-        supabase.from("animals").select("id", { count: "exact", head: true }).eq("owner_id", userId),
+        supabase.from("animals").select("id", { count: "exact", head: true }).eq("created_by", userId),
         // Accepted matches count
         supabase.from("matches").select("id", { count: "exact", head: true })
-          .eq("status", "accepted")
           .or(`sender_user_id.eq.${userId},receiver_user_id.eq.${userId}`),
         // Messages count
         supabase.from("messages").select("id", { count: "exact", head: true }).eq("sender_id", userId),
         // Profile completeness
-        supabase.from("profiles").select("full_name, city, phone, avatar_url").eq("id", userId).single(),
+        supabase.from("profiles").select("*").eq("id", userId).single(),
         // Events joined count
-        supabase.from("event_participants").select("id", { count: "exact", head: true }).eq("user_id", userId),
+        supabase.from("event_participants").select("id", { count: "exact", head: true }).eq("user_id", userId).then(r => r).catch(() => ({ count: 0 })),
       ]);
 
       // Check profile completion
