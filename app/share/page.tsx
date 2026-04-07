@@ -196,7 +196,7 @@ export default function SharePage() {
     async function load() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      const { data } = await supabase.from("profiles").select("id, full_name, avatar_url, referral_code").eq("id", user.id).single();
+      const { data } = await supabase.from("profiles").select("*").eq("id", user.id).single();
       if (data) setProfile(data);
       const { count } = await supabase
         .from("profiles")

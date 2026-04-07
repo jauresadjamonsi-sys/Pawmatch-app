@@ -196,7 +196,7 @@ export default function StoriesPage() {
       const [animalsRes, matchRes, msgRes] = await Promise.all([
         supabase
           .from("animals")
-          .select("id, name, species, breed, photo_url, traits, age_months, gender")
+          .select("*")
           .eq("created_by", user.id)
           .order("created_at", { ascending: false }),
         supabase

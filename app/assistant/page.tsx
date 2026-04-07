@@ -52,7 +52,7 @@ export default function AssistantPage() {
         if (!user) return;
         const { data } = await supabase
           .from("animals")
-          .select("id, name, species")
+          .select("*")
           .eq("created_by", user.id)
           .order("created_at", { ascending: true })
           .limit(1);

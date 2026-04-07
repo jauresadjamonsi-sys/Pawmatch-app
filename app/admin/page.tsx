@@ -1514,7 +1514,7 @@ function VerificationTab() {
     const supabase = createClient();
     let query = supabase
       .from("profiles")
-      .select("id, full_name, email, avatar_url, verification_photo_url, verification_status, verification_note, verification_submitted_at, verification_reviewed_at, created_at")
+      .select("*")
       .order("verification_submitted_at", { ascending: false, nullsFirst: false });
 
     if (vFilter !== "all") {

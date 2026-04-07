@@ -78,7 +78,7 @@ export default function CartePage() {
 
   useEffect(() => {
     async function load() {
-      let q = supabase.from("animals").select("id, name, species, breed, photo_url, canton, city").eq("status", "disponible");
+      let q = supabase.from("animals").select("*");
       if (filter) q = q.eq("species", filter);
       const { data } = await q;
       setAnimals(data || []);

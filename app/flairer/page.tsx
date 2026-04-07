@@ -192,11 +192,10 @@ export default function FlairerPage() {
       setBlockedIds(blocked);
     }
 
-    // Fetch animals + already-liked in parallel, with column selection instead of select("*")
+    // Fetch animals + already-liked in parallel
     const animalsQuery = supabase
       .from("animals")
-      .select("id, name, species, breed, age_months, gender, description, photo_url, canton, city, traits, created_by, weight_kg, energy_level, sociability, sterilized")
-      .eq("status", "disponible")
+      .select("*")
       .order("created_at", { ascending: false })
       .limit(100);
 
@@ -215,7 +214,7 @@ export default function FlairerPage() {
     );
 
     if (profile) {
-      const { data: mine } = await supabase.from("animals").select("id, name, species, breed, age_months, gender, description, photo_url, canton, city, traits, created_by, weight_kg, energy_level, sociability, sterilized").eq("created_by", profile.id);
+      const { data: mine } = await supabase.from("animals").select("*").eq("created_by", profile.id);
       const myList = mine || [];
       setMyAnimals(myList);
       const primary = myList[0] || null;

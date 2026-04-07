@@ -114,7 +114,7 @@ export default function StoryCreatePage() {
 
       const { data } = await supabase
         .from("animals")
-        .select("id, name, species, breed, photo_url, traits")
+        .select("*")
         .eq("created_by", user.id)
         .order("created_at", { ascending: false });
 

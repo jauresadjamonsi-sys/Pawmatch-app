@@ -111,7 +111,7 @@ export default function StatsPage() {
         // Fetch profile
         const { data: profile } = await supabase
           .from("profiles")
-          .select("id, full_name, phone, city, avatar_url, created_at")
+          .select("*")
           .eq("id", user.id)
           .single();
 

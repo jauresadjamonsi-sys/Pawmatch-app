@@ -467,8 +467,8 @@ export default function FeedPage() {
 
       // Parallel queries
       const [profileRes, animalsRes, matchRes, msgRes] = await Promise.all([
-        supabase.from("profiles").select("id, full_name, avatar_url, city").eq("id", user.id).single(),
-        supabase.from("animals").select("id, name, species, breed, photo_url, traits, age_months, gender").eq("created_by", user.id).order("created_at", { ascending: false }),
+        supabase.from("profiles").select("*").eq("id", user.id).single(),
+        supabase.from("animals").select("*").eq("created_by", user.id).order("created_at", { ascending: false }),
         supabase.from("matches").select("id", { count: "exact", head: true }).eq("sender_user_id", user.id).gte("created_at", new Date(Date.now() - 7 * 86400000).toISOString()),
         supabase.from("messages").select("id", { count: "exact", head: true }).eq("sender_id", user.id).gte("created_at", new Date(Date.now() - 7 * 86400000).toISOString()),
       ]);
