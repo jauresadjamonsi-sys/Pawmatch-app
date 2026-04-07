@@ -190,7 +190,7 @@ function UploadZone({ preview, onChange, onSubmit, uploading, file }: {
             color: "var(--c-text-muted)",
           }}>
             {preview ? "Changer" : "Choisir une photo"}
-            <input type="file" accept="image/*" capture="environment" onChange={onChange} className="hidden" />
+            <input type="file" accept="image/*" onChange={onChange} className="hidden" />
           </label>
           {file && (
             <button onClick={onSubmit} disabled={uploading}

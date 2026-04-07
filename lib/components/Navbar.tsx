@@ -189,12 +189,18 @@ export default function Navbar() {
                   <NL href="/carte" active={isActive("/carte")} label="🗺️" light={isLight} />
                   <NL href="/matches" active={isActive("/matches")} label={t.navMatches} light={isLight} />
                   <NL href="/assistant" active={isActive("/assistant")} label="🤖" light={isLight} />
+                  <a href="https://pawdirectory.ch" target="_blank" rel="noopener noreferrer" className={"px-3 py-1.5 rounded-full text-sm font-medium transition-all " + (isLight ? "text-gray-600 hover:text-orange-600 hover:bg-orange-50" : "text-gray-400 hover:text-orange-400 hover:bg-orange-500/10")}>
+                    PawDirectory
+                  </a>
                   <NL href="/profile" active={isActive("/profile")} label={t.navProfil} light={isLight} />
                 </>
               ) : (
                 <>
                   <NL href="/flairer" active={isActive("/flairer")} label={t.navFlairer} light={isLight} />
                   <NL href="/animals" active={isActive("/animals")} label={t.navExplorer} light={isLight} />
+                  <a href="https://pawdirectory.ch" target="_blank" rel="noopener noreferrer" className={"px-3 py-1.5 rounded-full text-sm font-medium transition-all " + (isLight ? "text-gray-600 hover:text-orange-600 hover:bg-orange-50" : "text-gray-400 hover:text-orange-400 hover:bg-orange-500/10")}>
+                    PawDirectory
+                  </a>
                   <NL href="/pricing" active={isActive("/pricing")} label={t.navPricing} light={isLight} />
                   <Link href="/signup" className="btn-neon ml-3 px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-bold rounded-full shadow-lg shadow-orange-500/20">
                     {t.navJoin}

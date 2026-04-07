@@ -53,6 +53,7 @@ export default function OnboardingPage() {
 
   async function handleFinish() {
     if (!name.trim()) { setError("Donne un nom a ton animal."); return; }
+    if (!photoFile) { setError("La photo de ton animal est obligatoire."); return; }
     if (!verifFile) { setError("La photo avec toi et ton animal est obligatoire pour valider ton compte."); return; }
     setLoading(true);
     setError(null);
@@ -184,7 +185,7 @@ export default function OnboardingPage() {
                     Photo de l'animal
                     <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
                   </label>
-                  <p className="text-[10px] text-[var(--c-text-muted)] mt-1">Optionnel</p>
+                  <p className="text-[10px] text-orange-400 mt-1 font-medium">Obligatoire *</p>
                 </div>
               </div>
 
@@ -211,8 +212,12 @@ export default function OnboardingPage() {
               )}
             </div>
 
-            <button onClick={() => { if (name.trim()) { setError(null); setStep(3); } else setError("Donne un nom a ton animal."); }}
-              disabled={!name.trim()}
+            <button onClick={() => {
+                if (!name.trim()) { setError("Donne un nom a ton animal."); return; }
+                if (!photoFile) { setError("La photo de ton animal est obligatoire."); return; }
+                setError(null); setStep(3);
+              }}
+              disabled={!name.trim() || !photoFile}
               className="w-full mt-5 py-3.5 font-bold rounded-xl text-white transition disabled:opacity-40"
               style={{ background: "#f97316" }}>
               Continuer

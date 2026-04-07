@@ -199,7 +199,7 @@ export default function EditAnimalPage() {
                     </label>
                     <label className="px-3 py-1.5 bg-[var(--c-card)] hover:bg-[var(--c-card)] text-[var(--c-text-muted)] text-xs rounded-lg transition cursor-pointer border border-[var(--c-border)]">
                       {t.animalCamera}
-                      <input type="file" accept="image/*" capture="environment" onChange={(e) => handleAddPhoto(e, "with_owner")} className="hidden" />
+                      <input type="file" accept="image/*" onChange={(e) => handleAddPhoto(e, "with_owner")} className="hidden" />
                     </label>
                   </div>
                   <div className="flex gap-2 p-2 rounded-xl border border-[var(--c-border)] bg-[var(--c-card)]">
@@ -210,7 +210,7 @@ export default function EditAnimalPage() {
                     </label>
                     <label className="px-3 py-1.5 bg-[var(--c-card)] hover:bg-[var(--c-card)] text-[var(--c-text-muted)] text-xs rounded-lg transition cursor-pointer border border-[var(--c-border)]">
                       {t.animalCamera}
-                      <input type="file" accept="image/*" capture="environment" onChange={(e) => handleAddPhoto(e, "animal_only")} className="hidden" />
+                      <input type="file" accept="image/*" onChange={(e) => handleAddPhoto(e, "animal_only")} className="hidden" />
                     </label>
                   </div>
                 </div>
