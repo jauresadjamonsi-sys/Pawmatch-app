@@ -23,7 +23,7 @@ export async function login(formData: FormData) {
           .single();
 
         if (profile) {
-          await admin.auth.admin.updateUser(profile.id, { email_confirm: true });
+          await admin.auth.admin.updateUserById(profile.id, { email_confirm: true });
           // Retry login after confirming
           const { error: retryError } = await supabase.auth.signInWithPassword({ email, password });
           if (retryError) {
