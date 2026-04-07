@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'pawly-v2';
+const CACHE_VERSION = 'pawly-v3';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const DYNAMIC_CACHE = `${CACHE_VERSION}-dynamic`;
 
@@ -50,7 +50,13 @@ self.addEventListener('fetch', function(event) {
     return;
   }
 
-  // Cache-first for static assets (images, fonts, CSS, JS)
+  // Network-first for Next.js build assets (they have unique hashes, always fresh)
+  if (url.pathname.startsWith('/_next/')) {
+    event.respondWith(networkFirst(event.request));
+    return;
+  }
+
+  // Cache-first for other static assets (images, fonts, icons)
   if (isStaticAsset(url.pathname)) {
     event.respondWith(cacheFirst(event.request));
     return;
