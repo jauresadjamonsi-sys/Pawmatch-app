@@ -132,8 +132,8 @@ export default function InstallPrompt() {
                   <div className="flex items-start gap-3">
                     <span className="flex-shrink-0 w-7 h-7 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center text-xs font-bold">2</span>
                     <div>
-                      <p className="text-sm font-medium text-[var(--c-text)]">S&eacute;lectionne &laquo;&nbsp;Sur l&apos;&eacute;cran d&apos;accueil&nbsp;&raquo;</p>
-                      <p className="text-xs text-[var(--c-text-muted)] mt-0.5">Scroll vers le bas si besoin</p>
+                      <p className="text-sm font-medium text-[var(--c-text)]">Scrolle vers le bas et appuie sur <span className="inline-block px-1.5 py-0.5 bg-orange-500/20 text-orange-400 rounded text-xs font-mono">＋ Sur l&apos;&eacute;cran d&apos;accueil</span></p>
+                      <p className="text-xs text-[var(--c-text-muted)] mt-0.5">C&apos;est en dessous de &laquo;&nbsp;Ajouter un signet&nbsp;&raquo;</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
