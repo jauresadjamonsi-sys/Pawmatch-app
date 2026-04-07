@@ -46,8 +46,8 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
         if (!authUser) { setClientLoading(false); return; }
 
         const [profileRes, animalsRes, matchRes, messageRes] = await Promise.all([
-          supabase.from("profiles").select("id, email, full_name, avatar_url, city, canton, phone, subscription, role, bio, created_at").eq("id", authUser.id).single(),
-          supabase.from("animals").select("id, name, species, breed, age_months, gender, photo_url, canton, city, traits, energy_level, sociability, sterilized, weight_kg, description, created_by, status, created_at").eq("created_by", authUser.id).order("created_at", { ascending: false }),
+          supabase.from("profiles").select("*").eq("id", authUser.id).single(),
+          supabase.from("animals").select("*").eq("created_by", authUser.id).order("created_at", { ascending: false }),
           supabase.from("matches").select("id", { count: "exact", head: true }).or(`sender_user_id.eq.${authUser.id},receiver_user_id.eq.${authUser.id}`),
           supabase.from("messages").select("id", { count: "exact", head: true }).eq("sender_id", authUser.id),
         ]);

@@ -16,12 +16,12 @@ export async function GET() {
     const [profileRes, animalsRes, matchRes, messageRes] = await Promise.all([
       supabase
         .from("profiles")
-        .select("id, email, full_name, avatar_url, city, canton, phone, subscription, role, bio, created_at")
+        .select("*")
         .eq("id", user.id)
         .single(),
       supabase
         .from("animals")
-        .select("id, name, species, breed, age_months, gender, photo_url, canton, city, traits, energy_level, sociability, sterilized, weight_kg, description, created_by, status, created_at")
+        .select("*")
         .eq("created_by", user.id)
         .order("created_at", { ascending: false }),
       supabase
@@ -44,12 +44,12 @@ export async function GET() {
         const admin = createAdminClient();
         const { data: adminProfile } = await admin
           .from("profiles")
-          .select("id, email, full_name, avatar_url, city, canton, phone, subscription, role, bio, created_at")
+          .select("*")
           .eq("id", user.id)
           .single();
         const { data: adminAnimals } = await admin
           .from("animals")
-          .select("id, name, species, breed, age_months, gender, photo_url, canton, city, traits, energy_level, sociability, sterilized, weight_kg, description, created_by, status, created_at")
+          .select("*")
           .eq("created_by", user.id)
           .order("created_at", { ascending: false });
         if (adminProfile) profile = adminProfile;

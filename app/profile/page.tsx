@@ -71,15 +71,15 @@ export default async function ProfilePage() {
   if (!user) redirect("/login");
 
   // Try regular server client first (proper auth with cookies)
-  let { data: profile } = await supabase.from("profiles").select("id, email, full_name, avatar_url, city, canton, phone, subscription, role, bio, created_at").eq("id", user.id).single();
-  let { data: animals } = await supabase.from("animals").select("id, name, species, breed, age_months, gender, photo_url, canton, city, traits, energy_level, sociability, sterilized, weight_kg, description, created_by, status, created_at").eq("created_by", user.id).order("created_at", { ascending: false });
+  let { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+  let { data: animals } = await supabase.from("animals").select("*").eq("created_by", user.id).order("created_at", { ascending: false });
 
   // Fallback: if regular client returned nothing (RLS issue), try admin client
   if (!profile && process.env.SUPABASE_SERVICE_ROLE_KEY) {
     try {
       const admin = createAdminClient();
-      const { data: adminProfile } = await admin.from("profiles").select("id, email, full_name, avatar_url, city, canton, phone, subscription, role, bio, created_at").eq("id", user.id).single();
-      const { data: adminAnimals } = await admin.from("animals").select("id, name, species, breed, age_months, gender, photo_url, canton, city, traits, energy_level, sociability, sterilized, weight_kg, description, created_by, status, created_at").eq("created_by", user.id).order("created_at", { ascending: false });
+      const { data: adminProfile } = await admin.from("profiles").select("*").eq("id", user.id).single();
+      const { data: adminAnimals } = await admin.from("animals").select("*").eq("created_by", user.id).order("created_at", { ascending: false });
       if (adminProfile) profile = adminProfile;
       if (adminAnimals) animals = adminAnimals;
     } catch (e) {
