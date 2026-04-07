@@ -57,7 +57,7 @@ export async function proxy(request: NextRequest) {
       url.pathname = "/login";
       return NextResponse.redirect(url);
     }
-    const adminEmails = (process.env.ADMIN_EMAILS || "").split(",").map((e) => e.trim().toLowerCase());
+    const adminEmails = (process.env.ADMIN_EMAILS || "jaures.adjamonsi@gmail.com").split(",").map((e) => e.trim().toLowerCase());
     if (!adminEmails.includes((user.email || "").toLowerCase())) {
       const url = request.nextUrl.clone();
       url.pathname = "/";

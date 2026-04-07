@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, useEffect, useCallback } from "react";
+import { Suspense, useState, useEffect, useCallback, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
@@ -61,6 +61,8 @@ function PromoContent() {
   const [emojiIdx, setEmojiIdx] = useState(0);
   const [factIdx, setFactIdx] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const storyRef = useRef<HTMLDivElement>(null);
 
   /* Cycle through frames */
   useEffect(() => {
@@ -94,10 +96,61 @@ function PromoContent() {
     window.open("instagram://story-camera", "_blank");
   };
 
+  const saveStory = useCallback(async () => {
+    if (!storyRef.current || saving) return;
+    setSaving(true);
+    try {
+      // Dynamic import html2canvas
+      const html2canvas = (await import("html2canvas")).default;
+      const canvas = await html2canvas(storyRef.current, {
+        backgroundColor: null,
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+      });
+
+      // Convert to blob using native toBlob (iOS compatible)
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob(
+          (b) => (b ? resolve(b) : reject(new Error("toBlob failed"))),
+          "image/png",
+          1
+        );
+      });
+
+      const file = new File([blob], "pawly-story.png", { type: "image/png" });
+
+      // Try Web Share API first (best for iOS)
+      if (navigator.share && navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file], title: "Pawly Story" });
+        toast.success("Story partagée !");
+      } else {
+        // Fallback: download the image
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "pawly-story.png";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        toast.success("Image sauvegardée !");
+      }
+    } catch (err: any) {
+      // If share was cancelled, not an error
+      if (err?.name === "AbortError") return;
+      console.error("Save error:", err);
+      toast.error("Erreur — essaie une capture d'écran");
+    } finally {
+      setSaving(false);
+    }
+  }, [saving]);
+
   return (
     <div className="promo-wrapper">
       {/* ---- Story frame (9:16) ---- */}
-      <div className="story-frame">
+      <div className="story-frame" ref={storyRef}>
         {/* Gradient background */}
         <div className="story-bg" />
 
@@ -160,10 +213,11 @@ function PromoContent() {
       {/* ---- Action buttons (outside story) ---- */}
       <div className="actions-bar">
         <button
-          onClick={() => toast.success("Fais une capture d'écran ou un enregistrement d'écran pour sauvegarder ta story !")}
+          onClick={saveStory}
+          disabled={saving}
           className="action-btn save-btn"
         >
-          📥 Enregistrer
+          {saving ? "⏳ Sauvegarde..." : "📥 Enregistrer"}
         </button>
         <button onClick={openInstagram} className="action-btn ig-btn">
           📱 Partager sur Instagram
