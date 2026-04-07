@@ -67,7 +67,22 @@ export async function POST(req: NextRequest) {
 
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
-      return NextResponse.json({ error: "API key not configured" }, { status: 500 });
+      // No API key — return deterministic fallback based on traits overlap
+      const sharedTraits = (myAnimal.personality || []).filter((t) =>
+        (otherAnimal.personality || []).includes(t)
+      );
+      const sameSpecies = myAnimal.species === otherAnimal.species;
+      const base = sameSpecies ? 60 : 45;
+      const bonus = Math.min(sharedTraits.length * 8, 30);
+      const score = Math.min(95, base + bonus);
+      setCache(myAnimal.id, otherAnimal.id, {
+        score,
+        reason: sameSpecies
+          ? `${myAnimal.name} et ${otherAnimal.name} sont de la m\u00eame esp\u00e8ce, bonne base pour s\u2019entendre\u202F!`
+          : `${myAnimal.name} et ${otherAnimal.name} pourraient bien se compl\u00e9ter\u202F!`,
+        emoji: sameSpecies ? "\uD83E\uDD1D" : "\uD83D\uDC3E",
+      });
+      return NextResponse.json(getCached(myAnimal.id, otherAnimal.id));
     }
 
     const client = new Anthropic({ apiKey });
@@ -112,13 +127,12 @@ La raison doit être engageante, mignonne et personnalisée. Exemples de ton :
     setCache(myAnimal.id, otherAnimal.id, result);
 
     return NextResponse.json(result);
-  } catch (err: unknown) {
-    console.error("Compatibility API error:", err);
-    // Return a graceful fallback instead of erroring
+  } catch {
+    // Graceful fallback — never 500
     return NextResponse.json({
       score: 65,
-      reason: "Ces deux compagnons ont du potentiel ensemble !",
-      emoji: "🐾",
+      reason: "Ces deux compagnons ont du potentiel ensemble\u202F!",
+      emoji: "\uD83D\uDC3E",
     });
   }
 }
