@@ -265,7 +265,7 @@ export default function OnboardingPage() {
                     }}>
                     {verifPreview ? "✅ Photo prise — Changer" : "📸 Prendre / Choisir une photo"}
                   </div>
-                  <input type="file" accept="image/*" capture="environment" onChange={handleVerifPhotoChange} className="hidden" />
+                  <input type="file" accept="image/*" onChange={handleVerifPhotoChange} className="hidden" />
                 </label>
 
                 <div className="w-full p-3 rounded-xl text-xs leading-relaxed" style={{
