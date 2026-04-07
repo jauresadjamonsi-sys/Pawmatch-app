@@ -22,10 +22,27 @@ export async function login(formData: FormData) {
     return { error: error.message };
   }
 
-  // Check if user has animals — if not, redirect to add first animal
+  // Ensure profile exists (fallback if DB trigger didn't fire)
   const { data: { user } } = await supabase.auth.getUser();
   if (user) {
-    const { count } = await supabase.from("animals").select("*", { count: "exact", head: true }).eq("created_by", user.id);
+    const { data: existingProfile } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("id", user.id)
+      .single();
+
+    if (!existingProfile) {
+      await supabase.from("profiles").insert({
+        id: user.id,
+        email: user.email,
+        full_name: user.user_metadata?.full_name || "",
+        role: "adoptant",
+        subscription: "free",
+      });
+    }
+
+    // Check if user has animals — if not, redirect to onboarding
+    const { count } = await supabase.from("animals").select("id", { count: "exact", head: true }).eq("created_by", user.id);
     if (!count || count === 0) {
       redirect("/onboarding");
     }
@@ -42,7 +59,7 @@ export async function signup(formData: FormData) {
   const fullName = formData.get("fullName") as string;
   const referredBy = formData.get("referred_by") as string | null;
 
-  const { error } = await supabase.auth.signUp({
+  const { data: signupData, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -55,6 +72,28 @@ export async function signup(formData: FormData) {
 
   if (error) {
     return { error: error.message };
+  }
+
+  // If user is immediately confirmed (no email confirmation required),
+  // create profile and redirect to onboarding
+  if (signupData?.user && signupData.session) {
+    const { data: existingProfile } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("id", signupData.user.id)
+      .single();
+
+    if (!existingProfile) {
+      await supabase.from("profiles").insert({
+        id: signupData.user.id,
+        email: signupData.user.email,
+        full_name: fullName || "",
+        role: "adoptant",
+        subscription: "free",
+      });
+    }
+
+    redirect("/onboarding");
   }
 
   redirect("/login?message=Verifie ton email pour confirmer ton compte");
