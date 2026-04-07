@@ -90,8 +90,8 @@ export default async function ProfilePage() {
   // Stats engagement - use whichever client works
   const client = profile ? supabase : (process.env.SUPABASE_SERVICE_ROLE_KEY ? createAdminClient() : supabase);
   const [{ count: matchCount }, { count: messageCount }] = await Promise.all([
-    client.from("matches").select("id", { count: "exact", head: true }).or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`),
-    client.from("messages").select("id", { count: "exact", head: true }).eq("sender_id", user.id),
+    client.from("matches").select("*", { count: "exact", head: true }).or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`),
+    client.from("messages").select("*", { count: "exact", head: true }).eq("sender_id", user.id),
   ]);
   const daysSinceJoin = profile?.created_at ? Math.floor((Date.now() - new Date(profile.created_at).getTime()) / 86400000) : 0;
   const stats = { matches: matchCount || 0, messages: messageCount || 0, days: daysSinceJoin, animals: (animals || []).length };

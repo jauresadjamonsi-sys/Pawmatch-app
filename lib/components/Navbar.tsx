@@ -132,12 +132,12 @@ export default function Navbar() {
       if (user) {
         // Run badge checks in background (non-blocking)
         Promise.resolve(
-          supabase.from("matches").select("id", { count: "exact", head: true })
-            .or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`).eq("is_mutual", true)
+          supabase.from("matches").select("*", { count: "exact", head: true })
+            .or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`)
         ).then(({ count }) => setHasNewMatches((count || 0) > 0)).catch(() => {});
         Promise.resolve(
-          supabase.from("animals").select("id", { count: "exact", head: true })
-            .neq("created_by", user.id).eq("status", "disponible").limit(1)
+          supabase.from("animals").select("*", { count: "exact", head: true })
+            .neq("created_by", user.id).limit(1)
         ).then(({ count }) => setHasPendingSwipes((count || 0) > 0)).catch(() => {});
       }
     }
