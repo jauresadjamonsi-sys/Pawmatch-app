@@ -34,32 +34,43 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
   const router = useRouter();
   const supabase = createClient();
 
+  const [clientLoading, setClientLoading] = useState(true);
+
   // Client-side data loading: fetch directly from Supabase via browser client
-  // This is the most reliable method (same as feed page) since server cookies can be unreliable
   useEffect(() => {
     async function loadProfile() {
-      const { data: { user: authUser } } = await supabase.auth.getUser();
-      if (!authUser) return;
+      console.log("[ProfileClient] useEffect started");
+      try {
+        const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
+        console.log("[ProfileClient] auth:", authUser?.id, "error:", authError?.message);
+        if (!authUser) { setClientLoading(false); return; }
 
-      const [profileRes, animalsRes, matchRes, messageRes] = await Promise.all([
-        supabase.from("profiles").select("id, email, full_name, avatar_url, city, canton, phone, subscription, role, bio, created_at").eq("id", authUser.id).single(),
-        supabase.from("animals").select("id, name, species, breed, age_months, gender, photo_url, canton, city, traits, energy_level, sociability, sterilized, weight_kg, description, created_by, status, created_at").eq("created_by", authUser.id).order("created_at", { ascending: false }),
-        supabase.from("matches").select("id", { count: "exact", head: true }).or(`sender_user_id.eq.${authUser.id},receiver_user_id.eq.${authUser.id}`),
-        supabase.from("messages").select("id", { count: "exact", head: true }).eq("sender_id", authUser.id),
-      ]);
+        const [profileRes, animalsRes, matchRes, messageRes] = await Promise.all([
+          supabase.from("profiles").select("id, email, full_name, avatar_url, city, canton, phone, subscription, role, bio, created_at").eq("id", authUser.id).single(),
+          supabase.from("animals").select("id, name, species, breed, age_months, gender, photo_url, canton, city, traits, energy_level, sociability, sterilized, weight_kg, description, created_by, status, created_at").eq("created_by", authUser.id).order("created_at", { ascending: false }),
+          supabase.from("matches").select("id", { count: "exact", head: true }).or(`sender_user_id.eq.${authUser.id},receiver_user_id.eq.${authUser.id}`),
+          supabase.from("messages").select("id", { count: "exact", head: true }).eq("sender_id", authUser.id),
+        ]);
 
-      if (profileRes.data) setProfile(profileRes.data);
-      if (animalsRes.data && animalsRes.data.length > 0) setAnimals(animalsRes.data);
+        console.log("[ProfileClient] profile:", profileRes.data?.full_name, "error:", profileRes.error?.message);
+        console.log("[ProfileClient] animals:", animalsRes.data?.length, "error:", animalsRes.error?.message);
 
-      const daysSince = profileRes.data?.created_at
-        ? Math.floor((Date.now() - new Date(profileRes.data.created_at).getTime()) / 86400000)
-        : 0;
-      setStats({
-        matches: matchRes.count || 0,
-        messages: messageRes.count || 0,
-        days: daysSince,
-        animals: (animalsRes.data || []).length,
-      });
+        if (profileRes.data) setProfile(profileRes.data);
+        if (animalsRes.data && animalsRes.data.length > 0) setAnimals(animalsRes.data);
+
+        const daysSince = profileRes.data?.created_at
+          ? Math.floor((Date.now() - new Date(profileRes.data.created_at).getTime()) / 86400000)
+          : 0;
+        setStats({
+          matches: matchRes.count || 0,
+          messages: messageRes.count || 0,
+          days: daysSince,
+          animals: (animalsRes.data || []).length,
+        });
+      } catch (e: any) {
+        console.error("[ProfileClient] crash:", e.message);
+      }
+      setClientLoading(false);
     }
     loadProfile();
   // eslint-disable-next-line react-hooks/exhaustive-deps
