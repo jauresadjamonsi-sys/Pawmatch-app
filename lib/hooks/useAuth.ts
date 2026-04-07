@@ -34,7 +34,7 @@ export function useAuth() {
 
         const { data } = await supabase
           .from("profiles")
-          .select("id, email, full_name, role, city, phone, subscription")
+          .select("*")
           .eq("id", user.id)
           .single();
 
@@ -47,7 +47,7 @@ export function useAuth() {
             // Retry fetch
             const { data: retry } = await supabase
               .from("profiles")
-              .select("id, email, full_name, role, city, phone, subscription")
+              .select("*")
               .eq("id", user.id)
               .single();
             setProfile(retry as UserProfile | null);

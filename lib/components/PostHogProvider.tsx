@@ -22,7 +22,7 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
         if (user) {
           const { data: profile } = await supabase
             .from("profiles")
-            .select("full_name, subscription, canton, email")
+            .select("*")
             .eq("id", user.id)
             .single();
           posthog.identify(user.id, {
