@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -34,16 +34,12 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
   const router = useRouter();
   const supabase = createClient();
 
-  const [clientLoading, setClientLoading] = useState(true);
-
   // Client-side data loading: fetch directly from Supabase via browser client
   useEffect(() => {
     async function loadProfile() {
-      console.log("[ProfileClient] useEffect started");
       try {
-        const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
-        console.log("[ProfileClient] auth:", authUser?.id, "error:", authError?.message);
-        if (!authUser) { setClientLoading(false); return; }
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (!authUser) return;
 
         const [profileRes, animalsRes, matchRes, messageRes] = await Promise.all([
           supabase.from("profiles").select("*").eq("id", authUser.id).single(),
@@ -51,9 +47,6 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
           supabase.from("matches").select("id", { count: "exact", head: true }).or(`sender_user_id.eq.${authUser.id},receiver_user_id.eq.${authUser.id}`),
           supabase.from("messages").select("id", { count: "exact", head: true }).eq("sender_id", authUser.id),
         ]);
-
-        console.log("[ProfileClient] profile:", profileRes.data?.full_name, "error:", profileRes.error?.message);
-        console.log("[ProfileClient] animals:", animalsRes.data?.length, "error:", animalsRes.error?.message);
 
         if (profileRes.data) setProfile(profileRes.data);
         if (animalsRes.data && animalsRes.data.length > 0) setAnimals(animalsRes.data);
@@ -67,14 +60,34 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
           days: daysSince,
           animals: (animalsRes.data || []).length,
         });
-      } catch (e: any) {
-        console.error("[ProfileClient] crash:", e.message);
-      }
-      setClientLoading(false);
+      } catch {}
     }
     loadProfile();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+
+  async function handleAvatarUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingAvatar(true);
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `avatars/${user.id}/${Date.now()}.${ext}`;
+      const { error: uploadError } = await supabase.storage.from("photos").upload(path, file, { upsert: true });
+      if (uploadError) { console.error("Upload error:", uploadError.message); setUploadingAvatar(false); return; }
+      const { data: urlData } = supabase.storage.from("photos").getPublicUrl(path);
+      const avatar_url = urlData.publicUrl;
+      await supabase.from("profiles").update({ avatar_url }).eq("id", user.id);
+      setProfile((prev: any) => ({ ...prev, avatar_url }));
+    } catch (err) {
+      console.error("Avatar upload failed:", err);
+    }
+    setUploadingAvatar(false);
+    if (avatarInputRef.current) avatarInputRef.current.value = "";
+  }
 
   async function deleteAnimal(id: string) {
     setLoading(true);
@@ -132,8 +145,20 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
         {/* Profile card - glass with gradient border */}
         <div className="glass-strong gradient-border card-futuristic rounded-2xl p-6 mb-6 animate-slide-up">
           <div className="flex items-center gap-4 mb-5">
-            {/* Avatar with animated gradient border */}
-            <div className="gradient-border flex-shrink-0" style={{ borderRadius: "50%", padding: 2 }}>
+            {/* Avatar - clickable to upload photo */}
+            <input
+              ref={avatarInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleAvatarUpload}
+            />
+            <button
+              onClick={() => avatarInputRef.current?.click()}
+              className="gradient-border flex-shrink-0 relative group"
+              style={{ borderRadius: "50%", padding: 2 }}
+              disabled={uploadingAvatar}
+            >
               {profile?.avatar_url ? (
                 <div className="w-16 h-16 rounded-full overflow-hidden relative"
                   style={{ boxShadow: isPremium ? "0 0 20px rgba(249,115,22,0.3), 0 0 40px rgba(167,139,250,0.15)" : "none" }}>
@@ -152,7 +177,11 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
                   <span className="text-xl font-bold text-orange-400">{initials}</span>
                 </div>
               )}
-            </div>
+              {/* Camera overlay */}
+              <div className="absolute inset-0 rounded-full flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="text-white text-lg">{uploadingAvatar ? "⏳" : "📷"}</span>
+              </div>
+            </button>
             <div className="flex-1 min-w-0">
               <h1
                 className="text-xl font-bold text-[var(--c-text)] truncate profile-name-hover"
