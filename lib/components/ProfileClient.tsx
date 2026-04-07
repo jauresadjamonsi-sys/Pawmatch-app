@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -21,9 +21,11 @@ interface Props {
   logout: () => Promise<void>;
 }
 
-export default function ProfileClient({ profile, animals: initialAnimals, user, subLabel, initials, logout, stats }: Props) {
+export default function ProfileClient({ profile: initialProfile, animals: initialAnimals, user, subLabel: initialSubLabel, initials: initialInitials, logout, stats: initialStats }: Props) {
   const { t } = useAppContext();
+  const [profile, setProfile] = useState(initialProfile);
   const [animals, setAnimals] = useState(initialAnimals);
+  const [stats, setStats] = useState(initialStats);
   const [showDeleteProfile, setShowDeleteProfile] = useState(false);
   const [deletingAnimal, setDeletingAnimal] = useState<string|null>(null);
   const [loading, setLoading] = useState(false);
@@ -31,6 +33,34 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
   const [loadingBlocked, setLoadingBlocked] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+
+  // Client-side fallback: if server-side data is empty, fetch from API
+  useEffect(() => {
+    if (!initialProfile?.full_name || initialAnimals.length === 0) {
+      fetch("/api/me")
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data) {
+            if (data.profile && (!profile?.full_name || data.profile.full_name)) {
+              setProfile(data.profile);
+            }
+            if (data.animals && data.animals.length > 0 && animals.length === 0) {
+              setAnimals(data.animals);
+            }
+            if (data.stats) {
+              setStats(prev => ({
+                matches: data.stats.matches || prev.matches,
+                messages: data.stats.messages || prev.messages,
+                days: data.stats.days || prev.days,
+                animals: data.stats.animals || prev.animals,
+              }));
+            }
+          }
+        })
+        .catch(() => {});
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function deleteAnimal(id: string) {
     setLoading(true);
@@ -70,6 +100,10 @@ export default function ProfileClient({ profile, animals: initialAnimals, user, 
   }
 
   const isPremium = profile?.subscription === "premium" || profile?.subscription === "pro";
+
+  const SUB_LABELS: Record<string, string> = { premium: "PawPlus", pro: "PawPro", free: "Gratuit" };
+  const subLabel = SUB_LABELS[profile?.subscription || "free"] || initialSubLabel;
+  const initials = (profile?.full_name || user.email || "?").charAt(0).toUpperCase();
 
   const subColor = profile?.subscription === "pro"
     ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"

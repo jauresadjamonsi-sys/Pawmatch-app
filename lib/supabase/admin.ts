@@ -5,10 +5,12 @@ import { createClient } from "@supabase/supabase-js";
  * Bypasses RLS — use only on server-side for trusted operations.
  */
 export function createAdminClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) {
+    console.error("[createAdminClient] Missing SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_URL — admin queries will fail.");
+  }
+  return createClient(url || "", key || "");
 }
 
 /**
