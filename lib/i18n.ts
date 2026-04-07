@@ -21,7 +21,7 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     navLogin: "Connexion", navJoin: "Rejoindre",
 
     // Hero — Playdate focused
-    heroTitle: "Ton animal s'ennuie ?",
+    heroTitle: "Ton fidèle compagnon mérite des aventures",
     heroTitle2: "Trouve-lui des copains de balade",
     heroSub: "Pawly connecte les propriétaires d'animaux près de chez toi pour des balades, jeux et rencontres entre compagnons.",
     bullet1: "🐕 Des balades à deux, c'est toujours mieux",

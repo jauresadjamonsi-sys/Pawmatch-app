@@ -216,7 +216,7 @@ function PromoContent() {
             <div className="ruby-photo-ring">
               <img src="/ruby-hero.jpg" alt="Ruby, mascotte Pawly" className="ruby-photo" />
             </div>
-            <h1 className="frame-title">Ton animal a besoin d&apos;amis&nbsp;?</h1>
+            <h1 className="frame-title">Offre des aventures à ton compagnon&nbsp;!</h1>
             <p className="frame-subtitle">Rejoins Ruby et des milliers d&apos;animaux</p>
           </div>
 
