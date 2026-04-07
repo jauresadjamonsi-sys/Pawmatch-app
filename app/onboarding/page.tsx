@@ -24,6 +24,9 @@ export default function OnboardingPage() {
   const [breed, setBreed] = useState("");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  // Verification photo (owner + animal)
+  const [verifFile, setVerifFile] = useState<File | null>(null);
+  const [verifPreview, setVerifPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -40,14 +43,24 @@ export default function OnboardingPage() {
     }
   }
 
+  function handleVerifPhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) {
+      setVerifFile(file);
+      setVerifPreview(URL.createObjectURL(file));
+    }
+  }
+
   async function handleFinish() {
-    if (!name.trim()) { setError(t.onboardNameError); return; }
+    if (!name.trim()) { setError("Donne un nom a ton animal."); return; }
+    if (!verifFile) { setError("La photo avec toi et ton animal est obligatoire pour valider ton compte."); return; }
     setLoading(true);
     setError(null);
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
 
+    // Upload animal photo (optional)
     let photo_url = null;
     if (photoFile) {
       const uploadResult = await uploadAnimalPhoto(supabase, photoFile);
@@ -55,6 +68,25 @@ export default function OnboardingPage() {
       photo_url = uploadResult.data;
     }
 
+    // Upload verification photo (REQUIRED)
+    let verification_photo_url = null;
+    try {
+      const ext = verifFile.name.split('.').pop() || 'jpg';
+      const path = `verifications/${user.id}-${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("photos").upload(path, verifFile, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+      if (upErr) throw upErr;
+      const { data: urlData } = supabase.storage.from("photos").getPublicUrl(path);
+      verification_photo_url = urlData.publicUrl;
+    } catch (e: any) {
+      setError("Erreur upload photo de verification: " + (e.message || "Reessaie."));
+      setLoading(false);
+      return;
+    }
+
+    // Create the animal
     const result = await createAnimal(supabase, {
       name: name.trim(),
       species: species || "chien",
@@ -72,7 +104,15 @@ export default function OnboardingPage() {
     }, user.id);
 
     if (result.error) { setError(result.error); setLoading(false); return; }
-    setStep(3);
+
+    // Save verification photo to profile
+    await supabase.from("profiles").update({
+      verification_photo_url,
+      verification_status: "submitted",
+      verification_submitted_at: new Date().toISOString(),
+    }).eq("id", user.id);
+
+    setStep(4); // go to success
   }
 
   return (
@@ -81,7 +121,7 @@ export default function OnboardingPage() {
 
         {/* Step indicator */}
         <div className="flex justify-center gap-2 mb-8">
-          {[1, 2, 3].map((s) => (
+          {[1, 2, 3, 4].map((s) => (
             <div key={s} className={"h-1.5 rounded-full transition-all duration-500 " + (s <= step ? "w-10" : "w-6")}
               style={{ background: s <= step ? "var(--c-accent, #f97316)" : "var(--c-border)" }} />
           ))}
@@ -114,11 +154,6 @@ export default function OnboardingPage() {
               style={{ background: "#f97316" }}>
               {t.onboardContinue}
             </button>
-
-            <button onClick={() => router.push("/profile")}
-              className="mt-3 text-sm text-[var(--c-text-muted)] hover:text-[var(--c-text)] transition">
-              {t.onboardSkip}
-            </button>
           </div>
         )}
 
@@ -135,7 +170,7 @@ export default function OnboardingPage() {
             {error && <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-sm">{error}</div>}
 
             <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-6 space-y-5">
-              {/* Photo */}
+              {/* Photo animal */}
               <div className="flex items-center gap-4">
                 <div className="w-20 h-20 rounded-2xl bg-[var(--c-bg)] border-2 border-dashed border-[var(--c-border)] flex items-center justify-center overflow-hidden flex-shrink-0 relative">
                   {photoPreview ? (
@@ -146,10 +181,10 @@ export default function OnboardingPage() {
                 </div>
                 <div>
                   <label className="inline-block px-4 py-2 bg-[var(--c-bg)] hover:bg-[var(--c-border)] text-[var(--c-text-muted)] text-sm rounded-xl transition cursor-pointer border border-[var(--c-border)]">
-                    {t.onboardAddPhoto}
+                    Photo de l'animal
                     <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
                   </label>
-                  <p className="text-[10px] text-[var(--c-text-muted)] mt-1">{t.onboardOptional}</p>
+                  <p className="text-[10px] text-[var(--c-text-muted)] mt-1">Optionnel</p>
                 </div>
               </div>
 
@@ -176,26 +211,89 @@ export default function OnboardingPage() {
               )}
             </div>
 
-            <button onClick={handleFinish} disabled={loading || !name.trim()}
+            <button onClick={() => { if (name.trim()) { setError(null); setStep(3); } else setError("Donne un nom a ton animal."); }}
+              disabled={!name.trim()}
               className="w-full mt-5 py-3.5 font-bold rounded-xl text-white transition disabled:opacity-40"
               style={{ background: "#f97316" }}>
-              {loading ? t.onboardCreating : t.onboardAddCompanion}
+              Continuer
             </button>
 
             <div className="flex justify-between mt-3">
               <button onClick={() => setStep(1)} className="text-sm text-[var(--c-text-muted)] hover:text-[var(--c-text)] transition">
-                ← {t.onboardBack}
-              </button>
-              <button onClick={() => router.push("/profile")}
-                className="text-sm text-[var(--c-text-muted)] hover:text-[var(--c-text)] transition">
-                {t.onboardSkip}
+                ← Retour
               </button>
             </div>
           </div>
         )}
 
-        {/* Step 3: Success! */}
+        {/* Step 3: VERIFICATION PHOTO — obligatoire */}
         {step === 3 && (
+          <div className="fade-in-up">
+            <style dangerouslySetInnerHTML={{ __html: `@keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}.fade-in-up{animation:fadeInUp .6s ease-out forwards}` }} />
+            <div className="text-center mb-6">
+              <span className="text-5xl block mb-2">📸</span>
+              <h1 className="text-2xl font-extrabold text-[var(--c-text)] mb-2">Photo de verification</h1>
+              <p className="text-sm text-[var(--c-text-muted)] leading-relaxed">
+                Pour garantir la securite de la communaute, prends une <strong className="text-[var(--c-text)]">photo de toi avec ton animal</strong>.
+              </p>
+            </div>
+
+            {error && <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-sm">{error}</div>}
+
+            <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-6">
+              {/* Verification photo upload */}
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-full aspect-[4/3] rounded-2xl bg-[var(--c-bg)] border-2 border-dashed flex items-center justify-center overflow-hidden relative"
+                  style={{ borderColor: verifPreview ? "var(--c-accent)" : "var(--c-border)" }}>
+                  {verifPreview ? (
+                    <Image src={verifPreview} alt="Photo de verification" fill className="object-cover" unoptimized sizes="400px" />
+                  ) : (
+                    <div className="text-center p-6">
+                      <span className="text-5xl block mb-3">🤳</span>
+                      <p className="text-sm font-semibold text-[var(--c-text)]">Toi + ton animal</p>
+                      <p className="text-xs text-[var(--c-text-muted)] mt-1">Visible par l'equipe Pawly uniquement</p>
+                    </div>
+                  )}
+                </div>
+
+                <label className="w-full cursor-pointer">
+                  <div className="w-full py-3 text-center font-bold rounded-xl transition border-2"
+                    style={{
+                      background: verifPreview ? "rgba(34,197,94,0.08)" : "var(--c-bg)",
+                      borderColor: verifPreview ? "rgba(34,197,94,0.3)" : "var(--c-border)",
+                      color: verifPreview ? "#22c55e" : "var(--c-text-muted)",
+                    }}>
+                    {verifPreview ? "✅ Photo prise — Changer" : "📸 Prendre / Choisir une photo"}
+                  </div>
+                  <input type="file" accept="image/*" capture="environment" onChange={handleVerifPhotoChange} className="hidden" />
+                </label>
+
+                <div className="w-full p-3 rounded-xl text-xs leading-relaxed" style={{
+                  background: "rgba(249,115,22,0.06)",
+                  border: "1px solid rgba(249,115,22,0.15)",
+                  color: "var(--c-text-muted)",
+                }}>
+                  <strong style={{ color: "var(--c-accent)" }}>Pourquoi ?</strong> Cette photo nous permet de verifier que tu es bien le proprietaire. Elle ne sera <strong>jamais publiee</strong> — seule l'equipe Pawly y a acces.
+                </div>
+              </div>
+            </div>
+
+            <button onClick={handleFinish} disabled={loading || !verifFile}
+              className="w-full mt-5 py-3.5 font-bold rounded-xl text-white transition disabled:opacity-40"
+              style={{ background: "#f97316" }}>
+              {loading ? "Creation en cours..." : "Valider mon inscription"}
+            </button>
+
+            <div className="flex justify-between mt-3">
+              <button onClick={() => setStep(2)} className="text-sm text-[var(--c-text-muted)] hover:text-[var(--c-text)] transition">
+                ← Retour
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Success! */}
+        {step === 4 && (
           <div className="text-center fade-in-up">
             <style dangerouslySetInnerHTML={{ __html: `@keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}.fade-in-up{animation:fadeInUp .6s ease-out forwards}@keyframes confettiBurst{0%{transform:scale(0);opacity:1}100%{transform:scale(1.5);opacity:0}}.confetti-burst{animation:confettiBurst 1s ease-out forwards}` }} />
             <div className="text-7xl mb-4">🎉</div>
@@ -203,6 +301,7 @@ export default function OnboardingPage() {
             <p className="text-sm text-[var(--c-text-muted)] mb-2">
               <span className="font-bold" style={{ color: "var(--c-accent, #f97316)" }}>{name}</span> {t.onboardReadyMsg}
             </p>
+            <p className="text-xs text-[var(--c-text-muted)] mb-2">Ta photo de verification sera examinee sous 24h.</p>
             <p className="text-xs text-[var(--c-text-muted)] mb-8">{t.onboardComplete}</p>
 
             <div className="flex flex-col gap-3">

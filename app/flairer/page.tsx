@@ -29,9 +29,17 @@ type AnimalWithCompat = Animal & {
 
 const CONFETTI_COLORS = ["#f97316","#fb923c","#fbbf24","#34d399","#60a5fa","#f472b6","#a78bfa"];
 
+let _audioCtx: AudioContext | null = null;
+function getAudioCtx() {
+  if (!_audioCtx || _audioCtx.state === "closed") {
+    _audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+  }
+  return _audioCtx;
+}
+
 function playSound(type: "like"|"pass"|"superlike"|"streak") {
   try {
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const ctx = getAudioCtx();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.connect(gain); gain.connect(ctx.destination);
@@ -184,18 +192,21 @@ export default function FlairerPage() {
       setBlockedIds(blocked);
     }
 
-    const { data: allAnimals } = await supabase
-      .from("animals").select("*").eq("status", "disponible").order("created_at", { ascending: false });
+    // Fetch animals + already-liked in parallel, with column selection instead of select("*")
+    const animalsQuery = supabase
+      .from("animals")
+      .select("id, name, species, breed, age_months, gender, description, photo_url, canton, city, traits, created_by, weight_kg, energy_level, sociability, sterilized")
+      .eq("status", "disponible")
+      .order("created_at", { ascending: false })
+      .limit(100);
 
-    // Get already-liked animal IDs to exclude them
     let alreadyLiked: string[] = [];
-    if (profile) {
-      const { data: sentMatches } = await supabase
-        .from("matches")
-        .select("receiver_animal_id")
-        .eq("sender_user_id", profile.id);
-      alreadyLiked = (sentMatches || []).map((m: any) => m.receiver_animal_id);
-    }
+    const likesQuery = profile
+      ? supabase.from("matches").select("receiver_animal_id").eq("sender_user_id", profile.id)
+      : Promise.resolve({ data: [] });
+
+    const [{ data: allAnimals }, { data: sentMatches }] = await Promise.all([animalsQuery, likesQuery]);
+    alreadyLiked = (sentMatches || []).map((m: any) => m.receiver_animal_id);
 
     const filtered = (allAnimals || []).filter((a: Animal) =>
       a.created_by !== profile?.id &&
@@ -204,7 +215,7 @@ export default function FlairerPage() {
     );
 
     if (profile) {
-      const { data: mine } = await supabase.from("animals").select("*").eq("created_by", profile.id);
+      const { data: mine } = await supabase.from("animals").select("id, name, species, breed, age_months, gender, description, photo_url, canton, city, traits, created_by, weight_kg, energy_level, sociability, sterilized").eq("created_by", profile.id);
       const myList = mine || [];
       setMyAnimals(myList);
       const primary = myList[0] || null;

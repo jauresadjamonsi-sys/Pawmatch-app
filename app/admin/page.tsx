@@ -79,7 +79,7 @@ interface AdminStats {
   totalReports: number;
 }
 
-type TabKey = "overview" | "members" | "animals" | "revenue" | "reports" | "feedback";
+type TabKey = "overview" | "members" | "animals" | "revenue" | "reports" | "feedback" | "verification";
 
 const SPECIES_EMOJI: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
@@ -167,6 +167,7 @@ function AdminPageInner() {
     { key: "revenue", label: "Revenue" },
     { key: "reports", label: "Signalements" },
     { key: "feedback", label: "💡 Feedback" },
+    { key: "verification", label: "📸 Verification" },
   ];
 
   return (
@@ -227,6 +228,7 @@ function AdminPageInner() {
         {activeTab === "revenue" && <RevenueTab stats={stats} />}
         {activeTab === "reports" && <ReportsTab stats={stats} onRefresh={fetchStats} />}
         {activeTab === "feedback" && <FeedbackTab />}
+        {activeTab === "verification" && <VerificationTab />}
 
       </div>
     </div>
@@ -1494,3 +1496,175 @@ function FeedbackTab() {
   );
 }
 
+/* ────────────────────────────────────── Tab: Verification ── */
+
+function VerificationTab() {
+  const [profiles, setProfiles] = useState<any[]>([]);
+  const [vLoading, setVLoading] = useState(true);
+  const [vFilter, setVFilter] = useState<string>("submitted");
+  const [processingId, setProcessingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchVerifications();
+  }, [vFilter]);
+
+  async function fetchVerifications() {
+    setVLoading(true);
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+    let query = supabase
+      .from("profiles")
+      .select("id, full_name, email, avatar_url, verification_photo_url, verification_status, verification_note, verification_submitted_at, verification_reviewed_at, created_at")
+      .order("verification_submitted_at", { ascending: false, nullsFirst: false });
+
+    if (vFilter !== "all") {
+      query = query.eq("verification_status", vFilter);
+    }
+
+    const { data } = await query.limit(100);
+    setProfiles(data || []);
+    setVLoading(false);
+  }
+
+  async function updateStatus(profileId: string, status: "approved" | "rejected", note?: string) {
+    setProcessingId(profileId);
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+    await supabase.from("profiles").update({
+      verification_status: status,
+      verification_reviewed_at: new Date().toISOString(),
+      ...(note ? { verification_note: note } : {}),
+    }).eq("id", profileId);
+    setProcessingId(null);
+    fetchVerifications();
+  }
+
+  const statusColors: Record<string, string> = {
+    pending: "#9ca3af",
+    submitted: "#3b82f6",
+    approved: "#22c55e",
+    rejected: "#ef4444",
+  };
+  const statusLabels: Record<string, string> = {
+    pending: "En attente",
+    submitted: "Soumise",
+    approved: "Approuvee",
+    rejected: "Refusee",
+  };
+
+  const submitted = profiles.filter(p => p.verification_status === "submitted").length;
+
+  return (
+    <>
+      {/* KPIs */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 12, marginBottom: 20 }}>
+        {[
+          { label: "A verifier", val: submitted, color: "#3b82f6" },
+          { label: "Total", val: profiles.length, color: "var(--c-text-muted)" },
+        ].map(k => (
+          <div key={k.label} style={{ background: "var(--c-card)", border: "1px solid var(--c-border)", borderRadius: 12, padding: "14px 16px" }}>
+            <div style={{ fontSize: 22, fontWeight: 900, color: k.color }}>{k.val}</div>
+            <div style={{ fontSize: 11, color: "var(--c-text-muted)", marginTop: 2 }}>{k.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Filters */}
+      <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
+        {["submitted", "pending", "approved", "rejected", "all"].map(s => (
+          <button key={s} onClick={() => setVFilter(s)} style={{
+            padding: "6px 14px", borderRadius: 8, fontSize: 12, fontWeight: 700, border: "1px solid",
+            background: vFilter === s ? (statusColors[s] || "var(--c-accent)") : "transparent",
+            borderColor: vFilter === s ? "transparent" : "var(--c-border)",
+            color: vFilter === s ? "#fff" : "var(--c-text-muted)",
+          }}>
+            {s === "all" ? "Toutes" : statusLabels[s] || s}
+          </button>
+        ))}
+      </div>
+
+      {vLoading ? (
+        <div style={{ textAlign: "center", padding: 40, color: "var(--c-text-muted)" }}>Chargement...</div>
+      ) : profiles.length === 0 ? (
+        <div style={{ textAlign: "center", padding: 40, color: "var(--c-text-muted)" }}>Aucun profil dans ce filtre.</div>
+      ) : (
+        <div style={{ display: "grid", gap: 12 }}>
+          {profiles.map(p => (
+            <div key={p.id} style={{
+              background: "var(--c-card)", border: "1px solid var(--c-border)", borderRadius: 14, padding: 16,
+              display: "flex", gap: 16, alignItems: "flex-start", flexWrap: "wrap",
+            }}>
+              {/* Verification photo */}
+              {p.verification_photo_url ? (
+                <a href={p.verification_photo_url} target="_blank" rel="noopener noreferrer" style={{ flexShrink: 0 }}>
+                  <img src={p.verification_photo_url} alt="Verification" style={{
+                    width: 120, height: 90, objectFit: "cover", borderRadius: 10,
+                    border: `2px solid ${statusColors[p.verification_status] || "#ccc"}`,
+                  }} />
+                </a>
+              ) : (
+                <div style={{ width: 120, height: 90, borderRadius: 10, background: "var(--c-bg)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28 }}>📷</div>
+              )}
+
+              {/* Info */}
+              <div style={{ flex: 1, minWidth: 200 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                  <span style={{ fontWeight: 800, fontSize: 14, color: "var(--c-text)" }}>{p.full_name || "Sans nom"}</span>
+                  <span style={{
+                    fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 6,
+                    background: statusColors[p.verification_status] + "22",
+                    color: statusColors[p.verification_status],
+                  }}>
+                    {statusLabels[p.verification_status] || p.verification_status}
+                  </span>
+                </div>
+                <div style={{ fontSize: 12, color: "var(--c-text-muted)" }}>{p.email}</div>
+                <div style={{ fontSize: 11, color: "var(--c-text-muted)", marginTop: 4 }}>
+                  {p.verification_submitted_at
+                    ? "Soumise le " + new Date(p.verification_submitted_at).toLocaleDateString("fr-CH")
+                    : "Jamais soumise"}
+                </div>
+                {p.verification_note && (
+                  <div style={{ fontSize: 11, color: "#ef4444", marginTop: 4 }}>Note: {p.verification_note}</div>
+                )}
+              </div>
+
+              {/* Actions */}
+              {p.verification_status === "submitted" && (
+                <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+                  <button
+                    onClick={() => updateStatus(p.id, "approved")}
+                    disabled={processingId === p.id}
+                    style={{
+                      padding: "8px 16px", borderRadius: 8, fontSize: 12, fontWeight: 800,
+                      background: "#22c55e", color: "#fff", border: "none", cursor: "pointer",
+                      opacity: processingId === p.id ? 0.5 : 1,
+                    }}>
+                    ✅ Approuver
+                  </button>
+                  <button
+                    onClick={() => {
+                      const note = prompt("Raison du refus ?");
+                      if (note !== null) updateStatus(p.id, "rejected", note || "Photo non conforme");
+                    }}
+                    disabled={processingId === p.id}
+                    style={{
+                      padding: "8px 16px", borderRadius: 8, fontSize: 12, fontWeight: 800,
+                      background: "#ef4444", color: "#fff", border: "none", cursor: "pointer",
+                      opacity: processingId === p.id ? 0.5 : 1,
+                    }}>
+                    ❌ Refuser
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </>
+  );
+}

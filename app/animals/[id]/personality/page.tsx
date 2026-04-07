@@ -19,7 +19,7 @@ export default function PersonalityPage() {
 
   useEffect(() => {
     async function fetch() {
-      const { data } = await supabase.from("animals").select("*").eq("id", params.id).single();
+      const { data } = await supabase.from("animals").select("id, name, species, breed, traits, energy_level, sociability, gender, photo_url").eq("id", params.id).single();
       setAnimal(data);
       setLoading(false);
     }

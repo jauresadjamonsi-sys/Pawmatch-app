@@ -4,16 +4,10 @@ import { Inter } from "next/font/google";
 import "./globals.css"
 import { CookieBanner } from "@/lib/components/CookieBanner";
 import { Toaster } from "sonner";
-import Navbar from "@/lib/components/Navbar";
-import Footer from "@/lib/components/Footer";
-import { WelcomeModal } from "@/lib/components/WelcomeModal";
-import { PostHogProvider } from "@/lib/components/PostHogProvider";
-import PresenceHeartbeat from "@/lib/components/PresenceHeartbeat";
 import { ServiceWorkerRegistrar } from "@/lib/components/ServiceWorkerRegistrar";
-import { AchievementProvider } from "@/lib/components/AchievementToast";
-import FeedbackWidget from "@/lib/components/FeedbackWidget";
+import ClientShell from "@/lib/components/ClientShell";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], display: "swap" });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://pawlyapp.ch";
 
@@ -91,30 +85,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
-        {/* Preconnect hints for faster resource loading */}
         {process.env.NEXT_PUBLIC_SUPABASE_URL && (
           <>
             <link rel="preconnect" href={process.env.NEXT_PUBLIC_SUPABASE_URL} />
             <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SUPABASE_URL} />
           </>
         )}
-        <link rel="preconnect" href="https://unpkg.com" crossOrigin="anonymous" />
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
       </head>
       <body className={inter.className + " min-h-screen"} style={{ background: "var(--c-deep, #F0ECE4)", color: "var(--c-text, #1A1714)" }}>
-<AppProvider>
-        <PostHogProvider>
-        <AchievementProvider>
-        <PresenceHeartbeat />
-        <Navbar />
-        {children}
-        <Footer />
-        <WelcomeModal />
-        <FeedbackWidget />
-        </AchievementProvider>
-        </PostHogProvider>
-      </AppProvider>
-  <CookieBanner />
+        <AppProvider>
+          <ClientShell>
+            {children}
+          </ClientShell>
+        </AppProvider>
+        <CookieBanner />
         <Toaster position="top-center" richColors />
         <ServiceWorkerRegistrar />
       </body>

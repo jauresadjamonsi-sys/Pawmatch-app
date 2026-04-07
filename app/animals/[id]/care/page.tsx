@@ -349,7 +349,7 @@ export default function PawCareHubPage() {
       // Fetch mood entries
       const { data: moods } = await supabase
         .from("mood_entries")
-        .select("*")
+        .select("id, mood, energy, note, created_at")
         .eq("animal_id", params.id as string)
         .order("created_at", { ascending: false })
         .limit(14);

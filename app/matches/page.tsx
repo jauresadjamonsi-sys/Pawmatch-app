@@ -36,7 +36,7 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
   const [confetti, setConfetti] = useState<Array<{id:number;x:number;color:string;size:number;delay:number;duration:number;shape:string;rotation:number}>>([]);
 
   useEffect(() => {
-    const items = Array.from({ length: 80 }, (_, i) => ({
+    const items = Array.from({ length: 30 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
       color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],

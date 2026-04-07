@@ -12,6 +12,13 @@ export async function login(formData: FormData) {
   });
 
   if (error) {
+    // Better error messages in French
+    if (error.message.includes("Email not confirmed")) {
+      return { error: "Ton email n'est pas encore confirmé. Vérifie ta boîte mail (et les spams) pour le lien de confirmation." };
+    }
+    if (error.message.includes("Invalid login credentials")) {
+      return { error: "Email ou mot de passe incorrect." };
+    }
     return { error: error.message };
   }
 

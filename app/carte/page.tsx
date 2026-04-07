@@ -20,6 +20,13 @@ function MapInner({ animals, userPos, t }: { animals: any[]; userPos: [number, n
   const { MapContainer, TileLayer, Marker, Popup } = require("react-leaflet");
 
   useEffect(() => {
+    // Load Leaflet CSS dynamically (only when map is used)
+    if (!document.querySelector('link[href*="leaflet"]')) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+      document.head.appendChild(link);
+    }
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     L.Icon.Default.mergeOptions({
       iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
@@ -71,7 +78,7 @@ export default function CartePage() {
 
   useEffect(() => {
     async function load() {
-      let q = supabase.from("animals").select("*").eq("status", "disponible");
+      let q = supabase.from("animals").select("id, name, species, breed, photo_url, canton, city").eq("status", "disponible");
       if (filter) q = q.eq("species", filter);
       const { data } = await q;
       setAnimals(data || []);

@@ -111,44 +111,44 @@ export default function StatsPage() {
         // Fetch profile
         const { data: profile } = await supabase
           .from("profiles")
-          .select("*")
+          .select("id, full_name, phone, city, avatar_url, created_at")
           .eq("id", user.id)
           .single();
 
         // Fetch animals count
         const { count: animalCount } = await supabase
           .from("animals")
-          .select("*", { count: "exact", head: true })
+          .select("id", { count: "exact", head: true })
           .eq("created_by", user.id);
 
         // Fetch matches
         const { count: matchesTotal } = await supabase
           .from("matches")
-          .select("*", { count: "exact", head: true })
+          .select("id", { count: "exact", head: true })
           .or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`);
 
         const { count: matchesAccepted } = await supabase
           .from("matches")
-          .select("*", { count: "exact", head: true })
+          .select("id", { count: "exact", head: true })
           .or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`)
           .eq("status", "accepted");
 
         const { count: matchesPending } = await supabase
           .from("matches")
-          .select("*", { count: "exact", head: true })
+          .select("id", { count: "exact", head: true })
           .or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`)
           .eq("status", "pending");
 
         // Fetch messages count
         const { count: messageCount } = await supabase
           .from("messages")
-          .select("*", { count: "exact", head: true })
+          .select("id", { count: "exact", head: true })
           .eq("sender_id", user.id);
 
         // Fetch events joined count
         const { count: eventCount } = await supabase
           .from("event_participants")
-          .select("*", { count: "exact", head: true })
+          .select("id", { count: "exact", head: true })
           .eq("user_id", user.id);
 
         // Account age

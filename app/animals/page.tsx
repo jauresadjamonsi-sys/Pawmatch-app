@@ -55,7 +55,7 @@ export default function AnimalsPage() {
 
   async function fetchAnimals() {
     setLoading(true);
-    let query = supabase.from("animals").select("*").order("created_at", { ascending: false });
+    let query = supabase.from("animals").select("id, name, species, breed, age_months, gender, photo_url, canton, city, traits, created_by, energy_level, sociability").order("created_at", { ascending: false }).limit(200);
     if (species) query = query.eq("species", species);
     if (canton) query = query.eq("canton", canton);
     const { data } = await query;

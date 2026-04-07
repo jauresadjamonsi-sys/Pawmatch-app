@@ -13,7 +13,7 @@ export async function GET() {
     const supabase = await createClient();
     const { data } = await supabase
       .from("mascot_spotlights")
-      .select("*")
+      .select("animal_name, animal_photo, animal_id, user_id, owner_name, plan, expires_at, started_at")
       .gt("expires_at", new Date().toISOString())
       .order("started_at", { ascending: false })
       .limit(1)

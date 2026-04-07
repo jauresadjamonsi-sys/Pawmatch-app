@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -120,24 +120,29 @@ export default function Navbar() {
   const langDrop = useDropdown();
   const themeDrop = useDropdown();
 
+  // Only fetch user on mount — NOT on every pathname change
+  const fetched = useRef(false);
   useEffect(() => {
+    if (fetched.current) return;
+    fetched.current = true;
     async function getUser() {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
       setLoading(false);
       if (user) {
-        try {
-          const { count } = await supabase.from("matches").select("*", { count: "exact", head: true })
-            .or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`).eq("is_mutual", true);
-          setHasNewMatches((count || 0) > 0);
-          const { count: ac } = await supabase.from("animals").select("*", { count: "exact", head: true })
-            .neq("created_by", user.id).eq("status", "disponible");
-          setHasPendingSwipes((ac || 0) > 0);
-        } catch {}
+        // Run badge checks in background (non-blocking)
+        supabase.from("matches").select("id", { count: "exact", head: true })
+          .or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`).eq("is_mutual", true)
+          .then(({ count }) => setHasNewMatches((count || 0) > 0))
+          .catch(() => {});
+        supabase.from("animals").select("id", { count: "exact", head: true })
+          .neq("created_by", user.id).eq("status", "disponible").limit(1)
+          .then(({ count }) => setHasPendingSwipes((count || 0) > 0))
+          .catch(() => {});
       }
     }
     getUser();
-  }, [pathname]);
+  }, []);
 
   const isActive = (p: string) => pathname === p;
   const isLight = theme === "clair" || theme === "aurore" || theme === "ocean";
