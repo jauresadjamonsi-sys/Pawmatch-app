@@ -1,4 +1,4 @@
-var CACHE_VERSION = 'pawly-v7';
+var CACHE_VERSION = 'pawly-v8';
 var STATIC_CACHE = CACHE_VERSION + '-static';
 var DYNAMIC_CACHE = CACHE_VERSION + '-dynamic';
 
@@ -102,7 +102,8 @@ self.addEventListener('fetch', function (event) {
 });
 
 function isStaticAsset(pathname) {
-  return /\.(js|css|png|jpg|jpeg|gif|svg|webp|ico|woff|woff2|ttf|eot)$/i.test(pathname);
+  // JS and CSS handled by networkFirst via /_next/ — only cache media/fonts here
+  return /\.(png|jpg|jpeg|gif|svg|webp|ico|woff|woff2|ttf|eot)$/i.test(pathname);
 }
 
 // Navigation handler — bulletproof, always returns a Response
