@@ -17,7 +17,7 @@ async function getAnimal(id: string) {
 
     const { data } = await supabase
       .from("animals")
-      .select("id, name, species, breed, photo_url, city, canton, bio")
+      .select("id, name, species, breed, photo_url, city, canton")
       .eq("id", id)
       .single();
 

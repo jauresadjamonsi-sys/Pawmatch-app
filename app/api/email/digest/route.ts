@@ -24,8 +24,8 @@ export async function GET(request: Request) {
     const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
     const { data: inactiveUsers, error: usersError } = await supabaseAdmin
       .from("profiles")
-      .select("id, email, full_name, canton, last_active")
-      .lt("last_active", threeDaysAgo);
+      .select("id, email, full_name")
+      .lt("created_at", threeDaysAgo);
 
     if (usersError) {
       console.error("[Digest] Erreur fetch users:", usersError);
