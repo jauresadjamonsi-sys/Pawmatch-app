@@ -454,7 +454,7 @@ export default function FlairerPage() {
 
           <div className="flex gap-3 justify-center">
             <Link href="/animals" className="btn-futuristic text-sm !py-2.5 !px-5">Explorer</Link>
-            <button onClick={() => { setCurrentIndex(0); setStreak(0); setLikeCount(0); }}
+            <button onClick={() => { fetchData(); setCurrentIndex(0); setStreak(0); setLikeCount(0); }}
               className="px-5 py-2.5 glass text-[var(--c-text)] rounded-2xl transition-all duration-300 text-sm hover:bg-[var(--c-card)]">
               Recommencer
             </button>

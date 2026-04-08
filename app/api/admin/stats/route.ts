@@ -103,7 +103,7 @@ export async function GET() {
       safeQuery(db.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", weekStart)),
       safeQuery(db.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", lastWeekStart).lt("created_at", weekStart)),
       safeQuery(db.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", monthStart)),
-      safeQuery(db.from("profiles").select("id, full_name, email, subscription, created_at, role").order("created_at", { ascending: false }).limit(500)),
+      safeQuery(db.from("profiles").select("id, full_name, email, avatar_url, subscription, city, created_at, role, phone").order("created_at", { ascending: false }).limit(500)),
       safeQuery(db.from("animals").select("id", { count: "exact", head: true })),
       safeQuery(db.from("animals").select("id, name, species, breed, created_by, created_at, canton, status").order("created_at", { ascending: false }).limit(500)),
       safeQuery(db.from("animals").select("id, species")),
@@ -142,11 +142,15 @@ export async function GET() {
       dailySignups.push({ date: `${dayName} ${d.getDate()}/${d.getMonth() + 1}`, count });
     }
 
-    // Animals per user
+    // Animals per user + derive canton from animals (profiles table has no canton column)
     const animalsPerUser: Record<string, number> = {};
+    const cantonPerUser: Record<string, string> = {};
     if (allAnimalsRes.data) {
       for (const a of allAnimalsRes.data as any[]) {
-        if (a.created_by) animalsPerUser[a.created_by] = (animalsPerUser[a.created_by] || 0) + 1;
+        if (a.created_by) {
+          animalsPerUser[a.created_by] = (animalsPerUser[a.created_by] || 0) + 1;
+          if (a.canton && !cantonPerUser[a.created_by]) cantonPerUser[a.created_by] = a.canton;
+        }
       }
     }
 
@@ -170,6 +174,7 @@ export async function GET() {
     const allUsers = ((allUsersRes.data || []) as any[]).map(u => ({
       ...u,
       animal_count: animalsPerUser[u.id] || 0,
+      canton: cantonPerUser[u.id] || null,
       last_sign_in_at: authSignIns[u.id] || null,
     }));
 
