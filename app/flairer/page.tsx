@@ -540,7 +540,14 @@ export default function FlairerPage() {
             <div className="absolute inset-0 rounded-[24px] gradient-border pointer-events-none" />
             <div className="text-7xl mb-4 animate-float">{"🐾"}</div>
             <h2 className="text-3xl font-extrabold gradient-text-warm mb-1">Coup de Truffe !</h2>
-            <p className="text-[var(--c-text-muted)] text-sm mb-6">Match mutuel avec {animal?.name} {"🎉"}</p>
+            <p className="text-[var(--c-text-muted)] text-sm mb-4">Match mutuel avec {animal?.name} {"🎉"}</p>
+            <div className="text-left text-xs text-[var(--c-text-muted)] bg-[var(--c-bg)]/40 rounded-xl p-3 mb-5 space-y-1.5">
+              <p className="font-semibold text-[var(--c-text)] text-sm mb-1">{"🤝"} Charte Pawly</p>
+              <p>{"🐶"} Respecte les animaux et leurs humains</p>
+              <p>{"💬"} Sois bienveillant(e) dans tes messages</p>
+              <p>{"📍"} Organise vos rencontres dans des lieux publics</p>
+              <p>{"🚫"} Signale tout comportement inapproprie</p>
+            </div>
             <div className="flex gap-3">
               {mutualMatchData && (
                 <Link href={"/matches/" + mutualMatchData.id} className="flex-1 py-3 btn-futuristic text-center text-sm">{"💬"} Discuter</Link>

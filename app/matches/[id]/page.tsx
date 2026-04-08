@@ -452,12 +452,29 @@ export default function ConversationPage() {
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4">
         <div className="max-w-3xl mx-auto space-y-2">
+          {/* Code de conduite — toujours visible en haut */}
+          <div className="glass rounded-2xl p-4 mb-4 text-center" style={{ borderLeft: "3px solid var(--c-accent, #f97316)" }}>
+            <p className="text-sm font-semibold text-[var(--c-text)] mb-2">{"🐾"} Charte de bienveillance Pawly</p>
+            <div className="grid grid-cols-2 gap-1.5 text-[11px] text-[var(--c-text-muted)]">
+              <span>{"🤝"} Respect mutuel</span>
+              <span>{"🐶"} Bien-etre animal prioritaire</span>
+              <span>{"📍"} Rencontres en lieux publics</span>
+              <span>{"🚫"} Aucune violence toleree</span>
+            </div>
+            <p className="text-[10px] text-[var(--c-text-muted)] mt-2 opacity-70">
+              En cas de probleme, utilisez le bouton signaler ci-dessus
+            </p>
+          </div>
+
           {messages.length === 0 && (
-            <div className="text-center py-12">
+            <div className="text-center py-8">
               <div className="text-4xl mb-3">🐾</div>
               <p className="text-[var(--c-text)] font-semibold">C'est un match !</p>
               <p className="text-[var(--c-text-muted)] text-sm mt-1">
                 {myAnimal.name} et {theirAnimal.name} n'attendent que vous
+              </p>
+              <p className="text-[var(--c-text-muted)] text-xs mt-3 max-w-xs mx-auto">
+                Commencez par vous presenter et proposer une balade dans un endroit sympa pour vos compagnons !
               </p>
             </div>
           )}
