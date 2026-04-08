@@ -5,19 +5,37 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { useAppContext } from "@/lib/contexts/AppContext";
-import { EMOJI_MAP } from "@/lib/constants";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-type AnimalSpecies = "chien" | "chat" | "lapin" | "oiseau" | "rongeur" | "autre";
-
-interface AnimalRow {
+interface StoryRow {
   id: string;
-  name: string;
-  species: AnimalSpecies;
-  photo_url: string | null;
+  user_id: string;
+  animal_id: string;
+  media_url: string | null;
+  expires_at: string;
+  animals: {
+    id: string;
+    name: string;
+    photo_url: string | null;
+  } | null;
+  profiles: {
+    id: string;
+    full_name: string;
+    avatar_url: string | null;
+  } | null;
+}
+
+interface UserStoryGroup {
+  userId: string;
+  displayName: string;
+  avatarUrl: string | null;
+  /** Most recent animal photo as fallback avatar */
+  animalPhotoUrl: string | null;
+  storyIds: string[];
+  latestStoryAt: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -27,28 +45,82 @@ interface AnimalRow {
 export default function StoriesRing() {
   const router = useRouter();
   const { t } = useAppContext();
-  const [animals, setAnimals] = useState<AnimalRow[]>([]);
+  const [groups, setGroups] = useState<UserStoryGroup[]>([]);
   const [seenIds, setSeenIds] = useState<Set<string>>(new Set());
   const [loaded, setLoaded] = useState(false);
+
+  // -----------------------------------------------------------------------
+  // Load active stories from ALL users, grouped by user
+  // -----------------------------------------------------------------------
 
   useEffect(() => {
     async function load() {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+
+      // Fetch all active (non-expired) stories, joined with animal + profile
+      const { data, error } = await supabase
+        .from("stories")
+        .select(
+          `
+          id,
+          user_id,
+          animal_id,
+          media_url,
+          expires_at,
+          animals!inner ( id, name, photo_url ),
+          profiles!inner ( id, full_name, avatar_url )
+        `
+        )
+        .gt("expires_at", new Date().toISOString())
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("[StoriesRing] fetch error:", error.message);
         setLoaded(true);
         return;
       }
 
-      const { data } = await supabase
-        .from("animals")
-        .select("id, name, species, photo_url")
-        .eq("created_by", user.id)
-        .order("created_at", { ascending: false });
+      const stories = (data as unknown as StoryRow[]) || [];
 
-      setAnimals((data as AnimalRow[] | null) || []);
+      // Group by user_id
+      const groupMap = new Map<string, UserStoryGroup>();
 
-      // Load seen stories from localStorage
+      for (const story of stories) {
+        const existing = groupMap.get(story.user_id);
+
+        if (existing) {
+          existing.storyIds.push(story.id);
+          // Keep latest timestamp
+          if (story.expires_at > existing.latestStoryAt) {
+            existing.latestStoryAt = story.expires_at;
+          }
+          // Prefer an animal photo if we don't have an avatar
+          if (!existing.avatarUrl && story.animals?.photo_url) {
+            existing.animalPhotoUrl = story.animals.photo_url;
+          }
+        } else {
+          groupMap.set(story.user_id, {
+            userId: story.user_id,
+            displayName:
+              story.profiles?.full_name ||
+              story.animals?.name ||
+              "Utilisateur",
+            avatarUrl: story.profiles?.avatar_url || null,
+            animalPhotoUrl: story.animals?.photo_url || null,
+            storyIds: [story.id],
+            latestStoryAt: story.expires_at,
+          });
+        }
+      }
+
+      // Sort: users with newest stories first
+      const sorted = Array.from(groupMap.values()).sort(
+        (a, b) => b.latestStoryAt.localeCompare(a.latestStoryAt)
+      );
+
+      setGroups(sorted);
+
+      // Load seen story IDs from localStorage
       try {
         const raw = localStorage.getItem("pawly_stories_seen");
         if (raw) {
@@ -65,22 +137,42 @@ export default function StoriesRing() {
     load();
   }, []);
 
-  function handleStoryClick(animalId: string) {
-    // Mark as seen
+  // -----------------------------------------------------------------------
+  // Has this user's stories all been seen?
+  // -----------------------------------------------------------------------
+
+  function isGroupSeen(group: UserStoryGroup): boolean {
+    return group.storyIds.every((id) => seenIds.has(id));
+  }
+
+  // -----------------------------------------------------------------------
+  // Handle click: mark stories as seen, navigate to user's stories
+  // -----------------------------------------------------------------------
+
+  function handleStoryClick(group: UserStoryGroup) {
+    // Mark all of this user's story IDs as seen
     const newSeen = new Set(seenIds);
-    newSeen.add(animalId);
+    for (const id of group.storyIds) {
+      newSeen.add(id);
+    }
     setSeenIds(newSeen);
+
     try {
       localStorage.setItem("pawly_stories_seen", JSON.stringify([...newSeen]));
     } catch {
       // Ignore
     }
 
-    router.push("/stories");
+    router.push(`/stories?user=${group.userId}`);
   }
 
-  if (!loaded || animals.length === 0) return null;
+  // -----------------------------------------------------------------------
+  // Render
+  // -----------------------------------------------------------------------
 
+  if (!loaded) return null;
+
+  // Always show at least the "+" button, even if no stories exist
   return (
     <section className="mb-5" aria-label={t.petStoriesTitle || "Stories"}>
       <h2
@@ -111,8 +203,13 @@ export default function StoriesRing() {
             }}
           >
             <svg
-              width="24" height="24" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
               style={{ color: "var(--c-accent)" }}
               aria-hidden="true"
             >
@@ -127,24 +224,24 @@ export default function StoriesRing() {
           </span>
         </button>
 
-        {/* Animal story rings */}
-        {animals.map((animal) => {
-          const isSeen = seenIds.has(animal.id);
-          const emoji = EMOJI_MAP[animal.species] || "\uD83D\uDC3E";
+        {/* User story rings */}
+        {groups.map((group) => {
+          const seen = isGroupSeen(group);
+          const avatarSrc = group.avatarUrl || group.animalPhotoUrl;
 
           return (
             <button
-              key={animal.id}
-              onClick={() => handleStoryClick(animal.id)}
+              key={group.userId}
+              onClick={() => handleStoryClick(group)}
               className="flex flex-col items-center gap-1.5 flex-shrink-0"
               role="listitem"
-              aria-label={`Story de ${animal.name}${isSeen ? " (vue)" : " (nouvelle)"}`}
+              aria-label={`Story de ${group.displayName}${seen ? " (vue)" : " (nouvelle)"}`}
             >
               {/* Gradient ring wrapper */}
               <div
                 className="relative w-[68px] h-[68px] rounded-full p-[3px]"
                 style={{
-                  background: isSeen
+                  background: seen
                     ? "var(--c-border)"
                     : "linear-gradient(135deg, #f97316, #ec4899, #f97316)",
                 }}
@@ -154,10 +251,10 @@ export default function StoriesRing() {
                   style={{ background: "var(--c-deep)", padding: "2px" }}
                 >
                   <div className="w-full h-full rounded-full overflow-hidden">
-                    {animal.photo_url ? (
+                    {avatarSrc ? (
                       <Image
-                        src={animal.photo_url}
-                        alt={animal.name}
+                        src={avatarSrc}
+                        alt={group.displayName}
                         width={62}
                         height={62}
                         className="object-cover w-full h-full rounded-full"
@@ -167,19 +264,21 @@ export default function StoriesRing() {
                         className="w-full h-full flex items-center justify-center text-2xl rounded-full"
                         style={{ background: "var(--c-card)" }}
                       >
-                        {emoji}
+                        {group.displayName.charAt(0).toUpperCase()}
                       </div>
                     )}
                   </div>
                 </div>
               </div>
 
-              {/* Pet name */}
+              {/* User display name */}
               <span
                 className="text-[10px] font-semibold truncate w-[68px] text-center"
-                style={{ color: isSeen ? "var(--c-text-muted)" : "var(--c-text)" }}
+                style={{
+                  color: seen ? "var(--c-text-muted)" : "var(--c-text)",
+                }}
               >
-                {animal.name}
+                {group.displayName}
               </span>
             </button>
           );

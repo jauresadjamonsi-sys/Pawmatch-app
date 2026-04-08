@@ -13,141 +13,54 @@ import { EMOJI_MAP } from "@/lib/constants";
 
 type AnimalSpecies = "chien" | "chat" | "lapin" | "oiseau" | "rongeur" | "autre";
 
-interface AnimalRow {
+interface AnimalEmbed {
   id: string;
   name: string;
   species: AnimalSpecies;
-  breed: string | null;
   photo_url: string | null;
-  traits: string[];
-  age_months: number | null;
-  gender: string;
 }
 
-interface Story {
-  type: "mood" | "weekly" | "fact" | "achievement";
-  animal: AnimalRow;
-  title: string;
-  subtitle: string;
-  emoji: string;
-  gradient: string;
+interface ProfileEmbed {
+  full_name: string | null;
+  avatar_url: string | null;
 }
 
-// ---------------------------------------------------------------------------
-// Mood engine (matches feed page logic)
-// ---------------------------------------------------------------------------
-
-type Mood = { label: string; emoji: string; color: string };
-
-const MOODS: Mood[] = [
-  { label: "Energique", emoji: "\u26A1", color: "text-orange-400" },
-  { label: "Calme", emoji: "\uD83C\uDF3F", color: "text-green-400" },
-  { label: "Joueur", emoji: "\uD83C\uDF89", color: "text-pink-400" },
-  { label: "Endormi", emoji: "\uD83D\uDE34", color: "text-purple-300" },
-  { label: "Calin", emoji: "\uD83E\uDDF8", color: "text-red-300" },
-  { label: "Curieux", emoji: "\uD83D\uDD0D", color: "text-cyan-400" },
-  { label: "Gourmand", emoji: "\uD83C\uDF56", color: "text-amber-400" },
-  { label: "Aventurier", emoji: "\uD83C\uDFDE\uFE0F", color: "text-teal-300" },
-];
-
-function dailySeed(): number {
-  const d = new Date();
-  return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+interface StoryRow {
+  id: string;
+  user_id: string;
+  animal_id: string | null;
+  image_url: string | null;
+  caption: string | null;
+  template: string;
+  bg_gradient: string | null;
+  text_color: string | null;
+  sticker: string | null;
+  views_count: number;
+  expires_at: string;
+  created_at: string;
+  animals: AnimalEmbed | null;
+  profiles: ProfileEmbed | null;
 }
 
-function hashStr(s: string): number {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
-  return Math.abs(h);
+/** A single viewable story within a user group. */
+interface ViewableStory {
+  row: StoryRow;
+  mediaType: "image" | "video" | "none";
 }
 
-function getMood(animal: AnimalRow): Mood {
-  const biasMap: Record<string, number> = {
-    Energique: 0, Sportif: 0, Actif: 0,
-    Calme: 1, Discret: 1, Dormeur: 1,
-    Joueur: 2, Acrobate: 2,
-    "Pot de colle": 4, Calin: 4,
-    Curieux: 5, Chasseur: 5,
-    Gourmand: 6,
-  };
-  const biases: number[] = [];
-  for (const t of animal.traits || []) {
-    if (biasMap[t] !== undefined) biases.push(biasMap[t]);
-  }
-  const seed = (dailySeed() + hashStr(animal.id)) % MOODS.length;
-  if (biases.length > 0) {
-    const pick = (seed % 10) < 6 ? biases[seed % biases.length] : seed;
-    return MOODS[pick % MOODS.length];
-  }
-  return MOODS[seed % MOODS.length];
+/** Stories grouped by user_id (Instagram-style). */
+interface UserGroup {
+  userId: string;
+  displayName: string;
+  avatarUrl: string | null;
+  stories: ViewableStory[];
 }
 
 // ---------------------------------------------------------------------------
-// Fun facts per species
+// Gradients for text-only / template stories
 // ---------------------------------------------------------------------------
 
-const FUN_FACTS: Record<AnimalSpecies, string[]> = {
-  chien: [
-    "Le nez d\u2019un chien est aussi unique qu\u2019une empreinte digitale.",
-    "Les chiens peuvent apprendre plus de 1 000 mots.",
-    "Le Greyhound peut courir jusqu\u2019a 72 km/h.",
-    "Les chiens revent pendant leur sommeil.",
-    "Un chien adulte a 42 dents.",
-  ],
-  chat: [
-    "Les chats passent 70 % de leur vie a dormir.",
-    "Un chat peut sauter jusqu\u2019a 6 fois sa longueur.",
-    "Les chats ronronnent a une frequence qui favorise la guerison.",
-    "Les chats ont plus de 20 vocalisations differentes.",
-    "Un chat adulte n\u2019utilise le miaulement que pour les humains.",
-  ],
-  lapin: [
-    "Les lapins peuvent voir a presque 360 degres.",
-    "Un lapin heureux fait des binkies - des sauts de joie.",
-    "Les dents d\u2019un lapin poussent continuellement.",
-    "Un lapin peut courir jusqu\u2019a 56 km/h.",
-    "Les lapins communiquent en tapant du pied.",
-  ],
-  oiseau: [
-    "Les perroquets peuvent vivre plus de 80 ans.",
-    "Les oiseaux ont des os creux pour faciliter le vol.",
-    "Les oiseaux voient les couleurs ultraviolettes.",
-    "Les cacatoes peuvent danser en rythme sur la musique.",
-    "Les corbeaux peuvent utiliser des outils.",
-  ],
-  rongeur: [
-    "Les hamsters peuvent stocker de la nourriture dans leurs abajoues.",
-    "Les rats rient quand on les chatouille.",
-    "Les chinchillas ont la fourrure la plus dense au monde.",
-    "Un hamster peut courir 9 km par nuit dans sa roue.",
-    "Les cochons d\u2019Inde popcornent quand ils sont excites.",
-  ],
-  autre: [
-    "Les tortues existent depuis plus de 200 millions d\u2019annees.",
-    "Les axolotls peuvent regenerer leurs membres.",
-    "Les furets font une danse de la joie quand ils jouent.",
-    "Un cameleon peut bouger chaque oeil independamment.",
-    "Les poissons rouges ont une memoire de plusieurs mois.",
-  ],
-};
-
-// ---------------------------------------------------------------------------
-// Achievement milestones
-// ---------------------------------------------------------------------------
-
-const ACHIEVEMENTS = [
-  { threshold: 1, emoji: "\uD83C\uDF1F", label: "Premier pas" },
-  { threshold: 5, emoji: "\uD83D\uDD25", label: "5 matchs" },
-  { threshold: 10, emoji: "\uD83C\uDFC6", label: "10 matchs !" },
-  { threshold: 25, emoji: "\uD83D\uDC8E", label: "25 matchs !" },
-  { threshold: 50, emoji: "\uD83D\uDE80", label: "50 matchs !" },
-];
-
-// ---------------------------------------------------------------------------
-// Gradients
-// ---------------------------------------------------------------------------
-
-const GRADIENTS = [
+const FALLBACK_GRADIENTS = [
   "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
   "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
   "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
@@ -159,10 +72,38 @@ const GRADIENTS = [
 ];
 
 // ---------------------------------------------------------------------------
-// STORY DURATION
+// Helpers
 // ---------------------------------------------------------------------------
 
-const STORY_DURATION = 5000; // 5 seconds per story
+const IMAGE_DURATION = 5000; // 5s for images / text-only
+const PROGRESS_TICK = 50;
+
+function isVideoUrl(url: string | null): boolean {
+  if (!url) return false;
+  const lower = url.toLowerCase().split("?")[0];
+  return (
+    lower.endsWith(".mp4") ||
+    lower.endsWith(".webm") ||
+    lower.endsWith(".mov") ||
+    lower.endsWith(".ogg")
+  );
+}
+
+function timeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "maintenant";
+  if (mins < 60) return `${mins}min`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h`;
+  const days = Math.floor(hrs / 24);
+  return `${days}j`;
+}
+
+function gradientForStory(story: StoryRow, index: number): string {
+  if (story.bg_gradient) return story.bg_gradient;
+  return FALLBACK_GRADIENTS[index % FALLBACK_GRADIENTS.length];
+}
 
 // ---------------------------------------------------------------------------
 // Component
@@ -171,171 +112,312 @@ const STORY_DURATION = 5000; // 5 seconds per story
 export default function StoriesPage() {
   const router = useRouter();
   const { t } = useAppContext();
-  const [stories, setStories] = useState<Story[]>([]);
-  const [current, setCurrent] = useState(0);
-  const [progress, setProgress] = useState(0);
+
+  // Data state
+  const [groups, setGroups] = useState<UserGroup[]>([]);
   const [loading, setLoading] = useState(true);
-  const [textVisible, setTextVisible] = useState(false);
-  const [touchStartY, setTouchStartY] = useState<number | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  // Navigation state
+  const [groupIdx, setGroupIdx] = useState(0);
+  const [storyIdx, setStoryIdx] = useState(0);
+
+  // Progress bar
+  const [progress, setProgress] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const startTimeRef = useRef<number>(Date.now());
+  const startTimeRef = useRef(Date.now());
+
+  // Video ref
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  // Pause state (long-press)
+  const isPausedRef = useRef(false);
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Touch tracking
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
+
+  // Text animation
+  const [textVisible, setTextVisible] = useState(false);
+
+  // Track which stories we already recorded a view for
+  const viewedRef = useRef<Set<string>>(new Set());
 
   // -----------------------------------------------------------------------
-  // Build stories from user's animals
+  // Fetch stories
   // -----------------------------------------------------------------------
 
   useEffect(() => {
     async function load() {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) {
         router.push("/feed");
         return;
       }
+      setCurrentUserId(user.id);
 
-      const [animalsRes, matchRes, msgRes] = await Promise.all([
-        supabase
-          .from("animals")
-          .select("*")
-          .eq("created_by", user.id)
-          .order("created_at", { ascending: false }),
-        supabase
-          .from("matches")
-          .select("*", { count: "exact", head: true })
-          .eq("sender_user_id", user.id),
-        supabase
-          .from("messages")
-          .select("*", { count: "exact", head: true })
-          .eq("sender_id", user.id)
-          .gte("created_at", new Date(Date.now() - 7 * 86400000).toISOString()),
-      ]);
+      const { data, error } = await supabase
+        .from("stories")
+        .select(
+          "*, animals(id, name, species, photo_url), profiles(full_name, avatar_url)"
+        )
+        .gt("expires_at", new Date().toISOString())
+        .order("created_at", { ascending: false });
 
-      const animals = (animalsRes.data as AnimalRow[] | null) || [];
-      const totalMatches = matchRes.count || 0;
-      const weekMessages = msgRes.count || 0;
-
-      if (animals.length === 0) {
-        router.push("/feed");
+      if (error || !data || data.length === 0) {
+        setGroups([]);
+        setLoading(false);
         return;
       }
 
-      const built: Story[] = [];
-
-      for (const animal of animals) {
-        const mood = getMood(animal);
-        const facts = FUN_FACTS[animal.species] || FUN_FACTS.autre;
-        const factIdx = (dailySeed() + hashStr(animal.id)) % facts.length;
-        const gradientIdx = hashStr(animal.id) % GRADIENTS.length;
-
-        // Daily Mood
-        built.push({
-          type: "mood",
-          animal,
-          title: `${mood.emoji} ${mood.label}`,
-          subtitle: t.storiesDaily || "Humeur du jour",
-          emoji: mood.emoji,
-          gradient: GRADIENTS[gradientIdx % GRADIENTS.length],
-        });
-
-        // Fun Fact
-        built.push({
-          type: "fact",
-          animal,
-          title: facts[factIdx],
-          subtitle: t.storiesFact || "Le saviez-vous ?",
-          emoji: "\uD83D\uDCA1",
-          gradient: GRADIENTS[(gradientIdx + 1) % GRADIENTS.length],
-        });
-
-        // Weekly Recap
-        built.push({
-          type: "weekly",
-          animal,
-          title: `${totalMatches} ${t.storiesMatchesWeek || "matchs cette semaine"}\n${weekMessages} ${t.storiesMessagesWeek || "messages cette semaine"}`,
-          subtitle: t.storiesWeekly || "Resume de la semaine",
-          emoji: "\uD83D\uDCCA",
-          gradient: GRADIENTS[(gradientIdx + 2) % GRADIENTS.length],
-        });
-
-        // Achievement
-        const ach = [...ACHIEVEMENTS].reverse().find((a) => totalMatches >= a.threshold);
-        if (ach) {
-          built.push({
-            type: "achievement",
-            animal,
-            title: `${ach.emoji} ${ach.label}`,
-            subtitle: t.storiesAchievement || "Succes",
-            emoji: ach.emoji,
-            gradient: GRADIENTS[(gradientIdx + 3) % GRADIENTS.length],
-          });
-        }
+      // Group stories by user_id, preserving order
+      const groupMap = new Map<string, StoryRow[]>();
+      for (const row of data as StoryRow[]) {
+        const existing = groupMap.get(row.user_id) || [];
+        existing.push(row);
+        groupMap.set(row.user_id, existing);
       }
 
-      setStories(built);
+      const built: UserGroup[] = [];
+      for (const [userId, rows] of groupMap) {
+        // Reverse so oldest story in a group is first (chronological within group)
+        const ordered = [...rows].reverse();
+        const firstRow = ordered[0];
+
+        const displayName =
+          firstRow.profiles?.full_name ||
+          firstRow.animals?.name ||
+          "Utilisateur";
+        const avatarUrl =
+          firstRow.profiles?.avatar_url ||
+          firstRow.animals?.photo_url ||
+          null;
+
+        built.push({
+          userId,
+          displayName,
+          avatarUrl,
+          stories: ordered.map((r) => ({
+            row: r,
+            mediaType: r.image_url
+              ? isVideoUrl(r.image_url)
+                ? "video"
+                : "image"
+              : "none",
+          })),
+        });
+      }
+
+      setGroups(built);
       setLoading(false);
     }
 
     load();
-  }, [router, t]);
+  }, [router]);
 
   // -----------------------------------------------------------------------
-  // Auto-advance timer
+  // Current story helpers
   // -----------------------------------------------------------------------
 
-  const startTimer = useCallback(() => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    startTimeRef.current = Date.now();
-    setProgress(0);
-    setTextVisible(false);
+  const group = groups[groupIdx] as UserGroup | undefined;
+  const story = group?.stories[storyIdx] as ViewableStory | undefined;
+  const totalStoriesInGroup = group?.stories.length ?? 0;
 
-    // Trigger text animation after a short delay
-    const textTimeout = setTimeout(() => setTextVisible(true), 300);
+  // -----------------------------------------------------------------------
+  // View tracking
+  // -----------------------------------------------------------------------
 
-    timerRef.current = setInterval(() => {
-      const elapsed = Date.now() - startTimeRef.current;
-      const pct = Math.min((elapsed / STORY_DURATION) * 100, 100);
-      setProgress(pct);
+  const trackView = useCallback(
+    async (storyRow: StoryRow) => {
+      if (!currentUserId) return;
+      if (viewedRef.current.has(storyRow.id)) return;
+      viewedRef.current.add(storyRow.id);
 
-      if (elapsed >= STORY_DURATION) {
-        setCurrent((prev) => {
-          if (prev < stories.length - 1) return prev + 1;
-          router.push("/feed");
-          return prev;
-        });
-      }
-    }, 50);
+      const supabase = createClient();
 
-    return () => {
-      clearTimeout(textTimeout);
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [stories.length, router]);
+      // Upsert into story_views
+      supabase
+        .from("story_views")
+        .upsert(
+          { story_id: storyRow.id, viewer_id: currentUserId },
+          { onConflict: "story_id,viewer_id" }
+        )
+        .then(() => {});
 
+      // Increment views_count via direct update
+      supabase
+        .from("stories")
+        .update({ views_count: (storyRow.views_count || 0) + 1 })
+        .eq("id", storyRow.id)
+        .then(() => {});
+    },
+    [currentUserId]
+  );
+
+  // Track view whenever story changes
   useEffect(() => {
-    if (stories.length === 0) return;
-    const cleanup = startTimer();
-    return cleanup;
-  }, [current, stories.length, startTimer]);
+    if (story) {
+      trackView(story.row);
+    }
+  }, [groupIdx, storyIdx, story, trackView]);
 
   // -----------------------------------------------------------------------
   // Navigation
   // -----------------------------------------------------------------------
 
-  function goNext() {
-    if (current < stories.length - 1) {
-      setCurrent((p) => p + 1);
+  const close = useCallback(() => {
+    router.push("/feed");
+  }, [router]);
+
+  const goNext = useCallback(() => {
+    if (!group) return;
+    if (storyIdx < group.stories.length - 1) {
+      // Next story in current group
+      setStoryIdx((p) => p + 1);
+    } else if (groupIdx < groups.length - 1) {
+      // Move to next user group
+      setGroupIdx((p) => p + 1);
+      setStoryIdx(0);
     } else {
-      router.push("/feed");
+      // End of all stories
+      close();
     }
+  }, [group, storyIdx, groupIdx, groups.length, close]);
+
+  const goPrev = useCallback(() => {
+    if (storyIdx > 0) {
+      setStoryIdx((p) => p - 1);
+    } else if (groupIdx > 0) {
+      // Go to last story of previous group
+      setGroupIdx((p) => p - 1);
+      const prevGroup = groups[groupIdx - 1];
+      setStoryIdx(prevGroup ? prevGroup.stories.length - 1 : 0);
+    }
+  }, [storyIdx, groupIdx, groups]);
+
+  // -----------------------------------------------------------------------
+  // Timer for image / text-only stories
+  // -----------------------------------------------------------------------
+
+  const clearTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
+  const startImageTimer = useCallback(() => {
+    clearTimer();
+    startTimeRef.current = Date.now();
+    setProgress(0);
+
+    timerRef.current = setInterval(() => {
+      if (isPausedRef.current) return;
+      const elapsed = Date.now() - startTimeRef.current;
+      const pct = Math.min((elapsed / IMAGE_DURATION) * 100, 100);
+      setProgress(pct);
+
+      if (elapsed >= IMAGE_DURATION) {
+        clearTimer();
+        goNext();
+      }
+    }, PROGRESS_TICK);
+  }, [clearTimer, goNext]);
+
+  // -----------------------------------------------------------------------
+  // Effect: manage timer / video per story change
+  // -----------------------------------------------------------------------
+
+  useEffect(() => {
+    if (!story) return;
+    setTextVisible(false);
+    setProgress(0);
+    isPausedRef.current = false;
+    setIsPaused(false);
+
+    const textTimeout = setTimeout(() => setTextVisible(true), 200);
+
+    if (story.mediaType === "video") {
+      // Video: progress driven by video element, not timer
+      clearTimer();
+    } else {
+      // Image or text-only: 5-second auto-advance
+      startImageTimer();
+    }
+
+    return () => {
+      clearTimeout(textTimeout);
+      clearTimer();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groupIdx, storyIdx]);
+
+  // -----------------------------------------------------------------------
+  // Video event handlers
+  // -----------------------------------------------------------------------
+
+  const handleVideoTimeUpdate = useCallback(() => {
+    const vid = videoRef.current;
+    if (!vid || !vid.duration) return;
+    setProgress((vid.currentTime / vid.duration) * 100);
+  }, []);
+
+  const handleVideoEnded = useCallback(() => {
+    goNext();
+  }, [goNext]);
+
+  // -----------------------------------------------------------------------
+  // Pause / Resume (long-press)
+  // -----------------------------------------------------------------------
+
+  const pause = useCallback(() => {
+    isPausedRef.current = true;
+    setIsPaused(true);
+    if (story?.mediaType === "video" && videoRef.current) {
+      videoRef.current.pause();
+    }
+    // For image timer: we freeze startTimeRef by adjusting it on resume
+  }, [story]);
+
+  const resume = useCallback(() => {
+    isPausedRef.current = false;
+    setIsPaused(false);
+    if (story?.mediaType === "video" && videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
+  }, [story]);
+
+  // -----------------------------------------------------------------------
+  // Tap handling
+  // -----------------------------------------------------------------------
+
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wasLongPressRef = useRef(false);
+
+  function handlePointerDown() {
+    wasLongPressRef.current = false;
+    longPressTimerRef.current = setTimeout(() => {
+      wasLongPressRef.current = true;
+      pause();
+    }, 300);
   }
 
-  function goPrev() {
-    if (current > 0) {
-      setCurrent((p) => p - 1);
+  function handlePointerUp(e: React.MouseEvent<HTMLDivElement>) {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
     }
-  }
 
-  function handleTap(e: React.MouseEvent<HTMLDivElement>) {
+    if (wasLongPressRef.current) {
+      wasLongPressRef.current = false;
+      resume();
+      return;
+    }
+
+    // Tap navigation
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     if (x < rect.width / 3) {
@@ -345,7 +427,21 @@ export default function StoriesPage() {
     }
   }
 
+  function handlePointerLeave() {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+    if (wasLongPressRef.current) {
+      wasLongPressRef.current = false;
+      resume();
+    }
+  }
+
+  // -----------------------------------------------------------------------
   // Swipe down to close
+  // -----------------------------------------------------------------------
+
   function handleTouchStart(e: React.TouchEvent) {
     setTouchStartY(e.touches[0].clientY);
   }
@@ -354,97 +450,169 @@ export default function StoriesPage() {
     if (touchStartY === null) return;
     const deltaY = e.changedTouches[0].clientY - touchStartY;
     if (deltaY > 100) {
-      router.push("/feed");
+      close();
     }
     setTouchStartY(null);
   }
 
   // -----------------------------------------------------------------------
-  // Loading state
+  // Loading
   // -----------------------------------------------------------------------
 
   if (loading) {
     return (
       <div
         className="fixed inset-0 z-[9999] flex items-center justify-center"
-        style={{ background: "#000" }}
+        style={{ background: "var(--c-deep)" }}
       >
         <div className="w-10 h-10 border-4 border-[var(--c-border)] border-t-white rounded-full animate-spin" />
       </div>
     );
   }
 
-  if (stories.length === 0) {
-    return null;
+  // -----------------------------------------------------------------------
+  // Empty state
+  // -----------------------------------------------------------------------
+
+  if (groups.length === 0) {
+    return (
+      <div
+        className="fixed inset-0 z-[9999] flex items-center justify-center"
+        style={{ background: "var(--c-deep)" }}
+      >
+        <div className="text-center px-8">
+          <div className="text-6xl mb-5">{"📸"}</div>
+          <h2
+            className="text-xl font-extrabold mb-2"
+            style={{ color: "var(--c-text)" }}
+          >
+            {t.storiesEmptyTitle || "Aucune story pour le moment"}
+          </h2>
+          <p
+            className="text-sm mb-6 leading-relaxed"
+            style={{ color: "var(--c-text-muted)" }}
+          >
+            {t.storiesEmptyDesc ||
+              "Sois le premier a partager un moment avec ton compagnon !"}
+          </p>
+          <div className="flex flex-col gap-3 items-center">
+            <button
+              onClick={() => router.push("/stories/create")}
+              className="rounded-xl px-6 py-3 text-sm font-bold text-white transition-all active:scale-[0.97]"
+              style={{ background: "var(--c-accent)" }}
+            >
+              + {t.storiesCreate || "Creer une story"}
+            </button>
+            <button
+              onClick={() => router.push("/feed")}
+              className="rounded-xl px-6 py-3 text-sm font-semibold transition-all active:scale-[0.97]"
+              style={{
+                background: "var(--c-card)",
+                color: "var(--c-text-muted)",
+                border: "1px solid var(--c-border)",
+              }}
+            >
+              {t.storiesBack || "Retour"}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
-  const story = stories[current];
-  const speciesEmoji = EMOJI_MAP[story.animal.species] || "\uD83D\uDC3E";
+  // -----------------------------------------------------------------------
+  // Active story render
+  // -----------------------------------------------------------------------
+
+  if (!group || !story) return null;
+
+  const { row } = story;
+  const animalEmoji =
+    row.animals?.species ? EMOJI_MAP[row.animals.species] || "\uD83D\uDC3E" : "\uD83D\uDC3E";
+  const gradientBg = gradientForStory(row, storyIdx);
 
   return (
     <div
       className="fixed inset-0 z-[9999] select-none"
-      style={{ width: "100vw", height: "100vh", background: "#000" }}
-      onClick={handleTap}
+      style={{ width: "100vw", height: "100vh", background: "var(--c-deep)" }}
+      onMouseDown={handlePointerDown}
+      onMouseUp={handlePointerUp}
+      onMouseLeave={handlePointerLeave}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Background: pet photo or gradient */}
-      {story.animal.photo_url ? (
+      {/* ---- Background media ---- */}
+      {story.mediaType === "video" && row.image_url ? (
+        <video
+          ref={videoRef}
+          key={row.id}
+          src={row.image_url}
+          autoPlay
+          playsInline
+          muted={false}
+          loop={false}
+          onTimeUpdate={handleVideoTimeUpdate}
+          onEnded={handleVideoEnded}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      ) : story.mediaType === "image" && row.image_url ? (
         <Image
-          src={story.animal.photo_url}
-          alt={story.animal.name}
+          key={row.id}
+          src={row.image_url}
+          alt={row.caption || "Story"}
           fill
           className="object-cover"
           sizes="100vw"
           priority
         />
       ) : (
-        <div className="absolute inset-0" style={{ background: story.gradient }} />
+        /* Text-only / template: gradient background */
+        <div className="absolute inset-0" style={{ background: gradientBg }} />
       )}
 
       {/* Dark gradient overlay */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.1) 30%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.7) 100%)",
+            "linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.05) 30%, rgba(0,0,0,0.05) 60%, rgba(0,0,0,0.7) 100%)",
         }}
       />
 
-      {/* Progress bars */}
+      {/* ---- Progress bars (one per story in current group) ---- */}
       <div className="absolute top-0 left-0 right-0 flex gap-1 px-3 pt-3 z-10">
-        {stories.map((_, idx) => (
+        {group.stories.map((_, idx) => (
           <div
             key={idx}
             className="flex-1 h-[3px] rounded-full overflow-hidden"
             style={{ background: "rgba(255,255,255,0.3)" }}
           >
             <div
-              className="h-full rounded-full transition-all"
+              className="h-full rounded-full"
               style={{
                 width:
-                  idx < current
+                  idx < storyIdx
                     ? "100%"
-                    : idx === current
+                    : idx === storyIdx
                     ? `${progress}%`
                     : "0%",
                 background: "#fff",
-                transition: idx === current ? "none" : "width 0.3s",
+                transition: idx === storyIdx ? "none" : "width 0.3s",
               }}
             />
           </div>
         ))}
       </div>
 
-      {/* Top bar: pet info + close button */}
+      {/* ---- Top bar: user avatar + name + time ago + close ---- */}
       <div className="absolute top-8 left-0 right-0 px-4 flex items-center justify-between z-10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[var(--c-border)] flex-shrink-0">
-            {story.animal.photo_url ? (
+          {/* Avatar */}
+          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/30 flex-shrink-0">
+            {group.avatarUrl ? (
               <Image
-                src={story.animal.photo_url}
-                alt={story.animal.name}
+                src={group.avatarUrl}
+                alt={group.displayName}
                 width={40}
                 height={40}
                 className="object-cover w-full h-full"
@@ -452,112 +620,163 @@ export default function StoriesPage() {
             ) : (
               <div
                 className="w-full h-full flex items-center justify-center text-lg"
-                style={{ background: story.gradient }}
+                style={{ background: gradientBg }}
               >
-                {speciesEmoji}
+                {animalEmoji}
               </div>
             )}
           </div>
           <div>
-            <p className="text-[var(--c-text)] text-sm font-bold">{story.animal.name}</p>
-            <p className="text-[var(--c-text-muted)] text-[10px]">{story.subtitle}</p>
+            <p className="text-white text-sm font-bold drop-shadow-md">
+              {group.displayName}
+            </p>
+            <p className="text-white/60 text-[10px] drop-shadow-sm">
+              {timeAgo(row.created_at)}
+            </p>
           </div>
         </div>
 
+        {/* Close button */}
         <button
           onClick={(e) => {
             e.stopPropagation();
-            router.push("/feed");
+            close();
           }}
-          className="w-8 h-8 flex items-center justify-center rounded-full text-[var(--c-text)]"
+          onMouseDown={(e) => e.stopPropagation()}
+          onMouseUp={(e) => e.stopPropagation()}
+          className="w-8 h-8 flex items-center justify-center rounded-full text-white"
           style={{ background: "rgba(255,255,255,0.2)" }}
           aria-label={t.storiesBack || "Retour"}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          >
             <path d="M18 6L6 18M6 6l12 12" />
           </svg>
         </button>
       </div>
 
-      {/* Story content */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center px-8 z-10">
-        {/* Main emoji */}
-        <div
-          className={`text-7xl mb-6 transition-all duration-700 ${
-            textVisible ? "opacity-100 scale-100" : "opacity-0 scale-50"
-          }`}
-        >
-          {story.emoji}
-        </div>
-
-        {/* Title text */}
-        <div
-          className={`text-center transition-all duration-700 delay-200 ${
-            textVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-6"
-          }`}
-        >
-          <h1 className="text-[var(--c-text)] text-3xl font-black leading-tight whitespace-pre-line drop-shadow-lg">
-            {story.title}
-          </h1>
-        </div>
-
-        {/* Subtitle badge */}
-        <div
-          className={`mt-6 transition-all duration-700 delay-500 ${
-            textVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-4"
-          }`}
-        >
-          <span
-            className="px-4 py-2 rounded-full text-sm font-semibold text-[var(--c-text)]"
-            style={{ background: "rgba(255,255,255,0.2)", backdropFilter: "blur(10px)" }}
-          >
-            {story.animal.name} {speciesEmoji}
-          </span>
-        </div>
-
-        {/* Type-specific extra content */}
-        {story.type === "weekly" && (
+      {/* ---- Paused indicator ---- */}
+      {isPaused && (
+        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
           <div
-            className={`mt-6 transition-all duration-700 delay-700 ${
-              textVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
+            className="px-4 py-2 rounded-full text-white text-xs font-semibold"
+            style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
           >
+            {"||  "}
+            {t.storiesPaused || "En pause"}
+          </div>
+        </div>
+      )}
+
+      {/* ---- Story content (text-only / template stories) ---- */}
+      {story.mediaType === "none" && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-8 z-10 pointer-events-none">
+          {/* Sticker */}
+          {row.sticker && (
             <div
-              className="rounded-2xl px-5 py-3 text-center"
-              style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(10px)" }}
+              className={`text-7xl mb-6 transition-all duration-700 ${
+                textVisible ? "opacity-100 scale-100" : "opacity-0 scale-50"
+              }`}
             >
-              <p className="text-[var(--c-text-muted)] text-xs font-medium">
-                {t.storiesWeekly || "Resume de la semaine"}
-              </p>
+              {row.sticker}
             </div>
-          </div>
-        )}
+          )}
 
-        {story.type === "achievement" && (
-          <div
-            className={`mt-4 transition-all duration-1000 delay-700 ${
-              textVisible ? "opacity-100 scale-100" : "opacity-0 scale-0"
-            }`}
+          {/* Caption as large centered text */}
+          {row.caption && (
+            <div
+              className={`text-center transition-all duration-700 delay-200 ${
+                textVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-6"
+              }`}
+            >
+              <h1
+                className="text-3xl font-black leading-tight whitespace-pre-line drop-shadow-lg"
+                style={{ color: row.text_color || "#ffffff" }}
+              >
+                {row.caption}
+              </h1>
+            </div>
+          )}
+
+          {/* Animal name badge */}
+          {row.animals && (
+            <div
+              className={`mt-6 transition-all duration-700 delay-500 ${
+                textVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-4"
+              }`}
+            >
+              <span
+                className="px-4 py-2 rounded-full text-sm font-semibold text-white"
+                style={{
+                  background: "rgba(255,255,255,0.2)",
+                  backdropFilter: "blur(10px)",
+                }}
+              >
+                {row.animals.name} {animalEmoji}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ---- Caption overlay at bottom (for image/video stories) ---- */}
+      {story.mediaType !== "none" && row.caption && (
+        <div
+          className={`absolute bottom-20 left-0 right-0 px-6 z-10 pointer-events-none transition-all duration-500 ${
+            textVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+          }`}
+        >
+          <p
+            className="text-center text-lg font-bold leading-snug"
+            style={{
+              color: row.text_color || "#ffffff",
+              textShadow: "0 2px 8px rgba(0,0,0,0.6)",
+            }}
           >
-            <div className="flex gap-1">
-              {[...Array(5)].map((_, i) => (
-                <span key={i} className="text-2xl animate-bounce" style={{ animationDelay: `${i * 0.1}s` }}>
-                  {"\u2B50"}
-                </span>
-              ))}
-            </div>
+            {row.caption}
+          </p>
+          {row.animals && (
+            <p className="text-center text-white/60 text-xs mt-2">
+              {row.animals.name} {animalEmoji}
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* ---- Bottom: story counter + group nav dots ---- */}
+      <div className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-2 z-10 pointer-events-none">
+        {/* Group navigation dots */}
+        {groups.length > 1 && (
+          <div className="flex gap-1.5">
+            {groups.map((_, idx) => (
+              <div
+                key={idx}
+                className="rounded-full transition-all duration-300"
+                style={{
+                  width: idx === groupIdx ? 16 : 6,
+                  height: 6,
+                  background:
+                    idx === groupIdx
+                      ? "rgba(255,255,255,0.9)"
+                      : "rgba(255,255,255,0.3)",
+                }}
+              />
+            ))}
           </div>
         )}
-      </div>
-
-      {/* Bottom: navigation hint */}
-      <div className="absolute bottom-8 left-0 right-0 flex justify-center z-10">
-        <p className="text-[var(--c-text-muted)] text-xs">
-          {current + 1} / {stories.length}
+        <p className="text-white/40 text-[10px]">
+          {storyIdx + 1} / {totalStoriesInGroup}
         </p>
       </div>
     </div>
