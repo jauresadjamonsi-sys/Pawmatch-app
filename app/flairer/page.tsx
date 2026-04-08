@@ -205,7 +205,7 @@ export default function FlairerPage() {
     // Fetch animals + already-liked in parallel
     const animalsQuery = supabase
       .from("animals")
-      .select("id, name, species, breed, age_months, gender, photo_url, photos, canton, city, personality, traits, energy_level, sociability, created_by, bio, size")
+      .select("id, name, species, breed, age_months, gender, photo_url, extra_photos, canton, city, traits, created_by, weight_kg, description")
       .order("created_at", { ascending: false })
       .limit(100);
 
@@ -224,7 +224,7 @@ export default function FlairerPage() {
     ) as unknown as AnimalRow[];
 
     if (profile) {
-      const { data: mine } = await supabase.from("animals").select("id, name, species, photo_url, personality, traits, energy_level, sociability, breed, age_months, gender, canton, city, created_by, bio, size, photos").eq("created_by", profile.id);
+      const { data: mine } = await supabase.from("animals").select("id, name, species, photo_url, traits, breed, age_months, gender, canton, city, created_by, extra_photos, weight_kg, description").eq("created_by", profile.id);
       const myList = (mine || []) as unknown as AnimalRow[];
       setMyAnimals(myList);
       const primary = myList[0] || null;
