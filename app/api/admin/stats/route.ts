@@ -105,7 +105,7 @@ export async function GET() {
       safeQuery(db.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", monthStart)),
       safeQuery(db.from("profiles").select("id, full_name, email, subscription, created_at, role").order("created_at", { ascending: false }).limit(500)),
       safeQuery(db.from("animals").select("id", { count: "exact", head: true })),
-      safeQuery(db.from("animals").select("id, name, species, created_by, created_at, canton, status").order("created_at", { ascending: false }).limit(500)),
+      safeQuery(db.from("animals").select("id, name, species, breed, created_by, created_at, canton, status").order("created_at", { ascending: false }).limit(500)),
       safeQuery(db.from("animals").select("id, species")),
       safeQuery(db.from("matches").select("id", { count: "exact", head: true })),
       safeQuery(db.from("matches").select("id", { count: "exact", head: true }).gte("created_at", todayStart)),
