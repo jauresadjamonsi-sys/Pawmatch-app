@@ -42,10 +42,10 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
         if (!authUser) return;
 
         const [profileRes, animalsRes, matchRes, messageRes] = await Promise.all([
-          supabase.from("profiles").select("*").eq("id", authUser.id).single(),
-          supabase.from("animals").select("*").eq("created_by", authUser.id).order("created_at", { ascending: false }),
-          supabase.from("matches").select("*", { count: "exact", head: true }).or(`sender_user_id.eq.${authUser.id},receiver_user_id.eq.${authUser.id}`).then(r => r).catch(() => ({ count: 0 })),
-          supabase.from("messages").select("*", { count: "exact", head: true }).eq("sender_id", authUser.id).then(r => r).catch(() => ({ count: 0 })),
+          supabase.from("profiles").select("id, full_name, email, avatar_url, role, subscription, canton, city, bio, created_at, phone").eq("id", authUser.id).single(),
+          supabase.from("animals").select("id, name, species, breed, photo_url, canton, city, gender, age_months, created_by").eq("created_by", authUser.id).order("created_at", { ascending: false }),
+          Promise.resolve(supabase.from("matches").select("*", { count: "exact", head: true }).or(`sender_user_id.eq.${authUser.id},receiver_user_id.eq.${authUser.id}`)).then(r => r).catch(() => ({ count: 0 })),
+          Promise.resolve(supabase.from("messages").select("*", { count: "exact", head: true }).eq("sender_id", authUser.id)).then(r => r).catch(() => ({ count: 0 })),
         ]);
 
         if (profileRes.data) setProfile(profileRes.data);
@@ -60,7 +60,9 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
           days: daysSince,
           animals: (animalsRes.data || []).length,
         });
-      } catch {}
+      } catch (err) {
+        console.error("[Profile] Failed to load profile stats:", err);
+      }
     }
     loadProfile();
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -113,7 +115,9 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
         const data = await res.json();
         setBlockedUsers(data.blocked_users || []);
       }
-    } catch {}
+    } catch (err) {
+      console.error("[Profile] Failed to fetch blocked users:", err);
+    }
     setLoadingBlocked(false);
   }
 
@@ -123,7 +127,9 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
       if (res.ok) {
         setBlockedUsers(prev => prev.filter(u => u.user_id !== userId));
       }
-    } catch {}
+    } catch (err) {
+      console.error("[Profile] Failed to unblock user:", err);
+    }
   }
 
   const isPremium = profile?.subscription === "premium" || profile?.subscription === "pro";
@@ -309,6 +315,13 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
               {profile?.subscription === "free" ? "⭐ Passer Premium" : "⚙️ Gérer mon plan"}
             </Link>
             <Link
+              href="/promo"
+              className="btn-futuristic px-4 py-2 text-sm font-medium rounded-xl"
+              style={{ borderColor: "rgba(168,85,247,0.25)" }}
+            >
+              🎬 Vidéo Promo
+            </Link>
+            <Link
               href="/share"
               className="btn-futuristic px-4 py-2 text-sm font-medium rounded-xl"
             >
@@ -364,9 +377,9 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
                   }}
                 >
                   <Link href={`/animals/${animal.id}`} className="block">
-                    <div className="h-36 flex items-center justify-center overflow-hidden relative" style={{ background: "var(--c-card)" }}>
+                    <div className="aspect-square flex items-center justify-center overflow-hidden relative" style={{ background: "var(--c-card)" }}>
                       {animal.photo_url
-                        ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="(max-width: 768px) 50vw, 200px" />
+                        ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover object-[center_25%]" sizes="(max-width: 768px) 50vw, 200px" />
                         : <span className="text-5xl">{EMOJI_MAP[animal.species] || "🐾"}</span>}
                     </div>
                     <div className="p-3">

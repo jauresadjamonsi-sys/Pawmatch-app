@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { EMOJI_MAP } from "@/lib/constants";
 import StoriesRing from "@/lib/components/StoriesRing";
+import PromoSection from "@/lib/components/PromoSection";
 import {
   type AnimalSpecies,
   getMood,
@@ -23,37 +24,7 @@ import {
   getEarnedBadges,
 } from "@/lib/feed/badges";
 import { formatAge } from "@/lib/utils";
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-interface ProfileRow {
-  id: string;
-  full_name: string | null;
-  avatar_url: string | null;
-  city: string | null;
-  canton: string | null;
-}
-
-interface AnimalRow {
-  id: string;
-  name: string;
-  species: AnimalSpecies;
-  breed: string | null;
-  photo_url: string | null;
-  traits: string[];
-  age_months: number | null;
-  gender: string;
-  canton: string | null;
-  city: string | null;
-  created_by: string | null;
-}
-
-interface Streak {
-  count: number;
-  lastDate: string;
-}
+import type { ProfileRow, AnimalRow, Streak } from "@/lib/types";
 
 // ---------------------------------------------------------------------------
 // Streak helpers  (localStorage)
@@ -138,8 +109,8 @@ export default function FeedPage() {
       if (!user) { setLoading(false); return; }
 
       const [profileRes, animalsRes, matchRes, msgRes] = await Promise.all([
-        supabase.from("profiles").select("*").eq("id", user.id).single(),
-        supabase.from("animals").select("*").eq("created_by", user.id).order("created_at", { ascending: false }),
+        supabase.from("profiles").select("id, full_name, email, avatar_url, role, subscription, canton, city, bio, created_at").eq("id", user.id).single(),
+        supabase.from("animals").select("id, name, species, breed, photo_url, canton, city, created_by, personality, age_months, gender").eq("created_by", user.id).order("created_at", { ascending: false }),
         supabase.from("matches").select("*", { count: "exact", head: true }).or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`),
         supabase.from("messages").select("*", { count: "exact", head: true }).eq("sender_id", user.id),
       ]);
@@ -179,17 +150,17 @@ export default function FeedPage() {
       // Secondary queries (non-blocking)
       const myCanton = anims[0]?.canton || prof?.canton;
       const nearbyQuery = myCanton
-        ? supabase.from("animals").select("*").eq("canton", myCanton).neq("created_by", user.id).order("created_at", { ascending: false }).limit(6)
-        : supabase.from("animals").select("*").neq("created_by", user.id).order("created_at", { ascending: false }).limit(6);
-      nearbyQuery.then(({ data }) => setNearbyAnimals((data || []) as unknown as AnimalRow[])).catch(() => {});
+        ? supabase.from("animals").select("id, name, species, breed, photo_url, canton, city, created_by, personality, age_months, gender").eq("canton", myCanton).neq("created_by", user.id).order("created_at", { ascending: false }).limit(6)
+        : supabase.from("animals").select("id, name, species, breed, photo_url, canton, city, created_by, personality, age_months, gender").neq("created_by", user.id).order("created_at", { ascending: false }).limit(6);
+      Promise.resolve(nearbyQuery).then(({ data }) => setNearbyAnimals((data || []) as unknown as AnimalRow[])).catch(() => {});
 
-      supabase
-        .from("matches")
-        .select("*", { count: "exact", head: true })
-        .or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`)
-        .gte("created_at", new Date(Date.now() - 48 * 3600000).toISOString())
-        .then(({ count }) => setNewMatches(count || 0))
-        .catch(() => {});
+      Promise.resolve(
+        supabase
+          .from("matches")
+          .select("*", { count: "exact", head: true })
+          .or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`)
+          .gte("created_at", new Date(Date.now() - 48 * 3600000).toISOString())
+      ).then(({ count }) => setNewMatches(count || 0)).catch(() => {});
     }
 
     load();
@@ -199,7 +170,7 @@ export default function FeedPage() {
   // Derived values
   // -------------------------------------------------------------------------
   const firstName = profile?.full_name?.split(" ")[0] || "";
-  const primarySpecies: AnimalSpecies = animals.length > 0 ? animals[0].species : "chien";
+  const primarySpecies: AnimalSpecies = animals.length > 0 ? (animals[0].species as AnimalSpecies) : "chien";
   const milestone = milestoneMessage(streak.count);
   const next = nextMilestone(streak.count);
   const challengeText = getDailyChallenge();
@@ -281,6 +252,9 @@ export default function FeedPage() {
             )}
           </section>
 
+          {/* ═══════ PROMO VIDEO ═══════ */}
+          <PromoSection />
+
           {/* ═══════ MATCH ALERT ═══════ */}
           {newMatches > 0 && (
             <Link href="/matches" className="block glass rounded-2xl p-4 relative overflow-hidden border border-pink-500/20">
@@ -319,7 +293,7 @@ export default function FeedPage() {
                 {animals.map((animal) => {
                   const mood = getMood(animal.id, animal.traits || []);
                   const emoji = (EMOJI_MAP as Record<string, string>)[animal.species] || "\uD83D\uDC3E";
-                  const fact = getDailyFact(animal.species);
+                  const fact = getDailyFact(animal.species as AnimalSpecies);
 
                   return (
                     <Link
@@ -328,9 +302,9 @@ export default function FeedPage() {
                       className="glass rounded-2xl overflow-hidden flex-shrink-0 w-[85vw] max-w-[380px] block transition-transform active:scale-[0.98]"
                     >
                       {/* Big photo */}
-                      <div className="relative h-52 w-full">
+                      <div className="relative aspect-[4/5] w-full">
                         {animal.photo_url ? (
-                          <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="(max-width:640px) 85vw, 380px" />
+                          <Image src={animal.photo_url} alt={animal.name} fill className="object-cover object-[center_25%]" sizes="(max-width:640px) 85vw, 380px" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-6xl" style={{ background: "var(--c-card)" }}>{emoji}</div>
                         )}
@@ -566,8 +540,8 @@ export default function FeedPage() {
 
       {/* ═══════ BADGE CELEBRATION MODAL ═══════ */}
       {showBadgeModal && activeBadge && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={dismissBadge}>
-          <div className="bg-[var(--c-card)] rounded-3xl p-8 max-w-xs w-full mx-4 text-center relative overflow-hidden" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-[100] flex items-start justify-center pt-20 bg-black/60 backdrop-blur-sm" onClick={dismissBadge}>
+          <div className="bg-[var(--c-card)] rounded-3xl p-8 max-w-xs w-full mx-4 text-center relative overflow-hidden shadow-2xl" onClick={(e) => e.stopPropagation()} style={{ animation: "badgeSlideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)" }}>
             {/* Sparkles */}
             <div className="absolute inset-0 pointer-events-none">
               {Array.from({ length: 12 }).map((_, i) => (
@@ -594,6 +568,13 @@ export default function FeedPage() {
           </div>
         </div>
       )}
+      {/* Badge slide-down animation */}
+      <style>{`
+        @keyframes badgeSlideDown {
+          0% { opacity: 0; transform: translateY(-40px) scale(0.9); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+      `}</style>
     </>
   );
 }

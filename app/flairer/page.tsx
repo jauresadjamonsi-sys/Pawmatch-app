@@ -11,21 +11,11 @@ import Image from "next/image";
 import BlockReportModal from "@/lib/components/BlockReportModal";
 import CompatibilityBadge from "@/lib/components/CompatibilityBadge";
 import { formatAge } from "@/lib/utils";
+import type { AnimalRow, AnimalWithCompat } from "@/lib/types";
 
 const SPECIES: Record<string, string> = {
   chien: "Chien", chat: "Chat", lapin: "Lapin",
   oiseau: "Oiseau", rongeur: "Rongeur", autre: "Autre",
-};
-
-type Animal = Record<string, any> & {
-  id: string; name: string; species: string; breed: string | null;
-  age_months: number | null; gender: string; description: string | null;
-  photo_url: string | null; canton: string | null; city: string | null;
-  traits: string[]; created_by: string | null;
-};
-
-type AnimalWithCompat = Animal & {
-  compatibility?: any;
 };
 
 const CONFETTI_COLORS = ["#f97316","#fb923c","#fbbf24","#34d399","#60a5fa","#f472b6","#a78bfa"];
@@ -83,8 +73,8 @@ type Particle = { id: number; x: number; y: number; vx: number; vy: number; colo
 export default function FlairerPage() {
   const [animals, setAnimals] = useState<AnimalWithCompat[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [myAnimals, setMyAnimals] = useState<Animal[]>([]);
-  const [activeMyAnimal, setActiveMyAnimal] = useState<Animal | null>(null);
+  const [myAnimals, setMyAnimals] = useState<AnimalRow[]>([]);
+  const [activeMyAnimal, setActiveMyAnimal] = useState<AnimalRow | null>(null);
   const [loading, setLoading] = useState(true);
   const [showMatchModal, setShowMatchModal] = useState(false);
   const [matchSuccess, setMatchSuccess] = useState(false);
@@ -215,7 +205,7 @@ export default function FlairerPage() {
     // Fetch animals + already-liked in parallel
     const animalsQuery = supabase
       .from("animals")
-      .select("*")
+      .select("id, name, species, breed, age_months, gender, photo_url, photos, canton, city, personality, traits, energy_level, sociability, created_by, bio, size")
       .order("created_at", { ascending: false })
       .limit(100);
 
@@ -227,15 +217,15 @@ export default function FlairerPage() {
     const [{ data: allAnimals }, { data: sentMatches }] = await Promise.all([animalsQuery, likesQuery]);
     alreadyLiked = (sentMatches || []).map((m: any) => m.receiver_animal_id);
 
-    const filtered = (allAnimals || []).filter((a: Animal) =>
+    const filtered = (allAnimals || []).filter((a: any) =>
       a.created_by !== profile?.id &&
       !blocked.includes(a.created_by || "") &&
       !alreadyLiked.includes(a.id)
-    );
+    ) as unknown as AnimalRow[];
 
     if (profile) {
-      const { data: mine } = await supabase.from("animals").select("*").eq("created_by", profile.id);
-      const myList = mine || [];
+      const { data: mine } = await supabase.from("animals").select("id, name, species, photo_url, personality, traits, energy_level, sociability, breed, age_months, gender, canton, city, created_by, bio, size, photos").eq("created_by", profile.id);
+      const myList = (mine || []) as unknown as AnimalRow[];
       setMyAnimals(myList);
       const primary = myList[0] || null;
       setActiveMyAnimal(primary);
@@ -251,21 +241,21 @@ export default function FlairerPage() {
       setLikeCount(todayCount || 0);
 
       if (primary) {
-        const sorted = sortByCompatibility(primary, filtered) as AnimalWithCompat[];
+        const sorted = sortByCompatibility(primary, filtered) as unknown as AnimalWithCompat[];
         setAnimals(sorted);
       } else {
-        setAnimals(filtered.sort(() => Math.random() - 0.5) as AnimalWithCompat[]);
+        setAnimals(filtered.sort(() => Math.random() - 0.5) as unknown as AnimalWithCompat[]);
       }
     } else {
-      setAnimals(filtered.sort(() => Math.random() - 0.5));
+      setAnimals(filtered.sort(() => Math.random() - 0.5) as unknown as AnimalWithCompat[]);
     }
     setLoading(false);
   }
 
   useEffect(() => {
     if (!activeMyAnimal || animals.length === 0) return;
-    const base = animals.map(({ compatibility, ...a }) => a as Animal);
-    const sorted = sortByCompatibility(activeMyAnimal, base) as AnimalWithCompat[];
+    const base = animals.map(({ compatibility, ...a }) => a as AnimalRow);
+    const sorted = sortByCompatibility(activeMyAnimal, base) as unknown as AnimalWithCompat[];
     setAnimals(sorted);
     setCurrentIndex(0);
   }, [activeMyAnimal]);
@@ -335,6 +325,13 @@ export default function FlairerPage() {
     if (result.mutualMatch && result.data) {
       setMutualMatchData(result.data);
       setShowCoupDeTruffe(true);
+      // Play match celebration sound (first 6 seconds)
+      try {
+        const matchAudio = new Audio("/match-sound.mp3");
+        matchAudio.volume = 0.6;
+        matchAudio.play().catch(() => {});
+        setTimeout(() => { matchAudio.pause(); matchAudio.currentTime = 0; }, 6000);
+      } catch {}
     }
 
     const newStreak = streak + 1;
@@ -593,8 +590,8 @@ export default function FlairerPage() {
             style={{ transform:`scale(${nextCardScale}) translateY(${(1-nextCardScale)*30}px)`, transition:isDragging?"none":"transform 0.4s ease", zIndex:1, opacity:0.5 }}>
             <div className="w-full h-full bg-[var(--c-deep,#1a1225)] flex items-center justify-center relative">
               {nextAnimal.photo_url
-                ? <Image src={nextAnimal.photo_url} alt="" fill className="object-cover opacity-50" draggable={false} sizes="(max-width: 768px) 100vw, 448px" />
-                : <span className="text-[var(--c-text-muted)] text-4xl font-bold">{(nextAnimal as Animal).name?.charAt(0)}</span>}
+                ? <Image src={nextAnimal.photo_url} alt="" fill className="object-cover object-[center_25%] opacity-50" draggable={false} sizes="(max-width: 768px) 100vw, 448px" />
+                : <span className="text-[var(--c-text-muted)] text-4xl font-bold">{(nextAnimal as AnimalRow).name?.charAt(0)}</span>}
             </div>
           </div>
         )}
@@ -643,9 +640,9 @@ export default function FlairerPage() {
           onMouseLeave={() => { if (isDragging) { setIsDragging(false); setDragX(0); setDragY(0); } }}>
 
           {/* Photo with gradient overlay */}
-          <div className="h-[55%] relative overflow-hidden bg-[var(--c-deep,#1a1225)]">
+          <div className="h-[60%] relative overflow-hidden bg-[var(--c-deep,#1a1225)]">
             {animal.photo_url
-              ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" draggable={false} sizes="(max-width: 768px) 100vw, 448px" />
+              ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover object-[center_25%]" draggable={false} sizes="(max-width: 768px) 100vw, 448px" />
               : <div className="w-full h-full flex items-center justify-center text-6xl font-bold text-[var(--c-text-muted)]">{animal.name?.charAt(0)}</div>}
 
             {/* Gradient overlay at bottom */}

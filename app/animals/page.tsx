@@ -55,7 +55,7 @@ export default function AnimalsPage() {
 
   async function fetchAnimals() {
     setLoading(true);
-    let query = supabase.from("animals").select("*").order("created_at", { ascending: false }).limit(200);
+    let query = supabase.from("animals").select("id, name, species, breed, photo_url, canton, city, gender, age_months, created_by").order("created_at", { ascending: false }).limit(200);
     if (species) query = query.eq("species", species);
     if (canton) query = query.eq("canton", canton);
     const { data } = await query;
@@ -124,7 +124,7 @@ export default function AnimalsPage() {
               <Link href={"/animals/" + animal.id} key={animal.id} className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl overflow-hidden hover:bg-[var(--c-card)] transition group">
                 <div className="aspect-square bg-[var(--c-card)] flex items-center justify-center overflow-hidden relative">
                   {animal.photo_url ? (
-                    <Image src={animal.photo_url} alt={animal.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw" />
+                    <Image src={animal.photo_url} alt={animal.name} fill className="object-cover object-[center_25%] group-hover:scale-105 transition-transform duration-300" sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw" />
                   ) : (
                     <span className="text-5xl">{EMOJI_MAP[animal.species] || "🐾"}</span>
                   )}

@@ -4,7 +4,8 @@ import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { useAppContext } from "@/lib/contexts/AppContext";
-import { getMyMatches, respondToMatch, MatchWithAnimals } from "@/lib/services/matches";
+import { getMyMatches, respondToMatch } from "@/lib/services/matches";
+import type { MatchWithAnimals } from "@/lib/types";
 import { useOnlineStatus } from "@/lib/hooks/useOnlineStatus";
 import PresenceDot from "@/lib/components/PresenceDot";
 import Link from "next/link";
@@ -47,8 +48,18 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
       rotation: Math.random() * 360,
     }));
     setConfetti(items);
+
+    // Play match celebration sound (first 6 seconds)
+    try {
+      const audio = new Audio("/match-sound.mp3");
+      audio.volume = 0.6;
+      audio.play().catch(() => {});
+      const stopTimer = setTimeout(() => { audio.pause(); audio.currentTime = 0; }, 6000);
+      var cleanAudio = () => { clearTimeout(stopTimer); audio.pause(); };
+    } catch {}
+
     const timer = setTimeout(onClose, 5000);
-    return () => clearTimeout(timer);
+    return () => { clearTimeout(timer); if (typeof cleanAudio === "function") cleanAudio(); };
   }, [onClose]);
 
   return (
@@ -134,7 +145,7 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
           <div className="text-center">
             <div className="w-16 h-16 rounded-full bg-orange-500/20 ring-2 ring-orange-500/50 flex items-center justify-center overflow-hidden mx-auto mb-1 ring-pulse relative">
               {match.sender_animal.photo_url
-                ? <Image src={match.sender_animal.photo_url} alt={match.sender_animal.name} fill className="object-cover" sizes="(max-width: 768px) 64px, 64px" />
+                ? <Image src={match.sender_animal.photo_url} alt={match.sender_animal.name} fill className="object-cover object-[center_20%]" sizes="(max-width: 768px) 64px, 64px" />
                 : <span className="text-2xl">{EMOJI_MAP[match.sender_animal.species] || "🐾"}</span>}
             </div>
             <p className="text-xs text-[var(--c-text)] font-semibold">{match.sender_animal.name}</p>
@@ -145,7 +156,7 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
           <div className="text-center">
             <div className="w-16 h-16 rounded-full bg-pink-500/20 ring-2 ring-pink-500/50 flex items-center justify-center overflow-hidden mx-auto mb-1 ring-pulse relative">
               {match.receiver_animal.photo_url
-                ? <Image src={match.receiver_animal.photo_url} alt={match.receiver_animal.name} fill className="object-cover" sizes="(max-width: 768px) 64px, 64px" />
+                ? <Image src={match.receiver_animal.photo_url} alt={match.receiver_animal.name} fill className="object-cover object-[center_20%]" sizes="(max-width: 768px) 64px, 64px" />
                 : <span className="text-2xl">{EMOJI_MAP[match.receiver_animal.species] || "🐾"}</span>}
             </div>
             <p className="text-xs text-[var(--c-text)] font-semibold">{match.receiver_animal.name}</p>
@@ -264,7 +275,7 @@ export default function MatchesPage() {
         <div className="relative">
           <div className={`w-12 h-12 rounded-full bg-[var(--c-card)] flex items-center justify-center overflow-hidden flex-shrink-0 ring-2 ${ringClass} transition-all duration-500 relative`}>
             {animal.photo_url
-              ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="(max-width: 768px) 48px, 48px" />
+              ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover object-[center_20%]" sizes="(max-width: 768px) 48px, 48px" />
               : <span className="text-xl">{EMOJI_MAP[animal.species] || "🐾"}</span>}
           </div>
           {userId && (

@@ -220,7 +220,7 @@ export default function AnimalDetailPage() {
               if (photos.length === 0) return <span className="text-8xl">{EMOJI_MAP[animal.species] || "🐾"}</span>;
               return (
                 <div className="relative w-full h-full">
-                  <Image src={photos[activePhoto] || photos[0] || ""} alt={animal.name} fill className="object-cover" sizes="(max-width: 768px) 100vw, 600px" />
+                  <Image src={photos[activePhoto] || photos[0] || ""} alt={animal.name} fill className="object-cover object-[center_25%]" sizes="(max-width: 768px) 100vw, 600px" />
                   {photos.length > 1 && (
                     <>
                       <button onClick={() => setActivePhoto(p => (p - 1 + photos.length) % photos.length)}
