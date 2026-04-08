@@ -109,7 +109,7 @@ export default function FeedPage() {
       if (!user) { setLoading(false); return; }
 
       const [profileRes, animalsRes, matchRes, msgRes] = await Promise.all([
-        supabase.from("profiles").select("id, full_name, email, avatar_url, role, subscription, canton, city, bio, created_at").eq("id", user.id).single(),
+        supabase.from("profiles").select("id, full_name, email, avatar_url, role, subscription, city, created_at").eq("id", user.id).single(),
         supabase.from("animals").select("id, name, species, breed, photo_url, canton, city, created_by, age_months, gender, traits").eq("created_by", user.id).order("created_at", { ascending: false }),
         supabase.from("matches").select("*", { count: "exact", head: true }).or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`),
         supabase.from("messages").select("*", { count: "exact", head: true }).eq("sender_id", user.id),
