@@ -590,7 +590,7 @@ export default function FlairerPage() {
             style={{ transform:`scale(${nextCardScale}) translateY(${(1-nextCardScale)*30}px)`, transition:isDragging?"none":"transform 0.4s ease", zIndex:1, opacity:0.5 }}>
             <div className="w-full h-full bg-[var(--c-deep,#1a1225)] flex items-center justify-center relative">
               {nextAnimal.photo_url
-                ? <Image src={nextAnimal.photo_url} alt="" fill className="object-cover object-[center_25%] opacity-50" draggable={false} sizes="(max-width: 768px) 100vw, 448px" />
+                ? <Image src={nextAnimal.photo_url} alt="" fill className="object-cover opacity-50" draggable={false} sizes="(max-width: 768px) 100vw, 448px" />
                 : <span className="text-[var(--c-text-muted)] text-4xl font-bold">{(nextAnimal as AnimalRow).name?.charAt(0)}</span>}
             </div>
           </div>
@@ -642,7 +642,7 @@ export default function FlairerPage() {
           {/* Photo with gradient overlay */}
           <div className="h-[60%] relative overflow-hidden bg-[var(--c-deep,#1a1225)]">
             {animal.photo_url
-              ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover object-[center_25%]" draggable={false} sizes="(max-width: 768px) 100vw, 448px" />
+              ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" draggable={false} sizes="(max-width: 768px) 100vw, 448px" />
               : <div className="w-full h-full flex items-center justify-center text-6xl font-bold text-[var(--c-text-muted)]">{animal.name?.charAt(0)}</div>}
 
             {/* Gradient overlay at bottom */}

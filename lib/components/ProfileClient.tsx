@@ -386,7 +386,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
                   <Link href={`/animals/${animal.id}`} className="block">
                     <div className="aspect-square flex items-center justify-center overflow-hidden relative" style={{ background: "var(--c-card)" }}>
                       {animal.photo_url
-                        ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover object-[center_25%]" sizes="(max-width: 768px) 50vw, 200px" />
+                        ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="(max-width: 768px) 50vw, 200px" />
                         : <span className="text-5xl">{EMOJI_MAP[animal.species] || "🐾"}</span>}
                     </div>
                     <div className="p-3">

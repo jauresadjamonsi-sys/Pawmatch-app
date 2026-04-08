@@ -145,7 +145,7 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
           <div className="text-center">
             <div className="w-16 h-16 rounded-full bg-orange-500/20 ring-2 ring-orange-500/50 flex items-center justify-center overflow-hidden mx-auto mb-1 ring-pulse relative">
               {match.sender_animal.photo_url
-                ? <Image src={match.sender_animal.photo_url} alt={match.sender_animal.name} fill className="object-cover object-[center_20%]" sizes="(max-width: 768px) 64px, 64px" />
+                ? <Image src={match.sender_animal.photo_url} alt={match.sender_animal.name} fill className="object-cover" sizes="(max-width: 768px) 64px, 64px" />
                 : <span className="text-2xl">{EMOJI_MAP[match.sender_animal.species] || "🐾"}</span>}
             </div>
             <p className="text-xs text-[var(--c-text)] font-semibold">{match.sender_animal.name}</p>
@@ -156,7 +156,7 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
           <div className="text-center">
             <div className="w-16 h-16 rounded-full bg-pink-500/20 ring-2 ring-pink-500/50 flex items-center justify-center overflow-hidden mx-auto mb-1 ring-pulse relative">
               {match.receiver_animal.photo_url
-                ? <Image src={match.receiver_animal.photo_url} alt={match.receiver_animal.name} fill className="object-cover object-[center_20%]" sizes="(max-width: 768px) 64px, 64px" />
+                ? <Image src={match.receiver_animal.photo_url} alt={match.receiver_animal.name} fill className="object-cover" sizes="(max-width: 768px) 64px, 64px" />
                 : <span className="text-2xl">{EMOJI_MAP[match.receiver_animal.species] || "🐾"}</span>}
             </div>
             <p className="text-xs text-[var(--c-text)] font-semibold">{match.receiver_animal.name}</p>
@@ -275,7 +275,7 @@ export default function MatchesPage() {
         <div className="relative">
           <div className={`w-12 h-12 rounded-full bg-[var(--c-card)] flex items-center justify-center overflow-hidden flex-shrink-0 ring-2 ${ringClass} transition-all duration-500 relative`}>
             {animal.photo_url
-              ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover object-[center_20%]" sizes="(max-width: 768px) 48px, 48px" />
+              ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="(max-width: 768px) 48px, 48px" />
               : <span className="text-xl">{EMOJI_MAP[animal.species] || "🐾"}</span>}
           </div>
           {userId && (

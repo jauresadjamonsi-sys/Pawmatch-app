@@ -304,7 +304,7 @@ export default function FeedPage() {
                       {/* Big photo */}
                       <div className="relative aspect-[4/5] w-full">
                         {animal.photo_url ? (
-                          <Image src={animal.photo_url} alt={animal.name} fill className="object-cover object-[center_25%]" sizes="(max-width:640px) 85vw, 380px" />
+                          <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="(max-width:640px) 85vw, 380px" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-6xl" style={{ background: "var(--c-card)" }}>{emoji}</div>
                         )}
