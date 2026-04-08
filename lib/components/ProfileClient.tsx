@@ -10,6 +10,7 @@ import { useAppContext } from "@/lib/contexts/AppContext";
 import { BadgesSection } from "./Badges";
 import ReferralCard from "./ReferralCard";
 import { EMOJI_MAP } from "@/lib/constants";
+import ImageCropper from "./ImageCropper";
 
 interface Props {
   profile: any;
@@ -70,14 +71,21 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
 
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [avatarCropFile, setAvatarCropFile] = useState<File | null>(null);
 
-  async function handleAvatarUpload(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleAvatarSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    setAvatarCropFile(file);
+    if (avatarInputRef.current) avatarInputRef.current.value = "";
+  }
+
+  async function handleAvatarCropped(blob: Blob) {
+    setAvatarCropFile(null);
     setUploadingAvatar(true);
     try {
-      const ext = file.name.split(".").pop() || "jpg";
-      const path = `avatars/${user.id}/${Date.now()}.${ext}`;
+      const path = `avatars/${user.id}/${Date.now()}.jpg`;
+      const file = new File([blob], "avatar.jpg", { type: "image/jpeg" });
       const { error: uploadError } = await supabase.storage.from("photos").upload(path, file, { upsert: true });
       if (uploadError) { console.error("Upload error:", uploadError.message); setUploadingAvatar(false); return; }
       const { data: urlData } = supabase.storage.from("photos").getPublicUrl(path);
@@ -88,7 +96,6 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
       console.error("Avatar upload failed:", err);
     }
     setUploadingAvatar(false);
-    if (avatarInputRef.current) avatarInputRef.current.value = "";
   }
 
   async function deleteAnimal(id: string) {
@@ -157,7 +164,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
               type="file"
               accept="image/*"
               className="hidden"
-              onChange={handleAvatarUpload}
+              onChange={handleAvatarSelect}
             />
             <button
               onClick={() => avatarInputRef.current?.click()}
@@ -612,6 +619,18 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
             </div>
           </div>
         </div>
+      )}
+
+      {/* Avatar crop modal */}
+      {avatarCropFile && (
+        <ImageCropper
+          file={avatarCropFile}
+          aspectRatio={1}
+          outputWidth={512}
+          title="Recadrer ta photo"
+          onConfirm={handleAvatarCropped}
+          onCancel={() => setAvatarCropFile(null)}
+        />
       )}
 
       {/* Hover styles */}

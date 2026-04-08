@@ -10,6 +10,7 @@ import { TRAITS } from "@/lib/traits";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import { useAppContext } from "@/lib/contexts/AppContext";
+import ImageCropper from "@/lib/components/ImageCropper";
 
 const SPECIES_LIST = [
   { value: "chien", label: "🐕 Chien" },
@@ -40,6 +41,10 @@ export default function EditAnimalPage() {
   const { t } = useAppContext();
 
   const hasOwnerPhoto = photos.some((p) => p.tag === "with_owner");
+
+  // Crop state
+  const [cropFile, setCropFile] = useState<File | null>(null);
+  const [cropTag, setCropTag] = useState<"with_owner" | "animal_only">("animal_only");
 
   useEffect(() => {
     async function load() {
@@ -82,8 +87,15 @@ export default function EditAnimalPage() {
   function handleAddPhoto(e: React.ChangeEvent<HTMLInputElement>, tag: "with_owner" | "animal_only") {
     const file = e.target.files?.[0];
     if (!file || photos.length >= 5) return;
-    setPhotos((prev) => [...prev, { file, preview: URL.createObjectURL(file), tag }]);
+    setCropFile(file);
+    setCropTag(tag);
     e.target.value = "";
+  }
+
+  function handleCropConfirm(blob: Blob) {
+    const file = new File([blob], "cropped.jpg", { type: "image/jpeg" });
+    setPhotos((prev) => [...prev, { file, preview: URL.createObjectURL(blob), tag: cropTag }]);
+    setCropFile(null);
   }
 
   function removePhoto(index: number) {
@@ -426,6 +438,18 @@ export default function EditAnimalPage() {
           </form>
         </div>
       </div>
+
+      {/* Crop modal */}
+      {cropFile && (
+        <ImageCropper
+          file={cropFile}
+          aspectRatio={1}
+          outputWidth={800}
+          title="Recadrer la photo"
+          onConfirm={handleCropConfirm}
+          onCancel={() => setCropFile(null)}
+        />
+      )}
     </div>
   );
 }

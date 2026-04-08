@@ -15,6 +15,7 @@ import PresenceDot from "@/lib/components/PresenceDot";
 import VoiceRecorder, { getFileExtension, getSupportedMimeType } from "@/lib/components/VoiceRecorder";
 import VoiceMessage from "@/lib/components/VoiceMessage";
 import { EMOJI_MAP } from "@/lib/constants";
+import ImageCropper from "@/lib/components/ImageCropper";
 
 // ──────────────────────────────────────────────────
 // Static suggestion helpers (unchanged)
@@ -76,7 +77,9 @@ async function fetchAISuggestions(
     if (Array.isArray(data.suggestions) && data.suggestions.length > 0) {
       return data.suggestions.slice(0, 3);
     }
-  } catch {}
+  } catch (err) {
+    console.error("[Conversation] Failed to fetch message suggestions:", err);
+  }
   return [];
 }
 
@@ -172,8 +175,10 @@ export default function ConversationPage() {
     setLoading(false);
   }
 
-  // ── Photo upload ──
-  async function handlePhotoSelect(e: React.ChangeEvent<HTMLInputElement>) {
+  // ── Photo upload with crop ──
+  const [chatCropFile, setChatCropFile] = useState<File | null>(null);
+
+  function handlePhotoSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file || !profile) return;
     if (!file.type.startsWith("image/")) return;
@@ -181,13 +186,19 @@ export default function ConversationPage() {
       setError("Image trop volumineuse (max 5 Mo)");
       return;
     }
+    setChatCropFile(file);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
 
+  async function handleChatCropConfirm(blob: Blob) {
+    setChatCropFile(null);
+    if (!profile) return;
     setUploadingPhoto(true);
     setError(null);
 
     try {
-      const ext = file.name.split(".").pop() || "jpg";
-      const path = `${matchId}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+      const path = `${matchId}/${Date.now()}_${Math.random().toString(36).slice(2)}.jpg`;
+      const file = new File([blob], "chat-photo.jpg", { type: "image/jpeg" });
 
       const { error: uploadError } = await supabase.storage
         .from("chat-images")
@@ -208,13 +219,11 @@ export default function ConversationPage() {
       if (result.error) {
         setError(result.error);
       }
-      // No need to fetchMessages -- realtime will push the new message
     } catch {
       setError("Erreur inattendue lors de l'envoi de la photo.");
     }
 
     setUploadingPhoto(false);
-    if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
   // ── Voice upload ──
@@ -658,6 +667,18 @@ export default function ConversationPage() {
           targetName={otherProfile.full_name || otherProfile.email || "Utilisateur"}
           onClose={() => setShowBlockReport(false)}
           onBlocked={() => { window.location.href = "/matches"; }}
+        />
+      )}
+
+      {/* Chat image crop modal */}
+      {chatCropFile && (
+        <ImageCropper
+          file={chatCropFile}
+          aspectRatio={4 / 3}
+          outputWidth={1024}
+          title="Recadrer la photo"
+          onConfirm={handleChatCropConfirm}
+          onCancel={() => setChatCropFile(null)}
         />
       )}
     </div>

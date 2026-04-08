@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
+import ImageCropper from "./ImageCropper";
 
 export default function VerificationBanner() {
   const [show, setShow] = useState(false);
@@ -38,12 +39,21 @@ export default function VerificationBanner() {
     check();
   }, []);
 
+  const [cropFile, setCropFile] = useState<File | null>(null);
+
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
     if (f) {
-      setFile(f);
-      setPreview(URL.createObjectURL(f));
+      setCropFile(f);
     }
+    e.target.value = "";
+  }
+
+  function handleCropConfirm(blob: Blob) {
+    const croppedFile = new File([blob], "verification.jpg", { type: "image/jpeg" });
+    setFile(croppedFile);
+    setPreview(URL.createObjectURL(blob));
+    setCropFile(null);
   }
 
   async function handleSubmit() {
@@ -133,6 +143,7 @@ export default function VerificationBanner() {
           Renvoyer une photo
         </button>
         {showUpload && <UploadZone preview={preview} onChange={handleFileChange} onSubmit={handleSubmit} uploading={uploading} file={file} />}
+        {cropFile && <VerifCropWrapper cropFile={cropFile} onConfirm={handleCropConfirm} onCancel={() => setCropFile(null)} />}
       </div>
     );
   }
@@ -180,7 +191,21 @@ export default function VerificationBanner() {
       ) : (
         <UploadZone preview={preview} onChange={handleFileChange} onSubmit={handleSubmit} uploading={uploading} file={file} />
       )}
+      {cropFile && <VerifCropWrapper cropFile={cropFile} onConfirm={handleCropConfirm} onCancel={() => setCropFile(null)} />}
     </div>
+  );
+}
+
+function VerifCropWrapper({ cropFile, onConfirm, onCancel }: { cropFile: File; onConfirm: (blob: Blob) => void; onCancel: () => void }) {
+  return (
+    <ImageCropper
+      file={cropFile}
+      aspectRatio={4 / 3}
+      outputWidth={1024}
+      title="Recadrer la verification"
+      onConfirm={onConfirm}
+      onCancel={onCancel}
+    />
   );
 }
 

@@ -7,6 +7,7 @@ import { createAnimal, uploadAnimalPhoto } from "@/lib/services/animals";
 import { BREEDS } from "@/lib/breeds";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "@/lib/contexts/AppContext";
+import ImageCropper from "@/lib/components/ImageCropper";
 
 const SPECIES_OPTIONS = [
   { value: "chien", emoji: "🐕", label: "Chien" },
@@ -29,6 +30,9 @@ export default function OnboardingPage() {
   const [verifPreview, setVerifPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Crop state
+  const [cropFile, setCropFile] = useState<File | null>(null);
+  const [cropTarget, setCropTarget] = useState<"animal" | "verif" | null>(null);
   const router = useRouter();
   const { t } = useAppContext();
   const supabase = createClient();
@@ -38,17 +42,32 @@ export default function OnboardingPage() {
   function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (file) {
-      setPhotoFile(file);
-      setPhotoPreview(URL.createObjectURL(file));
+      setCropFile(file);
+      setCropTarget("animal");
     }
+    e.target.value = "";
   }
 
   function handleVerifPhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (file) {
-      setVerifFile(file);
-      setVerifPreview(URL.createObjectURL(file));
+      setCropFile(file);
+      setCropTarget("verif");
     }
+    e.target.value = "";
+  }
+
+  function handleCropConfirm(blob: Blob) {
+    const file = new File([blob], "cropped.jpg", { type: "image/jpeg" });
+    if (cropTarget === "animal") {
+      setPhotoFile(file);
+      setPhotoPreview(URL.createObjectURL(blob));
+    } else if (cropTarget === "verif") {
+      setVerifFile(file);
+      setVerifPreview(URL.createObjectURL(blob));
+    }
+    setCropFile(null);
+    setCropTarget(null);
   }
 
   async function handleFinish() {
@@ -323,6 +342,18 @@ export default function OnboardingPage() {
           </div>
         )}
       </div>
+
+      {/* Crop modal */}
+      {cropFile && cropTarget && (
+        <ImageCropper
+          file={cropFile}
+          aspectRatio={cropTarget === "animal" ? 1 : 4 / 3}
+          outputWidth={cropTarget === "animal" ? 800 : 1024}
+          title={cropTarget === "animal" ? "Recadrer la photo" : "Recadrer la verification"}
+          onConfirm={handleCropConfirm}
+          onCancel={() => { setCropFile(null); setCropTarget(null); }}
+        />
+      )}
     </div>
   );
 }
