@@ -21,11 +21,6 @@ interface StoryRow {
     name: string;
     photo_url: string | null;
   } | null;
-  profiles: {
-    id: string;
-    full_name: string;
-    avatar_url: string | null;
-  } | null;
 }
 
 interface UserStoryGroup {
@@ -57,7 +52,8 @@ export default function StoriesRing() {
     async function load() {
       const supabase = createClient();
 
-      // Fetch all active (non-expired) stories, joined with animal + profile
+      // Fetch all active (non-expired) stories, joined with animal only
+      // (profiles FK points to auth.users, not profiles — join separately)
       const { data, error } = await supabase
         .from("stories")
         .select(
@@ -67,34 +63,52 @@ export default function StoriesRing() {
           animal_id,
           media_url,
           expires_at,
-          animals!inner ( id, name, photo_url ),
-          profiles!inner ( id, full_name, avatar_url )
+          animals ( id, name, photo_url )
         `
         )
         .gt("expires_at", new Date().toISOString())
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .limit(50);
 
       if (error) {
-        console.error("[StoriesRing] fetch error:", error.message);
+        console.error("[StoriesRing] fetch error:", error.message, error);
+        setLoaded(true);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        console.log("[StoriesRing] no active stories found");
         setLoaded(true);
         return;
       }
 
       const stories = (data as unknown as StoryRow[]) || [];
 
+      // Batch-fetch profiles for all story authors (avoids N+1)
+      const userIds = [...new Set(stories.map((s) => s.user_id))];
+      const profileMap = new Map<string, { full_name: string; avatar_url: string | null }>();
+      if (userIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("id, full_name, avatar_url")
+          .in("id", userIds);
+        for (const p of profiles || []) {
+          profileMap.set(p.id, { full_name: p.full_name, avatar_url: p.avatar_url });
+        }
+      }
+
       // Group by user_id
       const groupMap = new Map<string, UserStoryGroup>();
 
       for (const story of stories) {
+        const profile = profileMap.get(story.user_id);
         const existing = groupMap.get(story.user_id);
 
         if (existing) {
           existing.storyIds.push(story.id);
-          // Keep latest timestamp
           if (story.expires_at > existing.latestStoryAt) {
             existing.latestStoryAt = story.expires_at;
           }
-          // Prefer an animal photo if we don't have an avatar
           if (!existing.avatarUrl && story.animals?.photo_url) {
             existing.animalPhotoUrl = story.animals.photo_url;
           }
@@ -102,10 +116,10 @@ export default function StoriesRing() {
           groupMap.set(story.user_id, {
             userId: story.user_id,
             displayName:
-              story.profiles?.full_name ||
+              profile?.full_name ||
               story.animals?.name ||
               "Utilisateur",
-            avatarUrl: story.profiles?.avatar_url || null,
+            avatarUrl: profile?.avatar_url || null,
             animalPhotoUrl: story.animals?.photo_url || null,
             storyIds: [story.id],
             latestStoryAt: story.expires_at,

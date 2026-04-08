@@ -6,55 +6,10 @@ import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { useAppContext } from "@/lib/contexts/AppContext";
 import { EMOJI_MAP } from "@/lib/constants";
+import type { StoryRow, ViewableStory, UserStoryGroup } from "@/lib/types";
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-type AnimalSpecies = "chien" | "chat" | "lapin" | "oiseau" | "rongeur" | "autre";
-
-interface AnimalEmbed {
-  id: string;
-  name: string;
-  species: AnimalSpecies;
-  photo_url: string | null;
-}
-
-interface ProfileEmbed {
-  full_name: string | null;
-  avatar_url: string | null;
-}
-
-interface StoryRow {
-  id: string;
-  user_id: string;
-  animal_id: string | null;
-  image_url: string | null;
-  caption: string | null;
-  template: string;
-  bg_gradient: string | null;
-  text_color: string | null;
-  sticker: string | null;
-  views_count: number;
-  expires_at: string;
-  created_at: string;
-  animals: AnimalEmbed | null;
-  profiles: ProfileEmbed | null;
-}
-
-/** A single viewable story within a user group. */
-interface ViewableStory {
-  row: StoryRow;
-  mediaType: "image" | "video" | "none";
-}
-
-/** Stories grouped by user_id (Instagram-style). */
-interface UserGroup {
-  userId: string;
-  displayName: string;
-  avatarUrl: string | null;
-  stories: ViewableStory[];
-}
+/** Stories page requires the stories array to be present. */
+type UserGroup = UserStoryGroup & { stories: ViewableStory[] };
 
 // ---------------------------------------------------------------------------
 // Gradients for text-only / template stories
@@ -143,6 +98,17 @@ export default function StoriesPage() {
   // Track which stories we already recorded a view for
   const viewedRef = useRef<Set<string>>(new Set());
 
+  // Edit caption state
+  const [isEditing, setIsEditing] = useState(false);
+  const [editCaption, setEditCaption] = useState("");
+
+  // Viewers modal state
+  const [showViewers, setShowViewers] = useState(false);
+  const [viewers, setViewers] = useState<
+    { id: string; full_name: string | null; avatar_url: string | null; viewed_at: string }[]
+  >([]);
+  const [loadingViewers, setLoadingViewers] = useState(false);
+
   // -----------------------------------------------------------------------
   // Fetch stories
   // -----------------------------------------------------------------------
@@ -159,18 +125,43 @@ export default function StoriesPage() {
       }
       setCurrentUserId(user.id);
 
+      // Fetch stories with animal join only (profiles FK → auth.users, not profiles)
       const { data, error } = await supabase
         .from("stories")
         .select(
-          "*, animals(id, name, species, photo_url), profiles(full_name, avatar_url)"
+          "*, animals(id, name, species, photo_url)"
         )
         .gt("expires_at", new Date().toISOString())
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .limit(50);
 
-      if (error || !data || data.length === 0) {
+      if (error) {
+        console.error("[StoriesPage] fetch error:", error.message, error);
         setGroups([]);
         setLoading(false);
         return;
+      }
+
+      if (!data || data.length === 0) {
+        console.log("[StoriesPage] no active stories found (all expired or none created)");
+        setGroups([]);
+        setLoading(false);
+        return;
+      }
+
+      console.log("[StoriesPage] fetched", data.length, "active stories");
+
+      // Batch-fetch profiles for all story authors
+      const userIds = [...new Set((data as StoryRow[]).map((r) => r.user_id))];
+      const profileMap = new Map<string, { full_name: string; avatar_url: string | null }>();
+      if (userIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("id, full_name, avatar_url")
+          .in("id", userIds);
+        for (const p of profiles || []) {
+          profileMap.set(p.id, { full_name: p.full_name, avatar_url: p.avatar_url });
+        }
       }
 
       // Group stories by user_id, preserving order
@@ -186,13 +177,14 @@ export default function StoriesPage() {
         // Reverse so oldest story in a group is first (chronological within group)
         const ordered = [...rows].reverse();
         const firstRow = ordered[0];
+        const profile = profileMap.get(userId);
 
         const displayName =
-          firstRow.profiles?.full_name ||
+          profile?.full_name ||
           firstRow.animals?.name ||
           "Utilisateur";
         const avatarUrl =
-          firstRow.profiles?.avatar_url ||
+          profile?.avatar_url ||
           firstRow.animals?.photo_url ||
           null;
 
@@ -200,14 +192,17 @@ export default function StoriesPage() {
           userId,
           displayName,
           avatarUrl,
-          stories: ordered.map((r) => ({
-            row: r,
-            mediaType: r.image_url
-              ? isVideoUrl(r.image_url)
-                ? "video"
-                : "image"
-              : "none",
-          })),
+          stories: ordered.map((r) => {
+            const effectiveUrl = r.media_url || r.image_url || null;
+            return {
+              row: r,
+              mediaType: effectiveUrl
+                ? isVideoUrl(effectiveUrl)
+                  ? "video"
+                  : "image"
+                : "none",
+            };
+          }),
         });
       }
 
@@ -236,23 +231,12 @@ export default function StoriesPage() {
       if (viewedRef.current.has(storyRow.id)) return;
       viewedRef.current.add(storyRow.id);
 
-      const supabase = createClient();
-
-      // Upsert into story_views
-      supabase
-        .from("story_views")
-        .upsert(
-          { story_id: storyRow.id, viewer_id: currentUserId },
-          { onConflict: "story_id,viewer_id" }
-        )
-        .then(() => {});
-
-      // Increment views_count via direct update
-      supabase
-        .from("stories")
-        .update({ views_count: (storyRow.views_count || 0) + 1 })
-        .eq("id", storyRow.id)
-        .then(() => {});
+      // Use server-side API to bypass RLS (fire-and-forget)
+      fetch("/api/stories/view", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ story_id: storyRow.id }),
+      }).catch(() => {});
     },
     [currentUserId]
   );
@@ -264,6 +248,13 @@ export default function StoriesPage() {
     }
   }, [groupIdx, storyIdx, story, trackView]);
 
+  // Reset edit/viewers state when story changes
+  useEffect(() => {
+    setIsEditing(false);
+    setShowViewers(false);
+    setViewers([]);
+  }, [groupIdx, storyIdx]);
+
   // -----------------------------------------------------------------------
   // Navigation
   // -----------------------------------------------------------------------
@@ -271,6 +262,135 @@ export default function StoriesPage() {
   const close = useCallback(() => {
     router.push("/feed");
   }, [router]);
+
+  // -----------------------------------------------------------------------
+  // Delete story
+  // -----------------------------------------------------------------------
+
+  const handleDeleteStory = useCallback(
+    async (storyRow: StoryRow) => {
+      if (!confirm("Supprimer cette story ?")) return;
+
+      const supabase = createClient();
+
+      // Delete media from storage if present
+      const mediaUrl = storyRow.media_url || storyRow.image_url;
+      if (mediaUrl) {
+        try {
+          const url = new URL(mediaUrl);
+          const pathMatch = url.pathname.match(/\/storage\/v1\/object\/public\/stories\/(.+)/);
+          if (pathMatch) {
+            await supabase.storage.from("stories").remove([decodeURIComponent(pathMatch[1])]);
+          }
+        } catch {
+          // Ignore URL parsing errors
+        }
+      }
+
+      // Delete the story row
+      await supabase.from("stories").delete().eq("id", storyRow.id);
+
+      // Update local state: remove story from current group
+      setGroups((prev) => {
+        const updated = prev.map((g) => ({
+          ...g,
+          stories: g.stories.filter((s) => s.row.id !== storyRow.id),
+        }));
+        return updated.filter((g) => g.stories.length > 0);
+      });
+
+      // Navigate: if more stories in group, stay; otherwise next group or close
+      if (group && group.stories.length > 1) {
+        if (storyIdx >= group.stories.length - 1) {
+          setStoryIdx(Math.max(0, storyIdx - 1));
+        }
+      } else if (groups.length > 1) {
+        if (groupIdx >= groups.length - 1) {
+          setGroupIdx(Math.max(0, groupIdx - 1));
+        }
+        setStoryIdx(0);
+      } else {
+        close();
+      }
+    },
+    [group, groups.length, groupIdx, storyIdx, close]
+  );
+
+  // -----------------------------------------------------------------------
+  // Edit caption
+  // -----------------------------------------------------------------------
+
+  const handleSaveCaption = useCallback(
+    async (storyRow: StoryRow) => {
+      const supabase = createClient();
+      const { error } = await supabase
+        .from("stories")
+        .update({ caption: editCaption })
+        .eq("id", storyRow.id);
+
+      if (!error) {
+        // Update local state
+        setGroups((prev) =>
+          prev.map((g) => ({
+            ...g,
+            stories: g.stories.map((s) =>
+              s.row.id === storyRow.id
+                ? { ...s, row: { ...s.row, caption: editCaption } }
+                : s
+            ),
+          }))
+        );
+      }
+      setIsEditing(false);
+    },
+    [editCaption]
+  );
+
+  // -----------------------------------------------------------------------
+  // Fetch viewers
+  // -----------------------------------------------------------------------
+
+  const fetchViewers = useCallback(async (storyId: string) => {
+    setLoadingViewers(true);
+    const supabase = createClient();
+
+    // Get viewer IDs and timestamps
+    const { data: views } = await supabase
+      .from("story_views")
+      .select("viewer_id, viewed_at")
+      .eq("story_id", storyId);
+
+    if (!views || views.length === 0) {
+      setViewers([]);
+      setLoadingViewers(false);
+      return;
+    }
+
+    const viewerIds = views.map((v) => v.viewer_id);
+
+    // Get profiles
+    const { data: profiles } = await supabase
+      .from("profiles")
+      .select("id, full_name, avatar_url")
+      .in("id", viewerIds);
+
+    const profileMap = new Map(
+      (profiles || []).map((p) => [p.id, p])
+    );
+
+    const merged = views.map((v) => {
+      const prof = profileMap.get(v.viewer_id);
+      return {
+        id: v.viewer_id,
+        full_name: prof?.full_name || null,
+        avatar_url: prof?.avatar_url || null,
+        viewed_at: v.viewed_at,
+      };
+    });
+
+    setViewers(merged);
+    setLoadingViewers(false);
+  }, []);
 
   const goNext = useCallback(() => {
     if (!group) return;
@@ -542,33 +662,42 @@ export default function StoriesPage() {
       onTouchEnd={handleTouchEnd}
     >
       {/* ---- Background media ---- */}
-      {story.mediaType === "video" && row.image_url ? (
-        <video
-          ref={videoRef}
-          key={row.id}
-          src={row.image_url}
-          autoPlay
-          playsInline
-          muted={false}
-          loop={false}
-          onTimeUpdate={handleVideoTimeUpdate}
-          onEnded={handleVideoEnded}
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-      ) : story.mediaType === "image" && row.image_url ? (
-        <Image
-          key={row.id}
-          src={row.image_url}
-          alt={row.caption || "Story"}
-          fill
-          className="object-cover"
-          sizes="100vw"
-          priority
-        />
-      ) : (
-        /* Text-only / template: gradient background */
-        <div className="absolute inset-0" style={{ background: gradientBg }} />
-      )}
+      {(() => {
+        const effectiveUrl = row.media_url || row.image_url || null;
+        if (story.mediaType === "video" && effectiveUrl) {
+          return (
+            <video
+              ref={videoRef}
+              key={row.id}
+              src={effectiveUrl}
+              autoPlay
+              playsInline
+              muted={false}
+              loop={false}
+              onTimeUpdate={handleVideoTimeUpdate}
+              onEnded={handleVideoEnded}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          );
+        }
+        if (story.mediaType === "image" && effectiveUrl) {
+          return (
+            <Image
+              key={row.id}
+              src={effectiveUrl}
+              alt={row.caption || "Story"}
+              fill
+              className="object-cover"
+              sizes="100vw"
+              priority
+            />
+          );
+        }
+        return (
+          /* Text-only / template: gradient background */
+          <div className="absolute inset-0" style={{ background: gradientBg }} />
+        );
+      })()}
 
       {/* Dark gradient overlay */}
       <div
@@ -636,30 +765,92 @@ export default function StoriesPage() {
           </div>
         </div>
 
-        {/* Close button */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            close();
-          }}
-          onMouseDown={(e) => e.stopPropagation()}
-          onMouseUp={(e) => e.stopPropagation()}
-          className="w-8 h-8 flex items-center justify-center rounded-full text-white"
-          style={{ background: "rgba(255,255,255,0.2)" }}
-          aria-label={t.storiesBack || "Retour"}
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
+        <div className="flex items-center gap-3">
+          {/* Edit button (own stories only) */}
+          {currentUserId === row.user_id && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                pause();
+                setEditCaption(row.caption || "");
+                setIsEditing(true);
+              }}
+              onMouseDown={(e) => e.stopPropagation()}
+              onMouseUp={(e) => e.stopPropagation()}
+              className="w-10 h-10 flex items-center justify-center rounded-full text-white active:scale-90 transition-transform"
+              style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(8px)" }}
+              aria-label="Modifier"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+              </svg>
+            </button>
+          )}
+
+          {/* Delete button (own stories only) */}
+          {currentUserId === row.user_id && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDeleteStory(row);
+              }}
+              onMouseDown={(e) => e.stopPropagation()}
+              onMouseUp={(e) => e.stopPropagation()}
+              className="w-10 h-10 flex items-center justify-center rounded-full text-red-400 active:scale-90 transition-transform"
+              style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(8px)" }}
+              aria-label="Supprimer"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              </svg>
+            </button>
+          )}
+
+          {/* Close button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              close();
+            }}
+            onMouseDown={(e) => e.stopPropagation()}
+            onMouseUp={(e) => e.stopPropagation()}
+            className="w-10 h-10 flex items-center justify-center rounded-full text-white active:scale-90 transition-transform"
+            style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(8px)" }}
+            aria-label={t.storiesBack || "Retour"}
           >
-            <path d="M18 6L6 18M6 6l12 12" />
-          </svg>
-        </button>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            >
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* ---- Paused indicator ---- */}
@@ -754,11 +945,46 @@ export default function StoriesPage() {
         </div>
       )}
 
-      {/* ---- Bottom: story counter + group nav dots ---- */}
-      <div className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-2 z-10 pointer-events-none">
+      {/* ---- Bottom: views + story counter + group nav dots ---- */}
+      <div className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-2 z-10">
+        {/* View count */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            if (currentUserId === row.user_id) {
+              pause();
+              setShowViewers(true);
+              fetchViewers(row.id);
+            }
+          }}
+          onMouseDown={(e) => e.stopPropagation()}
+          onMouseUp={(e) => e.stopPropagation()}
+          className="flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm font-semibold active:scale-95 transition-transform"
+          style={{
+            background: "rgba(0,0,0,0.5)",
+            backdropFilter: "blur(8px)",
+            cursor: currentUserId === row.user_id ? "pointer" : "default",
+          }}
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          {row.views_count || 0}
+        </button>
+
         {/* Group navigation dots */}
         {groups.length > 1 && (
-          <div className="flex gap-1.5">
+          <div className="flex gap-1.5 pointer-events-none">
             {groups.map((_, idx) => (
               <div
                 key={idx}
@@ -775,10 +1001,205 @@ export default function StoriesPage() {
             ))}
           </div>
         )}
-        <p className="text-white/40 text-[10px]">
+        <p className="text-white/40 text-[10px] pointer-events-none">
           {storyIdx + 1} / {totalStoriesInGroup}
         </p>
       </div>
+
+      {/* ---- Edit caption overlay ---- */}
+      {isEditing && (
+        <div
+          className="absolute inset-0 z-20 flex items-center justify-center"
+          style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(6px)" }}
+          onClick={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          onMouseUp={(e) => e.stopPropagation()}
+        >
+          <div
+            className="w-[85%] max-w-sm rounded-2xl p-5 flex flex-col gap-4"
+            style={{ background: "var(--c-card)", border: "1px solid var(--c-border)" }}
+          >
+            <h3
+              className="text-base font-bold"
+              style={{ color: "var(--c-text)" }}
+            >
+              Modifier la legende
+            </h3>
+            <textarea
+              value={editCaption}
+              onChange={(e) => setEditCaption(e.target.value)}
+              rows={3}
+              className="w-full rounded-xl px-4 py-3 text-sm resize-none focus:outline-none"
+              style={{
+                background: "var(--c-deep)",
+                color: "var(--c-text)",
+                border: "1px solid var(--c-border)",
+              }}
+              placeholder="Ajouter une legende..."
+              autoFocus
+            />
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => {
+                  setIsEditing(false);
+                  resume();
+                }}
+                className="px-4 py-2 rounded-xl text-sm font-semibold"
+                style={{
+                  background: "var(--c-deep)",
+                  color: "var(--c-text-muted)",
+                  border: "1px solid var(--c-border)",
+                }}
+              >
+                Annuler
+              </button>
+              <button
+                onClick={() => {
+                  handleSaveCaption(row);
+                  resume();
+                }}
+                className="px-4 py-2 rounded-xl text-sm font-bold text-white"
+                style={{ background: "var(--c-accent)" }}
+              >
+                Enregistrer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ---- Viewers modal ---- */}
+      {showViewers && (
+        <div
+          className="absolute inset-0 z-20 flex items-end justify-center"
+          style={{ background: "rgba(0,0,0,0.5)" }}
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowViewers(false);
+            resume();
+          }}
+          onMouseDown={(e) => e.stopPropagation()}
+          onMouseUp={(e) => e.stopPropagation()}
+        >
+          <div
+            className="w-full max-h-[60vh] rounded-t-2xl p-5 flex flex-col gap-3 overflow-y-auto"
+            style={{
+              background: "var(--c-card)",
+              border: "1px solid var(--c-border)",
+              borderBottom: "none",
+              backdropFilter: "blur(20px)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Drag handle */}
+            <div className="flex justify-center mb-1">
+              <div
+                className="w-10 h-1 rounded-full"
+                style={{ background: "var(--c-border)" }}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <h3
+                className="text-base font-bold flex items-center gap-2"
+                style={{ color: "var(--c-text)" }}
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+                Vues ({row.views_count || 0})
+              </h3>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowViewers(false);
+                  resume();
+                }}
+                className="w-7 h-7 flex items-center justify-center rounded-full"
+                style={{ background: "var(--c-deep)" }}
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  style={{ color: "var(--c-text-muted)" }}
+                >
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {loadingViewers ? (
+              <div className="flex justify-center py-6">
+                <div className="w-6 h-6 border-2 border-[var(--c-border)] border-t-white rounded-full animate-spin" />
+              </div>
+            ) : viewers.length === 0 ? (
+              <p
+                className="text-center py-6 text-sm"
+                style={{ color: "var(--c-text-muted)" }}
+              >
+                Aucune vue pour le moment
+              </p>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {viewers.map((v) => (
+                  <div
+                    key={v.id}
+                    className="flex items-center gap-3 py-2 px-1"
+                  >
+                    <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 border border-white/10">
+                      {v.avatar_url ? (
+                        <Image
+                          src={v.avatar_url}
+                          alt={v.full_name || ""}
+                          width={36}
+                          height={36}
+                          className="object-cover w-full h-full"
+                        />
+                      ) : (
+                        <div
+                          className="w-full h-full flex items-center justify-center text-sm"
+                          style={{ background: "var(--c-deep)", color: "var(--c-text-muted)" }}
+                        >
+                          {(v.full_name || "?")[0]?.toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p
+                        className="text-sm font-semibold truncate"
+                        style={{ color: "var(--c-text)" }}
+                      >
+                        {v.full_name || "Utilisateur"}
+                      </p>
+                      <p
+                        className="text-[10px]"
+                        style={{ color: "var(--c-text-muted)" }}
+                      >
+                        {timeAgo(v.viewed_at)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

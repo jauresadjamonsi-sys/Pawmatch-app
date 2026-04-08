@@ -105,6 +105,15 @@ export default function StoryCreatePage() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
+  // Image crop state (drag-to-reframe in preview)
+  const [imgNatural, setImgNatural] = useState({ w: 0, h: 0 });
+  const [cropScale, setCropScale] = useState(1);
+  const [cropPos, setCropPos] = useState({ x: 0, y: 0 });
+  const cropDragRef = useRef({ active: false, sx: 0, sy: 0, ox: 0, oy: 0 });
+  const cropPinchRef = useRef({ dist: 0, scale: 1 });
+  const isPinching = useRef(false);
+  const cropFrameRef = useRef<HTMLDivElement>(null);
+
   // Refs
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
@@ -156,6 +165,125 @@ export default function StoryCreatePage() {
   }, [mediaPreviewUrl]);
 
   // -----------------------------------------------------------------------
+  // Image crop helpers (drag-to-reframe + pinch-to-zoom)
+  // -----------------------------------------------------------------------
+
+  const MIN_CROP_SCALE = 1;
+  const MAX_CROP_SCALE = 4;
+
+  function clampCropPos(dx: number, dy: number, s: number) {
+    if (!cropFrameRef.current || imgNatural.w === 0) return { x: dx, y: dy };
+    const rect = cropFrameRef.current.getBoundingClientRect();
+    const cW = rect.width;
+    const cH = rect.height;
+    const baseScale = Math.max(cW / imgNatural.w, cH / imgNatural.h);
+    const totalW = imgNatural.w * baseScale * s;
+    const totalH = imgNatural.h * baseScale * s;
+    const maxTx = Math.max(0, (totalW - cW) / 2);
+    const maxTy = Math.max(0, (totalH - cH) / 2);
+    return {
+      x: Math.max(-maxTx, Math.min(maxTx, dx)),
+      y: Math.max(-maxTy, Math.min(maxTy, dy)),
+    };
+  }
+
+  function onCropPointerDown(e: React.PointerEvent) {
+    if (isPinching.current) return;
+    e.preventDefault();
+    cropDragRef.current = { active: true, sx: e.clientX, sy: e.clientY, ox: cropPos.x, oy: cropPos.y };
+  }
+
+  function onCropPointerMove(e: React.PointerEvent) {
+    if (!cropDragRef.current.active || isPinching.current) return;
+    const dx = e.clientX - cropDragRef.current.sx + cropDragRef.current.ox;
+    const dy = e.clientY - cropDragRef.current.sy + cropDragRef.current.oy;
+    setCropPos(clampCropPos(dx, dy, cropScale));
+  }
+
+  function onCropPointerUp() {
+    cropDragRef.current.active = false;
+  }
+
+  function onCropWheel(e: React.WheelEvent) {
+    e.stopPropagation();
+    const newScale = Math.max(MIN_CROP_SCALE, Math.min(MAX_CROP_SCALE, cropScale - e.deltaY * 0.002));
+    setCropScale(newScale);
+    setCropPos((prev) => clampCropPos(prev.x, prev.y, newScale));
+  }
+
+  function onCropTouchStart(e: React.TouchEvent) {
+    if (e.touches.length === 2) {
+      isPinching.current = true;
+      cropDragRef.current.active = false;
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      cropPinchRef.current = { dist: Math.hypot(dx, dy), scale: cropScale };
+    }
+  }
+
+  function onCropTouchMove(e: React.TouchEvent) {
+    if (e.touches.length === 2 && isPinching.current) {
+      e.preventDefault();
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const newDist = Math.hypot(dx, dy);
+      const ratio = newDist / (cropPinchRef.current.dist || 1);
+      const newScale = Math.max(MIN_CROP_SCALE, Math.min(MAX_CROP_SCALE, cropPinchRef.current.scale * ratio));
+      setCropScale(newScale);
+      setCropPos((prev) => clampCropPos(prev.x, prev.y, newScale));
+    }
+  }
+
+  function onCropTouchEnd(e: React.TouchEvent) {
+    if (e.touches.length < 2) {
+      isPinching.current = false;
+    }
+  }
+
+  /** Crop the image to the visible 9:16 frame and return as JPEG Blob */
+  async function cropImageToBlob(): Promise<Blob | null> {
+    if (!cropFrameRef.current || !mediaPreviewUrl || imgNatural.w === 0) return null;
+
+    const rect = cropFrameRef.current.getBoundingClientRect();
+    const cW = rect.width;
+    const cH = rect.height;
+
+    const baseScale = Math.max(cW / imgNatural.w, cH / imgNatural.h);
+    const totalScale = baseScale * cropScale;
+
+    const totalW = imgNatural.w * totalScale;
+    const totalH = imgNatural.h * totalScale;
+
+    // Image center is at container center + user offset
+    const imgLeft = (cW - totalW) / 2 + cropPos.x;
+    const imgTop = (cH - totalH) / 2 + cropPos.y;
+
+    // Source rect in natural image coordinates
+    const srcX = Math.max(0, -imgLeft / totalScale);
+    const srcY = Math.max(0, -imgTop / totalScale);
+    const srcW = Math.min(imgNatural.w - srcX, cW / totalScale);
+    const srcH = Math.min(imgNatural.h - srcY, cH / totalScale);
+
+    const OUT_W = 1080;
+    const OUT_H = 1920;
+
+    return new Promise((resolve) => {
+      const img = new window.Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = OUT_W;
+        canvas.height = OUT_H;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) { resolve(null); return; }
+        ctx.drawImage(img, srcX, srcY, srcW, srcH, 0, 0, OUT_W, OUT_H);
+        canvas.toBlob((blob) => resolve(blob), "image/jpeg", 0.92);
+      };
+      img.onerror = () => resolve(null);
+      img.src = mediaPreviewUrl;
+    });
+  }
+
+  // -----------------------------------------------------------------------
   // Handle file selection
   // -----------------------------------------------------------------------
 
@@ -203,6 +331,9 @@ export default function StoryCreatePage() {
         setMediaPreviewUrl(url);
         setMediaType("image");
         setVideoDuration(0);
+        setCropScale(1);
+        setCropPos({ x: 0, y: 0 });
+        setImgNatural({ w: 0, h: 0 });
         setStep("preview");
       } else {
         setError(t.storiesUnsupportedFormat || "Format non supporte. Utilisez JPG, PNG, WEBP, MP4, MOV ou WEBM.");
@@ -237,32 +368,43 @@ export default function StoryCreatePage() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        setPublishing(false);
+        return;
+      }
 
-      // Build storage path
-      const ext = getFileExtension(mediaFile) || (mediaType === "video" ? "mp4" : "jpg");
+      // For images, apply the user's crop before uploading
+      let fileToUpload: File | Blob = mediaFile;
+      let contentType = mediaFile.type;
+      let ext = getFileExtension(mediaFile) || (mediaType === "video" ? "mp4" : "jpg");
+
+      if (mediaType === "image" && imgNatural.w > 0) {
+        const croppedBlob = await cropImageToBlob();
+        if (croppedBlob) {
+          fileToUpload = croppedBlob;
+          contentType = "image/jpeg";
+          ext = "jpg";
+        }
+      }
+
       const storagePath = `${user.id}/${Date.now()}.${ext}`;
 
       // Upload with progress simulation
-      // Supabase JS v2 upload doesn't expose native XHR progress,
-      // so we simulate incremental progress then jump to 100 on success.
       const progressInterval = setInterval(() => {
-        setUploadProgress((prev) => {
-          if (prev >= 90) return prev;
-          return prev + Math.random() * 10;
-        });
+        setUploadProgress((prev) => (prev >= 90 ? prev : prev + Math.random() * 10));
       }, 200);
 
       const { error: uploadError } = await supabase.storage
         .from("stories")
-        .upload(storagePath, mediaFile, {
-          contentType: mediaFile.type,
+        .upload(storagePath, fileToUpload, {
+          contentType,
           upsert: false,
         });
 
       clearInterval(progressInterval);
 
       if (uploadError) {
+        console.error("[StoryCreate] upload error:", uploadError);
         setError(t.storiesUploadError || "Erreur lors du telechargement. Reessayez.");
         setPublishing(false);
         setUploadProgress(0);
@@ -277,19 +419,44 @@ export default function StoryCreatePage() {
       } = supabase.storage.from("stories").getPublicUrl(storagePath);
 
       // Insert story row
-      await supabase.from("stories").insert({
-        user_id: user.id,
-        animal_id: selectedAnimal.id,
-        media_url: publicUrl,
-        media_type: mediaType,
-        caption: textOverlay || null,
-        text_style: textOverlay ? TEXT_STYLES[textStyleIdx] : null,
-        created_at: new Date().toISOString(),
-        expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-      });
+      const { data: storyData, error: insertError } = await supabase
+        .from("stories")
+        .insert({
+          user_id: user.id,
+          animal_id: selectedAnimal.id,
+          media_url: publicUrl,
+          media_type: mediaType,
+          caption: textOverlay || null,
+          text_style: textOverlay ? TEXT_STYLES[textStyleIdx] : null,
+          created_at: new Date().toISOString(),
+          expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+        })
+        .select("id")
+        .single();
+
+      if (insertError) {
+        console.error("[StoryCreate] insert error:", insertError);
+        setError("Erreur: " + insertError.message);
+        setPublishing(false);
+        setUploadProgress(0);
+        return;
+      }
+
+      // Notify all matched users (fire-and-forget)
+      fetch("/api/stories/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          story_id: storyData?.id || null,
+          animal_id: selectedAnimal.id,
+          animal_name: selectedAnimal.name,
+          media_type: mediaType,
+        }),
+      }).catch(() => {});
 
       router.push("/stories");
-    } catch {
+    } catch (e) {
+      console.error("[StoryCreate] publish error:", e);
       setError(t.storiesPublishError || "Erreur lors de la publication. Reessayez.");
       setPublishing(false);
       setUploadProgress(0);
@@ -725,6 +892,8 @@ export default function StoryCreatePage() {
                 onClick={() => {
                   setStep("media");
                   setError(null);
+                  setCropScale(1);
+                  setCropPos({ x: 0, y: 0 });
                 }}
               />
               <h1
@@ -772,14 +941,37 @@ export default function StoryCreatePage() {
                 className="absolute inset-0 w-full h-full object-cover"
               />
             ) : (
-              <Image
-                src={mediaPreviewUrl}
-                alt={selectedAnimal.name}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 400px"
-                unoptimized
-              />
+              <div
+                ref={cropFrameRef}
+                className="absolute inset-0 overflow-hidden touch-none cursor-grab active:cursor-grabbing"
+                onPointerDown={onCropPointerDown}
+                onPointerMove={onCropPointerMove}
+                onPointerUp={onCropPointerUp}
+                onPointerLeave={onCropPointerUp}
+                onWheel={onCropWheel}
+                onTouchStart={onCropTouchStart}
+                onTouchMove={onCropTouchMove}
+                onTouchEnd={onCropTouchEnd}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={mediaPreviewUrl}
+                  alt={selectedAnimal.name}
+                  draggable={false}
+                  className="absolute inset-0 w-full h-full object-cover select-none"
+                  style={{
+                    transform: `translate(${cropPos.x}px, ${cropPos.y}px) scale(${cropScale})`,
+                    transformOrigin: "center center",
+                    pointerEvents: "none",
+                  }}
+                  onLoad={(e) => {
+                    const el = e.target as HTMLImageElement;
+                    if (el.naturalWidth && el.naturalHeight) {
+                      setImgNatural({ w: el.naturalWidth, h: el.naturalHeight });
+                    }
+                  }}
+                />
+              </div>
             )}
 
             {/* Dark gradient overlay */}
@@ -823,6 +1015,26 @@ export default function StoryCreatePage() {
                 {isVideo ? "VIDEO" : "PHOTO"}
               </span>
             </div>
+
+            {/* Crop hint for images */}
+            {!isVideo && (
+              <div className="absolute bottom-3 right-3 z-10 pointer-events-none">
+                <span
+                  className="px-2.5 py-1 rounded-full text-[10px] font-semibold flex items-center gap-1"
+                  style={{
+                    background: "rgba(0,0,0,0.5)",
+                    color: "rgba(255,255,255,0.8)",
+                    backdropFilter: "blur(6px)",
+                  }}
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                    <path d="M6.13 1L6 16a2 2 0 0 0 2 2h15" />
+                    <path d="M1 6.13L16 6a2 2 0 0 1 2 2v15" />
+                  </svg>
+                  Glisser pour recadrer
+                </span>
+              </div>
+            )}
 
             {/* Text overlay display */}
             {textOverlay && (
@@ -976,6 +1188,8 @@ export default function StoryCreatePage() {
               onClick={() => {
                 setStep("media");
                 setError(null);
+                setCropScale(1);
+                setCropPos({ x: 0, y: 0 });
               }}
               disabled={publishing}
               className="flex-1 rounded-xl py-3.5 text-sm font-bold transition-all active:scale-[0.97] disabled:opacity-50"
