@@ -88,13 +88,7 @@ export default function PricingPage() {
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          plan: planKey,
-          priceId:
-            planKey === "premium"
-              ? process.env.NEXT_PUBLIC_STRIPE_PREMIUM_PRICE_ID
-              : process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID,
-        }),
+        body: JSON.stringify({ plan: planKey }),
       });
 
       const data = await res.json();

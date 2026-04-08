@@ -2,6 +2,12 @@ import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { createClient } from "@/lib/supabase/server";
 
+// Server-side price lookup — no NEXT_PUBLIC_ dependency
+const PRICE_IDS: Record<string, string> = {
+  premium: process.env.NEXT_PUBLIC_STRIPE_PREMIUM_PRICE_ID || process.env.STRIPE_PREMIUM_PRICE_ID || "price_1TIe70E9B4j15xUNkDDBwuAt",
+  pro: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID || process.env.STRIPE_PRO_PRICE_ID || "price_1TIe71E9B4j15xUN6DplcQ4P",
+};
+
 export async function POST(request: Request) {
   try {
     const supabase = await createClient();
@@ -11,10 +17,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Non connecté" }, { status: 401 });
     }
 
-    const { priceId, plan } = await request.json();
+    const body = await request.json();
+    const plan = body.plan;
+    // Resolve price ID: server-side lookup from plan name, fallback to client-sent priceId
+    const priceId = PRICE_IDS[plan] || body.priceId;
 
     if (!priceId) {
-      return NextResponse.json({ error: "Price ID manquant" }, { status: 400 });
+      return NextResponse.json({ error: "Plan invalide" }, { status: 400 });
     }
 
     // Get or create Stripe customer
@@ -54,6 +63,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ url: session.url });
   } catch (error: any) {
+    console.error("Stripe checkout error:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
