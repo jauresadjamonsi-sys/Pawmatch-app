@@ -23,6 +23,22 @@ type Event = {
   is_joined?: boolean;
 };
 
+type DiscoveredEvent = {
+  id: string;
+  title: string;
+  snippet: string;
+  url: string;
+  source: string;
+  canton: string;
+  image?: string;
+};
+
+type CuratedSource = {
+  name: string;
+  url: string;
+  description: string;
+};
+
 const SPECIES_EMOJI: Record<string, string> = {
   chien: "🐕", chat: "🐱", lapin: "🐰",
   oiseau: "🐦", rongeur: "🐹", autre: "🐾",
@@ -82,6 +98,10 @@ export default function EventsPage() {
   const [createError, setCreateError] = useState<string | null>(null);
   const [detectedCanton, setDetectedCanton] = useState<string | null>(null);
   const [geoStatus, setGeoStatus] = useState<"idle" | "loading" | "done" | "denied">("idle");
+  const [discoveredEvents, setDiscoveredEvents] = useState<DiscoveredEvent[]>([]);
+  const [curatedSources, setCuratedSources] = useState<CuratedSource[]>([]);
+  const [googleSearchUrl, setGoogleSearchUrl] = useState<string>("");
+  const [discoverLoading, setDiscoverLoading] = useState(false);
 
   // Geolocation: auto-detect canton on mount
   useEffect(() => {
@@ -99,7 +119,7 @@ export default function EventsPage() {
     );
   }, []);
 
-  useEffect(() => { fetchEvents(); }, [filterCanton]);
+  useEffect(() => { fetchEvents(); fetchDiscover(); }, [filterCanton]);
 
   async function fetchEvents() {
     setLoading(true);
@@ -147,6 +167,21 @@ export default function EventsPage() {
 
     setEvents(enriched);
     setLoading(false);
+  }
+
+  async function fetchDiscover() {
+    setDiscoverLoading(true);
+    try {
+      const params = filterCanton ? `?canton=${filterCanton}` : "";
+      const res = await fetch(`/api/events/discover${params}`);
+      if (res.ok) {
+        const data = await res.json();
+        setDiscoveredEvents(data.events || []);
+        setCuratedSources(data.sources || []);
+        setGoogleSearchUrl(data.searchUrl || "");
+      }
+    } catch { /* ignore */ }
+    setDiscoverLoading(false);
   }
 
   async function handleJoin(eventId: string, isJoined: boolean) {
@@ -247,7 +282,7 @@ export default function EventsPage() {
         </div>
 
         {/* Canton filter */}
-        <div className="max-w-2xl mx-auto mt-3 flex gap-2 overflow-x-auto pb-1">
+        <div className="max-w-2xl mx-auto mt-3 flex gap-2 flex-wrap pb-1">
           <button onClick={() => setFilterCanton("")}
             className={"flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition " +
               (!filterCanton ? "bg-orange-500/20 border border-orange-500/40 text-orange-300" : "bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-orange-500/30")}>
@@ -479,6 +514,87 @@ export default function EventsPage() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* ═══ DISCOVERED EVENTS SECTION ═══ */}
+        <div className="mt-10 mb-4">
+          <div className="flex items-center gap-2 mb-1">
+            <h2 className="text-lg font-bold text-[var(--c-text)]">{"🔍"} Evenements decouverts</h2>
+            {discoverLoading && <span className="text-xs text-[var(--c-text-muted)] animate-pulse">Recherche...</span>}
+          </div>
+          <p className="text-xs text-[var(--c-text-muted)] mb-4">
+            Evenements pour animaux trouves sur le web {filterCanton ? `dans le canton de ${CANTONS.find(c => c.code === filterCanton)?.name || filterCanton}` : "en Suisse"}
+          </p>
+
+          {discoveredEvents.length > 0 ? (
+            <div className="space-y-3">
+              {discoveredEvents.map((ev, i) => (
+                <a key={ev.id} href={ev.url} target="_blank" rel="noopener noreferrer"
+                  className="fade-up block bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-4 hover:border-orange-500/30 transition-all group"
+                  style={{ animationDelay: i * 0.05 + "s" }}>
+                  <div className="flex gap-3">
+                    {ev.image && (
+                      <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-[var(--c-deep)]">
+                        <img src={ev.image} alt="" className="w-full h-full object-cover" loading="lazy" />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="px-2 py-0.5 bg-blue-500/15 border border-blue-500/25 text-blue-300 rounded-full text-[10px] font-semibold">
+                          {"🌐"} Web
+                        </span>
+                        <span className="text-[10px] text-[var(--c-text-muted)] truncate">{ev.source}</span>
+                      </div>
+                      <h3 className="text-sm font-semibold text-[var(--c-text)] line-clamp-1 group-hover:text-orange-400 transition-colors">{ev.title}</h3>
+                      <p className="text-xs text-[var(--c-text-muted)] line-clamp-2 mt-0.5">{ev.snippet}</p>
+                    </div>
+                    <div className="flex-shrink-0 flex items-center">
+                      <span className="text-[var(--c-text-muted)] group-hover:text-orange-400 transition-colors text-sm">{"→"}</span>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          ) : !discoverLoading ? (
+            <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-6 text-center">
+              <p className="text-sm text-[var(--c-text-muted)] mb-3">Aucun evenement externe trouve pour cette zone</p>
+              {googleSearchUrl && (
+                <a href={googleSearchUrl} target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/15 border border-blue-500/25 text-blue-300 rounded-xl text-sm font-medium hover:bg-blue-500/25 transition">
+                  {"🔍"} Rechercher sur Google
+                </a>
+              )}
+            </div>
+          ) : null}
+        </div>
+
+        {/* ═══ CURATED SOURCES ═══ */}
+        {curatedSources.length > 0 && (
+          <div className="mt-8 mb-10">
+            <h3 className="text-xs font-semibold text-[var(--c-text-muted)] uppercase tracking-widest mb-3">{"📌"} Sources recommandees</h3>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {curatedSources.map((src, i) => (
+                <a key={i} href={src.url} target="_blank" rel="noopener noreferrer"
+                  className="block bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl p-3 hover:border-orange-500/30 transition-all group">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] px-1.5 py-0.5 bg-purple-500/15 border border-purple-500/25 text-purple-300 rounded-full font-semibold">
+                      {"⭐"}
+                    </span>
+                    <span className="text-sm font-semibold text-[var(--c-text)] group-hover:text-orange-400 transition-colors truncate">{src.name}</span>
+                  </div>
+                  <p className="text-[11px] text-[var(--c-text-muted)] line-clamp-2">{src.description}</p>
+                </a>
+              ))}
+            </div>
+            {googleSearchUrl && (
+              <div className="mt-4 text-center">
+                <a href={googleSearchUrl} target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/25 text-[var(--c-text)] rounded-xl text-sm font-medium hover:from-blue-500/30 hover:to-purple-500/30 transition">
+                  {"🔍"} Voir plus sur Google
+                </a>
+              </div>
+            )}
           </div>
         )}
       </div>
