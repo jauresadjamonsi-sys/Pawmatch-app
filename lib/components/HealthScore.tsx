@@ -47,10 +47,10 @@ function computeScore(animal: ScoreProps["animal"]): { score: number; label: str
         insights.push({ emoji: "✅", text: `${animal.weight_kg} kg — poids idéal pour sa race`, type: "good" });
       } else if (diff > 10 && diff <= 25) {
         score += 5;
-        insights.push({ emoji: "⚠️", text: `${animal.weight_kg} kg — en surpoids de ${Math.round(diff)}%. Réduisez les portions de 10%`, type: "warning" });
+        insights.push({ emoji: "🍽️", text: `${animal.weight_kg} kg — un petit ajustement alimentaire pourrait l'aider à garder la forme`, type: "warning" });
       } else if (diff > 25) {
         score -= 5;
-        insights.push({ emoji: "🔴", text: `${animal.weight_kg} kg — obésité (+${Math.round(diff)}%). Consultez votre véto pour un régime adapté`, type: "danger" });
+        insights.push({ emoji: "💬", text: `${animal.weight_kg} kg — un bilan nutritionnel chez le véto l'aidera à retrouver son poids de forme`, type: "danger" });
       } else if (diff < -10 && diff >= -25) {
         score += 5;
         insights.push({ emoji: "⚠️", text: `${animal.weight_kg} kg — légèrement sous le poids idéal. Vérifiez l'alimentation`, type: "warning" });

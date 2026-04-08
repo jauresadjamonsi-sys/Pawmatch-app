@@ -6,79 +6,14 @@ import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
+import type {
+  AdminUserRow as UserRow,
+  AnimalRow,
+  ReportRow,
+  AdminStats,
+} from "@/lib/types";
 
 /* ────────────────────────────────────────────── Types ── */
-
-interface UserRow {
-  id: string;
-  email: string;
-  full_name: string | null;
-  avatar_url: string | null;
-  subscription: string | null;
-  canton: string | null;
-  city: string | null;
-  created_at: string;
-  last_sign_in_at: string | null;
-  animal_count: number;
-}
-
-interface AnimalRow {
-  id: string;
-  name: string;
-  species: string;
-  breed: string | null;
-  canton: string | null;
-  city: string | null;
-  photo_url: string | null;
-  created_by: string;
-  created_at: string;
-  status: string | null;
-}
-
-interface ActivityItem {
-  type: string;
-  text: string;
-  time: string;
-}
-
-interface ReportRow {
-  id: string;
-  reporter_id: string;
-  reported_user_id: string;
-  reported_animal_id: string | null;
-  reason: string;
-  details: string | null;
-  status: string;
-  created_at: string;
-  reporter_name: string;
-  reported_user_name: string;
-}
-
-interface AdminStats {
-  totalUsers: number;
-  usersToday: number;
-  usersWeek: number;
-  usersLastWeek: number;
-  usersMonth: number;
-  totalAnimals: number;
-  animalsToday: number;
-  animalsBySpecies: Record<string, number>;
-  totalMatches: number;
-  matchesToday: number;
-  matchesLast24h: number;
-  totalMessages: number;
-  totalEvents: number;
-  premiumCount: number;
-  proCount: number;
-  estimatedMRR: number;
-  growthRate: number;
-  allUsers: UserRow[];
-  allAnimals: AnimalRow[];
-  dailySignups: { date: string; count: number }[];
-  recentActivity: ActivityItem[];
-  pendingReports: ReportRow[];
-  totalReports: number;
-}
 
 type TabKey = "overview" | "members" | "animals" | "revenue" | "reports" | "feedback" | "verification";
 
@@ -648,7 +583,7 @@ function AnimalsTab({ stats }: { stats: AdminStats }) {
         a.name.toLowerCase().includes(q) ||
         (a.breed || "").toLowerCase().includes(q) ||
         (a.canton || "").toLowerCase().includes(q) ||
-        (userMap[a.created_by]?.full_name || "").toLowerCase().includes(q)
+        (a.created_by ? userMap[a.created_by]?.full_name || "" : "").toLowerCase().includes(q)
       );
     }
     return list;
@@ -711,7 +646,7 @@ function AnimalsTab({ stats }: { stats: AdminStats }) {
             </thead>
             <tbody>
               {filtered.map(a => {
-                const owner = userMap[a.created_by];
+                const owner = a.created_by ? userMap[a.created_by] : undefined;
                 return (
                   <tr key={a.id}>
                     <td style={{ ...tdStyle, fontSize: 20, textAlign: "center", width: 40 }}>
@@ -1511,29 +1446,31 @@ function VerificationTab() {
 
   async function fetchVerifications() {
     setVLoading(true);
-    const supabase = createClient();
-    let query = supabase
-      .from("profiles")
-      .select("*")
-      .order("verification_submitted_at", { ascending: false, nullsFirst: false });
-
-    if (vFilter !== "all") {
-      query = query.eq("verification_status", vFilter);
+    try {
+      const res = await fetch(`/api/admin/verification?status=${vFilter}`);
+      const json = await res.json();
+      setProfiles(json.profiles || []);
+    } catch {
+      setProfiles([]);
     }
-
-    const { data } = await query.limit(100);
-    setProfiles(data || []);
     setVLoading(false);
   }
 
   async function updateStatus(profileId: string, status: "approved" | "rejected", note?: string) {
     setProcessingId(profileId);
-    const supabase = createClient();
-    await supabase.from("profiles").update({
-      verification_status: status,
-      verification_reviewed_at: new Date().toISOString(),
-      ...(note ? { verification_note: note } : {}),
-    }).eq("id", profileId);
+    try {
+      const res = await fetch("/api/admin/verification", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ profile_id: profileId, status, note }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        alert("Erreur: " + (json.error || "Echec de la mise a jour"));
+      }
+    } catch (err: any) {
+      alert("Erreur réseau: " + err.message);
+    }
     setProcessingId(null);
     fetchVerifications();
   }

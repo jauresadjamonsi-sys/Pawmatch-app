@@ -14,11 +14,11 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://pawlyapp.ch";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Pawly — Ton compagnon de sortie en Suisse",
+    default: "Pawly — Ton compagnon de sortie en Suisse | App animaux",
     template: "%s | Pawly",
   },
   description:
-    "La premiere app qui connecte les proprietaires d'animaux en Suisse. Matching par compatibilite, 26 cantons, toutes les especes.",
+    "La premiere app qui connecte les proprietaires d'animaux en Suisse. Matching par compatibilite, balades, evenements — 26 cantons, toutes les especes. Gratuit.",
   keywords: [
     "animaux",
     "suisse",
@@ -30,6 +30,12 @@ export const metadata: Metadata = {
     "animaux de compagnie",
     "promenade chien",
     "rencontre animaux",
+    "balade chien suisse",
+    "application animaux suisse",
+    "playdate animaux",
+    "pet meetup switzerland",
+    "Haustier App Schweiz",
+    "app animali svizzera",
   ],
   authors: [{ name: "Pawly" }],
   creator: "Pawly",
@@ -37,22 +43,23 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
   },
   openGraph: {
     title: "Pawly — Ton compagnon de sortie en Suisse",
     description:
-      "Connecte-toi avec des proprietaires d'animaux pres de chez toi. Gratuit.",
+      "Connecte-toi avec des proprietaires d'animaux pres de chez toi. Balades, matching IA, evenements — gratuit pour commencer.",
     url: SITE_URL,
     siteName: "Pawly",
     locale: "fr_CH",
+    alternateLocale: ["de_CH", "it_CH", "en_GB"],
     type: "website",
     images: [
       {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 630,
-        alt: "Pawly — Trouve des copains pour ton animal",
+        url: "/promo-hero.jpg",
+        width: 2026,
+        height: 893,
+        alt: "Pawly — Connecte ton animal avec d'autres en Suisse",
       },
     ],
   },
@@ -60,13 +67,21 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Pawly — Ton compagnon de sortie en Suisse",
     description:
-      "Connecte-toi avec des proprietaires d'animaux pres de chez toi.",
-    images: ["/opengraph-image"],
+      "Connecte-toi avec des proprietaires d'animaux pres de chez toi. Gratuit.",
+    images: ["/promo-hero.jpg"],
   },
   manifest: "/manifest.json",
   alternates: {
     canonical: SITE_URL,
+    languages: {
+      "fr": SITE_URL,
+      "de": SITE_URL,
+      "it": SITE_URL,
+      "en": SITE_URL,
+      "x-default": SITE_URL,
+    },
   },
+  category: "lifestyle",
 };
 
 export const viewport = {
@@ -85,6 +100,76 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="fr">
       <head>
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem("pawly_theme")||"auto";var e=t;if(t==="auto"){e=window.matchMedia("(prefers-color-scheme: dark)").matches?"nuit":"clair"}var v={"nuit":{"--c-deep":"#2a2248","--c-nav":"#332a55","--c-card":"#3d3462","--c-border":"#524878","--c-text":"#f0eeff","--c-text-muted":"#b5aad0","--c-accent":"#A78BFA"},"aurore":{"--c-deep":"#F5EDE0","--c-nav":"#EDE3D4","--c-card":"#FBF7F0","--c-border":"#D9C9B0","--c-text":"#3D2810","--c-text-muted":"#7A5C3A","--c-accent":"#D97706"},"ocean":{"--c-deep":"#E0EBF5","--c-nav":"#D4E2F0","--c-card":"#F0F5FB","--c-border":"#B0C8E0","--c-text":"#1E3A5F","--c-text-muted":"#4A7CAA","--c-accent":"#0284C7"},"clair":{"--c-deep":"#FAF8F4","--c-nav":"#FFFFFF","--c-card":"#FFFFFF","--c-border":"#E8E2D9","--c-text":"#1A1714","--c-text-muted":"#3d3833","--c-accent":"#EA580C"}};var c=v[e];if(c){var r=document.documentElement;for(var k in c){r.style.setProperty(k,c[k])}r.setAttribute("data-theme",e)}}catch(x){}}())` }} />
+
+        {/* JSON-LD: WebApplication */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              "name": "Pawly",
+              "url": SITE_URL,
+              "description": "La premiere app qui connecte les proprietaires d'animaux en Suisse. Matching par compatibilite, balades, evenements — 26 cantons, toutes les especes.",
+              "applicationCategory": "LifestyleApplication",
+              "operatingSystem": "Web, iOS, Android",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "CHF",
+                "description": "Gratuit pour commencer — 3 rencontres offertes"
+              },
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "5",
+                "ratingCount": "3",
+                "bestRating": "5"
+              },
+              "featureList": [
+                "Matching IA par compatibilite de personnalite",
+                "Balades et evenements entre animaux",
+                "Chat integre entre proprietaires",
+                "26 cantons suisses couverts",
+                "Toutes les especes acceptees"
+              ],
+              "screenshot": `${SITE_URL}/promo-hero.jpg`,
+              "inLanguage": ["fr", "de", "it", "en"],
+              "availableLanguage": [
+                { "@type": "Language", "name": "French", "alternateName": "fr" },
+                { "@type": "Language", "name": "German", "alternateName": "de" },
+                { "@type": "Language", "name": "Italian", "alternateName": "it" },
+                { "@type": "Language", "name": "English", "alternateName": "en" }
+              ]
+            }),
+          }}
+        />
+
+        {/* JSON-LD: Organization */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "Pawly",
+              "url": SITE_URL,
+              "logo": `${SITE_URL}/icon-512.png`,
+              "description": "Application suisse de mise en relation entre proprietaires d'animaux de compagnie.",
+              "address": {
+                "@type": "PostalAddress",
+                "addressRegion": "Vaud",
+                "addressCountry": "CH"
+              },
+              "sameAs": [],
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "contactType": "customer service",
+                "availableLanguage": ["French", "German", "Italian", "English"]
+              }
+            }),
+          }}
+        />
+
         {/* SW registered in ServiceWorkerRegistrar component */}
         {/* theme-color set via viewport export */}
         <meta name="mobile-web-app-capable" content="yes" />
@@ -97,6 +182,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SUPABASE_URL} />
           </>
         )}
+        {/* Inline SW cache nuke — runs before any cached JS chunk */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function(){
+            var v=9;
+            try{
+              var last=Number(localStorage.getItem('_swv')||'0');
+              if(last<v){
+                localStorage.setItem('_swv',String(v));
+                if('caches'in self)caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){
+                  if('serviceWorker'in navigator)return navigator.serviceWorker.getRegistrations().then(function(r){return Promise.all(r.map(function(w){return w.unregister()}))});
+                }).then(function(){location.reload()}).catch(function(){location.reload()});
+                else if('serviceWorker'in navigator)navigator.serviceWorker.getRegistrations().then(function(r){r.forEach(function(w){w.unregister()});location.reload()}).catch(function(){location.reload()});
+              }
+            }catch(e){}
+          })();
+        `}} />
       </head>
       <body className={inter.className + " min-h-screen"} style={{ background: "var(--c-deep, #F0ECE4)", color: "var(--c-text, #1A1714)" }}>
         <AppProvider>

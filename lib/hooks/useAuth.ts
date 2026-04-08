@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { isAdminEmail } from "@/lib/auth/admin";
 
 type UserProfile = {
   city?: string | null;
@@ -34,7 +35,7 @@ export function useAuth() {
 
         const { data } = await supabase
           .from("profiles")
-          .select("*")
+          .select("id, full_name, email, avatar_url, role, subscription, canton, city, bio, created_at, onboarding_complete")
           .eq("id", user.id)
           .single();
 
@@ -47,7 +48,7 @@ export function useAuth() {
             // Retry fetch
             const { data: retry } = await supabase
               .from("profiles")
-              .select("*")
+              .select("id, full_name, email, avatar_url, role, subscription, canton, city, bio, created_at, onboarding_complete")
               .eq("id", user.id)
               .single();
             setProfile(retry as UserProfile | null);
@@ -65,12 +66,10 @@ export function useAuth() {
     fetchProfile();
   }, []);
 
-  const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "jaures.adjamonsi@gmail.com").split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
-
   return {
     profile,
     loading,
-    isAdmin: profile?.role === "admin" || (profile?.email ? ADMIN_EMAILS.includes(profile.email.toLowerCase()) : false),
+    isAdmin: profile?.role === "admin" || (profile?.email ? isAdminEmail(profile.email) : false),
     isAuthenticated: !!profile,
   };
 }

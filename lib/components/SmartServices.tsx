@@ -53,12 +53,12 @@ function getSmartRecommendations(animal: SmartProps["animal"]): ServiceRec[] {
     recs.push({ emoji: "🌲", reason: `${animal.name} déborde d'énergie — trouvez des lieux de sortie`, category: "Lieu & Sortie", urgency: "low", cta: base + encodeURIComponent("Lieu & Sortie") });
   }
 
-  // Surpoids
+  // Bilan nutrition
   if (animal.weight_kg && animal.species === "chien") {
     const isLarge = (animal.breed || "").match(/Berger|Labrador|Golden|Husky|Rottweiler|Dogue/i);
     const threshold = isLarge ? 38 : 12;
     if (animal.weight_kg > threshold * 1.2) {
-      recs.push({ emoji: "⚖️", reason: `${animal.name} semble en surpoids — consultez un véto nutritionniste`, category: "Vétérinaire", urgency: "medium", cta: base + encodeURIComponent("Vétérinaire") });
+      recs.push({ emoji: "🍽️", reason: `Un bilan nutritionnel peut aider ${animal.name} à rester en pleine forme`, category: "Vétérinaire", urgency: "low", cta: base + encodeURIComponent("Vétérinaire") });
     }
   }
 

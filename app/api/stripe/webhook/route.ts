@@ -1,20 +1,33 @@
 import { NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Fresh Stripe instance per request — avoids stale module-level key issues
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: "2026-03-25.dahlia" as any,
+  });
+}
+
+// Fresh Supabase admin client per request
+function getSupabaseAdmin() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
 
 export async function POST(request: Request) {
   const body = await request.text();
   const signature = request.headers.get("stripe-signature")!;
 
+  const stripeClient = getStripe();
+  const supabaseAdmin = getSupabaseAdmin();
+
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(
+    event = stripeClient.webhooks.constructEvent(
       body,
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!
@@ -35,7 +48,7 @@ export async function POST(request: Request) {
         const plan = session.metadata?.plan;
 
         if (userId && plan && session.subscription) {
-          const subscription = await stripe.subscriptions.retrieve(session.subscription);
+          const subscription = await stripeClient.subscriptions.retrieve(session.subscription);
           const endDate = new Date((subscription as any).current_period_end * 1000);
 
           const { error } = await supabaseAdmin
@@ -62,7 +75,9 @@ export async function POST(request: Request) {
                   body: JSON.stringify({ api_key: phKey, event: "subscription_started", distinct_id: userId, properties: { plan, amount: session.amount_total } }),
                 });
               }
-            } catch {}
+            } catch (err) {
+              console.error("[Stripe Webhook] PostHog capture failed:", err);
+            }
           }
         }
         break;
@@ -75,7 +90,7 @@ export async function POST(request: Request) {
         const subscriptionId = invoice.subscription;
 
         if (customerId && subscriptionId) {
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+          const subscription = await stripeClient.subscriptions.retrieve(subscriptionId);
           const endDate = new Date((subscription as any).current_period_end * 1000);
 
           const { data: profile } = await supabaseAdmin
@@ -110,8 +125,6 @@ export async function POST(request: Request) {
 
           if (profile) {
             console.log(`[Webhook] ⚠️ Paiement échoué pour ${profile.id}`);
-            // On ne downgrade pas tout de suite — Stripe retente 3 fois
-            // Le downgrade se fera via customer.subscription.deleted si tous les retries échouent
           }
         }
         break;
@@ -132,11 +145,13 @@ export async function POST(request: Request) {
           const endDate = new Date(subscription.current_period_end * 1000);
           const isActive = subscription.status === "active" || subscription.status === "trialing";
 
-          // Déterminer le plan à partir du price ID
+          // Déterminer le plan à partir du price ID — avec fallback hardcodé
           let plan: string | undefined;
           const priceId = subscription.items?.data?.[0]?.price?.id;
-          if (priceId === process.env.NEXT_PUBLIC_STRIPE_PREMIUM_PRICE_ID) plan = "premium";
-          else if (priceId === process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID) plan = "pro";
+          const premiumPriceId = process.env.NEXT_PUBLIC_STRIPE_PREMIUM_PRICE_ID || "price_1TIe70E9B4j15xUNkDDBwuAt";
+          const proPriceId = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID || "price_1TIe71E9B4j15xUN6DplcQ4P";
+          if (priceId === premiumPriceId) plan = "premium";
+          else if (priceId === proPriceId) plan = "pro";
 
           await supabaseAdmin
             .from("profiles")
@@ -170,7 +185,6 @@ export async function POST(request: Request) {
     }
   } catch (err: any) {
     console.error("[Webhook] Erreur traitement:", err.message);
-    // On retourne 200 quand même pour que Stripe ne retente pas
     return NextResponse.json({ received: true, error: err.message });
   }
 

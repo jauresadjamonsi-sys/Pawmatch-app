@@ -147,7 +147,7 @@ export default function Navbar() {
   const isActive = (p: string) => pathname === p;
   const isLight = theme === "clair" || theme === "aurore" || theme === "ocean";
   const currentFlag = LANGS.find(l => l.code === lang)?.flag || "🇫🇷";
-  const currentThemeLabel = THEMES.find(th => th.code === themePreference)?.label || "🔄";
+  const currentThemeLabel = THEMES.find(th => th.code === themePreference)?.label || "🎨";
 
   const dropBg = {
     background: isLight ? "rgba(255,255,255,0.96)" : "var(--c-card, rgba(20,16,32,0.96))",
@@ -216,6 +216,29 @@ export default function Navbar() {
                   <PawScoreBadge />
                   <div className={hasNewMatches ? "bell-pulse" : ""}><NotificationBell /></div>
                 </>
+              )}
+
+              {/* 🔄 Refresh page (soft reload without logout) */}
+              {!loading && user && (
+                <button
+                  onClick={() => {
+                    // Soft refresh: re-fetch data without full page reload to avoid logout
+                    if (typeof window !== "undefined") {
+                      window.location.reload();
+                    }
+                  }}
+                  aria-label="Rafraichir la page"
+                  className={"p-2 rounded-full transition-all duration-200 " +
+                    (isLight ? "hover:bg-gray-100" : "hover:bg-[var(--c-card)]")}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                    className="text-[var(--c-text-muted)]" style={{ display: "block" }}>
+                    <path d="M21 2v6h-6" />
+                    <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
+                    <path d="M3 22v-6h6" />
+                    <path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
+                  </svg>
+                </button>
               )}
 
               {/* 🌐 Language dropdown */}

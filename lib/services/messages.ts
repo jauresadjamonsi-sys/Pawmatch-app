@@ -58,7 +58,7 @@ export async function getMessages(
   try {
     const { data, error } = await supabase
       .from("messages")
-      .select("*")
+      .select("id, match_id, sender_id, content, image_url, read_at, created_at")
       .eq("match_id", matchId)
       .order("created_at", { ascending: true });
 

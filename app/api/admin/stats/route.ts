@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
-
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "jaures.adjamonsi@gmail.com").split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
+import { isAdminEmail } from "@/lib/auth/admin";
 
 function getServiceClient() {
   return createServiceClient(
@@ -45,7 +44,7 @@ export async function GET() {
 
     const isAdmin =
       profile?.role === "admin" ||
-      ADMIN_EMAILS.includes((user.email || "").toLowerCase());
+      isAdminEmail(user.email || "");
 
     if (!isAdmin) {
       return NextResponse.json({ error: "Acces refuse" }, { status: 403 });
@@ -104,9 +103,9 @@ export async function GET() {
       safeQuery(db.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", weekStart)),
       safeQuery(db.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", lastWeekStart).lt("created_at", weekStart)),
       safeQuery(db.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", monthStart)),
-      safeQuery(db.from("profiles").select("*").order("created_at", { ascending: false })),
+      safeQuery(db.from("profiles").select("id, full_name, email, subscription, created_at, canton, role, last_active").order("created_at", { ascending: false }).limit(500)),
       safeQuery(db.from("animals").select("id", { count: "exact", head: true })),
-      safeQuery(db.from("animals").select("*").order("created_at", { ascending: false })),
+      safeQuery(db.from("animals").select("id, name, species, created_by, created_at, canton, status").order("created_at", { ascending: false }).limit(500)),
       safeQuery(db.from("animals").select("id, species")),
       safeQuery(db.from("matches").select("id", { count: "exact", head: true })),
       safeQuery(db.from("matches").select("id", { count: "exact", head: true }).gte("created_at", todayStart)),
@@ -117,7 +116,7 @@ export async function GET() {
       safeQuery(db.from("profiles").select("created_at").gte("created_at", weekAgo)),
       safeQuery(db.from("animals").select("id", { count: "exact", head: true }).gte("created_at", todayStart)),
       safeQuery(db.from("matches").select("id", { count: "exact", head: true }).gte("created_at", yesterday)),
-      safeQuery(db.from("reports").select("*").eq("status", "pending").order("created_at", { ascending: false })),
+      safeQuery(db.from("reports").select("id, reporter_id, reported_user_id, reason, status, created_at").eq("status", "pending").order("created_at", { ascending: false }).limit(100)),
       safeQuery(db.from("reports").select("id", { count: "exact", head: true })),
     ]);
 
@@ -162,7 +161,9 @@ export async function GET() {
             authSignIns[au.id] = au.last_sign_in_at || null;
           }
         }
-      } catch {}
+      } catch (err) {
+        console.error("[Admin Stats] Failed to list auth users:", err);
+      }
     }
 
     // Enrich users

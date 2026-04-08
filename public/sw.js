@@ -1,4 +1,4 @@
-var CACHE_VERSION = 'pawly-v6';
+var CACHE_VERSION = 'pawly-v7';
 var STATIC_CACHE = CACHE_VERSION + '-static';
 var DYNAMIC_CACHE = CACHE_VERSION + '-dynamic';
 

@@ -1,6 +1,26 @@
 @import "tailwindcss";
 
 /* ============================================
+   SSR / CLIENT HYDRATION HANDOFF
+   The .pawly-ssr-content block is server-rendered HTML
+   that Google can crawl. Once LandingClient hydrates
+   (the sibling div), the SSR block is hidden so there
+   is no visual duplication.
+   ============================================ */
+.pawly-ssr-content {
+  /* Visible by default (before JS) */
+}
+.pawly-ssr-content:has(~ div) {
+  /* Hide once the client component sibling renders */
+  display: none;
+}
+/* Fallback for browsers without :has() — LandingClient
+   adds this class on mount via a useEffect */
+.pawly-ssr-hidden {
+  display: none;
+}
+
+/* ============================================
    PAWLY - FUTURISTIC DESIGN SYSTEM
    ============================================ */
 

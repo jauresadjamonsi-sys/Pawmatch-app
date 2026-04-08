@@ -1,23 +1,8 @@
 import { checkMatchLimit } from "@/lib/services/limits";
 import { SupabaseClient } from "@supabase/supabase-js";
+import type { MatchRow, MatchWithAnimals } from "@/lib/types";
 
-export type MatchRow = {
-  id: string;
-  sender_animal_id: string;
-  receiver_animal_id: string;
-  sender_user_id: string;
-  receiver_user_id: string;
-  status: "pending" | "accepted" | "rejected";
-  created_at: string;
-  updated_at: string;
-};
-
-export type MatchWithAnimals = MatchRow & {
-  sender_animal: { id: string; name: string; species: string; breed: string | null; photo_url: string | null };
-  receiver_animal: { id: string; name: string; species: string; breed: string | null; photo_url: string | null };
-  sender_profile: { id: string; full_name: string | null; email: string };
-  receiver_profile: { id: string; full_name: string | null; email: string };
-};
+export type { MatchRow, MatchWithAnimals };
 
 type ServiceResult<T> = {
   data: T | null;
@@ -25,16 +10,20 @@ type ServiceResult<T> = {
   mutualMatch?: boolean;
 };
 
-// ═══ Push notification helper ═══
-async function sendPushNotification(userId: string, title: string, body: string, url: string) {
+// ═══ Push + in-app notification helper (fire-and-forget) ═══
+// Uses /api/matches/notify which runs with service role to notify OTHER users.
+// Errors are caught and logged — never breaks the match flow.
+async function sendMatchNotification(recipientUserId: string, title: string, body: string, url: string) {
   try {
-    await fetch("/api/push/send", {
+    fetch("/api/matches/notify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_id: userId, title, body, url }),
+      body: JSON.stringify({ recipientUserId, title, body, url }),
+    }).catch((err) => {
+      console.error("[Match Notify] Erreur envoi notification:", err);
     });
   } catch (err) {
-    console.error("[Push] Erreur envoi notification:", err);
+    console.error("[Match Notify] Erreur envoi notification:", err);
   }
 }
 
@@ -113,17 +102,12 @@ export async function sendMatch(
 
       if (error) return { data: null, error: "Erreur: " + error.message, mutualMatch: false };
 
-      // ═══ NOTIFICATION MATCH MUTUEL — les deux propriétaires ═══
-      sendPushNotification(
+      // ═══ NOTIFICATION MATCH MUTUEL — notifier l'autre propriétaire ═══
+      // Fire-and-forget: push + in-app notification via /api/matches/notify
+      sendMatchNotification(
         receiverUserId,
-        "💥 Coup de Truffe !",
-        `${senderName} et ${receiverName} sont compatibles ! Organisez votre première balade.`,
-        "/matches"
-      );
-      sendPushNotification(
-        senderUserId,
-        "💥 Coup de Truffe !",
-        `${senderName} et ${receiverName} sont compatibles ! Organisez votre première balade.`,
+        "🐾 Coup de Truffe !",
+        `${senderName} veut te rencontrer !`,
         "/matches"
       );
 
@@ -146,7 +130,7 @@ export async function sendMatch(
     if (error) return { data: null, error: "Erreur: " + error.message, mutualMatch: false };
 
     // ═══ NOTIFICATION MATCH PENDING — le propriétaire de l'animal flairé ═══
-    sendPushNotification(
+    sendMatchNotification(
       receiverUserId,
       "🐾 Nouveau flairage !",
       `${senderName} a flairé ${receiverName} ! Va voir son profil.`,
@@ -195,7 +179,8 @@ export async function getMyMatches(
         receiver_profile:receiver_user_id(id, full_name, email)
       `)
       .or(`sender_user_id.eq.${userId},receiver_user_id.eq.${userId}`)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(100);
 
     if (error) return { data: null, error: "Erreur: " + error.message };
     return { data: data as MatchWithAnimals[], error: null };

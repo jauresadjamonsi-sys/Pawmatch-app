@@ -114,25 +114,35 @@ export default function EventsPage() {
     const { data: eventsData } = await query;
     if (!eventsData) { setLoading(false); return; }
 
-    // Get participant counts + join status
-    const enriched = await Promise.all(eventsData.map(async (event) => {
-      const { count } = await supabase
+    // Batch queries for participant counts + join status (avoids N+1)
+    const eventIds = eventsData.map(e => e.id);
+
+    const { data: allParticipants } = await supabase
+      .from("event_participants")
+      .select("event_id")
+      .in("event_id", eventIds);
+
+    const countMap: Record<string, number> = {};
+    for (const p of allParticipants || []) {
+      countMap[p.event_id] = (countMap[p.event_id] || 0) + 1;
+    }
+
+    const joinedSet = new Set<string>();
+    if (profile) {
+      const { data: userParticipations } = await supabase
         .from("event_participants")
-        .select("*", { count: "exact", head: true })
-        .eq("event_id", event.id);
-
-      let isJoined = false;
-      if (profile) {
-        const { data: joined } = await supabase
-          .from("event_participants")
-          .select("id")
-          .eq("event_id", event.id)
-          .eq("user_id", profile.id)
-          .maybeSingle();
-        isJoined = !!joined;
+        .select("event_id")
+        .eq("user_id", profile.id)
+        .in("event_id", eventIds);
+      for (const p of userParticipations || []) {
+        joinedSet.add(p.event_id);
       }
+    }
 
-      return { ...event, participant_count: count || 0, is_joined: isJoined };
+    const enriched = eventsData.map(event => ({
+      ...event,
+      participant_count: countMap[event.id] || 0,
+      is_joined: joinedSet.has(event.id),
     }));
 
     setEvents(enriched);

@@ -1,4 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
+import { isAdminEmail } from "@/lib/auth/admin";
 
 const LIMITS = {
   free: { animals: 1, matchesPerDay: 3, messagesPerDay: 10 },
@@ -8,10 +9,7 @@ const LIMITS = {
 
 type Plan = "free" | "premium" | "pro";
 
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "jaures.adjamonsi@gmail.com")
-  .split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
-
-/** Check if user is admin — bypasses all limits */
+/** Check if user is admin -- bypasses all limits */
 export async function isAdmin(supabase: SupabaseClient, userId: string): Promise<boolean> {
   const { data: profile } = await supabase
     .from("profiles")
@@ -19,7 +17,7 @@ export async function isAdmin(supabase: SupabaseClient, userId: string): Promise
     .eq("id", userId)
     .single();
   if (!profile) return false;
-  return profile.role === "admin" || ADMIN_EMAILS.includes((profile.email || "").toLowerCase());
+  return profile.role === "admin" || isAdminEmail(profile.email || "");
 }
 
 export async function checkAnimalLimit(

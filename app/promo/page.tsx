@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
+import PromoSection from "@/lib/components/PromoSection";
 
 /* ══════════════════════════════════════════════════════════════
    PAWLY — PROMO VIDEO GENERATOR
@@ -151,8 +152,13 @@ export default function PromoPage() {
       className="min-h-screen pb-32"
       style={{ background: "var(--c-deep)", color: "var(--c-text)" }}
     >
+      {/* Video Promo Slideshow */}
+      <div className="px-4 pt-6 pb-2 max-w-lg mx-auto">
+        <PromoSection />
+      </div>
+
       {/* Header */}
-      <div className="px-4 pt-8 pb-4 text-center">
+      <div className="px-4 pt-4 pb-4 text-center">
         <h1 className="text-3xl md:text-4xl font-black mb-2">
           <span
             style={{

@@ -23,13 +23,13 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("*")
+    .select("id, full_name, email, avatar_url, role, subscription, canton, city, bio, created_at, phone")
     .eq("id", user.id)
     .single();
 
   const { count: animalCount } = await supabase
     .from("animals")
-    .select("*", { count: "exact", head: true })
+    .select("id", { count: "exact", head: true })
     .eq("created_by", user.id);
 
   const name = profile?.full_name || "Mon profil";
@@ -71,15 +71,15 @@ export default async function ProfilePage() {
   if (!user) redirect("/login");
 
   // Try regular server client first (proper auth with cookies)
-  let { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
-  let { data: animals } = await supabase.from("animals").select("*").eq("created_by", user.id).order("created_at", { ascending: false });
+  let { data: profile } = await supabase.from("profiles").select("id, full_name, email, avatar_url, role, subscription, canton, city, bio, created_at, phone").eq("id", user.id).single();
+  let { data: animals } = await supabase.from("animals").select("id, name, species, breed, photo_url, canton, city, gender, age_months, created_by").eq("created_by", user.id).order("created_at", { ascending: false });
 
   // Fallback: if regular client returned nothing (RLS issue), try admin client
   if (!profile && process.env.SUPABASE_SERVICE_ROLE_KEY) {
     try {
       const admin = createAdminClient();
-      const { data: adminProfile } = await admin.from("profiles").select("*").eq("id", user.id).single();
-      const { data: adminAnimals } = await admin.from("animals").select("*").eq("created_by", user.id).order("created_at", { ascending: false });
+      const { data: adminProfile } = await admin.from("profiles").select("id, full_name, email, avatar_url, role, subscription, canton, city, bio, created_at, phone").eq("id", user.id).single();
+      const { data: adminAnimals } = await admin.from("animals").select("id, name, species, breed, photo_url, canton, city, gender, age_months, created_by").eq("created_by", user.id).order("created_at", { ascending: false });
       if (adminProfile) profile = adminProfile;
       if (adminAnimals) animals = adminAnimals;
     } catch (e) {

@@ -49,7 +49,9 @@ export default function SignupPage() {
             });
             localStorage.removeItem("pawly_referral");
           }
-        } catch {}
+        } catch (err) {
+          console.error("[Signup] Referral validation failed:", err);
+        }
       }
     }
   }

@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
-
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "jaures.adjamonsi@gmail.com").split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
+import { isAdminEmail } from "@/lib/auth/admin";
 
 function getServiceClient() {
   return createServiceClient(
@@ -28,7 +27,7 @@ export async function POST(request: Request) {
 
     const isAdmin =
       profile?.role === "admin" ||
-      ADMIN_EMAILS.includes((user.email || "").toLowerCase());
+      isAdminEmail(user.email || "");
 
     if (!isAdmin) {
       return NextResponse.json({ error: "Acces refuse" }, { status: 403 });

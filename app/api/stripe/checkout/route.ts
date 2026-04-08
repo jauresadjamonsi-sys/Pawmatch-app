@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
+
+// Fresh Stripe instance per request — avoids stale module-level key issues
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: "2026-03-25.dahlia" as any,
+  });
+}
 
 // Server-side price lookup — no NEXT_PUBLIC_ dependency
 const PRICE_IDS: Record<string, string> = {
@@ -35,8 +42,18 @@ export async function POST(request: Request) {
 
     let customerId = profile?.stripe_customer_id;
 
+    // Validate existing customer still exists in Stripe (handles test→live migration)
+    if (customerId) {
+      try {
+        await getStripe().customers.retrieve(customerId);
+      } catch {
+        // Customer doesn't exist in current Stripe mode — reset it
+        customerId = null;
+      }
+    }
+
     if (!customerId) {
-      const customer = await stripe.customers.create({
+      const customer = await getStripe().customers.create({
         email: profile?.email || user.email,
         metadata: { supabase_user_id: user.id },
       });
@@ -52,7 +69,7 @@ export async function POST(request: Request) {
     const allowedOrigins = ["https://pawlyapp.ch", "https://www.pawlyapp.ch", "http://localhost:3000"];
     const baseUrl = allowedOrigins.includes(origin || "") ? origin : "https://pawlyapp.ch";
 
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
       customer: customerId,
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],

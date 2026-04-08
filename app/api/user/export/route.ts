@@ -13,7 +13,7 @@ export async function GET() {
   // Collect all user data
   const [profileRes, animalsRes, matchesSentRes, matchesReceivedRes, messagesRes] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", user.id).single(),
-    supabase.from("animals").select("*").eq("owner_id", user.id),
+    supabase.from("animals").select("*").eq("created_by", user.id),
     supabase.from("matches").select("*").eq("sender_user_id", user.id),
     supabase.from("matches").select("*").eq("receiver_user_id", user.id),
     supabase.from("messages").select("*").eq("sender_id", user.id),
