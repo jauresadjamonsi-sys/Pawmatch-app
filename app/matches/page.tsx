@@ -255,9 +255,6 @@ export default function MatchesPage() {
     );
   }
 
-  const pendingReceived = matches.filter((m) => m.status === "pending" && m.receiver_user_id === profile.id);
-  const pendingSent = matches.filter((m) => m.status === "pending" && m.sender_user_id === profile.id);
-
   // Deduplicate accepted matches — mutual matches create 2 DB rows (A→B + B→A)
   const acceptedRaw = matches.filter((m) => m.status === "accepted");
   const seenPairs = new Set<string>();
@@ -266,6 +263,23 @@ export default function MatchesPage() {
     if (seenPairs.has(key)) return false;
     seenPairs.add(key);
     return true;
+  });
+
+  // Build set of accepted pair keys to exclude from pending
+  const acceptedPairKeys = new Set(accepted.map((m) =>
+    [m.sender_animal_id, m.receiver_animal_id].sort().join("-")
+  ));
+
+  // Filter pending — exclude pairs that already have an accepted match
+  const pendingReceived = matches.filter((m) => {
+    if (m.status !== "pending" || m.receiver_user_id !== profile.id) return false;
+    const key = [m.sender_animal_id, m.receiver_animal_id].sort().join("-");
+    return !acceptedPairKeys.has(key);
+  });
+  const pendingSent = matches.filter((m) => {
+    if (m.status !== "pending" || m.sender_user_id !== profile.id) return false;
+    const key = [m.sender_animal_id, m.receiver_animal_id].sort().join("-");
+    return !acceptedPairKeys.has(key);
   });
 
   const filteredSections = {
