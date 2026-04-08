@@ -101,6 +101,7 @@ export default function FlairerPage() {
   const [likeCount, setLikeCount] = useState(0);
   const [showPaywall, setShowPaywall] = useState(false);
   const FREE_LIMIT = 3;
+  const midnightRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [userCanton, setUserCanton] = useState<string | null>(null);
   const [showCoupDeTruffe, setShowCoupDeTruffe] = useState(false);
   const [mutualMatchData, setMutualMatchData] = useState<any>(null);
@@ -114,6 +115,24 @@ export default function FlairerPage() {
   const { profile, isAuthenticated, loading: authLoading } = useAuth();
 
   useEffect(() => { if (!authLoading) { fetchData(); detectCanton(); } }, [authLoading]);
+
+  // Auto-reset likeCount at midnight for users who keep the app open
+  useEffect(() => {
+    function scheduleReset() {
+      const now = new Date();
+      const nextMidnight = new Date(now);
+      nextMidnight.setDate(nextMidnight.getDate() + 1);
+      nextMidnight.setHours(0, 0, 0, 0);
+      const msUntilMidnight = nextMidnight.getTime() - now.getTime();
+      midnightRef.current = setTimeout(() => {
+        setLikeCount(0);
+        setShowPaywall(false);
+        scheduleReset(); // schedule again for the next day
+      }, msUntilMidnight);
+    }
+    scheduleReset();
+    return () => { if (midnightRef.current) clearTimeout(midnightRef.current); };
+  }, []);
 
   async function detectCanton() {
     if (typeof navigator === 'undefined' || !navigator.geolocation) return;
@@ -220,6 +239,16 @@ export default function FlairerPage() {
       setMyAnimals(myList);
       const primary = myList[0] || null;
       setActiveMyAnimal(primary);
+
+      // Load today's real match count from DB
+      const todayMidnight = new Date();
+      todayMidnight.setHours(0, 0, 0, 0);
+      const { count: todayCount } = await supabase
+        .from("matches")
+        .select("*", { count: "exact", head: true })
+        .eq("sender_user_id", profile.id)
+        .gte("created_at", todayMidnight.toISOString());
+      setLikeCount(todayCount || 0);
 
       if (primary) {
         const sorted = sortByCompatibility(primary, filtered) as AnimalWithCompat[];
@@ -771,19 +800,36 @@ export default function FlairerPage() {
             <div className="absolute inset-0 rounded-[24px] gradient-border pointer-events-none" />
             <div className="text-5xl mb-4 animate-float">{"🐾"}</div>
             <h2 className="text-xl font-extrabold gradient-text-warm mb-2">3 matchs gratuits utilisés !</h2>
-            <p className="text-sm text-[var(--c-text-muted)] mb-6">Crée un compte gratuit pour continuer à flairer sans limite.</p>
-            <div className="flex flex-col gap-3">
-              <a href="/signup" className="w-full py-3 btn-futuristic text-center text-sm">
-                {"🚀"} Créer un compte gratuit
-              </a>
-              <a href="/login" className="w-full py-3 glass text-center text-[var(--c-text-muted)] font-bold text-sm hover:bg-[var(--c-card)] transition-all duration-300">
-                Déjà un compte ? Se connecter
-              </a>
-              <button onClick={() => setShowPaywall(false)} className="text-xs text-[var(--c-text-muted)] mt-2 hover:text-[var(--c-text-muted)] transition-colors">
-                Continuer sans compte (limité)
-              </button>
-            </div>
-            <p className="text-[10px] text-[var(--c-text-muted)] mt-4">{"✓"} Gratuit {"·"} {"✓"} Sans carte {"·"} {"✓"} Matchs illimités</p>
+            {isAuthenticated ? (
+              <>
+                <p className="text-sm text-[var(--c-text-muted)] mb-6">Tes 3 matchs quotidiens sont épuisés. Ils se renouvellent automatiquement demain, ou passe à PawPlus pour des matchs illimités !</p>
+                <div className="flex flex-col gap-3">
+                  <a href="/pricing" className="w-full py-3 btn-futuristic text-center text-sm">
+                    {"⚡"} Passer à PawPlus — matchs illimités
+                  </a>
+                  <button onClick={() => setShowPaywall(false)} className="text-xs text-[var(--c-text-muted)] mt-2 hover:text-[var(--c-text-muted)] transition-colors">
+                    Revenir demain avec 3 nouveaux matchs
+                  </button>
+                </div>
+                <p className="text-[10px] text-[var(--c-text-muted)] mt-4">{"✓"} Renouvellement chaque jour à minuit {"·"} {"⚡"} Illimité avec PawPlus</p>
+              </>
+            ) : (
+              <>
+                <p className="text-sm text-[var(--c-text-muted)] mb-6">Crée un compte gratuit pour profiter de 3 matchs par jour, renouvelés chaque matin !</p>
+                <div className="flex flex-col gap-3">
+                  <a href="/signup" className="w-full py-3 btn-futuristic text-center text-sm">
+                    {"🚀"} Créer un compte gratuit
+                  </a>
+                  <a href="/login" className="w-full py-3 glass text-center text-[var(--c-text-muted)] font-bold text-sm hover:bg-[var(--c-card)] transition-all duration-300">
+                    Déjà un compte ? Se connecter
+                  </a>
+                  <button onClick={() => setShowPaywall(false)} className="text-xs text-[var(--c-text-muted)] mt-2 hover:text-[var(--c-text-muted)] transition-colors">
+                    Continuer sans compte (limité)
+                  </button>
+                </div>
+                <p className="text-[10px] text-[var(--c-text-muted)] mt-4">{"✓"} Gratuit {"·"} {"✓"} Sans carte {"·"} {"✓"} 3 matchs/jour renouvelés</p>
+              </>
+            )}
           </div>
         </div>
       )}
