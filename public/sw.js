@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'pawly-v4';
+const CACHE_VERSION = 'pawly-v5';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const DYNAMIC_CACHE = `${CACHE_VERSION}-dynamic`;
 
@@ -65,8 +65,22 @@ self.addEventListener('fetch', function(event) {
   // Network-first for navigation (HTML pages)
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      networkFirst(event.request).catch(function() {
-        return caches.match('/offline.html');
+      fetch(event.request).then(function(response) {
+        if (response && response.status === 200) {
+          var clone = response.clone();
+          caches.open(DYNAMIC_CACHE).then(function(cache) {
+            cache.put(event.request, clone);
+          });
+        }
+        return response;
+      }).catch(function() {
+        return caches.match(event.request).then(function(cached) {
+          return cached || caches.match('/offline.html');
+        });
+      }).then(function(response) {
+        return response || caches.match('/offline.html');
+      }).then(function(response) {
+        return response || new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
       })
     );
     return;
@@ -107,7 +121,10 @@ function networkFirst(request) {
     }
     return response;
   }).catch(function() {
-    return caches.match(request);
+    return caches.match(request).then(function(cached) {
+      if (cached) return cached;
+      return new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
+    });
   });
 }
 
