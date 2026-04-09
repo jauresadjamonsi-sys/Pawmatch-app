@@ -123,6 +123,7 @@ export default function EventsPage() {
 
   async function fetchEvents() {
     setLoading(true);
+    try {
     let query = supabase
       .from("events")
       .select("*, organizer:created_by(*)")
@@ -131,8 +132,8 @@ export default function EventsPage() {
 
     if (filterCanton) query = query.eq("canton", filterCanton);
 
-    const { data: eventsData } = await query;
-    if (!eventsData) { setLoading(false); return; }
+    const { data: eventsData, error } = await query;
+    if (!eventsData || error) { setLoading(false); return; }
 
     // Batch queries for participant counts + join status (avoids N+1)
     const eventIds = eventsData.map(e => e.id);
@@ -166,7 +167,11 @@ export default function EventsPage() {
     }));
 
     setEvents(enriched);
-    setLoading(false);
+    } catch (err) {
+      console.error("[Events] fetchEvents error:", err);
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function fetchDiscover() {
