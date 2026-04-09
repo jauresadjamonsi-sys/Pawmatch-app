@@ -2,8 +2,86 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { getWallet, getDailyLoginBonus } from "@/lib/services/pawcoins";
+import { getWallet, getDailyLoginBonus, getStreakBonus } from "@/lib/services/pawcoins";
 import type { PawCoinTransaction, PawCoinTxType } from "@/lib/types";
+
+// ---------------------------------------------------------------------------
+// Streak helpers
+// ---------------------------------------------------------------------------
+
+interface StreakInfo {
+  count: number;
+  weekDays: boolean[]; // 7 booleans, Mon-Sun of current week
+}
+
+const STREAK_MILESTONES = [
+  { min: 30, label: "Diamant", color: "#b9f2ff", bg: "rgba(185,242,255,0.15)", icon: "\uD83D\uDC8E" },
+  { min: 14, label: "Or", color: "#fbbf24", bg: "rgba(251,191,36,0.15)", icon: "\uD83E\uDD47" },
+  { min: 7, label: "Argent", color: "#c0c0c0", bg: "rgba(192,192,192,0.15)", icon: "\uD83E\uDD48" },
+  { min: 3, label: "Bronze", color: "#cd7f32", bg: "rgba(205,127,50,0.15)", icon: "\uD83E\uDD49" },
+];
+
+function getCurrentMilestone(streak: number) {
+  return STREAK_MILESTONES.find((m) => streak >= m.min) || null;
+}
+
+async function fetchStreakInfo(supabase: ReturnType<typeof createClient>, userId: string): Promise<StreakInfo> {
+  // Fetch daily_login transactions ordered by date descending
+  const { data: logins } = await supabase
+    .from("pawcoin_transactions")
+    .select("created_at")
+    .eq("user_id", userId)
+    .eq("type", "daily_login")
+    .order("created_at", { ascending: false })
+    .limit(60);
+
+  const loginDates = (logins || []).map((tx) => {
+    const d = new Date(tx.created_at);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  });
+
+  // Deduplicate by date
+  const uniqueDates = [...new Set(loginDates)];
+
+  // Count consecutive days ending today or yesterday
+  let streak = 0;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const checkDate = new Date(today);
+
+  // If today is not in the list, start checking from yesterday
+  const todayStr = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, "0")}-${String(checkDate.getDate()).padStart(2, "0")}`;
+  if (!uniqueDates.includes(todayStr)) {
+    checkDate.setDate(checkDate.getDate() - 1);
+  }
+
+  for (let i = 0; i < 60; i++) {
+    const dateStr = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, "0")}-${String(checkDate.getDate()).padStart(2, "0")}`;
+    if (uniqueDates.includes(dateStr)) {
+      streak++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  // Build current week (Mon-Sun)
+  const now = new Date();
+  const dayOfWeek = now.getDay(); // 0=Sun
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - ((dayOfWeek + 6) % 7));
+  monday.setHours(0, 0, 0, 0);
+
+  const weekDays: boolean[] = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const ds = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    weekDays.push(uniqueDates.includes(ds));
+  }
+
+  return { count: streak, weekDays };
+}
 
 const TX_ICONS: Record<PawCoinTxType, string> = {
   welcome_bonus: "🎉", daily_login: "☀️", streak_bonus: "🔥",
@@ -38,6 +116,7 @@ export default function PawCoinsWallet() {
   const [userId, setUserId] = useState<string | null>(null);
   const [buyingItem, setBuyingItem] = useState<string | null>(null);
   const [shopMsg, setShopMsg] = useState<string | null>(null);
+  const [streak, setStreak] = useState<StreakInfo>({ count: 0, weekDays: Array(7).fill(false) });
 
   useEffect(() => {
     async function load() {
@@ -45,9 +124,13 @@ export default function PawCoinsWallet() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setLoading(false); return; }
       setUserId(user.id);
-      const wallet = await getWallet(supabase, user.id);
+      const [wallet, streakInfo] = await Promise.all([
+        getWallet(supabase, user.id),
+        fetchStreakInfo(supabase, user.id),
+      ]);
       setBalance(wallet.balance);
       setTransactions(wallet.transactions);
+      setStreak(streakInfo);
       setLoading(false);
     }
     load();
@@ -62,8 +145,17 @@ export default function PawCoinsWallet() {
     if (result.claimed) {
       setBalance(result.balance ?? balance + 5);
       setClaimResult("+ 5 PawCoins !");
-      const wallet = await getWallet(supabase, userId);
+      const [wallet, streakInfo] = await Promise.all([
+        getWallet(supabase, userId),
+        fetchStreakInfo(supabase, userId),
+      ]);
       setTransactions(wallet.transactions);
+      setStreak(streakInfo);
+      // Check for streak bonus
+      const bonus = getStreakBonus(streakInfo.count);
+      if (bonus > 0) {
+        setClaimResult(`+ 5 PawCoins ! (+ bonus streak \uD83D\uDD25 ${bonus})`);
+      }
     } else {
       setClaimResult(result.error || "Deja reclame");
     }
@@ -152,6 +244,132 @@ export default function PawCoinsWallet() {
         >
           {claiming ? "..." : claimResult || "☀️ Reclamer le bonus quotidien (+5)"}
         </button>
+      </section>
+
+      {/* Streak Display */}
+      <section className="glass rounded-2xl p-5 relative overflow-hidden">
+        <div className="absolute -top-6 -right-6 text-[80px] opacity-5 pointer-events-none select-none">{"\uD83D\uDD25"}</div>
+
+        {/* Streak counter */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">{"\uD83D\uDD25"}</span>
+            <div>
+              <p className="text-lg font-black" style={{ color: "var(--c-text)" }}>
+                {streak.count} jour{streak.count !== 1 ? "s" : ""} de suite
+              </p>
+              <p className="text-[10px]" style={{ color: "var(--c-text-muted)" }}>
+                {streak.count > 0 ? "Continue comme ca !" : "Connecte-toi chaque jour"}
+              </p>
+            </div>
+          </div>
+
+          {/* Milestone badge */}
+          {(() => {
+            const milestone = getCurrentMilestone(streak.count);
+            if (!milestone) return null;
+            return (
+              <span
+                className="px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1"
+                style={{ background: milestone.bg, color: milestone.color }}
+              >
+                {milestone.icon} {milestone.label}
+              </span>
+            );
+          })()}
+        </div>
+
+        {/* Week circles */}
+        <div className="flex items-center justify-between gap-1 mb-3">
+          {["L", "M", "M", "J", "V", "S", "D"].map((day, idx) => {
+            const isActive = streak.weekDays[idx];
+            const now = new Date();
+            const dayOfWeek = now.getDay();
+            const todayIdx = (dayOfWeek + 6) % 7; // Mon=0 ... Sun=6
+            const isToday = idx === todayIdx;
+
+            return (
+              <div key={idx} className="flex flex-col items-center gap-1.5">
+                <span
+                  className="text-[9px] font-semibold uppercase"
+                  style={{ color: isToday ? "var(--c-accent)" : "var(--c-text-muted)" }}
+                >
+                  {day}
+                </span>
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center transition-all"
+                  style={{
+                    background: isActive
+                      ? "linear-gradient(135deg, #f97316, #fbbf24)"
+                      : "var(--c-card)",
+                    border: isToday && !isActive
+                      ? "2px solid var(--c-accent)"
+                      : isActive
+                        ? "none"
+                        : "1px solid var(--c-border)",
+                    boxShadow: isActive && isToday
+                      ? "0 0 12px rgba(251,191,36,0.5), 0 0 24px rgba(249,115,22,0.25)"
+                      : isActive
+                        ? "0 0 8px rgba(251,191,36,0.3)"
+                        : "none",
+                  }}
+                >
+                  {isActive ? (
+                    <span className="text-xs">{"\uD83D\uDD25"}</span>
+                  ) : (
+                    <span
+                      className="w-2 h-2 rounded-full"
+                      style={{ background: "var(--c-border)" }}
+                    />
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Milestone progress bar */}
+        {(() => {
+          const nextMilestone = STREAK_MILESTONES.slice().reverse().find((m) => streak.count < m.min);
+          if (!nextMilestone) return (
+            <p className="text-[10px] text-center font-semibold" style={{ color: "#b9f2ff" }}>
+              {"\uD83D\uDC8E"} Niveau maximum atteint !
+            </p>
+          );
+          const prevMin = STREAK_MILESTONES.find((m) => m.min < nextMilestone.min && streak.count >= m.min)?.min || 0;
+          const progress = Math.min(100, ((streak.count - prevMin) / (nextMilestone.min - prevMin)) * 100);
+          return (
+            <div>
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-[10px] font-semibold" style={{ color: "var(--c-text-muted)" }}>
+                  Prochain : {nextMilestone.icon} {nextMilestone.label}
+                </span>
+                <span className="text-[10px] font-bold" style={{ color: nextMilestone.color }}>
+                  {streak.count}/{nextMilestone.min} jours
+                </span>
+              </div>
+              <div
+                className="w-full h-1.5 rounded-full overflow-hidden"
+                style={{ background: "var(--c-border)" }}
+              >
+                <div
+                  className="h-full rounded-full transition-all duration-500"
+                  style={{
+                    width: `${progress}%`,
+                    background: `linear-gradient(90deg, ${nextMilestone.color}, ${nextMilestone.color}88)`,
+                  }}
+                />
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* Streak bonus info */}
+        {streak.count >= 3 && (
+          <p className="text-[10px] text-center mt-3 font-semibold" style={{ color: "#fbbf24" }}>
+            Bonus streak actif : +{getStreakBonus(streak.count)} PawCoins
+          </p>
+        )}
       </section>
 
       {/* Earn Section */}

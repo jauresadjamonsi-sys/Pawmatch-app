@@ -22,7 +22,7 @@ interface AnimalRow {
   traits: string[];
 }
 
-type MediaType = "video" | "image";
+type MediaType = "video" | "photo";
 type StepKey = "pet" | "media" | "preview";
 
 // ---------------------------------------------------------------------------
@@ -339,7 +339,7 @@ export default function StoryCreatePage() {
         const url = URL.createObjectURL(file);
         setMediaFile(file);
         setMediaPreviewUrl(url);
-        setMediaType("image");
+        setMediaType("photo");
         setVideoDuration(0);
         setCropScale(1);
         setCropPos({ x: 0, y: 0 });
@@ -397,7 +397,8 @@ export default function StoryCreatePage() {
         }
       }
 
-      const storagePath = `${user.id}/${Date.now()}.${ext}`;
+      const mediaFolder = mediaType === "video" ? "videos" : "photos";
+      const storagePath = `${mediaFolder}/${user.id}/${Date.now()}.${ext}`;
 
       // Upload with progress simulation
       const progressInterval = setInterval(() => {
@@ -1044,14 +1045,14 @@ export default function StoryCreatePage() {
             {/* Media type indicator */}
             <div className="absolute top-3 left-3 z-10">
               <span
-                className="px-2.5 py-1 rounded-full text-xs font-bold"
+                className="px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1"
                 style={{
-                  background: "rgba(0,0,0,0.5)",
+                  background: isVideo ? "rgba(139, 92, 246, 0.85)" : "rgba(0,0,0,0.5)",
                   color: "#fff",
                   backdropFilter: "blur(6px)",
                 }}
               >
-                {isVideo ? "VIDEO" : "PHOTO"}
+                {isVideo ? "\uD83C\uDFAC Video" : "PHOTO"}
               </span>
             </div>
 

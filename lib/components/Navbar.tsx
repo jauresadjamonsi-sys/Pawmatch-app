@@ -191,6 +191,7 @@ export default function Navbar() {
                   <NL href="/carte" active={isActive("/carte")} label="Carte" light={isLight} />
                   <NL href="/matches" active={isActive("/matches")} label={t.navMatches} light={isLight} />
                   <NL href="/wallet" active={isActive("/wallet")} label="Coins" light={isLight} />
+                  <NL href="/urgence" active={isActive("/urgence")} label="SOS" light={isLight} />
                   <NL href="/leaderboard" active={isActive("/leaderboard")} label="Classement" light={isLight} />
                   <NL href="/profile" active={isActive("/profile")} label={t.navProfil} light={isLight} />
                 </>
