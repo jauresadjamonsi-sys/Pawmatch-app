@@ -250,15 +250,16 @@ export default function AnimalDetailPage() {
               {isOwner && <Link href={"/animals/" + animal.id + "/edit"} className="text-orange-400 hover:underline text-xs font-medium">{t.edit}</Link>}
             </div>
 
-            <div className="grid grid-cols-3 gap-2 mb-5">
+            <div className="grid grid-cols-4 gap-2 mb-5">
               {[
                 { label: t.animalSpeciesLabel, value: animal.species.charAt(0).toUpperCase() + animal.species.slice(1) },
                 { label: t.animalBreedLabel, value: animal.breed || "—" },
                 { label: t.animalGenderLabel, value: animal.gender === "male" ? t.animalMale : animal.gender === "femelle" ? t.animalFemale : t.animalUnknown },
-                { label: t.animalWeightLabel, value: animal.weight_kg ? animal.weight_kg + " kg" : "—" },
                 { label: t.animalAgeLabel, value: formatAge(animal.age_months) },
+                { label: t.animalWeightLabel, value: animal.weight_kg ? animal.weight_kg + " kg" : "—" },
                 { label: t.animalLocationLabel, value: cantonName ? (animal.canton || "") : "—" },
                 { label: "Pedigree", value: animal.pedigree || "—" },
+                { label: "Puce", value: animal.microchip_id || "—" },
               ].map((item) => (
                 <div key={item.label} className="rounded-xl px-3 py-2.5" style={{ background: "var(--c-glass, rgba(255,255,255,0.03))" }}>
                   <p className="text-[10px] text-[var(--c-text-muted)] uppercase tracking-wider">{item.label}</p>

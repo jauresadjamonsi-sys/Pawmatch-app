@@ -648,14 +648,14 @@ export default function FlairerPage() {
           onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}
           onMouseLeave={() => { if (isDragging) { setIsDragging(false); setDragX(0); setDragY(0); } }}>
 
-          {/* Photo with gradient overlay — hero takes most of the card */}
-          <div className="h-[68%] relative overflow-hidden bg-[var(--c-deep,#1a1225)]">
+          {/* Photo — FULL card with overlay info at bottom */}
+          <div className="absolute inset-0 relative overflow-hidden bg-[var(--c-deep,#1a1225)]">
             {animal.photo_url
               ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" draggable={false} sizes="(max-width: 768px) 100vw, 448px" />
               : <div className="w-full h-full flex items-center justify-center text-6xl font-bold text-[var(--c-text-muted)]">{animal.name?.charAt(0)}</div>}
 
-            {/* Gradient overlay at bottom */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            {/* Gradient overlay — stronger at bottom for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
 
             {/* Report button */}
             {animal.created_by && (
@@ -689,60 +689,48 @@ export default function FlairerPage() {
             {passOpacity > 0 && <div className="absolute inset-0 bg-red-500/10 mix-blend-overlay" style={{ opacity:passOpacity }} />}
             {superOpacity > 0 && <div className="absolute inset-0 bg-purple-500/15 mix-blend-overlay" style={{ opacity:superOpacity }} />}
 
-            {/* Glass info overlay at bottom of photo */}
-            <div className="absolute bottom-0 left-0 right-0 p-5 backdrop-blur-sm bg-black/20">
-              <h2 className="text-2xl font-extrabold text-[var(--c-text)] drop-shadow-lg">{animal.name}</h2>
-              <p className="text-sm text-[var(--c-text-muted)]">{SPECIES[animal.species] || animal.species}{animal.breed ? " · " + animal.breed : ""}</p>
-            </div>
-          </div>
-
-          {/* Info section — compact to maximize photo */}
-          <div className="h-[32%] p-3 overflow-y-auto">
-
-            {/* Compatibility meter with shimmer animation */}
-            {compat && activeMyAnimal && (
-              <div className="mb-3 p-3 glass rounded-2xl">
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-[10px] text-[var(--c-text-muted)] uppercase tracking-wider">Compatibilité avec {activeMyAnimal.name}</span>
-                  <span className="text-xs font-bold" style={{ color: compat.color, textShadow: `0 0 10px ${compat.color}60` }}>{compat.score}%</span>
-                </div>
-                <div className="w-full h-2 bg-[var(--c-card)] rounded-full overflow-hidden relative">
-                  <div className="score-bar h-full rounded-full relative" style={{ "--score-w": compat.score + "%", backgroundColor: compat.color } as any}>
-                    <div className="absolute inset-0 shimmer-bar rounded-full" />
+            {/* Info overlay at bottom of card — all info ON the photo */}
+            <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
+              {/* Compatibility meter */}
+              {compat && activeMyAnimal && (
+                <div className="mb-3 p-2.5 rounded-xl backdrop-blur-md" style={{ background: "rgba(0,0,0,0.35)" }}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[10px] text-white/70 uppercase tracking-wider">Compatibilite avec {activeMyAnimal.name}</span>
+                    <span className="text-xs font-bold" style={{ color: compat.color, textShadow: `0 0 10px ${compat.color}60` }}>{compat.score}%</span>
                   </div>
-                </div>
-                {compat.reasons.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {compat.reasons.map((r: string) => (
-                      <span key={r} className="text-[10px] px-2 py-0.5 glass text-[var(--c-text-muted)] rounded-full">{r}</span>
-                    ))}
+                  <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden relative">
+                    <div className="score-bar h-full rounded-full relative" style={{ "--score-w": compat.score + "%", backgroundColor: compat.color } as any}>
+                      <div className="absolute inset-0 shimmer-bar rounded-full" />
+                    </div>
                   </div>
-                )}
-              </div>
-            )}
+                  {compat.reasons.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-1.5">
+                      {compat.reasons.map((r: string) => (
+                        <span key={r} className="text-[9px] px-2 py-0.5 rounded-full text-white/60" style={{ background: "rgba(255,255,255,0.1)" }}>{r}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
-            <div className="flex flex-wrap gap-1.5 mb-2">
-              {animal.canton && <span className="px-2.5 py-1 glass text-orange-300 rounded-full text-xs font-medium" style={{ borderColor: "rgba(249,115,22,0.2)" }}>{cantonName || animal.canton}</span>}
-              {userCanton && animal.canton && <span className="px-2.5 py-1 glass text-green-400 rounded-full text-xs font-bold" style={{ borderColor: "rgba(52,211,153,0.2)" }}>{getProximityLabel(userCanton, animal.canton)}</span>}
-              {animal.city && <span className="px-2.5 py-1 glass text-[var(--c-text-muted)] rounded-full text-xs">{animal.city}</span>}
-              <span className="px-2.5 py-1 glass text-[var(--c-text-muted)] rounded-full text-xs">{formatAge(animal.age_months)}</span>
-              <span className="px-2.5 py-1 glass text-[var(--c-text-muted)] rounded-full text-xs">{animal.gender === "male" ? "Mâle" : animal.gender === "femelle" ? "Femelle" : "Inconnu"}</span>
+              <h2 className="text-2xl font-extrabold text-white drop-shadow-lg">{animal.name}</h2>
+              <p className="text-sm text-white/70 mb-2">{SPECIES[animal.species] || animal.species}{animal.breed ? " · " + animal.breed : ""}</p>
+
+              <div className="flex flex-wrap gap-1.5">
+                {animal.canton && <span className="px-2.5 py-1 rounded-full text-xs font-medium text-orange-300 backdrop-blur-sm" style={{ background: "rgba(249,115,22,0.2)" }}>{cantonName || animal.canton}</span>}
+                {userCanton && animal.canton && <span className="px-2.5 py-1 rounded-full text-xs font-bold text-green-400 backdrop-blur-sm" style={{ background: "rgba(52,211,153,0.15)" }}>{getProximityLabel(userCanton, animal.canton)}</span>}
+                {animal.city && <span className="px-2.5 py-1 rounded-full text-xs text-white/60 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.1)" }}>{animal.city}</span>}
+                <span className="px-2.5 py-1 rounded-full text-xs text-white/60 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.1)" }}>{formatAge(animal.age_months)}</span>
+              <span className="px-2.5 py-1 rounded-full text-xs text-white/60 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.1)" }}>{animal.gender === "male" ? "Male" : animal.gender === "femelle" ? "Femelle" : "Inconnu"}</span>
+              </div>
+              {animal.traits?.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-1.5">
+                  {animal.traits.slice(0, 4).map(t => (
+                    <span key={t} className="px-2 py-0.5 rounded-full text-[10px] text-purple-300 backdrop-blur-sm" style={{ background: "rgba(167,139,250,0.15)" }}>{t}</span>
+                  ))}
+                </div>
+              )}
             </div>
-            {animal.traits?.length > 0 && (
-              <div className="flex flex-wrap gap-1 mb-2">
-                {animal.traits.map(t => (
-                  <span key={t} className="px-2 py-0.5 glass text-purple-300 rounded-full text-[11px]" style={{ borderColor: "rgba(167,139,250,0.2)" }}>{t}</span>
-                ))}
-              </div>
-            )}
-            {animal.description && <p className="text-[var(--c-text-muted)] text-xs leading-relaxed line-clamp-2">{animal.description}</p>}
-
-            {/* AI Compatibility Insight */}
-            {activeMyAnimal && (
-              <div className="mt-3">
-                <CompatibilityBadge myAnimal={activeMyAnimal} otherAnimal={animal} />
-              </div>
-            )}
           </div>
         </div>
       </div>
