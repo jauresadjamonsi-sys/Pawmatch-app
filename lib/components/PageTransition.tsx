@@ -7,6 +7,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
   const pathname = usePathname();
   const [displayChildren, setDisplayChildren] = useState(children);
   const [transitioning, setTransitioning] = useState(false);
+  const [animDone, setAnimDone] = useState(false);
   const prevPath = useRef(pathname);
 
   useEffect(() => {
@@ -18,6 +19,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
     // Start exit animation
     setTransitioning(true);
+    setAnimDone(false);
 
     // After exit animation, swap children and enter
     const timer = setTimeout(() => {
@@ -28,10 +30,19 @@ export default function PageTransition({ children }: { children: React.ReactNode
     return () => clearTimeout(timer);
   }, [pathname, children]);
 
+  // After enter animation completes, clear transform to avoid
+  // creating a containing block that breaks fixed positioning
+  useEffect(() => {
+    if (!transitioning) {
+      const timer = setTimeout(() => setAnimDone(true), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [transitioning]);
+
   return (
     <div
       id="main-content"
-      className={transitioning ? "page-exit" : "page-enter"}
+      className={transitioning ? "page-exit" : animDone ? "" : "page-enter"}
       style={{ minHeight: "calc(100vh - 120px)" }}
     >
       {displayChildren}
