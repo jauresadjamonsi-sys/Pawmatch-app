@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { createClient } from "@supabase/supabase-js";
 import { CANTONS_SEO, getCitySlug } from "@/lib/data/cantons";
+import { CANTONS } from "@/lib/cantons";
 
 const BASE_URL = "https://pawlyapp.ch";
 
@@ -48,6 +49,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
+  // Canton landing pages (/canton/[code])
+  const cantonLandingRoutes: MetadataRoute.Sitemap = CANTONS.map((canton) => ({
+    url: `${BASE_URL}/canton/${canton.code}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+
   // Fetch all animals for dynamic routes
   let animalRoutes: MetadataRoute.Sitemap = [];
   try {
@@ -72,5 +81,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("Sitemap: failed to fetch animals", e);
   }
 
-  return [...staticRoutes, ...cantonRoutes, ...animalRoutes];
+  return [...staticRoutes, ...cantonRoutes, ...cantonLandingRoutes, ...animalRoutes];
 }

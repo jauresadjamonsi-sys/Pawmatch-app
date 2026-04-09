@@ -63,6 +63,12 @@ export default function OnboardingPage() {
   const [verifPreview, setVerifPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Referral state
+  const [referralCode, setReferralCode] = useState("");
+  const [referralLoading, setReferralLoading] = useState(false);
+  const [referralApplied, setReferralApplied] = useState(false);
+  const [referralError, setReferralError] = useState<string | null>(null);
+  const [referralName, setReferralName] = useState<string | null>(null);
   // Crop state
   const [cropFile, setCropFile] = useState<File | null>(null);
   const [cropTarget, setCropTarget] = useState<"animal" | "verif" | null>(null);
@@ -192,7 +198,7 @@ export default function OnboardingPage() {
       verification_submitted_at: new Date().toISOString(),
     }).eq("id", user.id);
 
-    setStep(4); // go to success
+    setStep(4); // go to referral step
   }
 
   return (
@@ -201,7 +207,7 @@ export default function OnboardingPage() {
 
         {/* Step indicator */}
         <div className="flex justify-center gap-2 mb-8">
-          {[1, 2, 3, 4].map((s) => (
+          {[1, 2, 3, 4, 5, 6].map((s) => (
             <div key={s} className={"h-1.5 rounded-full transition-all duration-500 " + (s <= step ? "w-10" : "w-6")}
               style={{ background: s <= step ? "var(--c-accent, #f97316)" : "var(--c-border)" }} />
           ))}
@@ -434,8 +440,135 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Step 4: Success! */}
+        {/* Step 4: Referral code */}
         {step === 4 && (
+          <div className="fade-in-up">
+            <style dangerouslySetInnerHTML={{ __html: `@keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}.fade-in-up{animation:fadeInUp .6s ease-out forwards}@keyframes coinPop{0%{transform:scale(0) rotate(-20deg);opacity:0}60%{transform:scale(1.2) rotate(5deg);opacity:1}100%{transform:scale(1) rotate(0deg);opacity:1}}.coin-pop{animation:coinPop .5s ease-out forwards}` }} />
+            <div className="text-center mb-6">
+              <span className="text-5xl block mb-2">🎁</span>
+              <h1 className="text-2xl font-extrabold text-[var(--c-text)] mb-2">As-tu un code de parrainage ?</h1>
+              <p className="text-sm text-[var(--c-text-muted)]">
+                Entre le code d&apos;un ami et recois <strong className="text-[var(--c-accent)]">+10 PawCoins</strong> pour bien demarrer !
+              </p>
+            </div>
+
+            <div className="glass rounded-2xl p-6 space-y-4" style={{ background: "var(--c-card)", border: "1px solid var(--c-border)" }}>
+              {referralApplied ? (
+                <div className="text-center py-4">
+                  <div className="coin-pop inline-flex items-center justify-center w-16 h-16 rounded-full mb-3" style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)", boxShadow: "0 4px 20px rgba(245,158,11,0.3)" }}>
+                    <span className="text-2xl">🪙</span>
+                  </div>
+                  <p className="text-lg font-bold text-[var(--c-text)] mb-1">+10 PawCoins</p>
+                  <p className="text-sm text-[var(--c-text-muted)]">
+                    Merci ! Parraine par <strong className="text-[var(--c-accent)]">{referralName || "un ami"}</strong>
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--c-text)] mb-1.5">Code de parrainage</label>
+                    <input
+                      type="text"
+                      value={referralCode}
+                      onChange={(e) => { setReferralCode(e.target.value); setReferralError(null); }}
+                      className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                      placeholder="Ex: a1b2c3d4"
+                      disabled={referralLoading}
+                    />
+                  </div>
+                  {referralError && (
+                    <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-sm">{referralError}</div>
+                  )}
+                  <button
+                    onClick={async () => {
+                      if (!referralCode.trim()) { setReferralError("Entre un code de parrainage."); return; }
+                      setReferralLoading(true);
+                      setReferralError(null);
+                      try {
+                        const res = await fetch("/api/referral", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ code: referralCode.trim() }),
+                        });
+                        const data = await res.json();
+                        if (!res.ok || data.error) {
+                          setReferralError(data.error || "Code invalide.");
+                        } else {
+                          setReferralApplied(true);
+                          setReferralName(data.referrer_name || null);
+                        }
+                      } catch {
+                        setReferralError("Erreur reseau, reessaie.");
+                      }
+                      setReferralLoading(false);
+                    }}
+                    disabled={referralLoading || !referralCode.trim()}
+                    className="w-full py-3 font-bold rounded-xl text-white transition disabled:opacity-40"
+                    style={{ background: "#f97316" }}
+                  >
+                    {referralLoading ? "Verification..." : "Appliquer"}
+                  </button>
+                </>
+              )}
+            </div>
+
+            <button
+              onClick={() => setStep(5)}
+              className="w-full mt-4 py-3.5 font-bold rounded-xl text-white transition"
+              style={{ background: referralApplied ? "#f97316" : "var(--c-text, #111827)" }}
+            >
+              {referralApplied ? "Continuer" : "Passer"}
+            </button>
+          </div>
+        )}
+
+        {/* Step 5: Feature discovery */}
+        {step === 5 && (
+          <div className="fade-in-up">
+            <style dangerouslySetInnerHTML={{ __html: `@keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}.fade-in-up{animation:fadeInUp .6s ease-out forwards}@keyframes featureSlideIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}` }} />
+            <div className="text-center mb-8">
+              <span className="text-5xl block mb-2">🚀</span>
+              <h1 className="text-2xl font-extrabold text-[var(--c-text)] mb-2">Decouvre Pawly</h1>
+              <p className="text-sm text-[var(--c-text-muted)]">
+                Tout ce dont tu as besoin pour ton compagnon
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { icon: "🎬", title: "Reels", desc: "Videos courtes de la communaute", delay: "0s" },
+                { icon: "👃", title: "Flairer", desc: "Swipe et trouve des compagnons", delay: "0.1s" },
+                { icon: "👥", title: "Groupes", desc: "Rejoins des groupes par passion", delay: "0.2s" },
+                { icon: "📅", title: "Evenements", desc: "Balades et rencontres pres de toi", delay: "0.3s" },
+              ].map((feat) => (
+                <div
+                  key={feat.title}
+                  className="glass rounded-2xl p-5 text-center"
+                  style={{
+                    background: "var(--c-card)",
+                    border: "1px solid var(--c-border)",
+                    animation: `featureSlideIn 0.5s ease-out ${feat.delay} both`,
+                  }}
+                >
+                  <span className="text-3xl block mb-2">{feat.icon}</span>
+                  <h3 className="font-bold text-sm text-[var(--c-text)] mb-1">{feat.title}</h3>
+                  <p className="text-xs text-[var(--c-text-muted)] leading-relaxed">{feat.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setStep(6)}
+              className="btn-futuristic w-full mt-6 py-3.5 font-bold rounded-xl text-white transition"
+              style={{ background: "#f97316", boxShadow: "0 0 30px rgba(249,115,22,0.3)" }}
+            >
+              C&apos;est parti !
+            </button>
+          </div>
+        )}
+
+        {/* Step 6: Success! */}
+        {step === 6 && (
           <div className="text-center fade-in-up">
             <style dangerouslySetInnerHTML={{ __html: `@keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}.fade-in-up{animation:fadeInUp .6s ease-out forwards}@keyframes confettiBurst{0%{transform:scale(0);opacity:1}100%{transform:scale(1.5);opacity:0}}.confetti-burst{animation:confettiBurst 1s ease-out forwards}` }} />
             <div className="text-7xl mb-4">🎉</div>

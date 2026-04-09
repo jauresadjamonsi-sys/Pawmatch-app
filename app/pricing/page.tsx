@@ -73,6 +73,28 @@ export default function PricingPage() {
       cta: t.pricingChoosePro,
       disabled: false,
     },
+    {
+      key: "gold",
+      name: "Pawly Gold",
+      emoji: "👑",
+      price: "CHF 19.90",
+      period: t.pricingMonth,
+      recommended: true,
+      features: [
+        "Voir qui a swipe sur ton profil",
+        "1 Boost gratuit par semaine",
+        "Badge Gold exclusif",
+        "Pas de publicites",
+        "Acces prioritaire aux evenements",
+        "Profil verifie automatiquement",
+        "50 PawCoins/mois offerts",
+        "Support prioritaire",
+      ],
+      color: "rgba(255,193,7,0.08)",
+      border: "rgba(255,193,7,0.5)",
+      cta: "Passer Gold",
+      disabled: false,
+    },
   ];
 
   async function handleSubscribe(planKey: string) {
@@ -108,7 +130,7 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen py-8 px-4 pb-28" style={{ background: "var(--c-bg, #f9fafb)" }}>
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4" style={{ color: "var(--c-text, #111827)" }}>
             {t.pricingTitle}
@@ -124,25 +146,45 @@ export default function PricingPage() {
           </div>
         )}
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {PLANS.map((plan) => {
             const isCurrent = currentPlan === plan.key;
-            const isPopular = plan.popular;
+            const isPopular = (plan as any).popular;
+            const isGold = (plan as any).recommended;
 
             return (
               <div
                 key={plan.key}
                 className={`relative rounded-2xl border-2 p-8 flex flex-col ${
-                  isPopular
+                  isGold
+                    ? "border-yellow-400 shadow-xl"
+                    : isPopular
                     ? "border-orange-400 shadow-lg"
                     : ""
                 }`}
                 style={{
-                  background: "var(--c-card, #ffffff)",
-                  borderColor: isPopular ? undefined : "var(--c-border, #f3f4f6)",
+                  background: isGold
+                    ? "linear-gradient(135deg, rgba(255,215,0,0.06) 0%, rgba(255,193,7,0.12) 50%, rgba(255,165,0,0.06) 100%)"
+                    : "var(--c-card, #ffffff)",
+                  borderColor: isGold ? "rgba(255,193,7,0.6)" : isPopular ? undefined : "var(--c-border, #f3f4f6)",
+                  boxShadow: isGold
+                    ? "0 0 30px rgba(255,193,7,0.15), 0 0 60px rgba(255,193,7,0.08), inset 0 1px 0 rgba(255,215,0,0.2)"
+                    : undefined,
                 }}
               >
-                {isPopular && (
+                {isGold && (
+                  <div
+                    className="absolute -top-3 left-1/2 -translate-x-1/2 px-5 py-1 text-white text-xs font-bold rounded-full uppercase tracking-wide"
+                    style={{
+                      background: "linear-gradient(135deg, #f59e0b, #d97706, #b45309)",
+                      boxShadow: "0 2px 12px rgba(245,158,11,0.4)",
+                    }}
+                  >
+                    Recommande
+                  </div>
+                )}
+
+                {isPopular && !isGold && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-orange-500 text-white text-xs font-bold rounded-full uppercase tracking-wide">
                     {t.pricingPopular}
                   </div>
@@ -150,11 +192,27 @@ export default function PricingPage() {
 
                 <div className="text-center mb-6">
                   <span className="text-4xl mb-3 block">{plan.emoji}</span>
-                  <h2 className="text-xl font-bold mb-1" style={{ color: "var(--c-text, #111827)" }}>
+                  <h2
+                    className="text-xl font-bold mb-1"
+                    style={{
+                      color: isGold ? "transparent" : "var(--c-text, #111827)",
+                      background: isGold ? "linear-gradient(135deg, #f59e0b, #d97706)" : undefined,
+                      WebkitBackgroundClip: isGold ? "text" : undefined,
+                      WebkitTextFillColor: isGold ? "transparent" : undefined,
+                    }}
+                  >
                     {plan.name}
                   </h2>
                   <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-3xl font-bold" style={{ color: "var(--c-text, #111827)" }}>
+                    <span
+                      className="text-3xl font-bold"
+                      style={{
+                        color: isGold ? "transparent" : "var(--c-text, #111827)",
+                        background: isGold ? "linear-gradient(135deg, #f59e0b, #b45309)" : undefined,
+                        WebkitBackgroundClip: isGold ? "text" : undefined,
+                        WebkitTextFillColor: isGold ? "transparent" : undefined,
+                      }}
+                    >
                       {plan.price}
                     </span>
                     {plan.period && (
@@ -170,11 +228,11 @@ export default function PricingPage() {
                     <li
                       key={feature}
                       className="flex items-center gap-3 text-sm"
-                      style={{ color: "var(--c-text-muted, #4b5563)" }}
+                      style={{ color: isGold ? "var(--c-text, #374151)" : "var(--c-text-muted, #4b5563)" }}
                     >
                       <svg
                         className={`w-5 h-5 flex-shrink-0 ${
-                          isPopular ? "text-orange-500" : "text-green-500"
+                          isGold ? "text-yellow-500" : isPopular ? "text-orange-500" : "text-green-500"
                         }`}
                         fill="none"
                         viewBox="0 0 24 24"
@@ -211,11 +269,22 @@ export default function PricingPage() {
                     onClick={() => handleSubscribe(plan.key)}
                     disabled={loading === plan.key}
                     className={`w-full py-3 font-semibold rounded-xl transition text-sm disabled:opacity-50 ${
-                      isPopular
+                      isGold
+                        ? "text-white"
+                        : isPopular
                         ? "bg-orange-500 hover:bg-orange-600 text-white"
                         : "text-white"
                     }`}
-                    style={!isPopular ? { background: "var(--c-text, #111827)" } : undefined}
+                    style={
+                      isGold
+                        ? {
+                            background: "linear-gradient(135deg, #f59e0b, #d97706, #b45309)",
+                            boxShadow: "0 4px 20px rgba(245,158,11,0.3)",
+                          }
+                        : !isPopular
+                        ? { background: "var(--c-text, #111827)" }
+                        : undefined
+                    }
                   >
                     {loading === plan.key ? t.pricingRedirect : plan.cta}
                   </button>

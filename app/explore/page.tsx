@@ -562,6 +562,37 @@ export default function ExplorePage() {
               ))}
             </div>
           )}
+
+          {/* ═══ CANTON DIRECTORY (Proches tab) ═══ */}
+          {tab === "nearby" && (
+            <div className="mt-6">
+              <h2 className="text-sm font-bold mb-3" style={{ color: "var(--c-text)" }}>
+                Decouvre par canton
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {CANTONS.map((canton, i) => (
+                  <Link
+                    key={canton.code}
+                    href={`/canton/${canton.code}`}
+                    className="px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-105"
+                    style={{
+                      background: `linear-gradient(135deg, ${
+                        ["rgba(249,115,22,0.1)", "rgba(167,139,250,0.1)", "rgba(59,130,246,0.1)", "rgba(34,197,94,0.1)", "rgba(236,72,153,0.1)"][i % 5]
+                      }, ${
+                        ["rgba(249,115,22,0.05)", "rgba(167,139,250,0.05)", "rgba(59,130,246,0.05)", "rgba(34,197,94,0.05)", "rgba(236,72,153,0.05)"][i % 5]
+                      })`,
+                      border: `1px solid ${
+                        ["rgba(249,115,22,0.2)", "rgba(167,139,250,0.2)", "rgba(59,130,246,0.2)", "rgba(34,197,94,0.2)", "rgba(236,72,153,0.2)"][i % 5]
+                      }`,
+                      color: "var(--c-text-muted)",
+                    }}
+                  >
+                    {canton.code} - {canton.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </>
       )}
 
