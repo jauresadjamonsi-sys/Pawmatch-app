@@ -109,37 +109,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               "@context": "https://schema.org",
               "@type": "WebApplication",
               "name": "Pawly",
-              "url": SITE_URL,
-              "description": "La premiere app qui connecte les proprietaires d'animaux en Suisse. Matching par compatibilite, balades, evenements — 26 cantons, toutes les especes.",
-              "applicationCategory": "LifestyleApplication",
-              "operatingSystem": "Web, iOS, Android",
+              "url": "https://pawlyapp.ch",
+              "description": "Reseau social pour animaux de compagnie en Suisse. Matching IA, evenements, communaute.",
+              "applicationCategory": "SocialNetworkingApplication",
+              "operatingSystem": "Web",
               "offers": {
                 "@type": "Offer",
                 "price": "0",
-                "priceCurrency": "CHF",
-                "description": "Gratuit pour commencer — 3 rencontres offertes"
+                "priceCurrency": "CHF"
               },
-              "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": "5",
-                "ratingCount": "3",
-                "bestRating": "5"
-              },
-              "featureList": [
-                "Matching IA par compatibilite de personnalite",
-                "Balades et evenements entre animaux",
-                "Chat integre entre proprietaires",
-                "26 cantons suisses couverts",
-                "Toutes les especes acceptees"
-              ],
-              "screenshot": `${SITE_URL}/promo-hero.jpg`,
-              "inLanguage": ["fr", "de", "it", "en"],
-              "availableLanguage": [
-                { "@type": "Language", "name": "French", "alternateName": "fr" },
-                { "@type": "Language", "name": "German", "alternateName": "de" },
-                { "@type": "Language", "name": "Italian", "alternateName": "it" },
-                { "@type": "Language", "name": "English", "alternateName": "en" }
-              ]
+              "author": {
+                "@type": "Organization",
+                "name": "Pawly"
+              }
             }),
           }}
         />

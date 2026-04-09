@@ -1,13 +1,19 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
+import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import Image from "next/image";
 import { EMOJI_MAP } from "@/lib/constants";
-import StoriesRing from "@/lib/components/StoriesRing";
-import PushPrompt from "@/lib/components/PushPrompt";
-import PromoSection from "@/lib/components/PromoSection";
+
+// Lazy-loaded non-critical components
+const StoriesRing = dynamic(() => import("@/lib/components/StoriesRing"), { ssr: false });
+const PushPrompt = dynamic(() => import("@/lib/components/PushPrompt"), { ssr: false });
+const PromoSection = dynamic(() => import("@/lib/components/PromoSection"), { ssr: false });
+
+// Tiny 1x1 blurred placeholder for dynamic images
+const BLUR_PLACEHOLDER = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNlMmRkZDUiLz48L3N2Zz4=";
 import {
   type AnimalSpecies,
   getMood,
@@ -424,7 +430,7 @@ export default function FeedPage() {
                       {/* Big photo */}
                       <div className="relative aspect-[4/5] w-full">
                         {animal.photo_url ? (
-                          <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="(max-width:640px) 85vw, 380px" />
+                          <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="(max-width:640px) 85vw, 380px" loading="lazy" placeholder="blur" blurDataURL={BLUR_PLACEHOLDER} />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-6xl" style={{ background: "var(--c-card)" }}>{emoji}</div>
                         )}
@@ -484,7 +490,7 @@ export default function FeedPage() {
                 {nearbyAnimals.slice(0, 5).map((a) => (
                   <div key={a.id} className="w-10 h-10 rounded-full border-2 border-[var(--c-deep)] overflow-hidden flex-shrink-0 relative">
                     {a.photo_url ? (
-                      <Image src={a.photo_url} alt={a.name} fill className="object-cover" sizes="40px" />
+                      <Image src={a.photo_url} alt={a.name} fill className="object-cover" sizes="40px" loading="lazy" placeholder="blur" blurDataURL={BLUR_PLACEHOLDER} />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-sm" style={{ background: "var(--c-card)" }}>
                         {(EMOJI_MAP as Record<string, string>)[a.species] || "\uD83D\uDC3E"}
@@ -520,9 +526,9 @@ export default function FeedPage() {
                     <Link href={`/reels`} className="block glass rounded-2xl overflow-hidden transition-transform active:scale-[0.98]">
                       <div className="relative aspect-[16/9] w-full">
                         {item.data.thumbnail_url ? (
-                          <Image src={item.data.thumbnail_url} alt={item.data.caption || "Reel"} fill className="object-cover" sizes="(max-width:640px) 100vw, 512px" />
+                          <Image src={item.data.thumbnail_url} alt={item.data.caption || "Reel"} fill className="object-cover" sizes="(max-width:640px) 100vw, 512px" loading="lazy" placeholder="blur" blurDataURL={BLUR_PLACEHOLDER} />
                         ) : item.data.animals?.photo_url ? (
-                          <Image src={item.data.animals.photo_url} alt={item.data.animals.name || "Animal"} fill className="object-cover" sizes="(max-width:640px) 100vw, 512px" />
+                          <Image src={item.data.animals.photo_url} alt={item.data.animals.name || "Animal"} fill className="object-cover" sizes="(max-width:640px) 100vw, 512px" loading="lazy" placeholder="blur" blurDataURL={BLUR_PLACEHOLDER} />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-4xl" style={{ background: "var(--c-card)" }}>
                             {"\uD83C\uDFAC"}
@@ -539,7 +545,7 @@ export default function FeedPage() {
                         <div className="absolute bottom-2 left-3 right-3 flex items-center gap-2">
                           <div className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0 border border-white/30">
                             {item.data.profiles?.avatar_url ? (
-                              <Image src={item.data.profiles.avatar_url} alt="" width={28} height={28} className="object-cover w-full h-full" />
+                              <Image src={item.data.profiles.avatar_url} alt="" width={28} height={28} className="object-cover w-full h-full" loading="lazy" />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-xs" style={{ background: "var(--c-card)" }}>
                                 {"\uD83D\uDC64"}
@@ -584,7 +590,7 @@ export default function FeedPage() {
                             >
                               <div className="relative w-full" style={{ height: 80 }}>
                                 {animal.photo_url ? (
-                                  <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="100px" />
+                                  <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="100px" loading="lazy" placeholder="blur" blurDataURL={BLUR_PLACEHOLDER} />
                                 ) : (
                                   <div className="w-full h-full flex items-center justify-center text-2xl" style={{ background: "var(--c-card)" }}>
                                     {(EMOJI_MAP as Record<string, string>)[animal.species] || "\uD83D\uDC3E"}
@@ -631,7 +637,7 @@ export default function FeedPage() {
                   >
                     <div className="relative w-full" style={{ height: 80 }}>
                       {animal.photo_url ? (
-                        <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="100px" />
+                        <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="100px" loading="lazy" placeholder="blur" blurDataURL={BLUR_PLACEHOLDER} />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-2xl" style={{ background: "var(--c-card)" }}>
                           {(EMOJI_MAP as Record<string, string>)[animal.species] || "\uD83D\uDC3E"}

@@ -103,6 +103,10 @@ export default function ConversationPage() {
   const [uploadingVoice, setUploadingVoice] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [reconnecting, setReconnecting] = useState(false);
+  const [reactionPickerMsgId, setReactionPickerMsgId] = useState<string | null>(null);
+  const [localReactions, setLocalReactions] = useState<Record<string, { emoji: string; userId: string }[]>>({});
+  const [voiceToast, setVoiceToast] = useState(false);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -325,6 +329,69 @@ export default function ConversationPage() {
     handleSend(suggestion);
   }
 
+  // ── Message reactions (local-only for now) ──
+  const REACTION_EMOJIS = ["\u2764\uFE0F", "\uD83D\uDE02", "\uD83D\uDE2E", "\uD83D\uDE22", "\uD83D\uDC4D", "\uD83D\uDC3E"];
+
+  function handleReactionSelect(msgId: string, emoji: string) {
+    if (!profile) return;
+    setLocalReactions((prev) => {
+      const existing = prev[msgId] || [];
+      const alreadyReacted = existing.find((r) => r.userId === profile.id && r.emoji === emoji);
+      if (alreadyReacted) {
+        // Toggle off if same emoji
+        return { ...prev, [msgId]: existing.filter((r) => !(r.userId === profile.id && r.emoji === emoji)) };
+      }
+      // Remove any previous reaction from this user, add new one
+      const filtered = existing.filter((r) => r.userId !== profile.id);
+      return { ...prev, [msgId]: [...filtered, { emoji, userId: profile.id }] };
+    });
+    setReactionPickerMsgId(null);
+  }
+
+  function getReactionCounts(msgId: string): { emoji: string; count: number; isMine: boolean }[] {
+    const reactions = localReactions[msgId] || [];
+    const map = new Map<string, { count: number; isMine: boolean }>();
+    for (const r of reactions) {
+      const entry = map.get(r.emoji) || { count: 0, isMine: false };
+      entry.count++;
+      if (r.userId === profile?.id) entry.isMine = true;
+      map.set(r.emoji, entry);
+    }
+    return Array.from(map.entries()).map(([emoji, data]) => ({ emoji, ...data }));
+  }
+
+  function handleMsgTouchStart(msgId: string) {
+    longPressTimer.current = setTimeout(() => {
+      setReactionPickerMsgId(msgId);
+    }, 500);
+  }
+
+  function handleMsgTouchEnd() {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  }
+
+  function handleMsgDoubleClick(msgId: string) {
+    setReactionPickerMsgId((prev) => (prev === msgId ? null : msgId));
+  }
+
+  // ── Dismiss reaction picker on outside click ──
+  useEffect(() => {
+    if (!reactionPickerMsgId) return;
+    function handleClick() { setReactionPickerMsgId(null); }
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
+  }, [reactionPickerMsgId]);
+
+  // ── Voice toast auto-dismiss ──
+  useEffect(() => {
+    if (!voiceToast) return;
+    const t = setTimeout(() => setVoiceToast(false), 2500);
+    return () => clearTimeout(t);
+  }, [voiceToast]);
+
   // ── Loading state ──
   if (loading) return (
     <div className="min-h-screen bg-[var(--c-deep)] flex items-center justify-center">
@@ -400,6 +467,27 @@ export default function ConversationPage() {
           50% { opacity: 1; }
         }
         .reconnect-banner { animation: reconnectPulse 1.5s ease-in-out infinite; }
+        @keyframes reactionPickerIn {
+          from { opacity: 0; transform: scale(0.8) translateY(4px); }
+          to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .reaction-picker-enter { animation: reactionPickerIn 0.18s ease-out forwards; }
+        @keyframes reactionBadgePop {
+          0% { transform: scale(0); }
+          60% { transform: scale(1.2); }
+          100% { transform: scale(1); }
+        }
+        .reaction-badge-pop { animation: reactionBadgePop 0.25s ease-out forwards; }
+        @keyframes toastSlideUp {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes toastFadeOut {
+          from { opacity: 1; }
+          to { opacity: 0; }
+        }
+        .toast-enter { animation: toastSlideUp 0.25s ease-out forwards; }
+        .toast-exit { animation: toastFadeOut 0.3s ease-in forwards; }
       `}} />
 
       {/* Header */}
@@ -486,6 +574,7 @@ export default function ConversationPage() {
             const showTime = !prevMsg || new Date(msg.created_at).getTime() - new Date(prevMsg.created_at).getTime() > 5 * 60 * 1000;
             const isVoice = msg.content === "\uD83C\uDF99\uFE0F Message vocal" && msg.image_url && (msg.image_url.endsWith(".webm") || msg.image_url.endsWith(".m4a") || msg.image_url.endsWith(".ogg"));
             const isImage = msg.image_url && !isVoice;
+            const msgReactions = getReactionCounts(msg.id);
 
             return (
               <div key={msg.id}>
@@ -493,39 +582,89 @@ export default function ConversationPage() {
                   <p className="text-center text-[10px] text-[var(--c-text-muted)] my-2">{formatTime(msg.created_at)}</p>
                 )}
                 <div className={"flex " + (isMine ? "justify-end" : "justify-start")}>
-                  <div className={"max-w-[85%] sm:max-w-[70%] rounded-2xl text-sm " +
-                    (isMine
-                      ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-br-md"
-                      : "bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text)] rounded-bl-md") +
-                    (isImage ? " p-1.5" : isVoice ? " p-0.5" : " px-4 py-2.5")}>
-                    {isVoice ? (
-                      <VoiceMessage audioUrl={msg.image_url!} isMine={isMine} />
-                    ) : isImage ? (
-                      <div>
-                        <div className="relative max-w-full" style={{ maxHeight: 240 }}>
-                          <Image
-                            src={msg.image_url!}
-                            alt="Photo"
-                            width={300}
-                            height={240}
-                            className="rounded-xl object-cover cursor-pointer hover:opacity-90 transition"
-                            onClick={() => setExpandedImage(msg.image_url)}
-                            sizes="(max-width: 768px) 250px, 300px"
-                          />
+                  <div className="relative max-w-[85%] sm:max-w-[70%]">
+                    {/* Message bubble with reaction touch/click handlers */}
+                    <div
+                      className={"rounded-2xl text-sm select-none " +
+                        (isMine
+                          ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-br-md"
+                          : "bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text)] rounded-bl-md") +
+                        (isImage ? " p-1.5" : isVoice ? " p-0.5" : " px-4 py-2.5")}
+                      onDoubleClick={() => handleMsgDoubleClick(msg.id)}
+                      onTouchStart={() => handleMsgTouchStart(msg.id)}
+                      onTouchEnd={handleMsgTouchEnd}
+                      onTouchMove={handleMsgTouchEnd}
+                    >
+                      {isVoice ? (
+                        <VoiceMessage audioUrl={msg.image_url!} isMine={isMine} />
+                      ) : isImage ? (
+                        <div>
+                          <div className="relative max-w-full" style={{ maxHeight: 240 }}>
+                            <Image
+                              src={msg.image_url!}
+                              alt="Photo"
+                              width={300}
+                              height={240}
+                              className="rounded-xl object-cover cursor-pointer hover:opacity-90 transition"
+                              onClick={() => setExpandedImage(msg.image_url)}
+                              sizes="(max-width: 768px) 250px, 300px"
+                            />
+                          </div>
+                          {msg.content && msg.content !== "\uD83D\uDCF7 Photo" && (
+                            <p className="whitespace-pre-wrap leading-relaxed px-2.5 py-1.5 text-sm">{msg.content}</p>
+                          )}
                         </div>
-                        {msg.content && msg.content !== "📷 Photo" && (
-                          <p className="whitespace-pre-wrap leading-relaxed px-2.5 py-1.5 text-sm">{msg.content}</p>
-                        )}
+                      ) : (
+                        <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                      )}
+                      {/* Read receipts for own messages */}
+                      {isMine && (
+                        <div className={"flex justify-end mt-0.5 " + (isImage ? "px-2 pb-1" : isVoice ? "px-3 pb-1" : "")}>
+                          <span className={"text-[10px] font-medium " + (msg.read_at ? "text-blue-300" : "text-white/40")}>
+                            {msg.read_at ? "\u2713\u2713" : "\u2713"}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Reaction badges below the bubble */}
+                    {msgReactions.length > 0 && (
+                      <div className={"flex gap-1 mt-0.5 " + (isMine ? "justify-end pr-1" : "justify-start pl-1")}>
+                        {msgReactions.map((r) => (
+                          <button
+                            key={r.emoji}
+                            onClick={() => handleReactionSelect(msg.id, r.emoji)}
+                            className={"reaction-badge-pop inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-xs border transition " +
+                              (r.isMine
+                                ? "bg-orange-500/15 border-orange-500/30 text-orange-400"
+                                : "bg-[var(--c-card)] border-[var(--c-border)] text-[var(--c-text-muted)]")}
+                          >
+                            <span>{r.emoji}</span>
+                            {r.count > 1 && <span className="text-[10px]">{r.count}</span>}
+                          </button>
+                        ))}
                       </div>
-                    ) : (
-                      <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
                     )}
-                    {/* Read receipts for own messages */}
-                    {isMine && (
-                      <div className={"flex justify-end mt-0.5 " + (isImage ? "px-2 pb-1" : isVoice ? "px-3 pb-1" : "")}>
-                        <span className={"text-[10px] font-medium " + (msg.read_at ? "text-blue-300" : "text-white/40")}>
-                          {msg.read_at ? "✓✓" : "✓"}
-                        </span>
+
+                    {/* Reaction picker overlay */}
+                    {reactionPickerMsgId === msg.id && (
+                      <div
+                        className={"reaction-picker-enter absolute z-20 " +
+                          (isMine ? "right-0" : "left-0") +
+                          " -top-11"}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="flex items-center gap-0.5 px-2 py-1.5 bg-[var(--c-card)] border border-[var(--c-border)] rounded-full shadow-lg">
+                          {REACTION_EMOJIS.map((emoji) => (
+                            <button
+                              key={emoji}
+                              onClick={() => handleReactionSelect(msg.id, emoji)}
+                              className="w-8 h-8 flex items-center justify-center text-lg hover:bg-[var(--c-bg)] rounded-full transition active:scale-125"
+                            >
+                              {emoji}
+                            </button>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -734,6 +873,18 @@ export default function ConversationPage() {
           onConfirm={handleChatCropConfirm}
           onCancel={() => setChatCropFile(null)}
         />
+      )}
+
+      {/* Voice coming-soon toast */}
+      {voiceToast && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 toast-enter">
+          <div className="flex items-center gap-2 px-4 py-2.5 bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl shadow-xl">
+            <svg className="w-4 h-4 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+            </svg>
+            <span className="text-sm text-[var(--c-text)]">Bientot disponible</span>
+          </div>
+        </div>
       )}
     </div>
   );
