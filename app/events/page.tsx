@@ -1,5 +1,5 @@
 "use client";
-
+// Build cache buster: v2 — events discover + all cantons wrap
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/hooks/useAuth";
