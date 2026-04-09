@@ -286,33 +286,27 @@ export default function EventsPage() {
           )}
         </div>
 
-        {/* Canton filter */}
-        <div className="max-w-2xl mx-auto mt-3 flex gap-2 flex-wrap pb-1">
-          <button onClick={() => setFilterCanton("")}
-            className={"flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition " +
-              (!filterCanton ? "bg-orange-500/20 border border-orange-500/40 text-orange-300" : "bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-orange-500/30")}>
-            {t.eventsAll}
-          </button>
-          {/* Geolocation button */}
-          {detectedCanton && (
-            <button onClick={() => setFilterCanton(detectedCanton)}
-              className={"flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition " +
-                (filterCanton === detectedCanton ? "bg-green-500/20 border border-green-500/40 text-green-300" : "bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-green-500/30")}>
-              {"\uD83D\uDCCD"} Pr&egrave;s de moi ({detectedCanton})
-            </button>
-          )}
+        {/* Canton filter — dropdown */}
+        <div className="max-w-2xl mx-auto mt-3 flex items-center gap-2 pb-1">
+          <select
+            value={filterCanton}
+            onChange={(e) => setFilterCanton(e.target.value)}
+            className="flex-1 px-4 py-2.5 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-sm text-[var(--c-text)] focus:ring-1 focus:ring-orange-500/50 outline-none appearance-none"
+            style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23999' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6.5 6 6.5-6'/%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "right 12px center" }}
+          >
+            <option value="">{t.eventsAll}</option>
+            {detectedCanton && (
+              <option value={detectedCanton}>{"\uD83D\uDCCD"} Pres de moi — {CANTONS.find(c => c.code === detectedCanton)?.name || detectedCanton}</option>
+            )}
+            {CANTONS.map(c => (
+              <option key={c.code} value={c.code}>{c.code} — {c.name}</option>
+            ))}
+          </select>
           {geoStatus === "loading" && (
-            <span className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs text-[var(--c-text-muted)] animate-pulse">
+            <span className="text-xs text-[var(--c-text-muted)] animate-pulse whitespace-nowrap">
               {"\uD83D\uDCCD"} Localisation...
             </span>
           )}
-          {CANTONS.map(c => (
-            <button key={c.code} onClick={() => setFilterCanton(filterCanton === c.code ? "" : c.code)}
-              className={"flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition " +
-                (filterCanton === c.code ? "bg-orange-500/20 border border-orange-500/40 text-orange-300" : "bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-orange-500/30")}>
-              {c.code}
-            </button>
-          ))}
         </div>
       </div>
 
@@ -419,7 +413,11 @@ export default function EventsPage() {
           </div>
         ) : events.length === 0 ? (
           <div className="text-center py-16">
-            <div className="text-5xl mb-4">📅</div>
+            {/* Real date calendar icon */}
+            <div className="inline-flex flex-col items-center justify-center w-16 h-16 rounded-2xl border-2 border-orange-500/30 bg-[var(--c-card)] mb-4 shadow-sm">
+              <span className="text-[10px] font-bold uppercase text-orange-500 leading-none mt-1">{new Date().toLocaleDateString(lang === "de" ? "de-CH" : lang === "en" ? "en-GB" : "fr-CH", { month: "short" })}</span>
+              <span className="text-2xl font-extrabold text-[var(--c-text)] leading-none">{new Date().getDate()}</span>
+            </div>
             <h2 className="text-xl font-bold text-[var(--c-text)] mb-2">{t.eventsNone}</h2>
             <p className="text-[var(--c-text-muted)] text-sm mb-6">
               {filterCanton ? t.eventsNoInCanton : t.eventsBeFirst}
