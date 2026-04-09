@@ -140,26 +140,39 @@ export default function HomePage() {
 
           {/* Features */}
           <section className="mb-16" aria-label="Fonctionnalités">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <h2 className="text-center text-xs font-bold uppercase tracking-[0.2em] mb-8" style={{ color: "var(--c-text-muted)" }}>
+              Tout un univers pour ton animal
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <span className="text-3xl">💕</span>
                 <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #f97316)" }}>Flairer</h3>
-                <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Swipe et trouve des copains</p>
+                <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Swipe et trouve des copains compatibles avec notre IA</p>
               </div>
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <span className="text-3xl">💬</span>
-                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #f97316)" }}>Événements</h3>
-                <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Groupes de balades près de toi</p>
+                <span className="text-3xl">🎬</span>
+                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #f97316)" }}>PawReels</h3>
+                <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Partage les meilleurs moments de ton animal en vidéo courte</p>
               </div>
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <span className="text-3xl">📅</span>
-                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #f97316)" }}>Premium</h3>
-                <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Rencontres illimitées + IA avancée</p>
+                <span className="text-3xl">🔍</span>
+                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #f97316)" }}>Explorer</h3>
+                <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Découvre les animaux les plus populaires et le contenu tendance</p>
               </div>
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <span className="text-3xl">🗺️</span>
-                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #f97316)" }}>Commencer</h3>
-                <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>3 rencontres gratuites</p>
+                <span className="text-3xl">⭐</span>
+                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #f97316)" }}>Super Flair</h3>
+                <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Envoie un coup de coeur spécial pour te démarquer</p>
+              </div>
+              <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                <span className="text-3xl">🪙</span>
+                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #f97316)" }}>PawCoins</h3>
+                <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Gagne des coins, boost ton profil et débloque des avantages</p>
+              </div>
+              <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                <span className="text-3xl">🏆</span>
+                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #f97316)" }}>Classement</h3>
+                <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Ton animal peut devenir la star de son canton</p>
               </div>
             </div>
           </section>

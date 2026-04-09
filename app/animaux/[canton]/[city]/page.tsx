@@ -203,7 +203,7 @@ export default async function CityPage({ params }: Props) {
                 href={`/animals/${animal.id}`}
                 className="group bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg hover:border-orange-200 transition-all duration-200"
               >
-                <div className="relative w-full h-48 bg-gray-100">
+                <div className="relative w-full aspect-[4/5] bg-gray-100">
                   {animal.photo_url ? (
                     <Image
                       src={animal.photo_url}

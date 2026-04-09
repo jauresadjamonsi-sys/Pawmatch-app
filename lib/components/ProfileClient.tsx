@@ -11,6 +11,7 @@ import { BadgesSection } from "./Badges";
 import ReferralCard from "./ReferralCard";
 import { EMOJI_MAP } from "@/lib/constants";
 import ImageCropper from "./ImageCropper";
+import FollowersList from "./FollowersList";
 
 interface Props {
   profile: any;
@@ -32,6 +33,9 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
   const [loading, setLoading] = useState(false);
   const [blockedUsers, setBlockedUsers] = useState<any[]>([]);
   const [loadingBlocked, setLoadingBlocked] = useState(false);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
+  const [showFollowersList, setShowFollowersList] = useState<"followers" | "following" | null>(null);
   const router = useRouter();
   const supabase = createClient();
 
@@ -61,6 +65,12 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
           days: daysSince,
           animals: (animalsRes.data || []).length,
         });
+
+        // Fetch follower counts
+        fetch(`/api/followers?user_id=${authUser.id}`)
+          .then(r => r.json())
+          .then(d => { setFollowersCount(d.followers_count || 0); setFollowingCount(d.following_count || 0); })
+          .catch(() => {});
       } catch (err) {
         console.error("[Profile] Failed to load profile stats:", err);
       }
@@ -173,13 +183,13 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
               disabled={uploadingAvatar}
             >
               {profile?.avatar_url ? (
-                <div className="w-16 h-16 rounded-full overflow-hidden relative"
+                <div className="w-20 h-20 rounded-full overflow-hidden relative"
                   style={{ boxShadow: isPremium ? "0 0 20px rgba(249,115,22,0.3), 0 0 40px rgba(167,139,250,0.15)" : "none" }}>
-                  <Image src={profile.avatar_url} alt="Avatar" fill className="object-cover" sizes="64px" />
+                  <Image src={profile.avatar_url} alt="Avatar" fill className="object-cover" sizes="80px" />
                 </div>
               ) : (
                 <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center"
+                  className="w-20 h-20 rounded-full flex items-center justify-center"
                   style={{
                     background: "rgba(249,115,22,0.15)",
                     boxShadow: isPremium
@@ -272,6 +282,19 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
                 <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Membres</p>
               </Link>
             )}
+          </div>
+
+          {/* Followers / Following */}
+          <div className="flex items-center justify-center gap-6 mb-5">
+            <button onClick={() => setShowFollowersList("followers")} className="text-center group">
+              <p className="text-lg font-black" style={{ color: "var(--c-text)" }}>{followersCount}</p>
+              <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase group-hover:text-orange-400 transition-colors">Abonnes</p>
+            </button>
+            <div className="w-px h-8" style={{ background: "var(--c-border)" }} />
+            <button onClick={() => setShowFollowersList("following")} className="text-center group">
+              <p className="text-lg font-black" style={{ color: "var(--c-text)" }}>{followingCount}</p>
+              <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase group-hover:text-orange-400 transition-colors">Abonnements</p>
+            </button>
           </div>
 
           {/* Badges */}
@@ -634,6 +657,15 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
       )}
 
       {/* Hover styles */}
+      {/* Followers/Following list modal */}
+      {showFollowersList && (
+        <FollowersList
+          userId={user.id}
+          type={showFollowersList}
+          onClose={() => setShowFollowersList(null)}
+        />
+      )}
+
       <style>{`
         .profile-name-hover:hover {
           background: linear-gradient(135deg, #f97316, #a78bfa);

@@ -119,7 +119,7 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
       </div>
 
       {/* Card */}
-      <div className="relative truffe-pop glass-strong p-10 text-center max-w-sm mx-4 neon-orange"
+      <div className="relative truffe-pop glass-strong p-6 md:p-10 text-center max-w-sm mx-4 neon-orange"
         onClick={(e) => e.stopPropagation()}>
 
         {/* Animated gradient border */}

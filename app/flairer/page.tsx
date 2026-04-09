@@ -9,6 +9,7 @@ import { CANTONS } from "@/lib/cantons";
 import Link from "next/link";
 import Image from "next/image";
 import BlockReportModal from "@/lib/components/BlockReportModal";
+import SuperFlairModal from "@/lib/components/SuperFlairModal";
 import CompatibilityBadge from "@/lib/components/CompatibilityBadge";
 import { formatAge } from "@/lib/utils";
 import type { AnimalRow, AnimalWithCompat } from "@/lib/types";
@@ -96,6 +97,7 @@ export default function FlairerPage() {
   const [showCoupDeTruffe, setShowCoupDeTruffe] = useState(false);
   const [mutualMatchData, setMutualMatchData] = useState<any>(null);
   const [showBlockReport, setShowBlockReport] = useState(false);
+  const [showSuperFlairModal, setShowSuperFlairModal] = useState(false);
   const [blockedIds, setBlockedIds] = useState<string[]>([]);
   const [cardEntering, setCardEntering] = useState(false);
   const startX = useRef(0);
@@ -536,7 +538,7 @@ export default function FlairerPage() {
       {/* Coup de Truffe */}
       {showCoupDeTruffe && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md" onClick={() => setShowCoupDeTruffe(false)}>
-          <div className="relative glass-strong neon-orange p-10 text-center max-w-sm mx-4 animate-scale-in" onClick={e => e.stopPropagation()}>
+          <div className="relative glass-strong neon-orange p-6 md:p-10 text-center max-w-sm mx-4 animate-scale-in" onClick={e => e.stopPropagation()}>
             <div className="absolute inset-0 rounded-[24px] gradient-border pointer-events-none" />
             <div className="text-7xl mb-4 animate-float">{"🐾"}</div>
             <h2 className="text-3xl font-extrabold gradient-text-warm mb-1">Coup de Truffe !</h2>
@@ -646,8 +648,8 @@ export default function FlairerPage() {
           onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}
           onMouseLeave={() => { if (isDragging) { setIsDragging(false); setDragX(0); setDragY(0); } }}>
 
-          {/* Photo with gradient overlay */}
-          <div className="h-[60%] relative overflow-hidden bg-[var(--c-deep,#1a1225)]">
+          {/* Photo with gradient overlay — hero takes most of the card */}
+          <div className="h-[68%] relative overflow-hidden bg-[var(--c-deep,#1a1225)]">
             {animal.photo_url
               ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" draggable={false} sizes="(max-width: 768px) 100vw, 448px" />
               : <div className="w-full h-full flex items-center justify-center text-6xl font-bold text-[var(--c-text-muted)]">{animal.name?.charAt(0)}</div>}
@@ -694,8 +696,8 @@ export default function FlairerPage() {
             </div>
           </div>
 
-          {/* Info section */}
-          <div className="h-[45%] p-4 overflow-y-auto">
+          {/* Info section — compact to maximize photo */}
+          <div className="h-[32%] p-3 overflow-y-auto">
 
             {/* Compatibility meter with shimmer animation */}
             {compat && activeMyAnimal && (
@@ -795,7 +797,18 @@ export default function FlairerPage() {
         </button>
       </div>
 
-      <p className="text-[var(--c-text-muted)] text-[10px] mt-3 relative z-10">{"←"} Passer {"·"} {"❤️"} Flairer {"·"} {"⚡"} Super Flair (swipe haut)</p>
+      <div className="flex items-center gap-3 mt-3 relative z-10">
+        <p className="text-[var(--c-text-muted)] text-[10px]">{"←"} Passer {"·"} {"❤️"} Flairer {"·"} {"⚡"} Super Flair</p>
+        {isAuthenticated && myAnimals.length > 0 && animal && (
+          <button
+            onClick={() => setShowSuperFlairModal(true)}
+            className="text-[10px] font-bold px-2.5 py-1 rounded-full transition-all"
+            style={{ background: "rgba(167,139,250,0.15)", border: "1px solid rgba(167,139,250,0.3)", color: "#a78bfa" }}
+          >
+            ⚡ 15 🪙
+          </button>
+        )}
+      </div>
 
       {/* Paywall modal */}
       {showPaywall && (
@@ -901,6 +914,17 @@ export default function FlairerPage() {
             )}
           </div>
         </div>
+      )}
+
+      {/* Super Flair modal */}
+      {showSuperFlairModal && animal && animal.created_by && myAnimals.length > 0 && (
+        <SuperFlairModal
+          senderAnimalId={activeMyAnimal?.id || myAnimals[0].id}
+          receiverAnimalId={animal.id}
+          receiverUserId={animal.created_by}
+          receiverName={animal.name}
+          onClose={() => setShowSuperFlairModal(false)}
+        />
       )}
 
       {/* Block/Report modal */}

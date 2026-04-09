@@ -338,7 +338,7 @@ export default function ConversationPage() {
   if (!match || match.status !== "accepted") {
     return (
       <div className="min-h-screen bg-[var(--c-deep)] flex items-center justify-center">
-        <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-8 text-center max-w-md">
+        <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-5 md:p-8 text-center w-full max-w-sm md:max-w-md mx-4">
           <h2 className="text-xl font-bold text-[var(--c-text)] mb-2">Conversation indisponible</h2>
           <p className="text-[var(--c-text-muted)]">Ce match n'existe pas ou n'a pas encore été accepté.</p>
           <Link href="/matches" className="inline-block mt-4 text-orange-500 font-medium">← Retour</Link>

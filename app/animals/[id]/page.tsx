@@ -22,6 +22,8 @@ import { AIRecommendations } from "@/lib/components/AIRecommendations";
 import { MoodTracker } from "@/lib/components/MoodTracker";
 import { ActivityAlert } from "@/lib/components/ActivityAlert";
 import BlockReportModal from "@/lib/components/BlockReportModal";
+import SuperFlairModal from "@/lib/components/SuperFlairModal";
+import FollowButton from "@/lib/components/FollowButton";
 import { useOnlineStatus } from "@/lib/hooks/useOnlineStatus";
 import PresenceDot from "@/lib/components/PresenceDot";
 import { EMOJI_MAP } from "@/lib/constants";
@@ -40,6 +42,7 @@ export default function AnimalDetailPage() {
   const [activePhoto, setActivePhoto] = useState(0);
   const [hasCoupDeTruffe, setHasCoupDeTruffe] = useState(false);
   const [showBlockReport, setShowBlockReport] = useState(false);
+  const [showSuperFlair, setShowSuperFlair] = useState(false);
   const [compatibility, setCompatibility] = useState<any>(null);
   const personality = animal ? detectPersonality(animal.traits || []) : null;
   const { t, lang } = useAppContext();
@@ -115,61 +118,20 @@ export default function AnimalDetailPage() {
           <Link href="/animals" className="text-orange-400 hover:underline text-sm">{t.animalBackCatalog}</Link>
           <div className="flex-1" />
           {!isOwner && isAuthenticated && animal.created_by && (
-            <button
-              onClick={() => setShowBlockReport(true)}
-              className="p-2 rounded-full hover:bg-red-500/10 transition"
-              title="Signaler ou bloquer"
-              style={{ color: "var(--c-text-muted, #9b93b8)" }}
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
-              </svg>
-            </button>
+            <div className="flex items-center gap-2">
+              <FollowButton userId={animal.created_by} size="sm" />
+              <button
+                onClick={() => setShowBlockReport(true)}
+                className="p-2 rounded-full hover:bg-red-500/10 transition"
+                title="Signaler ou bloquer"
+                style={{ color: "var(--c-text-muted, #9b93b8)" }}
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+                </svg>
+              </button>
+            </div>
           )}
-          {/* compatibility moved */}
-              {false && (
-                <div className="mt-6 bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/20 rounded-2xl p-5">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">🤖</span>
-                      <h3 className="font-bold text-[var(--c-text)] text-sm">{t.animalWhyMatch}</h3>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-2xl font-black" style={{ color: compatibility.color }}>{compatibility.score}%</span>
-                      <p className="text-[10px] text-[var(--c-text-muted)]">{compatibility.label}</p>
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-2 mb-4">
-                    {[
-                      { label: t.animalSpeciesLabel, score: Math.min(100, (compatibility.score * 1.2)) },
-                      { label: t.animalCharacter, score: Math.min(100, (compatibility.score * 0.9)) },
-                      { label: t.animalLocationLabel, score: Math.min(100, (compatibility.score * 1.1)) },
-                      { label: t.animalAgeLabel, score: Math.min(100, (compatibility.score * 0.8)) },
-                    ].map((trait, i) => (
-                      <div key={i}>
-                        <div className="flex justify-between text-[10px] mb-1">
-                          <span className="text-[var(--c-text-muted)]">{trait.label}</span>
-                          <span className="font-bold" style={{ color: compatibility.color }}>{Math.round(trait.score)}%</span>
-                        </div>
-                        <div className="h-1.5 bg-[var(--c-border)] rounded-full overflow-hidden">
-                          <div className="h-full rounded-full transition-all" style={{ width: trait.score + '%', background: compatibility.color }} />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  {compatibility.reasons.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {compatibility.reasons.map((r: string, i: number) => (
-                        <span key={i} className="px-3 py-1 rounded-full text-xs font-bold border" style={{ color: compatibility.color, borderColor: compatibility.color + '40', background: compatibility.color + '15' }}>
-                          ✓ {r}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {isOwner && <Link href={"/animals/" + animal.id + "/edit"} className="text-orange-400 hover:underline text-sm">{t.edit}</Link>}
             {compatibility && (
               <div className="mt-6 bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/20 rounded-2xl p-5">
                 <div className="flex items-center justify-between mb-4">
@@ -214,63 +176,92 @@ export default function AnimalDetailPage() {
         </div>
 
         <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl overflow-hidden">
-          <div className="h-72 bg-[var(--c-card)] flex items-center justify-center overflow-hidden">
+          {/* ═══ HERO PHOTO — full width, tall, with overlay ═══ */}
+          <div className="relative w-full" style={{ aspectRatio: "3/4", maxHeight: "70vh" }}>
             {(() => {
               const photos = [animal.photo_url, ...(animal.photos || [])].filter(Boolean);
-              if (photos.length === 0) return <span className="text-8xl">{EMOJI_MAP[animal.species] || "🐾"}</span>;
+              if (photos.length === 0) return (
+                <div className="w-full h-full flex items-center justify-center" style={{ background: "var(--c-card)" }}>
+                  <span className="text-8xl">{EMOJI_MAP[animal.species] || "🐾"}</span>
+                </div>
+              );
               return (
-                <div className="relative w-full h-full">
-                  <Image src={photos[activePhoto] || photos[0] || ""} alt={animal.name} fill className="object-cover" sizes="(max-width: 768px) 100vw, 600px" />
+                <>
+                  <Image src={photos[activePhoto] || photos[0] || ""} alt={animal.name} fill className="object-cover" sizes="(max-width: 768px) 100vw, 768px" priority />
+                  {/* Photo navigation */}
                   {photos.length > 1 && (
                     <>
-                      <button onClick={() => setActivePhoto(p => (p - 1 + photos.length) % photos.length)}
-                        className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center text-sm">‹</button>
-                      <button onClick={() => setActivePhoto(p => (p + 1) % photos.length)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center text-sm">›</button>
-                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                      {/* Top progress bars (Instagram-style) */}
+                      <div className="absolute top-3 left-3 right-3 flex gap-1 z-10">
                         {photos.map((_: any, i: number) => (
-                          <button key={i} onClick={() => setActivePhoto(i)}
-                            className={"w-2 h-2 rounded-full transition-all " + (i === activePhoto ? "bg-white scale-125" : "bg-white/40")} />
+                          <button key={i} onClick={() => setActivePhoto(i)} className="h-[3px] flex-1 rounded-full transition-all" style={{ background: i === activePhoto ? "#fff" : "rgba(255,255,255,0.35)" }} />
                         ))}
                       </div>
+                      {/* Invisible tap zones (left/right halves) */}
+                      <button onClick={() => setActivePhoto(p => (p - 1 + photos.length) % photos.length)}
+                        className="absolute left-0 top-0 w-1/3 h-full z-10" aria-label="Photo précédente" />
+                      <button onClick={() => setActivePhoto(p => (p + 1) % photos.length)}
+                        className="absolute right-0 top-0 w-1/3 h-full z-10" aria-label="Photo suivante" />
                     </>
                   )}
-                </div>
+                  {/* Bottom gradient overlay for text readability */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none" />
+                  {/* Name & key info overlaid on photo */}
+                  <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
+                    <div className="flex items-end justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h1 className="text-3xl font-black text-white drop-shadow-lg truncate">{animal.name}</h1>
+                          {animal.created_by && !isOwner && (
+                            <PresenceDot isOnline={ownerOnlineMap.get(animal.created_by) ?? false} size="lg" />
+                          )}
+                        </div>
+                        <p className="text-sm text-white/80 drop-shadow">
+                          {EMOJI_MAP[animal.species] || "🐾"} {animal.breed || animal.species}
+                          {animal.age_months !== null && <span> &bull; {formatAge(animal.age_months)}</span>}
+                          {animal.city && <span> &bull; {animal.city}</span>}
+                        </p>
+                      </div>
+                      <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+                        {personality && (
+                          <a href={"/animals/" + animal.id + "/personality"} className="backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold no-underline" style={{ background: personality.bgColor + "cc", color: personality.color, border: "1px solid " + personality.color + "40" }}>
+                            {personality.emoji} {personality.name}
+                          </a>
+                        )}
+                        {hasCoupDeTruffe && (
+                          <span className="backdrop-blur-md bg-pink-500/30 text-pink-200 px-3 py-1 rounded-full text-xs font-bold border border-pink-400/30">
+                            💥 Coup de Truffe
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </>
               );
             })()}
           </div>
 
-          <div className="p-8">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-2">
-                <h1 className="text-3xl font-bold text-[var(--c-text)]">{animal.name}</h1>
-                {animal.created_by && !isOwner && (
-                  <PresenceDot isOnline={ownerOnlineMap.get(animal.created_by) ?? false} size="lg" />
-                )}
-              </div>
-              {personality && <a href={"/animals/" + animal.id + "/personality"} style={{ display:"inline-block", marginTop:8, background: personality.bgColor, color: personality.color, border: "1px solid " + personality.color + "40", fontSize: 12, fontWeight: 800, padding: "4px 14px", borderRadius: 50, textDecoration: "none" }}>{personality.emoji} {personality.name}</a>}
-              {hasCoupDeTruffe && (
-                <span className="bg-pink-500/20 text-pink-400 px-3 py-1.5 rounded-full text-xs font-bold border border-pink-500/30 animate-pulse">
-                  💥 Coup de Truffe
-                </span>
-              )}
-              <span className="bg-green-500/20 text-green-300 px-3 py-1 rounded-full text-sm font-medium">
+          <div className="p-5 md:p-6">
+            {/* ═══ COMPACT INFO GRID ═══ */}
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
+              <span className="bg-green-500/15 text-green-400 px-3 py-1 rounded-full text-xs font-semibold">
                 {animal.status === "disponible" ? t.animalAvailable : animal.status === "en_cours" ? t.animalInProgress : t.animalMatched}
               </span>
+              {isOwner && <Link href={"/animals/" + animal.id + "/edit"} className="text-orange-400 hover:underline text-xs font-medium">{t.edit}</Link>}
             </div>
 
-            <div className="grid grid-cols-2 gap-3 mb-6">
+            <div className="grid grid-cols-3 gap-2 mb-5">
               {[
                 { label: t.animalSpeciesLabel, value: animal.species.charAt(0).toUpperCase() + animal.species.slice(1) },
-                { label: t.animalBreedLabel, value: animal.breed || t.animalNotSpecifiedF },
-                { label: t.animalAgeLabel, value: formatAge(animal.age_months) },
+                { label: t.animalBreedLabel, value: animal.breed || "—" },
                 { label: t.animalGenderLabel, value: animal.gender === "male" ? t.animalMale : animal.gender === "femelle" ? t.animalFemale : t.animalUnknown },
-                { label: t.animalWeightLabel, value: animal.weight_kg ? animal.weight_kg + " kg" : t.animalNotSpecified },
-                { label: t.animalLocationLabel, value: [animal.city, cantonName ? cantonName + " (" + animal.canton + ")" : ""].filter(Boolean).join(", ") || t.animalNotSpecifiedF },
+                { label: t.animalWeightLabel, value: animal.weight_kg ? animal.weight_kg + " kg" : "—" },
+                { label: t.animalAgeLabel, value: formatAge(animal.age_months) },
+                { label: t.animalLocationLabel, value: cantonName ? (animal.canton || "") : "—" },
               ].map((item) => (
-                <div key={item.label} className="bg-[var(--c-card)] rounded-xl p-4">
-                  <p className="text-xs text-[var(--c-text-muted)]">{item.label}</p>
-                  <p className="font-semibold text-[var(--c-text)] text-sm">{item.value}</p>
+                <div key={item.label} className="rounded-xl px-3 py-2.5" style={{ background: "var(--c-glass, rgba(255,255,255,0.03))" }}>
+                  <p className="text-[10px] text-[var(--c-text-muted)] uppercase tracking-wider">{item.label}</p>
+                  <p className="font-bold text-[var(--c-text)] text-sm truncate">{item.value}</p>
                 </div>
               ))}
             </div>
@@ -527,9 +518,18 @@ export default function AnimalDetailPage() {
                     <Link href="/profile/animals/new" className="inline-block mt-2 text-orange-400 hover:underline text-sm font-medium">{t.animalAddMine}</Link>
                   </div>
                 ) : (
-                  <button onClick={() => setShowMatchModal(true)} className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition text-lg">
-                    {t.animalSniff} {animal.name}
-                  </button>
+                  <div className="flex gap-3">
+                    <button onClick={() => setShowMatchModal(true)} className="flex-1 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition text-lg">
+                      {t.animalSniff} {animal.name}
+                    </button>
+                    <button
+                      onClick={() => setShowSuperFlair(true)}
+                      className="px-5 py-3 rounded-xl font-bold text-sm transition-all"
+                      style={{ background: "linear-gradient(135deg, rgba(167,139,250,0.15), rgba(249,115,22,0.1))", border: "1.5px solid rgba(167,139,250,0.3)", color: "#a78bfa" }}
+                    >
+                      ⚡ Super Flair
+                    </button>
+                  </div>
                 )}
               </>
             )}
@@ -582,6 +582,17 @@ export default function AnimalDetailPage() {
             )}
           </div>
         </div>
+
+        {/* Super Flair modal */}
+        {showSuperFlair && animal.created_by && myAnimals.length > 0 && (
+          <SuperFlairModal
+            senderAnimalId={myAnimals[0].id}
+            receiverAnimalId={animal.id}
+            receiverUserId={animal.created_by}
+            receiverName={animal.name}
+            onClose={() => setShowSuperFlair(false)}
+          />
+        )}
 
         {/* Block/Report modal */}
         {showBlockReport && animal.created_by && (

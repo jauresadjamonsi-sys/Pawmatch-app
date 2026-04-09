@@ -131,7 +131,7 @@ export default function AnimalsPage() {
                 </div>
                 <div className="p-4">
                   <div className="flex items-center justify-between mb-1">
-                    <h3 className="font-bold text-[var(--c-text)] text-sm">{animal.name}</h3>
+                    <h3 className="font-bold text-[var(--c-text)] text-sm truncate">{animal.name}</h3>
                     <span className="text-lg">{EMOJI_MAP[animal.species] || "🐾"}</span>
                   </div>
                   <p className="text-xs text-[var(--c-text-muted)] mb-2">

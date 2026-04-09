@@ -303,3 +303,138 @@ export interface Streak {
   count: number;
   lastDate: string;
 }
+
+// ---------------------------------------------------------------------------
+// Reels (TikTok-style short videos)
+// ---------------------------------------------------------------------------
+
+export interface ReelRow {
+  id: string;
+  user_id: string;
+  animal_id: string | null;
+  video_url: string;
+  thumbnail_url: string | null;
+  caption: string | null;
+  hashtags: string[];
+  duration_seconds: number;
+  views_count: number;
+  likes_count: number;
+  comments_count: number;
+  shares_count: number;
+  engagement_score: number;
+  is_featured: boolean;
+  status: "active" | "hidden" | "reported";
+  created_at: string;
+  updated_at: string;
+}
+
+export type ReelWithAuthor = ReelRow & {
+  profiles: ProfileEmbed | null;
+  animals: AnimalEmbed | null;
+  is_liked?: boolean;
+  is_following?: boolean;
+};
+
+export interface ReelComment {
+  id: string;
+  reel_id: string;
+  user_id: string;
+  content: string;
+  created_at: string;
+  profiles?: ProfileEmbed | null;
+}
+
+// ---------------------------------------------------------------------------
+// Followers
+// ---------------------------------------------------------------------------
+
+export interface FollowerRow {
+  id: string;
+  follower_id: string;
+  following_id: string;
+  created_at: string;
+}
+
+export interface FollowStats {
+  followers_count: number;
+  following_count: number;
+  is_following: boolean;
+}
+
+// ---------------------------------------------------------------------------
+// Super Flair
+// ---------------------------------------------------------------------------
+
+export interface SuperFlairRow {
+  id: string;
+  sender_user_id: string;
+  receiver_user_id: string;
+  sender_animal_id: string;
+  receiver_animal_id: string;
+  match_id: string | null;
+  message: string | null;
+  seen: boolean;
+  created_at: string;
+}
+
+// ---------------------------------------------------------------------------
+// PawCoins
+// ---------------------------------------------------------------------------
+
+export type PawCoinTxType =
+  | "welcome_bonus" | "daily_login" | "streak_bonus"
+  | "reel_posted" | "reel_liked" | "reel_viral"
+  | "match_made" | "super_flair_sent" | "super_flair_received"
+  | "boost_purchased" | "boost_used"
+  | "referral_bonus" | "challenge_completed"
+  | "purchase" | "admin_grant";
+
+export interface PawCoinTransaction {
+  id: string;
+  user_id: string;
+  amount: number;
+  type: PawCoinTxType;
+  description: string | null;
+  balance_after: number;
+  reference_id: string | null;
+  created_at: string;
+}
+
+export interface PawCoinWallet {
+  balance: number;
+  transactions: PawCoinTransaction[];
+}
+
+// ---------------------------------------------------------------------------
+// Profile Boost
+// ---------------------------------------------------------------------------
+
+export interface ProfileBoost {
+  id: string;
+  user_id: string;
+  animal_id: string;
+  cost_pawcoins: number;
+  started_at: string;
+  expires_at: string;
+}
+
+// ---------------------------------------------------------------------------
+// Leaderboard
+// ---------------------------------------------------------------------------
+
+export interface LeaderboardEntry {
+  animal_id: string;
+  name: string;
+  species: string;
+  breed: string | null;
+  photo_url: string | null;
+  canton: string | null;
+  user_id: string;
+  owner_name: string | null;
+  owner_avatar: string | null;
+  match_count: number;
+  reel_count: number;
+  total_likes: number;
+  total_views: number;
+  popularity_score: number;
+}
