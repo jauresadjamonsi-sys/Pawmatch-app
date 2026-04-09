@@ -17,7 +17,7 @@ async function getAnimal(id: string) {
 
     const { data } = await supabase
       .from("animals")
-      .select("id, name, species, breed, photo_url, city, canton")
+      .select("id, name, species, breed, photo_url, city, canton, description")
       .eq("id", id)
       .single();
 
@@ -46,8 +46,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const breedStr = animal.breed ? ` (${animal.breed})` : "";
 
   const title = `${animal.name} - ${speciesLabel}${breedStr}${locationStr}`;
-  const description = animal.bio
-    ? `${animal.name}, ${speciesLabel.toLowerCase()}${breedStr}${locationStr}. ${animal.bio.slice(0, 120)}${animal.bio.length > 120 ? "..." : ""}`
+  const desc = animal.description || "";
+  const description = desc
+    ? `${animal.name}, ${speciesLabel.toLowerCase()}${breedStr}${locationStr}. ${desc.slice(0, 120)}${desc.length > 120 ? "..." : ""}`
     : `Decouvrez le profil de ${animal.name}, ${speciesLabel.toLowerCase()}${breedStr}${locationStr} sur Pawly. Trouvez des compagnons de balade compatibles.`;
 
   return {
