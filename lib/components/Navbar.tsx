@@ -180,30 +180,39 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-12">
             <Link href="/" className="logo-gradient font-extrabold text-xl tracking-tight select-none" aria-label="Pawly - Accueil">Pawly</Link>
 
-            {/* Desktop links */}
+            {/* Desktop links — grouped dropdowns */}
             <div className="hidden md:flex items-center gap-1">
               {!loading && (user ? (
                 <>
-                  <NL href="/feed" active={isActive("/feed")} label="Feed" light={isLight} />
-                  <NL href="/flairer" active={isActive("/flairer")} label={t.navFlairer} light={isLight} />
-                  <NL href="/reels" active={isActive("/reels")} label="Reels" light={isLight} />
-                  <NL href="/explore" active={isActive("/explore")} label="Explorer" light={isLight} />
-                  <NL href="/groups" active={isActive("/groups")} label="Groupes" light={isLight} />
-                  <NL href="/carte" active={isActive("/carte")} label="Carte" light={isLight} />
-                  <NL href="/matches" active={isActive("/matches")} label={t.navMatches} light={isLight} />
-                  <NL href="/wallet" active={isActive("/wallet")} label="Coins" light={isLight} />
-                  <NL href="/urgence" active={isActive("/urgence")} label="SOS" light={isLight} />
-                  <NL href="/leaderboard" active={isActive("/leaderboard")} label="Classement" light={isLight} />
+                  <NavDropdown label="Decouvrir" light={isLight} activeInGroup={["/feed","/explore","/reels","/leaderboard"].some(p => isActive(p))} items={[
+                    { href: "/feed", label: "Feed", active: isActive("/feed") },
+                    { href: "/explore", label: "Explorer", active: isActive("/explore") },
+                    { href: "/reels", label: "Reels", active: isActive("/reels") },
+                    { href: "/leaderboard", label: "Classement", active: isActive("/leaderboard") },
+                    { href: "/concours", label: "Concours", active: isActive("/concours") },
+                  ]} />
+                  <NavDropdown label="Social" light={isLight} activeInGroup={["/flairer","/matches","/groups"].some(p => isActive(p))} items={[
+                    { href: "/flairer", label: t.navFlairer, active: isActive("/flairer") },
+                    { href: "/matches", label: t.navMatches, active: isActive("/matches") },
+                    { href: "/groups", label: "Groupes", active: isActive("/groups") },
+                    { href: "/stories", label: "Stories", active: isActive("/stories") },
+                  ]} />
+                  <NavDropdown label="Outils" light={isLight} activeInGroup={["/carte","/wallet","/urgence","/balade"].some(p => isActive(p))} items={[
+                    { href: "/carte", label: "Carte", active: isActive("/carte") },
+                    { href: "/wallet", label: "PawCoins", active: isActive("/wallet") },
+                    { href: "/urgence", label: "SOS Animal", active: isActive("/urgence") },
+                    { href: "/balade", label: "Balade live", active: isActive("/balade") },
+                  ]} />
                   <NL href="/profile" active={isActive("/profile")} label={t.navProfil} light={isLight} />
                 </>
               ) : (
                 <>
                   <NL href="/flairer" active={isActive("/flairer")} label={t.navFlairer} light={isLight} />
-                  <NL href="/animals" active={isActive("/animals")} label={t.navExplorer} light={isLight} />
+                  <NL href="/explore" active={isActive("/explore")} label="Explorer" light={isLight} />
+                  <NL href="/pricing" active={isActive("/pricing")} label={t.navPricing} light={isLight} />
                   <a href="https://pawdirectory.ch" target="_blank" rel="noopener noreferrer" className={"px-3 py-1.5 rounded-full text-sm font-medium transition-all " + (isLight ? "text-gray-600 hover:text-orange-600 hover:bg-orange-50" : "text-gray-400 hover:text-orange-400 hover:bg-orange-500/10")}>
                     PawDirectory
                   </a>
-                  <NL href="/pricing" active={isActive("/pricing")} label={t.navPricing} light={isLight} />
                   <Link href="/signup" className="btn-neon ml-3 px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-bold rounded-full shadow-lg shadow-orange-500/20">
                     {t.navJoin}
                   </Link>
@@ -382,6 +391,71 @@ export default function Navbar() {
       </nav>
       <div className="md:hidden h-16 safe-area-bottom" />
     </>
+  );
+}
+
+function NavDropdown({ label, items, light, activeInGroup }: {
+  label: string;
+  items: { href: string; label: string; active: boolean }[];
+  light?: boolean;
+  activeInGroup?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const h = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className={
+          "nav-link-f px-3 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-1 " +
+          (activeInGroup ? "nav-pill-active active text-orange-400 font-semibold"
+            : light ? "text-gray-600 hover:text-gray-900 hover:bg-gray-100/50"
+            : "text-gray-400 hover:text-white hover:bg-[var(--c-card)]")
+        }
+      >
+        {label}
+        <svg className={"w-3 h-3 transition-transform " + (open ? "rotate-180" : "")} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {open && (
+        <div
+          className="drop-in absolute top-full left-0 mt-1 py-1.5 rounded-xl shadow-xl z-50 min-w-[160px] border"
+          style={{
+            background: light ? "rgba(255,255,255,0.96)" : "var(--c-card, rgba(20,16,32,0.96))",
+            backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+            borderColor: light ? "rgba(0,0,0,0.1)" : "var(--c-border, rgba(255,255,255,0.08))",
+          }}
+        >
+          {items.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setOpen(false)}
+              className={
+                "block px-4 py-2 text-sm transition-all " +
+                (item.active
+                  ? "text-orange-400 font-semibold bg-orange-500/10"
+                  : light
+                  ? "text-gray-600 hover:text-orange-600 hover:bg-orange-50"
+                  : "text-gray-400 hover:text-white hover:bg-white/5")
+              }
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
