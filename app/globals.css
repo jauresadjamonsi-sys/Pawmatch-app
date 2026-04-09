@@ -119,10 +119,10 @@ button:active, a:active, [role="button"]:active {
 
 @keyframes pageIn {
   from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  to { opacity: 1; transform: none; }
 }
 @keyframes pageOut {
-  from { opacity: 1; transform: translateY(0); }
+  from { opacity: 1; transform: none; }
   to { opacity: 0; transform: translateY(-4px); }
 }
 
