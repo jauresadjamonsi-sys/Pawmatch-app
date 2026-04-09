@@ -101,6 +101,7 @@ export default function ConversationPage() {
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
   const [isRecordingVoice, setIsRecordingVoice] = useState(false);
   const [uploadingVoice, setUploadingVoice] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [reconnecting, setReconnecting] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -612,12 +613,48 @@ export default function ConversationPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
                       </svg>}
                 </button>
+                {/* Emoji picker button */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                    className={"w-10 h-10 border rounded-2xl flex items-center justify-center transition active:scale-95 flex-shrink-0 " + (showEmojiPicker ? "bg-orange-500/10 border-orange-500/40" : "bg-[var(--c-card)] border-[var(--c-border)] hover:border-orange-500/30 hover:bg-orange-500/10")}
+                    title="Emojis animaux"
+                  >
+                    <span className="text-lg">🐾</span>
+                  </button>
+                  {showEmojiPicker && (
+                    <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-72 bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl shadow-xl p-3 z-30" onClick={(e) => e.stopPropagation()}>
+                      <p className="text-[10px] font-semibold text-[var(--c-text-muted)] mb-2 uppercase tracking-wide">Animaux</p>
+                      <div className="grid grid-cols-8 gap-1 mb-2">
+                        {["🐶","🐕","🦮","🐕‍🦺","🐩","🐺","🐱","🐈","🐈‍⬛","🦁","🐯","🐅","🐆","🐴","🦄","🐎","🐮","🐂","🐃","🐄","🐷","🐖","🐗","🐏","🐑","🐐","🐪","🐫","🦙","🦒","🐘","🦏","🦛","🐭","🐁","🐀","🐹","🐰","🐇","🐿️","🦔","🦇","🐻","🐻‍❄️","🐨","🐼","🦥","🦦","🦨","🦘","🦡"].map(e => (
+                          <button key={e} type="button" onClick={() => { setNewMessage(prev => prev + e); setShowEmojiPicker(false); inputRef.current?.focus(); }}
+                            className="w-8 h-8 flex items-center justify-center text-xl hover:bg-[var(--c-bg)] rounded-lg transition active:scale-110">{e}</button>
+                        ))}
+                      </div>
+                      <p className="text-[10px] font-semibold text-[var(--c-text-muted)] mb-2 uppercase tracking-wide">Oiseaux & mer</p>
+                      <div className="grid grid-cols-8 gap-1 mb-2">
+                        {["🐦","🐦‍⬛","🐧","🐔","🐓","🐣","🐤","🐥","🦆","🦅","🦉","🦜","🪶","🦩","🕊️","🐸","🐊","🐢","🦎","🐍","🐉","🐲","🦕","🐟","🐠","🐡","🦈","🐙","🐚","🐬","🐳","🐋","🦭","🦞","🦀","🦑"].map(e => (
+                          <button key={e} type="button" onClick={() => { setNewMessage(prev => prev + e); setShowEmojiPicker(false); inputRef.current?.focus(); }}
+                            className="w-8 h-8 flex items-center justify-center text-xl hover:bg-[var(--c-bg)] rounded-lg transition active:scale-110">{e}</button>
+                        ))}
+                      </div>
+                      <p className="text-[10px] font-semibold text-[var(--c-text-muted)] mb-2 uppercase tracking-wide">Insectes & nature</p>
+                      <div className="grid grid-cols-8 gap-1">
+                        {["🐛","🦋","🐌","🐞","🐜","🪲","🪳","🦗","🕷️","🦂","🐝","🪰","🌿","🌱","🍀","🌸","🌺","🌻","🌾","🪴","❤️","🧡","💛","💚","💙","💜","🤎","🖤","💕","💖"].map(e => (
+                          <button key={e} type="button" onClick={() => { setNewMessage(prev => prev + e); setShowEmojiPicker(false); inputRef.current?.focus(); }}
+                            className="w-8 h-8 flex items-center justify-center text-xl hover:bg-[var(--c-bg)] rounded-lg transition active:scale-110">{e}</button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
                 <input
                   ref={inputRef}
                   type="text"
                   value={newMessage}
                   onChange={(e) => { setNewMessage(e.target.value); sendTyping(); }}
                   onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+                  onFocus={() => setShowEmojiPicker(false)}
                   placeholder="Message..."
                   maxLength={2000}
                   className="flex-1 px-4 py-2.5 bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-1 focus:ring-orange-500/50 focus:border-orange-500/30 outline-none text-sm transition"

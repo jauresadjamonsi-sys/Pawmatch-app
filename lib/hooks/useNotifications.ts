@@ -95,67 +95,72 @@ export function useNotifications(options: UseNotificationsOptions = {}) {
   useEffect(() => {
     if (!userId || !realtime) return;
 
+    // Clean up any existing channel first to avoid "callbacks after subscribe" error
+    if (channelRef.current) {
+      try { supabaseRef.current.removeChannel(channelRef.current); } catch {}
+      channelRef.current = null;
+    }
+
+    let cancelled = false;
+
     try {
-      const channel = supabaseRef.current
-        .channel(`notifs-${userId}`);
+      const channelName = `notifs-${userId}-${Date.now()}`;
+      const channel = supabaseRef.current.channel(channelName);
 
-      // Set up listeners BEFORE subscribing
-      channel.on(
-        "postgres_changes" as any,
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "notifications",
-          filter: `user_id=eq.${userId}`,
-        },
-        (payload: any) => {
-          const newNotif = payload.new as Notification;
-          setNotifications((prev) => [newNotif, ...prev]);
-          setUnreadCount((prev) => prev + 1);
-        }
-      );
-
-      channel.on(
-        "postgres_changes" as any,
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "notifications",
-          filter: `user_id=eq.${userId}`,
-        },
-        (payload: any) => {
-          const updated = payload.new as Notification;
-          setNotifications((prev) =>
-            prev.map((n) => (n.id === updated.id ? updated : n))
-          );
-          fetchUnreadCount();
-        }
-      );
-
-      // Subscribe with error handling
-      channel.subscribe((status: string) => {
-        if (status === "CHANNEL_ERROR") {
-          // Realtime not enabled on this table — fall back to polling
-          console.warn("Notifications realtime not available, using polling");
-          supabaseRef.current.removeChannel(channel);
-        }
-      });
+      // ALL .on() calls MUST happen BEFORE .subscribe()
+      channel
+        .on(
+          "postgres_changes" as any,
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "notifications",
+            filter: `user_id=eq.${userId}`,
+          },
+          (payload: any) => {
+            if (cancelled) return;
+            const newNotif = payload.new as Notification;
+            setNotifications((prev) => [newNotif, ...prev]);
+            setUnreadCount((prev) => prev + 1);
+          }
+        )
+        .on(
+          "postgres_changes" as any,
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "notifications",
+            filter: `user_id=eq.${userId}`,
+          },
+          (payload: any) => {
+            if (cancelled) return;
+            const updated = payload.new as Notification;
+            setNotifications((prev) =>
+              prev.map((n) => (n.id === updated.id ? updated : n))
+            );
+          }
+        )
+        .subscribe((status: string) => {
+          if (cancelled) return;
+          if (status === "CHANNEL_ERROR") {
+            console.warn("Notifications realtime not available, using polling");
+            try { supabaseRef.current.removeChannel(channel); } catch {}
+          }
+        });
 
       channelRef.current = channel;
     } catch (e) {
-      // Never crash the app for realtime issues
       console.warn("Notifications realtime setup failed:", e);
     }
 
     return () => {
+      cancelled = true;
       if (channelRef.current) {
-        try {
-          supabaseRef.current.removeChannel(channelRef.current);
-        } catch {}
+        try { supabaseRef.current.removeChannel(channelRef.current); } catch {}
         channelRef.current = null;
       }
     };
-  }, [userId, realtime, fetchUnreadCount]);
+  }, [userId, realtime]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Polling fallback: refresh on focus
   useEffect(() => {
