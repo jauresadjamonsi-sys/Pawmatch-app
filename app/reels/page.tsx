@@ -74,7 +74,7 @@ export default function ReelsPage() {
             Aucun Reel pour le moment. Sois le premier a partager une video de ton animal !
           </p>
           <Link
-            href="/profile"
+            href="/reels/create"
             className="inline-block px-6 py-3 rounded-full text-sm font-bold text-white"
             style={{ background: "linear-gradient(135deg, #f97316, #a78bfa)" }}
           >
