@@ -258,6 +258,7 @@ export default function AnimalDetailPage() {
                 { label: t.animalWeightLabel, value: animal.weight_kg ? animal.weight_kg + " kg" : "—" },
                 { label: t.animalAgeLabel, value: formatAge(animal.age_months) },
                 { label: t.animalLocationLabel, value: cantonName ? (animal.canton || "") : "—" },
+                { label: "Pedigree", value: animal.pedigree || "—" },
               ].map((item) => (
                 <div key={item.label} className="rounded-xl px-3 py-2.5" style={{ background: "var(--c-glass, rgba(255,255,255,0.03))" }}>
                   <p className="text-[10px] text-[var(--c-text-muted)] uppercase tracking-wider">{item.label}</p>

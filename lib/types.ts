@@ -83,6 +83,7 @@ export interface AnimalRow {
   favorite_activities?: string[] | null;
   microchip_id?: string | null;
   insurance?: string | null;
+  pedigree?: string | null;
 }
 
 /** Lightweight animal embed returned in joined queries. */

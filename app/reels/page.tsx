@@ -14,11 +14,15 @@ export default function ReelsPage() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const fetchReels = useCallback(async (p: number) => {
-    const res = await fetch(`/api/reels?page=${p}&mode=trending`);
-    const data = await res.json();
-    if (data.reels) {
-      setReels(prev => p === 0 ? data.reels : [...prev, ...data.reels]);
-      setHasMore(data.hasMore);
+    try {
+      const res = await fetch(`/api/reels?page=${p}&mode=trending`);
+      const data = await res.json();
+      if (data.reels) {
+        setReels(prev => p === 0 ? data.reels : [...prev, ...data.reels]);
+        setHasMore(data.hasMore ?? false);
+      }
+    } catch {
+      // Network error — show empty state
     }
     setLoading(false);
   }, []);

@@ -150,6 +150,7 @@ export default function EditAnimalPage() {
       weight_kg: form.get("weight_kg") ? Number(form.get("weight_kg")) : null,
       vaccinated: form.get("vaccinated") === "on",
       sterilized: form.get("sterilized") === "on",
+      pedigree: (form.get("pedigree") as string) || null,
       traits: selectedTraits,
       extra_photos: uploadedUrls.slice(1),
       diet_type: dietType || null,
@@ -331,7 +332,13 @@ export default function EditAnimalPage() {
               </div>
             </div>
 
-            {/* Santé */}
+            {/* Pedigree */}
+            <div>
+              <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">Pedigree / LOF / LOSH</label>
+              <input type="text" name="pedigree" defaultValue={animal.pedigree || ""} placeholder="Ex: LOF 123456, SHSB/LOS 789..." className="w-full bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl px-4 py-2.5 text-sm text-[var(--c-text)] focus:ring-1 focus:ring-orange-500 outline-none" />
+            </div>
+
+            {/* Sante */}
             <div className="flex gap-6">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" name="vaccinated" defaultChecked={animal.vaccinated} className="w-4 h-4 rounded bg-[var(--c-card)] border-[var(--c-border)] text-orange-500 focus:ring-orange-500" />

@@ -24,7 +24,8 @@ export async function GET(request: NextRequest) {
 
   const { data: reels, error } = await query.range(offset, offset + limit - 1);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  // If RLS blocks access (no auth) or table error, return empty
+  if (error) return NextResponse.json({ reels: [], page, hasMore: false, error: error.message });
 
   // Check which reels the current user has liked
   let likedIds: Set<string> = new Set();

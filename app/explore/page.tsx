@@ -67,11 +67,11 @@ export default function ExplorePage() {
           break;
       }
 
-      const { data } = await query;
-      setAnimals((data || []) as ExploreAnimal[]);
+      const { data, error } = await query;
+      if (!error) setAnimals((data || []) as ExploreAnimal[]);
       setLoading(false);
     }
-    load();
+    load().catch(() => setLoading(false));
   }, [tab, speciesFilter, search]);
 
   const tabs: { key: Tab; label: string; icon: string }[] = [
