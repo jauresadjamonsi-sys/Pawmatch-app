@@ -43,7 +43,9 @@ export default function AnimalDetailPage() {
   const [hasCoupDeTruffe, setHasCoupDeTruffe] = useState(false);
   const [showBlockReport, setShowBlockReport] = useState(false);
   const [showSuperFlair, setShowSuperFlair] = useState(false);
+  const [dmLoading, setDmLoading] = useState(false);
   const [compatibility, setCompatibility] = useState<any>(null);
+  const [ownerVerified, setOwnerVerified] = useState(false);
   const personality = animal ? detectPersonality(animal.traits || []) : null;
   const { t, lang } = useAppContext();
   const params = useParams();
@@ -61,7 +63,18 @@ export default function AnimalDetailPage() {
   useEffect(() => {
     async function fetchData() {
       const result = await getAnimalById(supabase, params.id as string);
-      if (result.data) setAnimal(result.data);
+      if (result.data) {
+        setAnimal(result.data);
+        // Fetch owner verified_photo status
+        if (result.data.created_by) {
+          const { data: ownerProfile } = await supabase
+            .from("profiles")
+            .select("verified_photo")
+            .eq("id", result.data.created_by)
+            .single();
+          if (ownerProfile?.verified_photo) setOwnerVerified(true);
+        }
+      }
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data: animals } = await supabase.from("animals").select("*").eq("created_by", user.id);
@@ -102,6 +115,49 @@ export default function AnimalDetailPage() {
     const result = await sendMatchWithLimit(supabase, myAnimalId, animal.id, profile.id, animal.created_by || "NONE", profile.subscription || "free");
     if (result.error) { setMatchError(result.error); } else { setMatchSuccess(true); setShowMatchModal(false); }
     setMatchSending(false);
+  }
+
+  async function handleDM() {
+    if (!animal || !profile || myAnimals.length === 0) return;
+    setDmLoading(true);
+    try {
+      // Check if a conversation already exists between my animal and this animal
+      const myAnimalId = myAnimals[0].id;
+      const { data: existing } = await supabase
+        .from("matches")
+        .select("id")
+        .or(
+          `and(sender_animal_id.eq.${myAnimalId},receiver_animal_id.eq.${animal.id}),and(sender_animal_id.eq.${animal.id},receiver_animal_id.eq.${myAnimalId})`
+        )
+        .limit(1)
+        .single();
+
+      if (existing) {
+        window.location.href = `/matches/${existing.id}`;
+        return;
+      }
+
+      // No existing conversation — create a DM entry
+      const { data: dm } = await supabase
+        .from("matches")
+        .insert({
+          sender_animal_id: myAnimalId,
+          receiver_animal_id: animal.id,
+          sender_user_id: profile.id,
+          receiver_user_id: animal.created_by,
+          status: "dm",
+        })
+        .select("id")
+        .single();
+
+      if (dm) {
+        window.location.href = `/matches/${dm.id}`;
+      }
+    } catch (err) {
+      console.error("DM error:", err);
+    } finally {
+      setDmLoading(false);
+    }
   }
 
   if (loading) return <p className="text-center py-12 text-[var(--c-text-muted)]">{t.loading}</p>;
@@ -212,6 +268,13 @@ export default function AnimalDetailPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <h1 className="text-3xl font-black text-white drop-shadow-lg truncate">{animal.name}</h1>
+                          {ownerVerified && (
+                            <span title="Profil verifie" className="inline-flex items-center ml-1">
+                              <svg className="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                            </span>
+                          )}
                           {animal.created_by && !isOwner && (
                             <PresenceDot isOnline={ownerOnlineMap.get(animal.created_by) ?? false} size="lg" />
                           )}
@@ -552,6 +615,14 @@ export default function AnimalDetailPage() {
                       style={{ background: "linear-gradient(135deg, rgba(167,139,250,0.15), rgba(249,115,22,0.1))", border: "1.5px solid rgba(167,139,250,0.3)", color: "#a78bfa" }}
                     >
                       ⚡ Super Flair
+                    </button>
+                    <button
+                      onClick={handleDM}
+                      disabled={dmLoading}
+                      className="px-5 py-3 rounded-xl font-bold text-sm transition-all disabled:opacity-50"
+                      style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(12px)", border: "1.5px solid rgba(255,255,255,0.12)", color: "var(--c-text)" }}
+                    >
+                      {dmLoading ? "..." : "💬 Message"}
                     </button>
                   </div>
                 )}

@@ -99,6 +99,7 @@ export default function FlairerPage() {
   const [showBlockReport, setShowBlockReport] = useState(false);
   const [showSuperFlairModal, setShowSuperFlairModal] = useState(false);
   const [blockedIds, setBlockedIds] = useState<string[]>([]);
+  const [verifiedOwners, setVerifiedOwners] = useState<Set<string>>(new Set());
   const [cardEntering, setCardEntering] = useState(false);
   const startX = useRef(0);
   const startY = useRef(0);
@@ -251,6 +252,20 @@ export default function FlairerPage() {
     } else {
       setAnimals(filtered.sort(() => Math.random() - 0.5) as unknown as AnimalWithCompat[]);
     }
+
+    // Fetch verified owners for badge display
+    const ownerIds = [...new Set(filtered.map(a => a.created_by).filter(Boolean))] as string[];
+    if (ownerIds.length > 0) {
+      const { data: verifiedProfiles } = await supabase
+        .from("profiles")
+        .select("id")
+        .in("id", ownerIds)
+        .eq("verified_photo", true);
+      if (verifiedProfiles) {
+        setVerifiedOwners(new Set(verifiedProfiles.map((p: any) => p.id)));
+      }
+    }
+
     setLoading(false);
   }
 
@@ -713,7 +728,16 @@ export default function FlairerPage() {
                 </div>
               )}
 
-              <h2 className="text-2xl font-extrabold text-white drop-shadow-lg">{animal.name}</h2>
+              <div className="flex items-center gap-1">
+                <h2 className="text-2xl font-extrabold text-white drop-shadow-lg">{animal.name}</h2>
+                {animal.created_by && verifiedOwners.has(animal.created_by) && (
+                  <span title="Profil verifie" className="inline-flex items-center">
+                    <svg className="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </span>
+                )}
+              </div>
               <p className="text-sm text-white/70 mb-2">{SPECIES[animal.species] || animal.species}{animal.breed ? " · " + animal.breed : ""}</p>
 
               <div className="flex flex-wrap gap-1.5">

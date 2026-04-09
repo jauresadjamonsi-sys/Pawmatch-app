@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import Image from "next/image";
@@ -24,7 +24,31 @@ import {
   getEarnedBadges,
 } from "@/lib/feed/badges";
 import { formatAge } from "@/lib/utils";
-import type { ProfileRow, AnimalRow, Streak } from "@/lib/types";
+import type { ProfileRow, AnimalRow, Streak, ReelWithAuthor } from "@/lib/types";
+
+// ---------------------------------------------------------------------------
+// Feed scoring algorithm
+// ---------------------------------------------------------------------------
+
+type FeedItem = {
+  type: "reel";
+  data: ReelWithAuthor;
+  score: number;
+  created_at: string;
+};
+
+function computeRecencyBonus(createdAt: string): number {
+  const ageMs = Date.now() - new Date(createdAt).getTime();
+  const hours = ageMs / (1000 * 60 * 60);
+  if (hours <= 24) return 20;
+  if (hours <= 48) return 10;
+  if (hours <= 168) return 5; // 7 days
+  return 0;
+}
+
+function scoreFeedItem(item: { likes_count: number; comments_count: number; created_at: string }): number {
+  return (item.likes_count * 3) + (item.comments_count * 5) + computeRecencyBonus(item.created_at);
+}
 
 // ---------------------------------------------------------------------------
 // Streak helpers  (localStorage)
@@ -97,6 +121,9 @@ export default function FeedPage() {
   const [challengeDone, setChallengeDone] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
   const [activeCard, setActiveCard] = useState(0);
+  const [feedMode, setFeedMode] = useState<"algo" | "chrono">("algo");
+  const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
+  const [suggestions, setSuggestions] = useState<AnimalRow[]>([]);
 
   // -------------------------------------------------------------------------
   // Data fetching
@@ -161,6 +188,57 @@ export default function FeedPage() {
           .or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`)
           .gte("created_at", new Date(Date.now() - 48 * 3600000).toISOString())
       ).then(({ count }) => setNewMatches(count || 0)).catch(() => {});
+
+      // Feed items: fetch recent reels with engagement metrics
+      Promise.resolve(
+        supabase
+          .from("reels")
+          .select("*, profiles:user_id(id, full_name, avatar_url), animals:animal_id(id, name, species, breed, photo_url)")
+          .eq("status", "active")
+          .order("created_at", { ascending: false })
+          .limit(20)
+      ).then(({ data }) => {
+        if (data) {
+          const items: FeedItem[] = (data as unknown as ReelWithAuthor[]).map((reel) => ({
+            type: "reel" as const,
+            data: reel,
+            score: scoreFeedItem(reel),
+            created_at: reel.created_at,
+          }));
+          setFeedItems(items);
+        }
+      }).catch(() => {});
+
+      // Suggestions: animals the user hasn't matched with
+      Promise.resolve(
+        supabase
+          .from("matches")
+          .select("sender_animal_id, receiver_animal_id")
+          .or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`)
+      ).then(({ data: matchData }) => {
+        const matchedAnimalIds = new Set<string>();
+        (matchData || []).forEach((m: { sender_animal_id: string; receiver_animal_id: string }) => {
+          matchedAnimalIds.add(m.sender_animal_id);
+          matchedAnimalIds.add(m.receiver_animal_id);
+        });
+        // Also exclude user's own animals
+        const myAnimalIds = anims.map((a) => a.id);
+        const excludeIds = [...matchedAnimalIds, ...myAnimalIds];
+
+        Promise.resolve(
+          supabase
+            .from("animals")
+            .select("id, name, species, breed, photo_url, canton, city, created_by, age_months, gender, traits")
+            .neq("created_by", user.id)
+            .order("created_at", { ascending: false })
+            .limit(12)
+        ).then(({ data: suggestData }) => {
+          const filtered = ((suggestData || []) as unknown as AnimalRow[])
+            .filter((a) => !excludeIds.includes(a.id))
+            .slice(0, 4);
+          setSuggestions(filtered);
+        }).catch(() => {});
+      }).catch(() => {});
     }
 
     load();
@@ -171,6 +249,14 @@ export default function FeedPage() {
   // -------------------------------------------------------------------------
   const firstName = profile?.full_name?.split(" ")[0] || "";
   const primarySpecies: AnimalSpecies = animals.length > 0 ? (animals[0].species as AnimalSpecies) : "chien";
+
+  // Sorted feed items based on mode
+  const sortedFeedItems = useMemo(() => {
+    if (feedMode === "chrono") {
+      return [...feedItems].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    }
+    return [...feedItems].sort((a, b) => b.score - a.score);
+  }, [feedItems, feedMode]);
   const milestone = milestoneMessage(streak.count);
   const next = nextMilestone(streak.count);
   const challengeText = getDailyChallenge();
@@ -239,6 +325,36 @@ export default function FeedPage() {
 
           {/* ═══════ STORIES ═══════ */}
           <StoriesRing />
+
+          {/* ═══════ FEED MODE TOGGLE ═══════ */}
+          <div className="flex items-center justify-center gap-1 p-1 rounded-full mx-auto w-fit" style={{ background: "var(--c-glass, rgba(255,255,255,0.06))", backdropFilter: "blur(12px)", border: "1px solid var(--c-border)" }}>
+            <button
+              onClick={() => setFeedMode("algo")}
+              className="px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300"
+              style={{
+                background: feedMode === "algo"
+                  ? "linear-gradient(135deg, #f97316, #ea580c)"
+                  : "transparent",
+                color: feedMode === "algo" ? "#fff" : "var(--c-text-muted)",
+                boxShadow: feedMode === "algo" ? "0 2px 8px rgba(249,115,22,0.3)" : "none",
+              }}
+            >
+              Algorithmique
+            </button>
+            <button
+              onClick={() => setFeedMode("chrono")}
+              className="px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300"
+              style={{
+                background: feedMode === "chrono"
+                  ? "linear-gradient(135deg, #f97316, #ea580c)"
+                  : "transparent",
+                color: feedMode === "chrono" ? "#fff" : "var(--c-text-muted)",
+                boxShadow: feedMode === "chrono" ? "0 2px 8px rgba(249,115,22,0.3)" : "none",
+              }}
+            >
+              Chronologique
+            </button>
+          </div>
 
           {/* ═══════ GREETING ═══════ */}
           <section className="glass rounded-2xl p-5 relative overflow-hidden">
@@ -385,6 +501,151 @@ export default function FeedPage() {
                 <span className="text-xs font-bold" style={{ color: "var(--c-accent)" }}>D&eacute;couvrir &rarr;</span>
               </div>
             </Link>
+          )}
+
+          {/* ═══════ ALGORITHMIC FEED (REELS) ═══════ */}
+          {sortedFeedItems.length > 0 && (
+            <section>
+              <h2 className="text-sm font-bold uppercase tracking-wider mb-3 px-1" style={{ color: "var(--c-text-muted)" }}>
+                {feedMode === "algo" ? "Tendances" : "Fil recent"}
+              </h2>
+              <div className="space-y-4">
+                {sortedFeedItems.map((item, idx) => (
+                  <div key={`feed-${idx}`}>
+                    {/* Reel feed card */}
+                    <Link href={`/reels`} className="block glass rounded-2xl overflow-hidden transition-transform active:scale-[0.98]">
+                      <div className="relative aspect-[16/9] w-full">
+                        {item.data.thumbnail_url ? (
+                          <Image src={item.data.thumbnail_url} alt={item.data.caption || "Reel"} fill className="object-cover" sizes="(max-width:640px) 100vw, 512px" />
+                        ) : item.data.animals?.photo_url ? (
+                          <Image src={item.data.animals.photo_url} alt={item.data.animals.name || "Animal"} fill className="object-cover" sizes="(max-width:640px) 100vw, 512px" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-4xl" style={{ background: "var(--c-card)" }}>
+                            {"\uD83C\uDFAC"}
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                        {/* Score badge (algo mode) */}
+                        {feedMode === "algo" && (
+                          <div className="absolute top-2 right-2 px-2 py-1 rounded-full text-[10px] font-bold" style={{ background: "rgba(249,115,22,0.85)", color: "#fff" }}>
+                            {item.score} pts
+                          </div>
+                        )}
+                        {/* Author info */}
+                        <div className="absolute bottom-2 left-3 right-3 flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0 border border-white/30">
+                            {item.data.profiles?.avatar_url ? (
+                              <Image src={item.data.profiles.avatar_url} alt="" width={28} height={28} className="object-cover w-full h-full" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-xs" style={{ background: "var(--c-card)" }}>
+                                {"\uD83D\uDC64"}
+                              </div>
+                            )}
+                          </div>
+                          <span className="text-xs font-bold text-white drop-shadow truncate">
+                            {item.data.profiles?.full_name || "Utilisateur"}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="p-3">
+                        {item.data.caption && (
+                          <p className="text-xs mb-2 line-clamp-2" style={{ color: "var(--c-text)" }}>{item.data.caption}</p>
+                        )}
+                        <div className="flex items-center gap-4 text-[11px]" style={{ color: "var(--c-text-muted)" }}>
+                          <span>{"\u2764\uFE0F"} {item.data.likes_count}</span>
+                          <span>{"\uD83D\uDCAC"} {item.data.comments_count}</span>
+                          <span>{"\uD83D\uDC41"} {item.data.views_count}</span>
+                        </div>
+                      </div>
+                    </Link>
+
+                    {/* ═══════ SUGGESTIONS POUR TOI (after 3rd item) ═══════ */}
+                    {idx === 2 && suggestions.length > 0 && (
+                      <section className="mt-4 glass rounded-2xl p-4 overflow-hidden" style={{ border: "1px solid var(--c-border)" }}>
+                        <h3 className="text-sm font-bold mb-3" style={{ color: "var(--c-text)" }}>
+                          {"\u2728"} Suggestions pour toi
+                        </h3>
+                        <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1" style={{ scrollbarWidth: "none" }}>
+                          {suggestions.map((animal) => (
+                            <Link
+                              key={animal.id}
+                              href={`/animals/${animal.id}`}
+                              className="flex-shrink-0 rounded-xl overflow-hidden transition-transform active:scale-95"
+                              style={{
+                                width: 100,
+                                background: "var(--c-glass, rgba(255,255,255,0.06))",
+                                backdropFilter: "blur(12px)",
+                                border: "1px solid var(--c-border)",
+                              }}
+                            >
+                              <div className="relative w-full" style={{ height: 80 }}>
+                                {animal.photo_url ? (
+                                  <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="100px" />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center text-2xl" style={{ background: "var(--c-card)" }}>
+                                    {(EMOJI_MAP as Record<string, string>)[animal.species] || "\uD83D\uDC3E"}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="p-2">
+                                <p className="text-[11px] font-bold truncate" style={{ color: "var(--c-text)" }}>{animal.name}</p>
+                                <p className="text-[9px] truncate" style={{ color: "var(--c-text-muted)" }}>{animal.breed || animal.species}</p>
+                                {animal.canton && (
+                                  <p className="text-[9px] truncate" style={{ color: "var(--c-text-muted)" }}>{"\uD83D\uDCCD"} {animal.canton}</p>
+                                )}
+                                <span className="inline-block mt-1 text-[9px] font-bold" style={{ color: "var(--c-accent)" }}>Voir</span>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      </section>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* ═══════ SUGGESTIONS (standalone when no feed items or < 3 items) ═══════ */}
+          {(sortedFeedItems.length < 3 && suggestions.length > 0) && (
+            <section className="glass rounded-2xl p-4 overflow-hidden" style={{ border: "1px solid var(--c-border)" }}>
+              <h3 className="text-sm font-bold mb-3" style={{ color: "var(--c-text)" }}>
+                {"\u2728"} Suggestions pour toi
+              </h3>
+              <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1" style={{ scrollbarWidth: "none" }}>
+                {suggestions.map((animal) => (
+                  <Link
+                    key={animal.id}
+                    href={`/animals/${animal.id}`}
+                    className="flex-shrink-0 rounded-xl overflow-hidden transition-transform active:scale-95"
+                    style={{
+                      width: 100,
+                      background: "var(--c-glass, rgba(255,255,255,0.06))",
+                      backdropFilter: "blur(12px)",
+                      border: "1px solid var(--c-border)",
+                    }}
+                  >
+                    <div className="relative w-full" style={{ height: 80 }}>
+                      {animal.photo_url ? (
+                        <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="100px" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-2xl" style={{ background: "var(--c-card)" }}>
+                          {(EMOJI_MAP as Record<string, string>)[animal.species] || "\uD83D\uDC3E"}
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-2">
+                      <p className="text-[11px] font-bold truncate" style={{ color: "var(--c-text)" }}>{animal.name}</p>
+                      <p className="text-[9px] truncate" style={{ color: "var(--c-text-muted)" }}>{animal.breed || animal.species}</p>
+                      {animal.canton && (
+                        <p className="text-[9px] truncate" style={{ color: "var(--c-text-muted)" }}>{"\uD83D\uDCCD"} {animal.canton}</p>
+                      )}
+                      <span className="inline-block mt-1 text-[9px] font-bold" style={{ color: "var(--c-accent)" }}>Voir</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
           )}
 
           {/* ═══════ STREAK (ENHANCED) ═══════ */}

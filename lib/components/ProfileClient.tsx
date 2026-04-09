@@ -55,7 +55,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
         if (!authUser) return;
 
         const [profileRes, animalsRes, matchRes, messageRes] = await Promise.all([
-          supabase.from("profiles").select("id, full_name, email, avatar_url, role, subscription, city, created_at, phone").eq("id", authUser.id).single(),
+          supabase.from("profiles").select("id, full_name, email, avatar_url, role, subscription, city, created_at, phone, verified_photo").eq("id", authUser.id).single(),
           supabase.from("animals").select("id, name, species, breed, photo_url, canton, city, gender, age_months, created_by").eq("created_by", authUser.id).order("created_at", { ascending: false }),
           Promise.resolve(supabase.from("matches").select("*", { count: "exact", head: true }).or(`sender_user_id.eq.${authUser.id},receiver_user_id.eq.${authUser.id}`)).then(r => r).catch(() => ({ count: 0 })),
           Promise.resolve(supabase.from("messages").select("*", { count: "exact", head: true }).eq("sender_id", authUser.id)).then(r => r).catch(() => ({ count: 0 })),
@@ -233,6 +233,24 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
   return (
     <div className="min-h-screen bg-[var(--c-bg,var(--c-deep))] px-4 py-6 pb-28">
       <div className="max-w-2xl mx-auto">
+
+        {/* Verification prompt banner */}
+        {profile && !profile.verified_photo && (
+          <div className="glass rounded-2xl p-4 mb-4" style={{ border: "1.5px solid rgba(59,130,246,0.3)" }}>
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">{"📸"}</span>
+              <div className="flex-1">
+                <p className="text-sm font-bold" style={{ color: "var(--c-text)" }}>Verifie ton profil</p>
+                <p className="text-[11px]" style={{ color: "var(--c-text-muted)" }}>
+                  Prends un selfie avec ton animal pour obtenir le badge verifie et +15 PawCoins
+                </p>
+              </div>
+              <Link href="/profile/verify" className="px-3 py-1.5 rounded-full text-xs font-bold text-white" style={{ background: "linear-gradient(135deg, #3b82f6, #2563eb)" }}>
+                Verifier
+              </Link>
+            </div>
+          </div>
+        )}
 
         {/* Profile card - glass with gradient border */}
         <div className="glass-strong gradient-border card-futuristic rounded-2xl p-6 mb-6 animate-slide-up">
