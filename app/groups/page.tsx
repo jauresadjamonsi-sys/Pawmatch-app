@@ -1,0 +1,636 @@
+"use client";
+
+import { useEffect, useState, useMemo } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/lib/hooks/useAuth";
+import { useAppContext } from "@/lib/contexts/AppContext";
+import { CANTONS } from "@/lib/cantons";
+import Link from "next/link";
+
+type Group = {
+  id: string;
+  name: string;
+  description: string | null;
+  category: string;
+  canton: string | null;
+  species: string | null;
+  icon: string | null;
+  created_by: string;
+  created_at: string;
+  member_count: number;
+  is_member?: boolean;
+};
+
+const CATEGORY_OPTIONS = [
+  { value: "Race", label: "Race" },
+  { value: "Canton", label: "Canton" },
+  { value: "Activite", label: "Activite" },
+  { value: "Autre", label: "Autre" },
+];
+
+const CATEGORY_ICONS: Record<string, string> = {
+  Race: "🐾",
+  Canton: "🏔️",
+  Activite: "🎾",
+  Autre: "✨",
+};
+
+const DEFAULT_ICONS = ["🐕", "🐱", "🐾", "🦴", "🏔️", "🎾", "🐰", "🐦", "🐹", "🌿", "❤️", "⭐"];
+
+type Tab = "popular" | "my" | "canton";
+
+export default function GroupsPage() {
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<Tab>("popular");
+  const [search, setSearch] = useState("");
+  const [showCreate, setShowCreate] = useState(false);
+  const [joining, setJoining] = useState<string | null>(null);
+  const { profile } = useAuth();
+  const { t } = useAppContext();
+  const supabase = createClient();
+
+  // Create form state
+  const [form, setForm] = useState({
+    name: "",
+    description: "",
+    category: "Race",
+    canton: "",
+    species: "",
+    icon: "🐾",
+  });
+  const [creating, setCreating] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchGroups();
+  }, [profile]);
+
+  async function fetchGroups() {
+    setLoading(true);
+    setFetchError(null);
+    try {
+      const { data: groupsData, error } = await supabase
+        .from("groups")
+        .select("*")
+        .order("member_count", { ascending: false });
+
+      if (error) {
+        console.error("[Groups] query error:", error);
+        setFetchError("Impossible de charger les groupes. Reessayez.");
+        setLoading(false);
+        return;
+      }
+      if (!groupsData) {
+        setLoading(false);
+        return;
+      }
+
+      // Check which groups the user has joined
+      const joinedSet = new Set<string>();
+      if (profile) {
+        const groupIds = groupsData.map((g) => g.id);
+        if (groupIds.length > 0) {
+          const { data: memberships } = await supabase
+            .from("group_members")
+            .select("group_id")
+            .eq("user_id", profile.id)
+            .in("group_id", groupIds);
+          for (const m of memberships || []) {
+            joinedSet.add(m.group_id);
+          }
+        }
+      }
+
+      const enriched: Group[] = groupsData.map((g) => ({
+        ...g,
+        is_member: joinedSet.has(g.id),
+      }));
+
+      setGroups(enriched);
+    } catch (err) {
+      console.error("[Groups] fetchGroups error:", err);
+      setFetchError("Erreur inattendue. Reessayez plus tard.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleJoinLeave(groupId: string, isMember: boolean) {
+    if (!profile) {
+      window.location.href = "/login";
+      return;
+    }
+    setJoining(groupId);
+
+    try {
+      if (isMember) {
+        await supabase
+          .from("group_members")
+          .delete()
+          .eq("group_id", groupId)
+          .eq("user_id", profile.id);
+
+        // Decrement member_count
+        const group = groups.find((g) => g.id === groupId);
+        if (group) {
+          await supabase
+            .from("groups")
+            .update({ member_count: Math.max(0, group.member_count - 1) })
+            .eq("id", groupId);
+        }
+      } else {
+        await supabase
+          .from("group_members")
+          .insert({ group_id: groupId, user_id: profile.id });
+
+        // Increment member_count
+        const group = groups.find((g) => g.id === groupId);
+        if (group) {
+          await supabase
+            .from("groups")
+            .update({ member_count: group.member_count + 1 })
+            .eq("id", groupId);
+        }
+      }
+
+      await fetchGroups();
+    } catch (err) {
+      console.error("[Groups] join/leave error:", err);
+    } finally {
+      setJoining(null);
+    }
+  }
+
+  async function handleCreate(e: React.FormEvent) {
+    e.preventDefault();
+    if (!profile) return;
+    setCreating(true);
+    setCreateError(null);
+
+    const { error } = await supabase.from("groups").insert({
+      name: form.name,
+      description: form.description || null,
+      category: form.category,
+      canton: form.canton || null,
+      species: form.species || null,
+      icon: form.icon || "🐾",
+      created_by: profile.id,
+      member_count: 1,
+    });
+
+    if (error) {
+      setCreating(false);
+      setCreateError(error.message);
+      return;
+    }
+
+    // Auto-join the creator
+    const { data: newGroup } = await supabase
+      .from("groups")
+      .select("id")
+      .eq("name", form.name)
+      .eq("created_by", profile.id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (newGroup) {
+      await supabase
+        .from("group_members")
+        .insert({ group_id: newGroup.id, user_id: profile.id });
+    }
+
+    setCreating(false);
+    setShowCreate(false);
+    setForm({
+      name: "",
+      description: "",
+      category: "Race",
+      canton: "",
+      species: "",
+      icon: "🐾",
+    });
+    fetchGroups();
+  }
+
+  // Filtered groups based on tab and search
+  const filteredGroups = useMemo(() => {
+    let result = groups;
+
+    // Tab filter
+    if (activeTab === "my") {
+      result = result.filter((g) => g.is_member);
+    } else if (activeTab === "canton") {
+      result = result.filter((g) => g.category === "Canton");
+    }
+
+    // Search filter
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      result = result.filter(
+        (g) =>
+          g.name.toLowerCase().includes(q) ||
+          (g.description && g.description.toLowerCase().includes(q)) ||
+          (g.canton && g.canton.toLowerCase().includes(q)) ||
+          g.category.toLowerCase().includes(q)
+      );
+    }
+
+    return result;
+  }, [groups, activeTab, search]);
+
+  const tabs: { key: Tab; label: string }[] = [
+    { key: "popular", label: "Populaires" },
+    { key: "my", label: "Mes groupes" },
+    { key: "canton", label: "Par canton" },
+  ];
+
+  return (
+    <main className="min-h-screen pb-32">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-extrabold gradient-text-warm mb-2">
+            Communautes
+          </h1>
+          <p className="text-[var(--c-text-muted)] text-sm md:text-base">
+            Rejoins des groupes par race, canton ou activite
+          </p>
+        </div>
+
+        {/* Search + Create button row */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-6">
+          <div className="relative flex-1">
+            <svg
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--c-text-muted)]"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+              />
+            </svg>
+            <input
+              type="text"
+              placeholder="Rechercher un groupe..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border border-[var(--c-border)] bg-[var(--c-card)] text-[var(--c-text)] placeholder:text-[var(--c-text-muted)] focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500/50 transition-all"
+            />
+          </div>
+          {profile && (
+            <button
+              onClick={() => setShowCreate(true)}
+              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-bold shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 hover:scale-[1.02] transition-all whitespace-nowrap"
+            >
+              + Creer un groupe
+            </button>
+          )}
+        </div>
+
+        {/* Tabs */}
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={
+                "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all " +
+                (activeTab === tab.key
+                  ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md shadow-orange-500/20"
+                  : "glass text-[var(--c-text-muted)] hover:text-[var(--c-text)] hover:bg-[var(--c-glass)]")
+              }
+            >
+              {tab.label}
+              {tab.key === "my" && profile && (
+                <span className="ml-1.5 text-xs opacity-80">
+                  ({groups.filter((g) => g.is_member).length})
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Loading state */}
+        {loading && (
+          <div className="flex flex-col items-center justify-center py-20 gap-3">
+            <div className="w-10 h-10 border-3 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
+            <p className="text-[var(--c-text-muted)] text-sm">
+              Chargement des groupes...
+            </p>
+          </div>
+        )}
+
+        {/* Error state */}
+        {fetchError && !loading && (
+          <div className="glass-strong rounded-2xl p-6 text-center">
+            <p className="text-red-400 mb-3">{fetchError}</p>
+            <button
+              onClick={fetchGroups}
+              className="px-4 py-2 rounded-xl bg-orange-500/20 text-orange-400 text-sm font-medium hover:bg-orange-500/30 transition-all"
+            >
+              Reessayer
+            </button>
+          </div>
+        )}
+
+        {/* Empty states */}
+        {!loading && !fetchError && filteredGroups.length === 0 && (
+          <div className="glass-strong rounded-2xl p-10 text-center">
+            <div className="text-4xl mb-3">
+              {activeTab === "my" ? "📭" : search ? "🔍" : "🐾"}
+            </div>
+            <p className="text-[var(--c-text)] font-semibold mb-1">
+              {activeTab === "my"
+                ? "Tu n'as rejoint aucun groupe"
+                : search
+                  ? "Aucun groupe trouve"
+                  : "Aucun groupe disponible"}
+            </p>
+            <p className="text-[var(--c-text-muted)] text-sm">
+              {activeTab === "my"
+                ? "Explore les groupes populaires et rejoins ceux qui t'interessent !"
+                : search
+                  ? "Essaie avec d'autres mots-cles"
+                  : "Sois le premier a creer un groupe !"}
+            </p>
+          </div>
+        )}
+
+        {/* Group cards grid */}
+        {!loading && !fetchError && filteredGroups.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredGroups.map((group) => (
+              <div
+                key={group.id}
+                className="glass-strong rounded-2xl p-5 flex flex-col gap-3 hover:scale-[1.01] transition-all duration-200 border border-[var(--c-border)]"
+              >
+                {/* Icon + Name */}
+                <div className="flex items-start gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-[var(--c-glass)] flex items-center justify-center text-2xl shrink-0">
+                    {group.icon || CATEGORY_ICONS[group.category] || "🐾"}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <Link
+                      href={`/groups/${group.id}`}
+                      className="font-bold text-[var(--c-text)] hover:text-orange-400 transition-colors line-clamp-1 block"
+                    >
+                      {group.name}
+                    </Link>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-xs text-[var(--c-text-muted)]">
+                        {group.member_count}{" "}
+                        {group.member_count === 1 ? "membre" : "membres"}
+                      </span>
+                      <span className="w-1 h-1 rounded-full bg-[var(--c-text-muted)] opacity-40" />
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--c-glass)] text-[var(--c-text-muted)]">
+                        {group.category}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Description */}
+                {group.description && (
+                  <p className="text-sm text-[var(--c-text-muted)] line-clamp-2">
+                    {group.description}
+                  </p>
+                )}
+
+                {/* Canton tag if present */}
+                {group.canton && (
+                  <div className="flex items-center gap-1 text-xs text-[var(--c-text-muted)]">
+                    <span>📍</span>
+                    <span>
+                      {CANTONS.find((c) => c.code === group.canton)?.name ||
+                        group.canton}
+                    </span>
+                  </div>
+                )}
+
+                {/* Join/Leave button */}
+                <button
+                  onClick={() =>
+                    handleJoinLeave(group.id, group.is_member || false)
+                  }
+                  disabled={joining === group.id}
+                  className={
+                    "mt-auto w-full py-2 rounded-xl text-sm font-semibold transition-all " +
+                    (group.is_member
+                      ? "border border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-red-400/50 hover:text-red-400 hover:bg-red-500/10"
+                      : "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md shadow-orange-500/15 hover:shadow-orange-500/30")
+                  }
+                >
+                  {joining === group.id
+                    ? "..."
+                    : group.is_member
+                      ? "Quitter"
+                      : "Rejoindre"}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ══ Create Group Modal ══ */}
+      {showCreate && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowCreate(false);
+          }}
+        >
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+
+          {/* Modal */}
+          <div className="relative w-full max-w-md glass-strong rounded-2xl p-6 border border-[var(--c-border)] shadow-2xl max-h-[85vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-lg font-bold text-[var(--c-text)]">
+                Creer un groupe
+              </h2>
+              <button
+                onClick={() => setShowCreate(false)}
+                className="p-1.5 rounded-full hover:bg-[var(--c-glass)] transition-colors text-[var(--c-text-muted)]"
+                aria-label="Fermer"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <form onSubmit={handleCreate} className="flex flex-col gap-4">
+              {/* Icon selector */}
+              <div>
+                <label className="text-sm font-medium text-[var(--c-text)] mb-1.5 block">
+                  Icone
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {DEFAULT_ICONS.map((icon) => (
+                    <button
+                      key={icon}
+                      type="button"
+                      onClick={() => setForm((f) => ({ ...f, icon }))}
+                      className={
+                        "w-10 h-10 rounded-xl flex items-center justify-center text-xl transition-all " +
+                        (form.icon === icon
+                          ? "bg-orange-500/20 ring-2 ring-orange-500 scale-110"
+                          : "bg-[var(--c-glass)] hover:bg-[var(--c-glass)] hover:scale-105")
+                      }
+                    >
+                      {icon}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Name */}
+              <div>
+                <label className="text-sm font-medium text-[var(--c-text)] mb-1.5 block">
+                  Nom du groupe *
+                </label>
+                <input
+                  type="text"
+                  required
+                  maxLength={80}
+                  value={form.name}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, name: e.target.value }))
+                  }
+                  placeholder="ex: Golden Retrievers Suisse"
+                  className="w-full px-3 py-2.5 rounded-xl text-sm border border-[var(--c-border)] bg-[var(--c-card)] text-[var(--c-text)] placeholder:text-[var(--c-text-muted)] focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500/50 transition-all"
+                />
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="text-sm font-medium text-[var(--c-text)] mb-1.5 block">
+                  Description
+                </label>
+                <textarea
+                  maxLength={300}
+                  rows={3}
+                  value={form.description}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, description: e.target.value }))
+                  }
+                  placeholder="Decris ton groupe en quelques mots..."
+                  className="w-full px-3 py-2.5 rounded-xl text-sm border border-[var(--c-border)] bg-[var(--c-card)] text-[var(--c-text)] placeholder:text-[var(--c-text-muted)] focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500/50 transition-all resize-none"
+                />
+              </div>
+
+              {/* Category */}
+              <div>
+                <label className="text-sm font-medium text-[var(--c-text)] mb-1.5 block">
+                  Categorie *
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {CATEGORY_OPTIONS.map((cat) => (
+                    <button
+                      key={cat.value}
+                      type="button"
+                      onClick={() =>
+                        setForm((f) => ({ ...f, category: cat.value }))
+                      }
+                      className={
+                        "px-3.5 py-1.5 rounded-full text-sm font-medium transition-all " +
+                        (form.category === cat.value
+                          ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md"
+                          : "border border-[var(--c-border)] text-[var(--c-text-muted)] hover:text-[var(--c-text)] hover:border-orange-500/30")
+                      }
+                    >
+                      {CATEGORY_ICONS[cat.value]} {cat.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Canton (optional) */}
+              <div>
+                <label className="text-sm font-medium text-[var(--c-text)] mb-1.5 block">
+                  Canton{" "}
+                  <span className="text-[var(--c-text-muted)] font-normal">
+                    (optionnel)
+                  </span>
+                </label>
+                <select
+                  value={form.canton}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, canton: e.target.value }))
+                  }
+                  className="w-full px-3 py-2.5 rounded-xl text-sm border border-[var(--c-border)] bg-[var(--c-card)] text-[var(--c-text)] focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500/50 transition-all"
+                >
+                  <option value="">Tous les cantons</option>
+                  {CANTONS.map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.name} ({c.code})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Species (optional) */}
+              <div>
+                <label className="text-sm font-medium text-[var(--c-text)] mb-1.5 block">
+                  Espece{" "}
+                  <span className="text-[var(--c-text-muted)] font-normal">
+                    (optionnel)
+                  </span>
+                </label>
+                <select
+                  value={form.species}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, species: e.target.value }))
+                  }
+                  className="w-full px-3 py-2.5 rounded-xl text-sm border border-[var(--c-border)] bg-[var(--c-card)] text-[var(--c-text)] focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500/50 transition-all"
+                >
+                  <option value="">Toutes les especes</option>
+                  <option value="chien">Chien</option>
+                  <option value="chat">Chat</option>
+                  <option value="lapin">Lapin</option>
+                  <option value="oiseau">Oiseau</option>
+                  <option value="rongeur">Rongeur</option>
+                  <option value="autre">Autre</option>
+                </select>
+              </div>
+
+              {/* Error */}
+              {createError && (
+                <p className="text-red-400 text-sm text-center">
+                  {createError}
+                </p>
+              )}
+
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={creating || !form.name.trim()}
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              >
+                {creating ? "Creation..." : "Creer le groupe"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+    </main>
+  );
+}

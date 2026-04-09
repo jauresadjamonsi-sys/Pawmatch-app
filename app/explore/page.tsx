@@ -60,6 +60,7 @@ export default function ExplorePage() {
   const [speciesFilter, setSpeciesFilter] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [topAnimals, setTopAnimals] = useState<{ id: string; name: string; species: string; photo_url: string | null }[]>([]);
+  const [trending, setTrending] = useState<{hashtag: string; count: number}[]>([]);
 
   // Events state
   const [events, setEvents] = useState<EventItem[]>([]);
@@ -87,6 +88,14 @@ export default function ExplorePage() {
       if (data) setTopAnimals(data);
     }
     fetchTop().catch(() => {});
+  }, []);
+
+  /* Fetch trending hashtags */
+  useEffect(() => {
+    fetch("/api/trending")
+      .then(res => res.json())
+      .then(data => { if (data.trending) setTrending(data.trending); })
+      .catch(() => {});
   }, []);
 
   /* Fetch animals */
@@ -283,6 +292,37 @@ export default function ExplorePage() {
                   {a.name}
                 </span>
               </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Trending Hashtags */}
+      {trending.length > 0 && (
+        <div className="mb-4 overflow-x-auto scrollbar-hide">
+          <div className="flex items-center gap-1.5 mb-2">
+            <span className="text-sm font-bold" style={{ color: "var(--c-text)" }}>
+              <span className="gradient-text-warm"># Tendances</span>
+            </span>
+          </div>
+          <div className="flex gap-2 pb-1">
+            {trending.map((t) => (
+              <button
+                key={t.hashtag}
+                onClick={() => { setSearch(`#${t.hashtag}`); setTab("trending"); }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all flex-shrink-0"
+                style={{
+                  background: "var(--c-glass, rgba(255,255,255,0.05))",
+                  border: "1px solid var(--c-border)",
+                }}
+              >
+                <span style={{ background: "linear-gradient(135deg, #f97316, #a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                  #{t.hashtag}
+                </span>
+                <span className="text-[10px] opacity-60" style={{ color: "var(--c-text-muted)" }}>
+                  {t.count}
+                </span>
+              </button>
             ))}
           </div>
         </div>

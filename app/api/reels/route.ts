@@ -92,5 +92,14 @@ export async function POST(request: NextRequest) {
     }),
   ]);
 
+  // Extract and store hashtags
+  const extractedHashtags = (caption || "").match(/#(\w+)/g);
+  if (extractedHashtags && extractedHashtags.length > 0) {
+    const uniqueTags = [...new Set(extractedHashtags.map((h: string) => h.slice(1).toLowerCase()))].slice(0, 10);
+    await supabase.from("reel_hashtags").insert(
+      uniqueTags.map(tag => ({ reel_id: data.id, hashtag: tag }))
+    ).catch(() => {});
+  }
+
   return NextResponse.json({ reel: data, coins_earned: 10 });
 }

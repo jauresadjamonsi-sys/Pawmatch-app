@@ -101,6 +101,14 @@ const EARN_OPTIONS = [
   { icon: "🎯", label: "Defi du jour", coins: "+10", desc: "Complete le challenge quotidien" },
 ];
 
+const WEEKLY_CHALLENGES = [
+  { id: "post_reel", icon: "\uD83C\uDFAC", title: "Poste un Reel", desc: "Publie une video de ton animal", reward: 10, target: 1 },
+  { id: "send_flair", icon: "\u26A1", title: "Envoie un Super Flair", desc: "Montre ton interet a un animal", reward: 5, target: 1 },
+  { id: "make_match", icon: "\uD83D\uDC3E", title: "3 Coups de Truffe", desc: "Envoie 3 demandes de match", reward: 15, target: 3 },
+  { id: "share_profile", icon: "\uD83D\uDCE4", title: "Partage un profil", desc: "Fais decouvrir Pawly a tes amis", reward: 5, target: 1 },
+  { id: "daily_streak", icon: "\uD83D\uDD25", title: "5 jours de suite", desc: "Connecte-toi 5 jours consecutifs", reward: 25, target: 5 },
+];
+
 const SHOP_ITEMS = [
   { icon: "⚡", label: "Super Flair", cost: 15, desc: "Envoie un coup de coeur special" },
   { icon: "🔝", label: "Boost 30min", cost: 20, desc: "Ton profil en priorite pendant 30 min" },
@@ -117,6 +125,7 @@ export default function PawCoinsWallet() {
   const [buyingItem, setBuyingItem] = useState<string | null>(null);
   const [shopMsg, setShopMsg] = useState<string | null>(null);
   const [streak, setStreak] = useState<StreakInfo>({ count: 0, weekDays: Array(7).fill(false) });
+  const [challengeProgress, setChallengeProgress] = useState<Record<string, number>>({});
 
   useEffect(() => {
     async function load() {
@@ -131,6 +140,27 @@ export default function PawCoinsWallet() {
       setBalance(wallet.balance);
       setTransactions(wallet.transactions);
       setStreak(streakInfo);
+
+      // Fetch weekly challenge progress
+      const weekStart = new Date();
+      weekStart.setDate(weekStart.getDate() - ((weekStart.getDay() + 6) % 7));
+      weekStart.setHours(0, 0, 0, 0);
+      const weekStartISO = weekStart.toISOString();
+
+      const { count: reelCount } = await supabase
+        .from("reels")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .gte("created_at", weekStartISO);
+
+      setChallengeProgress({
+        post_reel: reelCount || 0,
+        send_flair: 0,
+        make_match: 0,
+        share_profile: 0,
+        daily_streak: streakInfo.count,
+      });
+
       setLoading(false);
     }
     load();
@@ -390,6 +420,73 @@ export default function PawCoinsWallet() {
               </span>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Weekly Challenges */}
+      <section className="glass rounded-2xl p-5 relative overflow-hidden">
+        <div className="absolute -top-6 -right-6 text-[80px] opacity-5 pointer-events-none select-none">{"\uD83C\uDFAF"}</div>
+        <h2 className="text-sm font-bold uppercase tracking-wider mb-4" style={{ color: "var(--c-text-muted)" }}>
+          Defis de la semaine
+        </h2>
+        <div className="space-y-3">
+          {WEEKLY_CHALLENGES.map((ch) => {
+            const progress = Math.min(challengeProgress[ch.id] || 0, ch.target);
+            const completed = progress >= ch.target;
+            const pct = Math.round((progress / ch.target) * 100);
+            return (
+              <div
+                key={ch.id}
+                className="rounded-xl p-3 transition-all"
+                style={{
+                  background: completed ? "rgba(52,211,153,0.08)" : "rgba(255,255,255,0.03)",
+                  border: completed ? "1px solid rgba(52,211,153,0.2)" : "1px solid var(--c-border)",
+                  opacity: completed ? 0.7 : 1,
+                }}
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-xl w-8 text-center">{ch.icon}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-semibold" style={{ color: completed ? "#34d399" : "var(--c-text)" }}>
+                        {ch.title}
+                      </p>
+                      {completed && <span className="text-sm">{"\u2705"}</span>}
+                    </div>
+                    <p className="text-[10px]" style={{ color: "var(--c-text-muted)" }}>{ch.desc}</p>
+                  </div>
+                  <span
+                    className="text-[11px] font-bold px-2.5 py-1 rounded-full whitespace-nowrap"
+                    style={{
+                      background: completed ? "rgba(52,211,153,0.15)" : "rgba(251,191,36,0.1)",
+                      color: completed ? "#34d399" : "#fbbf24",
+                    }}
+                  >
+                    {"\uD83E\uDE99"} +{ch.reward}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div
+                    className="flex-1 h-2 rounded-full overflow-hidden"
+                    style={{ background: "var(--c-border)" }}
+                  >
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${pct}%`,
+                        background: completed
+                          ? "linear-gradient(90deg, #34d399, #22c55e)"
+                          : "linear-gradient(90deg, #f97316, #fbbf24)",
+                      }}
+                    />
+                  </div>
+                  <span className="text-[10px] font-bold min-w-[32px] text-right" style={{ color: "var(--c-text-muted)" }}>
+                    {progress}/{ch.target}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 

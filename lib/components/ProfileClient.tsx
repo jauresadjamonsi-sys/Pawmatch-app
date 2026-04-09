@@ -36,6 +36,14 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [showFollowersList, setShowFollowersList] = useState<"followers" | "following" | null>(null);
+  const [wrappedStats, setWrappedStats] = useState<{
+    totalMatches: number;
+    totalReels: number;
+    totalLikes: number;
+    favoriteSpecies: string;
+    daysOnPawly: number;
+    totalCoins: number;
+  } | null>(null);
   const router = useRouter();
   const supabase = createClient();
 
@@ -71,6 +79,67 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
           .then(r => r.json())
           .then(d => { setFollowersCount(d.followers_count || 0); setFollowingCount(d.following_count || 0); })
           .catch(() => {});
+
+        // Fetch Pawly Wrapped stats
+        try {
+          const [matchCountRes, reelsRes, profileCoins] = await Promise.all([
+            supabase.from("matches").select("*", { count: "exact", head: true }).or(`sender_user_id.eq.${authUser.id},receiver_user_id.eq.${authUser.id}`),
+            supabase.from("reels").select("id", { count: "exact", head: true }).eq("user_id", authUser.id),
+            supabase.from("profiles").select("pawcoins").eq("id", authUser.id).single(),
+          ]);
+
+          // Total likes received on user's reels
+          const { data: userReels } = await supabase.from("reels").select("id").eq("user_id", authUser.id);
+          let totalLikes = 0;
+          if (userReels && userReels.length > 0) {
+            const reelIds = userReels.map((r: any) => r.id);
+            const { count: likesCount } = await supabase
+              .from("reel_likes")
+              .select("*", { count: "exact", head: true })
+              .in("reel_id", reelIds);
+            totalLikes = likesCount || 0;
+          }
+
+          // Favorite species: most common species in matches
+          let favoriteSpecies = "Aucun";
+          const { data: matchAnimals } = await supabase
+            .from("matches")
+            .select("sender_animal_id, receiver_animal_id")
+            .or(`sender_user_id.eq.${authUser.id},receiver_user_id.eq.${authUser.id}`)
+            .limit(100);
+          if (matchAnimals && matchAnimals.length > 0) {
+            const allAnimalIds = matchAnimals.flatMap((m: any) => [m.sender_animal_id, m.receiver_animal_id]).filter(Boolean);
+            if (allAnimalIds.length > 0) {
+              const { data: speciesData } = await supabase
+                .from("animals")
+                .select("species")
+                .in("id", [...new Set(allAnimalIds)]);
+              if (speciesData && speciesData.length > 0) {
+                const speciesCount: Record<string, number> = {};
+                speciesData.forEach((a: any) => {
+                  if (a.species) speciesCount[a.species] = (speciesCount[a.species] || 0) + 1;
+                });
+                const sorted = Object.entries(speciesCount).sort((a, b) => b[1] - a[1]);
+                if (sorted.length > 0) favoriteSpecies = sorted[0][0];
+              }
+            }
+          }
+
+          const daysOnPawly = profileRes.data?.created_at
+            ? Math.floor((Date.now() - new Date(profileRes.data.created_at).getTime()) / 86400000)
+            : 0;
+
+          setWrappedStats({
+            totalMatches: matchCountRes.count || 0,
+            totalReels: reelsRes.count || 0,
+            totalLikes,
+            favoriteSpecies,
+            daysOnPawly,
+            totalCoins: profileCoins.data?.pawcoins || 0,
+          });
+        } catch (err) {
+          console.error("[Profile] Failed to fetch wrapped stats:", err);
+        }
       } catch (err) {
         console.error("[Profile] Failed to load profile stats:", err);
       }
@@ -460,6 +529,94 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
             </div>
           )}
         </div>
+
+        {/* Pawly Wrapped */}
+        {wrappedStats && (
+          <div className="mb-6 animate-slide-up" style={{ animationDelay: "0.25s" }}>
+            <div
+              className="rounded-2xl p-6 relative overflow-hidden"
+              style={{
+                background: "linear-gradient(135deg, rgba(249,115,22,0.2), rgba(168,85,247,0.2))",
+                border: "1px solid rgba(249,115,22,0.25)",
+                boxShadow: "0 0 30px rgba(249,115,22,0.1), 0 0 60px rgba(168,85,247,0.05)",
+              }}
+            >
+              <div
+                className="absolute -top-10 -right-10 text-[120px] opacity-[0.06] pointer-events-none select-none"
+              >
+                {"\uD83C\uDF81"}
+              </div>
+              <h3
+                className="text-lg font-black mb-4"
+                style={{
+                  background: "linear-gradient(135deg, #f97316, #a78bfa)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                {"\uD83C\uDF81"} Ton Pawly Wrapped
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5">
+                <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(249,115,22,0.15)" }}>
+                  <p className="text-2xl font-black" style={{ color: "#f97316", textShadow: "0 0 12px rgba(249,115,22,0.4)" }}>
+                    {wrappedStats.totalMatches}
+                  </p>
+                  <p className="text-[10px] font-bold uppercase" style={{ color: "var(--c-text-muted)" }}>Matchs</p>
+                </div>
+                <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(168,85,247,0.15)" }}>
+                  <p className="text-2xl font-black" style={{ color: "#a78bfa", textShadow: "0 0 12px rgba(168,85,247,0.4)" }}>
+                    {wrappedStats.totalReels}
+                  </p>
+                  <p className="text-[10px] font-bold uppercase" style={{ color: "var(--c-text-muted)" }}>Reels</p>
+                </div>
+                <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(239,68,68,0.15)" }}>
+                  <p className="text-2xl font-black" style={{ color: "#f87171", textShadow: "0 0 12px rgba(239,68,68,0.4)" }}>
+                    {wrappedStats.totalLikes}
+                  </p>
+                  <p className="text-[10px] font-bold uppercase" style={{ color: "var(--c-text-muted)" }}>Likes recus</p>
+                </div>
+                <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(34,197,94,0.15)" }}>
+                  <p className="text-2xl font-black" style={{ color: "#22c55e", textShadow: "0 0 12px rgba(34,197,94,0.4)" }}>
+                    {wrappedStats.favoriteSpecies}
+                  </p>
+                  <p className="text-[10px] font-bold uppercase" style={{ color: "var(--c-text-muted)" }}>Espece preferee</p>
+                </div>
+                <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(59,130,246,0.15)" }}>
+                  <p className="text-2xl font-black" style={{ color: "#3b82f6", textShadow: "0 0 12px rgba(59,130,246,0.4)" }}>
+                    {wrappedStats.daysOnPawly}
+                  </p>
+                  <p className="text-[10px] font-bold uppercase" style={{ color: "var(--c-text-muted)" }}>Jours sur Pawly</p>
+                </div>
+                <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(251,191,36,0.15)" }}>
+                  <p className="text-2xl font-black" style={{ color: "#fbbf24", textShadow: "0 0 12px rgba(251,191,36,0.4)" }}>
+                    {wrappedStats.totalCoins}
+                  </p>
+                  <p className="text-[10px] font-bold uppercase" style={{ color: "var(--c-text-muted)" }}>PawCoins</p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({
+                      title: "Mon Pawly Wrapped",
+                      text: `Sur Pawly : ${wrappedStats.totalMatches} matchs, ${wrappedStats.totalReels} reels, ${wrappedStats.totalLikes} likes ! Mon espece preferee : ${wrappedStats.favoriteSpecies}. ${wrappedStats.daysOnPawly} jours sur Pawly !`,
+                      url: window.location.origin,
+                    }).catch(() => {});
+                  }
+                }}
+                className="w-full py-2.5 rounded-xl font-bold text-sm transition-all hover:scale-[1.02]"
+                style={{
+                  background: "linear-gradient(135deg, #f97316, #a78bfa)",
+                  color: "#fff",
+                  boxShadow: "0 4px 20px rgba(249,115,22,0.25), 0 4px 20px rgba(168,85,247,0.15)",
+                }}
+              >
+                {"\uD83D\uDCE4"} Partage tes stats
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Utilisateurs bloqués */}
         <div className="mb-6 animate-slide-up" style={{ animationDelay: "0.3s" }}>

@@ -188,6 +188,7 @@ export default function Navbar() {
                   <NL href="/flairer" active={isActive("/flairer")} label={t.navFlairer} light={isLight} />
                   <NL href="/reels" active={isActive("/reels")} label="Reels" light={isLight} />
                   <NL href="/explore" active={isActive("/explore")} label="Explorer" light={isLight} />
+                  <NL href="/groups" active={isActive("/groups")} label="Groupes" light={isLight} />
                   <NL href="/carte" active={isActive("/carte")} label="Carte" light={isLight} />
                   <NL href="/matches" active={isActive("/matches")} label={t.navMatches} light={isLight} />
                   <NL href="/wallet" active={isActive("/wallet")} label="Coins" light={isLight} />
