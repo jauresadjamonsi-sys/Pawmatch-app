@@ -51,6 +51,21 @@ export default function CreateReelPage() {
     setError(null);
 
     try {
+      // Check caption for inappropriate content
+      if (caption.trim()) {
+        const modRes = await fetch("/api/moderate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: caption, type: "reel_caption" }),
+        });
+        const modResult = await modRes.json();
+        if (!modResult.safe) {
+          setError(modResult.reason);
+          setUploading(false);
+          return;
+        }
+      }
+
       // Upload video to Supabase Storage
       const ext = videoFile.name.split(".").pop() || "mp4";
       const path = `reels/${userId}/${Date.now()}.${ext}`;

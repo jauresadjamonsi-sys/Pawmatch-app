@@ -46,6 +46,15 @@ export default function AnimalDetailPage() {
   const [dmLoading, setDmLoading] = useState(false);
   const [compatibility, setCompatibility] = useState<any>(null);
   const [ownerVerified, setOwnerVerified] = useState(false);
+  const [ownerRating, setOwnerRating] = useState<number>(0);
+  const [ownerReviewCount, setOwnerReviewCount] = useState<number>(0);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [reviewRating, setReviewRating] = useState<number>(0);
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  const [reviewError, setReviewError] = useState<string | null>(null);
+  const [reviewSuccess, setReviewSuccess] = useState(false);
+  const [mutualMatchId, setMutualMatchId] = useState<string | null>(null);
   const personality = animal ? detectPersonality(animal.traits || []) : null;
   const { t, lang } = useAppContext();
   const params = useParams();
@@ -74,6 +83,17 @@ export default function AnimalDetailPage() {
             .single();
           if (ownerProfile?.verified_photo) setOwnerVerified(true);
         }
+        // Fetch owner reputation
+        if (result.data.created_by) {
+          try {
+            const revRes = await fetch("/api/reviews?user_id=" + result.data.created_by);
+            if (revRes.ok) {
+              const revData = await revRes.json();
+              setOwnerRating(revData.averageRating || 0);
+              setOwnerReviewCount(revData.reviewCount || 0);
+            }
+          } catch {}
+        }
       }
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
@@ -95,6 +115,20 @@ export default function AnimalDetailPage() {
             .or(`sender_animal_id.eq.${result.data.id},receiver_animal_id.eq.${result.data.id}`)
             .limit(1);
           if (coupMatch && coupMatch.length > 0) setHasCoupDeTruffe(true);
+        }
+        // Check for mutual match (for review button)
+        if (myAnimalsList) {
+          const myIds = myAnimalsList.map(a => a.id);
+          const { data: mutualMatch } = await supabase
+            .from("matches")
+            .select("id")
+            .eq("status", "accepted")
+            .or(myIds.map(id => `sender_animal_id.eq.${id},receiver_animal_id.eq.${id}`).join(","))
+            .or(`sender_animal_id.eq.${result.data.id},receiver_animal_id.eq.${result.data.id}`)
+            .limit(1);
+          if (mutualMatch && mutualMatch.length > 0) {
+            setMutualMatchId(mutualMatch[0].id);
+          }
         }
       }
       // Calculer compatibilité si on a un animal principal
@@ -284,6 +318,20 @@ export default function AnimalDetailPage() {
                           {animal.age_months !== null && <span> &bull; {formatAge(animal.age_months)}</span>}
                           {animal.city && <span> &bull; {animal.city}</span>}
                         </p>
+                        {ownerReviewCount > 0 && (
+                          <div className="flex items-center gap-1.5 mt-1">
+                            <div className="flex items-center gap-0.5">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <svg key={star} className="w-3.5 h-3.5" viewBox="0 0 20 20" fill={star <= Math.round(ownerRating) ? "#f59e0b" : "rgba(255,255,255,0.25)"}>
+                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                              ))}
+                            </div>
+                            <span className="text-xs text-white/70 font-medium drop-shadow">
+                              {ownerRating}/5 ({ownerReviewCount} avis)
+                            </span>
+                          </div>
+                        )}
                       </div>
                       <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
                         {personality && (
@@ -295,6 +343,15 @@ export default function AnimalDetailPage() {
                           <span className="backdrop-blur-md bg-pink-500/30 text-pink-200 px-3 py-1 rounded-full text-xs font-bold border border-pink-400/30">
                             💥 Coup de Truffe
                           </span>
+                        )}
+                        {!isOwner && mutualMatchId && !reviewSuccess && (
+                          <button
+                            onClick={() => setShowReviewModal(true)}
+                            className="backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold border transition hover:scale-105"
+                            style={{ background: "rgba(249,115,22,0.3)", color: "#fdba74", borderColor: "rgba(249,115,22,0.4)" }}
+                          >
+                            Laisser un avis
+                          </button>
                         )}
                       </div>
                     </div>
@@ -698,6 +755,96 @@ export default function AnimalDetailPage() {
             onClose={() => setShowBlockReport(false)}
             onBlocked={() => { window.location.href = "/animals"; }}
           />
+        )}
+
+        {/* Review modal */}
+        {showReviewModal && animal.created_by && mutualMatchId && (
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+            <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl max-w-md w-full p-6">
+              <h3 className="text-lg font-bold text-[var(--c-text)] mb-1">Laisser un avis</h3>
+              <p className="text-sm text-[var(--c-text-muted)] mb-5">
+                Comment s'est passee votre rencontre avec {animal.name} ?
+              </p>
+
+              {reviewError && (
+                <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-sm">{reviewError}</div>
+              )}
+
+              {/* Star selector */}
+              <div className="flex items-center justify-center gap-2 mb-5">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => setReviewRating(star)}
+                    className="transition-transform hover:scale-110"
+                  >
+                    <svg className="w-10 h-10" viewBox="0 0 20 20" fill={star <= reviewRating ? "#f59e0b" : "rgba(255,255,255,0.1)"} stroke={star <= reviewRating ? "#f59e0b" : "rgba(255,255,255,0.2)"} strokeWidth={0.5}>
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  </button>
+                ))}
+              </div>
+              <p className="text-center text-xs text-[var(--c-text-muted)] mb-4">
+                {reviewRating === 0 ? "Selectionnez une note" : reviewRating + "/5"}
+              </p>
+
+              {/* Comment textarea */}
+              <textarea
+                value={reviewComment}
+                onChange={(e) => setReviewComment(e.target.value.slice(0, 300))}
+                placeholder="Partagez votre experience (optionnel)..."
+                rows={3}
+                className="w-full bg-[var(--c-deep)] border border-[var(--c-border)] rounded-xl p-3 text-sm text-[var(--c-text)] placeholder:text-[var(--c-text-muted)] resize-none focus:outline-none focus:ring-2 focus:ring-orange-500/40 mb-1"
+              />
+              <p className="text-right text-xs text-[var(--c-text-muted)] mb-4">{reviewComment.length}/300</p>
+
+              {/* Submit */}
+              <button
+                disabled={reviewRating === 0 || reviewSubmitting}
+                onClick={async () => {
+                  if (reviewRating === 0) return;
+                  setReviewSubmitting(true);
+                  setReviewError(null);
+                  try {
+                    const res = await fetch("/api/reviews", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        reviewed_user_id: animal.created_by,
+                        match_id: mutualMatchId,
+                        rating: reviewRating,
+                        comment: reviewComment.trim() || null,
+                      }),
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || "Erreur");
+                    setReviewSuccess(true);
+                    setShowReviewModal(false);
+                    // Refresh rating display
+                    setOwnerReviewCount((prev) => prev + 1);
+                    setOwnerRating((prev) => {
+                      const total = prev * ownerReviewCount + reviewRating;
+                      return Math.round((total / (ownerReviewCount + 1)) * 10) / 10;
+                    });
+                  } catch (err: any) {
+                    setReviewError(err.message);
+                  }
+                  setReviewSubmitting(false);
+                }}
+                className="w-full py-3 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition text-sm mb-2"
+              >
+                {reviewSubmitting ? "Envoi..." : "Envoyer mon avis (+5 PawCoins)"}
+              </button>
+
+              <button
+                onClick={() => { setShowReviewModal(false); setReviewError(null); }}
+                className="w-full py-2 text-[var(--c-text-muted)] font-medium rounded-xl transition text-sm hover:bg-[var(--c-deep)]"
+              >
+                Annuler
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>

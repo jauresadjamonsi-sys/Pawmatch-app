@@ -388,6 +388,7 @@ export type PawCoinTxType =
   | "match_made" | "super_flair_sent" | "super_flair_received"
   | "boost_purchased" | "boost_used"
   | "referral_bonus" | "challenge_completed"
+  | "review_posted"
   | "purchase" | "admin_grant";
 
 export interface PawCoinTransaction {

@@ -43,6 +43,17 @@ export default function NewAnimalPage() {
 
   const hasOwnerPhoto = photos.some((p) => p.tag === "with_owner");
 
+  // Breed detection state
+  const [detecting, setDetecting] = useState(false);
+  const [detectionResult, setDetectionResult] = useState<{
+    species?: string;
+    breed?: string;
+    confidence?: number;
+    traits?: string[];
+    description?: string;
+    error?: string;
+  } | null>(null);
+
   // Crop state
   const [cropFile, setCropFile] = useState<File | null>(null);
   const [cropTag, setCropTag] = useState<"with_owner" | "animal_only">("animal_only");
@@ -69,6 +80,91 @@ export default function NewAnimalPage() {
     setSelectedTraits((prev) =>
       prev.includes(trait) ? prev.filter((t) => t !== trait) : [...prev, trait]
     );
+  }
+
+  async function handleDetectBreed() {
+    // Find the first animal-only photo, or fallback to any photo
+    const photoToAnalyze = photos.find((p) => p.tag === "animal_only") || photos[0];
+    if (!photoToAnalyze) return;
+
+    setDetecting(true);
+    setDetectionResult(null);
+
+    try {
+      // Upload photo to get a public URL for analysis
+      const uploadResult = await uploadAnimalPhoto(supabase, photoToAnalyze.file);
+      if (uploadResult.error || !uploadResult.data) {
+        setDetectionResult({ error: uploadResult.error || "Erreur d'upload" });
+        setDetecting(false);
+        return;
+      }
+
+      const res = await fetch("/api/detect-breed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image_url: uploadResult.data }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setDetectionResult({ error: data.error || "Erreur de detection" });
+      } else if (data.error) {
+        setDetectionResult({ error: data.error });
+      } else {
+        setDetectionResult(data);
+      }
+    } catch {
+      setDetectionResult({ error: "Erreur reseau" });
+    } finally {
+      setDetecting(false);
+    }
+  }
+
+  function applyDetection() {
+    if (!detectionResult || detectionResult.error) return;
+
+    // Apply species
+    if (detectionResult.species) {
+      const matchedSpecies = SPECIES_LIST.find(
+        (s) => s.value === detectionResult.species?.toLowerCase()
+      );
+      if (matchedSpecies) setSpecies(matchedSpecies.value);
+    }
+
+    // Apply breed
+    if (detectionResult.breed) {
+      const matchedBreed = (BREEDS[detectionResult.species?.toLowerCase() || species] || []).find(
+        (b: string) => b.toLowerCase() === detectionResult.breed?.toLowerCase()
+      );
+      if (matchedBreed) {
+        setCustomBreed(false);
+        // Set via DOM for the select element
+        setTimeout(() => {
+          const breedSelect = document.querySelector('select[name="breed"]') as HTMLSelectElement;
+          if (breedSelect) breedSelect.value = matchedBreed;
+        }, 100);
+      } else {
+        setCustomBreed(true);
+        setTimeout(() => {
+          const breedInput = document.querySelector('input[name="breed_custom"]') as HTMLInputElement;
+          if (breedInput) breedInput.value = detectionResult.breed || "";
+        }, 100);
+      }
+    }
+
+    // Apply traits
+    if (detectionResult.traits && detectionResult.traits.length > 0) {
+      const currentTraitList = TRAITS[detectionResult.species?.toLowerCase() || species] || [];
+      const matchedTraits = detectionResult.traits.filter((t: string) =>
+        currentTraitList.some((ct: string) => ct.toLowerCase() === t.toLowerCase())
+      );
+      if (matchedTraits.length > 0) {
+        setSelectedTraits((prev) => {
+          const combined = [...new Set([...prev, ...matchedTraits])];
+          return combined;
+        });
+      }
+    }
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -212,6 +308,84 @@ export default function NewAnimalPage() {
                 </div>
               )}
               <p className="text-[10px] text-[var(--c-text-muted)] mt-1">{photos.length}/5 — {t.animalMaxPhotos}</p>
+
+              {/* AI Breed Detection */}
+              {photos.length > 0 && (
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={handleDetectBreed}
+                    disabled={detecting}
+                    className="w-full py-2.5 px-4 bg-purple-500/15 border border-purple-500/30 text-purple-300 text-sm font-bold rounded-xl transition hover:bg-purple-500/25 disabled:opacity-60 flex items-center justify-center gap-2"
+                  >
+                    {detecting ? (
+                      <>
+                        <span className="w-4 h-4 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
+                        Analyse en cours...
+                      </>
+                    ) : (
+                      <>
+                        <span>&#x1F9E0;</span> Detecter la race par IA
+                      </>
+                    )}
+                  </button>
+
+                  {/* Detection result */}
+                  {detectionResult && !detectionResult.error && (
+                    <div className="mt-3 p-4 bg-purple-500/10 border border-purple-500/20 rounded-xl">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-bold text-[var(--c-text)]">Resultat de l'analyse</span>
+                        {detectionResult.confidence != null && (
+                          <span className={"text-xs font-bold px-2 py-0.5 rounded-full " + (
+                            detectionResult.confidence >= 0.8
+                              ? "bg-green-500/20 text-green-400"
+                              : detectionResult.confidence >= 0.5
+                                ? "bg-amber-500/20 text-amber-400"
+                                : "bg-red-500/20 text-red-400"
+                          )}>
+                            {Math.round(detectionResult.confidence * 100)}% confiance
+                          </span>
+                        )}
+                      </div>
+                      <div className="space-y-1 text-sm text-[var(--c-text-muted)] mb-3">
+                        {detectionResult.species && <div>Espece : <span className="text-[var(--c-text)]">{detectionResult.species}</span></div>}
+                        {detectionResult.breed && <div>Race : <span className="text-[var(--c-text)]">{detectionResult.breed}</span></div>}
+                        {detectionResult.description && <div className="text-xs italic mt-1">{detectionResult.description}</div>}
+                        {detectionResult.traits && detectionResult.traits.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {detectionResult.traits.map((t: string, i: number) => (
+                              <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-300">{t}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={applyDetection}
+                          className="flex-1 py-2 bg-purple-500 text-white text-xs font-bold rounded-lg"
+                        >
+                          Appliquer les suggestions
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDetectionResult(null)}
+                          className="px-4 py-2 bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text-muted)] text-xs rounded-lg"
+                        >
+                          Ignorer
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Detection error */}
+                  {detectionResult?.error && (
+                    <div className="mt-2 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-xs">
+                      {detectionResult.error}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Nom */}
