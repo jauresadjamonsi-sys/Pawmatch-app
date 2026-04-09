@@ -125,34 +125,44 @@ export default function StoryCreatePage() {
 
   useEffect(() => {
     async function load() {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) {
-        router.push("/feed");
-        return;
+      try {
+        const supabase = createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) {
+          router.push("/feed");
+          return;
+        }
+
+        const { data, error: fetchErr } = await supabase
+          .from("animals")
+          .select("*")
+          .eq("created_by", user.id)
+          .order("created_at", { ascending: false });
+
+        if (fetchErr) {
+          console.error("[StoryCreate] fetch animals error:", fetchErr);
+          setError(t.storiesLoadError || "Impossible de charger vos animaux. Reessayez.");
+        }
+
+        const list = (data as AnimalRow[] | null) || [];
+        setAnimals(list);
+
+        if (list.length === 1) {
+          setSelectedAnimal(list[0]);
+          setStep("media");
+        }
+      } catch (err) {
+        console.error("[StoryCreate] unexpected error:", err);
+        setError(t.storiesLoadError || "Erreur inattendue. Reessayez plus tard.");
+      } finally {
+        setLoading(false);
       }
-
-      const { data } = await supabase
-        .from("animals")
-        .select("*")
-        .eq("created_by", user.id)
-        .order("created_at", { ascending: false });
-
-      const list = (data as AnimalRow[] | null) || [];
-      setAnimals(list);
-
-      if (list.length === 1) {
-        setSelectedAnimal(list[0]);
-        setStep("media");
-      }
-
-      setLoading(false);
     }
 
     load();
-  }, [router]);
+  }, [router, t]);
 
   // -----------------------------------------------------------------------
   // Cleanup object URLs on unmount
@@ -532,13 +542,28 @@ export default function StoryCreatePage() {
   if (loading) {
     return (
       <main
-        className="min-h-screen px-4 pt-6 pb-28 flex items-center justify-center"
+        className="min-h-screen px-4 pt-6 pb-32"
         style={{ background: "var(--c-deep)" }}
       >
-        <div
-          className="w-10 h-10 border-4 border-t-transparent rounded-full animate-spin"
-          style={{ borderColor: "var(--c-border)", borderTopColor: "transparent" }}
-        />
+        <div className="mx-auto max-w-lg space-y-4">
+          {/* Skeleton step indicator */}
+          <div className="flex items-center gap-2 justify-center mb-6">
+            <div className="w-2.5 h-2.5 rounded-full glass animate-breathe" />
+            <div className="w-8 h-[2px] glass rounded-full animate-breathe" style={{ animationDelay: "0.1s" }} />
+            <div className="w-2.5 h-2.5 rounded-full glass animate-breathe" style={{ animationDelay: "0.15s" }} />
+            <div className="w-8 h-[2px] glass rounded-full animate-breathe" style={{ animationDelay: "0.2s" }} />
+            <div className="w-2.5 h-2.5 rounded-full glass animate-breathe" style={{ animationDelay: "0.25s" }} />
+          </div>
+          {/* Skeleton header */}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-9 h-9 rounded-full glass animate-breathe" />
+            <div className="w-40 h-5 glass rounded-full animate-breathe" style={{ animationDelay: "0.1s" }} />
+          </div>
+          {/* Skeleton cards */}
+          <div className="glass rounded-2xl animate-breathe" style={{ height: 80, animationDelay: "0.15s" }} />
+          <div className="glass rounded-2xl animate-breathe" style={{ height: 80, animationDelay: "0.3s" }} />
+          <div className="glass rounded-2xl animate-breathe" style={{ height: 80, animationDelay: "0.45s" }} />
+        </div>
       </main>
     );
   }
@@ -550,7 +575,7 @@ export default function StoryCreatePage() {
   if (animals.length === 0) {
     return (
       <main
-        className="min-h-screen px-4 pt-6 pb-28 flex items-center justify-center"
+        className="min-h-screen px-4 pt-6 pb-32 flex items-center justify-center"
         style={{ background: "var(--c-deep)" }}
       >
         <div className="text-center">
@@ -579,7 +604,7 @@ export default function StoryCreatePage() {
   if (step === "pet") {
     return (
       <main
-        className="min-h-screen px-4 md:px-6 pt-6 pb-28"
+        className="min-h-screen px-4 md:px-6 pt-6 pb-32"
         style={{ background: "var(--c-deep)" }}
       >
         <div className="mx-auto max-w-lg">
@@ -658,6 +683,20 @@ export default function StoryCreatePage() {
               );
             })}
           </div>
+
+          {/* Error */}
+          {error && (
+            <div
+              className="mt-4 rounded-xl p-3 text-center text-sm font-medium"
+              style={{
+                background: "rgba(239, 68, 68, 0.15)",
+                color: "#ef4444",
+                border: "1px solid rgba(239, 68, 68, 0.3)",
+              }}
+            >
+              {error}
+            </div>
+          )}
         </div>
       </main>
     );
@@ -670,7 +709,7 @@ export default function StoryCreatePage() {
   if (step === "media") {
     return (
       <main
-        className="min-h-screen px-4 md:px-6 pt-6 pb-28"
+        className="min-h-screen px-4 md:px-6 pt-6 pb-32"
         style={{ background: "var(--c-deep)" }}
       >
         <div className="mx-auto max-w-lg">
@@ -879,7 +918,7 @@ export default function StoryCreatePage() {
 
     return (
       <main
-        className="min-h-screen px-4 md:px-6 pt-6 pb-28"
+        className="min-h-screen px-4 md:px-6 pt-6 pb-32"
         style={{ background: "var(--c-deep)" }}
       >
         <div className="mx-auto max-w-lg">

@@ -82,6 +82,7 @@ function findNearestCanton(lat: number, lng: number): string {
 export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [filterCanton, setFilterCanton] = useState("");
   const [showCreate, setShowCreate] = useState(false);
   const [joining, setJoining] = useState<string | null>(null);
@@ -123,6 +124,7 @@ export default function EventsPage() {
 
   async function fetchEvents() {
     setLoading(true);
+    setFetchError(null);
     try {
     let query = supabase
       .from("events")
@@ -133,7 +135,13 @@ export default function EventsPage() {
     if (filterCanton) query = query.eq("canton", filterCanton);
 
     const { data: eventsData, error } = await query;
-    if (!eventsData || error) { setLoading(false); return; }
+    if (error) {
+      console.error("[Events] query error:", error);
+      setFetchError("Impossible de charger les evenements. Reessayez.");
+      setLoading(false);
+      return;
+    }
+    if (!eventsData) { setLoading(false); return; }
 
     // Batch queries for participant counts + join status (avoids N+1)
     const eventIds = eventsData.map(e => e.id);
@@ -169,6 +177,7 @@ export default function EventsPage() {
     setEvents(enriched);
     } catch (err) {
       console.error("[Events] fetchEvents error:", err);
+      setFetchError("Erreur inattendue. Reessayez plus tard.");
     } finally {
       setLoading(false);
     }
@@ -261,7 +270,7 @@ export default function EventsPage() {
   }, {} as Record<string, Event[]>);
 
   return (
-    <div className="min-h-screen bg-[var(--c-deep)] pb-24">
+    <div className="min-h-screen bg-[var(--c-deep)] pb-32">
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
         @keyframes slideDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
@@ -407,9 +416,26 @@ export default function EventsPage() {
       {/* Events list */}
       <div className="max-w-2xl mx-auto px-4 pt-6">
         {loading ? (
+          <div className="space-y-4 py-4">
+            <div className="glass rounded-2xl animate-breathe" style={{ height: 140 }} />
+            <div className="glass rounded-2xl animate-breathe" style={{ height: 140, animationDelay: "0.15s" }} />
+            <div className="glass rounded-2xl animate-breathe" style={{ height: 140, animationDelay: "0.3s" }} />
+            <div className="glass rounded-2xl animate-breathe" style={{ height: 80, animationDelay: "0.45s" }} />
+          </div>
+        ) : fetchError ? (
           <div className="text-center py-16">
-            <div className="text-4xl mb-3 animate-bounce">🐾</div>
-            <p className="text-[var(--c-text-muted)] text-sm">{t.eventsLoading}</p>
+            <div className="inline-flex items-center justify-center w-14 h-14 glass rounded-2xl mb-4">
+              <span className="text-2xl">{"⚠️"}</span>
+            </div>
+            <h2 className="text-lg font-bold text-[var(--c-text)] mb-2">Oups !</h2>
+            <p className="text-sm text-[var(--c-text-muted)] mb-6">{fetchError}</p>
+            <button
+              onClick={() => { fetchEvents(); fetchDiscover(); }}
+              className="px-6 py-3 text-sm font-bold text-white rounded-xl transition-all active:scale-[0.97]"
+              style={{ background: "var(--c-accent)" }}
+            >
+              Reessayer
+            </button>
           </div>
         ) : events.length === 0 ? (
           <div className="text-center py-16">
@@ -443,7 +469,7 @@ export default function EventsPage() {
                     const colorClass = CANTON_COLORS[event.canton.charCodeAt(0) % CANTON_COLORS.length];
 
                     return (
-                      <div key={event.id} className={"fade-up bg-gradient-to-br " + colorClass + " border border-[var(--c-border)] rounded-2xl p-5 transition hover:border-[var(--c-border)]"}
+                      <div key={event.id} className={"fade-up glass bg-gradient-to-br " + colorClass + " border border-[var(--c-border)] rounded-2xl p-5 transition hover:border-[var(--c-border)]"}
                         style={{ animationDelay: i * 0.05 + "s" }}>
 
                         {/* Top row */}

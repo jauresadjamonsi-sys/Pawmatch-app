@@ -71,6 +71,7 @@ export default function StoriesPage() {
   // Data state
   const [groups, setGroups] = useState<UserGroup[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   // Navigation state
@@ -115,99 +116,107 @@ export default function StoriesPage() {
 
   useEffect(() => {
     async function load() {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) {
-        router.push("/feed");
-        return;
-      }
-      setCurrentUserId(user.id);
-
-      // Fetch stories with animal join only (profiles FK → auth.users, not profiles)
-      const { data, error } = await supabase
-        .from("stories")
-        .select(
-          "*, animals(id, name, species, photo_url)"
-        )
-        .gt("expires_at", new Date().toISOString())
-        .order("created_at", { ascending: false })
-        .limit(50);
-
-      if (error) {
-        console.error("[StoriesPage] fetch error:", error.message, error);
-        setGroups([]);
-        setLoading(false);
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        console.log("[StoriesPage] no active stories found (all expired or none created)");
-        setGroups([]);
-        setLoading(false);
-        return;
-      }
-
-      console.log("[StoriesPage] fetched", data.length, "active stories");
-
-      // Batch-fetch profiles for all story authors
-      const userIds = [...new Set((data as StoryRow[]).map((r) => r.user_id))];
-      const profileMap = new Map<string, { full_name: string; avatar_url: string | null }>();
-      if (userIds.length > 0) {
-        const { data: profiles } = await supabase
-          .from("profiles")
-          .select("id, full_name, avatar_url")
-          .in("id", userIds);
-        for (const p of profiles || []) {
-          profileMap.set(p.id, { full_name: p.full_name, avatar_url: p.avatar_url });
+      try {
+        const supabase = createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) {
+          router.push("/feed");
+          return;
         }
+        setCurrentUserId(user.id);
+
+        // Fetch stories with animal join only (profiles FK -> auth.users, not profiles)
+        const { data, error } = await supabase
+          .from("stories")
+          .select(
+            "*, animals(id, name, species, photo_url)"
+          )
+          .gt("expires_at", new Date().toISOString())
+          .order("created_at", { ascending: false })
+          .limit(50);
+
+        if (error) {
+          console.error("[StoriesPage] fetch error:", error.message, error);
+          setFetchError("Impossible de charger les stories. Reessayez.");
+          setGroups([]);
+          setLoading(false);
+          return;
+        }
+
+        if (!data || data.length === 0) {
+          console.log("[StoriesPage] no active stories found (all expired or none created)");
+          setGroups([]);
+          setLoading(false);
+          return;
+        }
+
+        console.log("[StoriesPage] fetched", data.length, "active stories");
+
+        // Batch-fetch profiles for all story authors
+        const userIds = [...new Set((data as StoryRow[]).map((r) => r.user_id))];
+        const profileMap = new Map<string, { full_name: string; avatar_url: string | null }>();
+        if (userIds.length > 0) {
+          const { data: profiles } = await supabase
+            .from("profiles")
+            .select("id, full_name, avatar_url")
+            .in("id", userIds);
+          for (const p of profiles || []) {
+            profileMap.set(p.id, { full_name: p.full_name, avatar_url: p.avatar_url });
+          }
+        }
+
+        // Group stories by user_id, preserving order
+        const groupMap = new Map<string, StoryRow[]>();
+        for (const row of data as StoryRow[]) {
+          const existing = groupMap.get(row.user_id) || [];
+          existing.push(row);
+          groupMap.set(row.user_id, existing);
+        }
+
+        const built: UserGroup[] = [];
+        for (const [userId, rows] of groupMap) {
+          // Reverse so oldest story in a group is first (chronological within group)
+          const ordered = [...rows].reverse();
+          const firstRow = ordered[0];
+          const profile = profileMap.get(userId);
+
+          const displayName =
+            profile?.full_name ||
+            firstRow.animals?.name ||
+            "Utilisateur";
+          const avatarUrl =
+            profile?.avatar_url ||
+            firstRow.animals?.photo_url ||
+            null;
+
+          built.push({
+            userId,
+            displayName,
+            avatarUrl,
+            stories: ordered.map((r) => {
+              const effectiveUrl = r.media_url || r.image_url || null;
+              return {
+                row: r,
+                mediaType: effectiveUrl
+                  ? isVideoUrl(effectiveUrl)
+                    ? "video"
+                    : "image"
+                  : "none",
+              };
+            }),
+          });
+        }
+
+        setGroups(built);
+      } catch (err) {
+        console.error("[StoriesPage] unexpected error:", err);
+        setFetchError("Erreur inattendue. Reessayez plus tard.");
+        setGroups([]);
+      } finally {
+        setLoading(false);
       }
-
-      // Group stories by user_id, preserving order
-      const groupMap = new Map<string, StoryRow[]>();
-      for (const row of data as StoryRow[]) {
-        const existing = groupMap.get(row.user_id) || [];
-        existing.push(row);
-        groupMap.set(row.user_id, existing);
-      }
-
-      const built: UserGroup[] = [];
-      for (const [userId, rows] of groupMap) {
-        // Reverse so oldest story in a group is first (chronological within group)
-        const ordered = [...rows].reverse();
-        const firstRow = ordered[0];
-        const profile = profileMap.get(userId);
-
-        const displayName =
-          profile?.full_name ||
-          firstRow.animals?.name ||
-          "Utilisateur";
-        const avatarUrl =
-          profile?.avatar_url ||
-          firstRow.animals?.photo_url ||
-          null;
-
-        built.push({
-          userId,
-          displayName,
-          avatarUrl,
-          stories: ordered.map((r) => {
-            const effectiveUrl = r.media_url || r.image_url || null;
-            return {
-              row: r,
-              mediaType: effectiveUrl
-                ? isVideoUrl(effectiveUrl)
-                  ? "video"
-                  : "image"
-                : "none",
-            };
-          }),
-        });
-      }
-
-      setGroups(built);
-      setLoading(false);
     }
 
     load();
@@ -582,10 +591,87 @@ export default function StoriesPage() {
   if (loading) {
     return (
       <div
+        className="fixed inset-0 z-[9999] flex flex-col"
+        style={{ background: "var(--c-deep)" }}
+      >
+        {/* Skeleton progress bars */}
+        <div className="flex gap-1 px-3 pt-3">
+          <div className="flex-1 h-[3px] glass rounded-full animate-breathe" />
+          <div className="flex-1 h-[3px] glass rounded-full animate-breathe" style={{ animationDelay: "0.1s" }} />
+          <div className="flex-1 h-[3px] glass rounded-full animate-breathe" style={{ animationDelay: "0.2s" }} />
+        </div>
+        {/* Skeleton top bar */}
+        <div className="flex items-center gap-3 px-4 mt-6">
+          <div className="w-10 h-10 rounded-full glass animate-breathe" />
+          <div className="flex flex-col gap-1.5">
+            <div className="w-24 h-3 glass rounded-full animate-breathe" style={{ animationDelay: "0.15s" }} />
+            <div className="w-12 h-2 glass rounded-full animate-breathe" style={{ animationDelay: "0.3s" }} />
+          </div>
+        </div>
+        {/* Skeleton body */}
+        <div className="flex-1 flex items-center justify-center px-8">
+          <div className="w-full max-w-xs space-y-4">
+            <div className="glass rounded-2xl animate-breathe" style={{ height: 200, animationDelay: "0.1s" }} />
+            <div className="glass rounded-2xl animate-breathe mx-auto" style={{ height: 16, width: "60%", animationDelay: "0.25s" }} />
+          </div>
+        </div>
+        {/* Skeleton bottom */}
+        <div className="flex justify-center pb-8">
+          <div className="w-28 h-9 glass rounded-full animate-breathe" style={{ animationDelay: "0.4s" }} />
+        </div>
+      </div>
+    );
+  }
+
+  // -----------------------------------------------------------------------
+  // Error state
+  // -----------------------------------------------------------------------
+
+  if (fetchError) {
+    return (
+      <div
         className="fixed inset-0 z-[9999] flex items-center justify-center"
         style={{ background: "var(--c-deep)" }}
       >
-        <div className="w-10 h-10 border-4 border-[var(--c-border)] border-t-white rounded-full animate-spin" />
+        <div className="text-center px-8">
+          <div className="text-5xl mb-4">{"⚠️"}</div>
+          <h2
+            className="text-lg font-bold mb-2"
+            style={{ color: "var(--c-text)" }}
+          >
+            Oups, quelque chose a mal tourne
+          </h2>
+          <p
+            className="text-sm mb-6"
+            style={{ color: "var(--c-text-muted)" }}
+          >
+            {fetchError}
+          </p>
+          <div className="flex flex-col gap-3 items-center">
+            <button
+              onClick={() => {
+                setFetchError(null);
+                setLoading(true);
+                window.location.reload();
+              }}
+              className="rounded-xl px-6 py-3 text-sm font-bold text-white transition-all active:scale-[0.97]"
+              style={{ background: "var(--c-accent)" }}
+            >
+              Reessayer
+            </button>
+            <button
+              onClick={() => router.push("/feed")}
+              className="rounded-xl px-6 py-3 text-sm font-semibold transition-all active:scale-[0.97]"
+              style={{
+                background: "var(--c-card)",
+                color: "var(--c-text-muted)",
+                border: "1px solid var(--c-border)",
+              }}
+            >
+              {t.storiesBack || "Retour"}
+            </button>
+          </div>
+        </div>
       </div>
     );
   }

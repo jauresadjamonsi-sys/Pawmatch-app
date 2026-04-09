@@ -84,6 +84,13 @@ export default function ReelsPage() {
           >
             Poster un Reel
           </Link>
+          <Link
+            href="/leaderboard"
+            className="block mt-4 text-xs font-medium transition-colors"
+            style={{ color: "var(--c-text-muted)" }}
+          >
+            Voir le Classement
+          </Link>
         </div>
       </main>
     );
@@ -106,7 +113,12 @@ export default function ReelsPage() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
           </svg>
         </Link>
-        <h1 className="text-white font-bold text-base">PawReels</h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-white font-bold text-base">PawReels</h1>
+          <Link href="/leaderboard" className="text-white/50 hover:text-white/80 transition-colors text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ border: "1px solid rgba(255,255,255,0.15)" }}>
+            Classement
+          </Link>
+        </div>
         <Link href="/reels/create" className="text-white/80 hover:text-white transition-colors">
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -252,6 +264,24 @@ function ReelCard({ reel, index, isActive }: { reel: ReelWithAuthor; index: numb
             </svg>
           </div>
           <span className="text-white text-[10px] font-bold mt-1">{reel.comments_count}</span>
+        </button>
+
+        <button
+          onClick={async () => {
+            const shareData = { title: "Pawly", text: "Regarde ce reel sur Pawly !", url: "https://pawlyapp.ch/reels" };
+            try {
+              if (navigator.share) { await navigator.share(shareData); }
+              else { await navigator.clipboard.writeText(shareData.url); alert("Lien copie !"); }
+            } catch { /* user cancelled share */ }
+          }}
+          className="flex flex-col items-center"
+        >
+          <div className="w-10 h-10 rounded-full bg-black/30 flex items-center justify-center backdrop-blur-sm">
+            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+            </svg>
+          </div>
+          <span className="text-white text-[10px] font-bold mt-1">Partager</span>
         </button>
 
         <div className="flex flex-col items-center">
