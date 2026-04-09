@@ -517,6 +517,15 @@ export default function ConversationPage() {
             </p>
           </Link>
           <PresenceDot isOnline={isOtherOnline} size="sm" />
+          <Link
+            href={`/matches/${matchId}/call`}
+            className="p-1.5 rounded-full hover:bg-orange-500/10 transition flex-shrink-0"
+            title="Appel video"
+          >
+            <svg className="w-4.5 h-4.5 text-[var(--c-accent,#f97316)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9A2.25 2.25 0 0013.5 5.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
+            </svg>
+          </Link>
           <button
             onClick={() => setShowBlockReport(true)}
             className="p-1.5 rounded-full hover:bg-red-500/10 transition flex-shrink-0"

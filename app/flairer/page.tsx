@@ -101,6 +101,9 @@ export default function FlairerPage() {
   const [blockedIds, setBlockedIds] = useState<string[]>([]);
   const [verifiedOwners, setVerifiedOwners] = useState<Set<string>>(new Set());
   const [cardEntering, setCardEntering] = useState(false);
+  const [smartMode, setSmartMode] = useState(false);
+  const [smartLoading, setSmartLoading] = useState(false);
+  const [showScoreTooltip, setShowScoreTooltip] = useState(false);
   const startX = useRef(0);
   const startY = useRef(0);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -269,13 +272,43 @@ export default function FlairerPage() {
     setLoading(false);
   }
 
+  async function fetchSmart(animalId?: string) {
+    if (!profile) return;
+    setSmartLoading(true);
+    try {
+      const aid = animalId || activeMyAnimal?.id || "";
+      const res = await fetch("/api/matching/smart" + (aid ? "?animal_id=" + aid : ""));
+      if (!res.ok) { setSmartLoading(false); return; }
+      const data = await res.json();
+      if (data.candidates && data.candidates.length > 0) {
+        setAnimals(data.candidates as AnimalWithCompat[]);
+        setCurrentIndex(0);
+      }
+    } catch {
+      // Silent error — fallback to existing animals
+    }
+    setSmartLoading(false);
+  }
+
+  // Fetch smart when toggled on
+  useEffect(() => {
+    if (smartMode && profile && !loading) fetchSmart();
+  }, [smartMode]);
+
   useEffect(() => {
     if (!activeMyAnimal || animals.length === 0) return;
-    const base = animals.map(({ compatibility, ...a }) => a as AnimalRow);
-    const sorted = sortByCompatibility(activeMyAnimal, base) as unknown as AnimalWithCompat[];
-    setAnimals(sorted);
-    setCurrentIndex(0);
+    if (smartMode) {
+      fetchSmart(activeMyAnimal.id);
+    } else {
+      const base = animals.map(({ compatibility, ...a }) => a as AnimalRow);
+      const sorted = sortByCompatibility(activeMyAnimal, base) as unknown as AnimalWithCompat[];
+      setAnimals(sorted);
+      setCurrentIndex(0);
+    }
   }, [activeMyAnimal]);
+
+  // Close tooltip on card change
+  useEffect(() => { setShowScoreTooltip(false); }, [currentIndex]);
 
   function spawnParticles(x: number, y: number, type: "like"|"super"|"pass") {
     const colors = type === "like" ? ["#f97316","#fb923c","#fbbf24","#f472b6","#ef4444"]
@@ -576,9 +609,44 @@ export default function FlairerPage() {
       )}
 
       {/* Header */}
-      <div className="w-full max-w-md flex items-center justify-between mb-3 relative z-10 animate-slide-up">
+      <div className="w-full max-w-md flex flex-col gap-2 mb-3 relative z-10 animate-slide-up">
+        {/* Smart Match toggle */}
+        {isAuthenticated && myAnimals.length > 0 && (
+          <div className="flex items-center justify-center">
+            <div className="inline-flex rounded-full p-0.5 glass" style={{ borderColor: smartMode ? "rgba(167,139,250,0.4)" : "var(--c-border)" }}>
+              <button
+                onClick={() => { setSmartMode(false); if (smartMode) { fetchData(); } }}
+                className="px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300"
+                style={{
+                  background: !smartMode ? "linear-gradient(135deg, #F97316, #EA580C)" : "transparent",
+                  color: !smartMode ? "#fff" : "var(--c-text-muted)",
+                  boxShadow: !smartMode ? "0 0 12px rgba(249,115,22,0.3)" : "none",
+                }}
+              >
+                Standard
+              </button>
+              <button
+                onClick={() => setSmartMode(true)}
+                className="px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300"
+                style={{
+                  background: smartMode ? "linear-gradient(135deg, #a78bfa, #60a5fa)" : "transparent",
+                  color: smartMode ? "#fff" : "var(--c-text-muted)",
+                  boxShadow: smartMode ? "0 0 12px rgba(167,139,250,0.3)" : "none",
+                }}
+              >
+                Smart Match {"\u2728"}
+              </button>
+            </div>
+            {smartLoading && (
+              <div className="ml-2 w-4 h-4 border-2 border-purple-400/30 border-t-purple-400 rounded-full animate-spin" />
+            )}
+          </div>
+        )}
+
+        <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <h1 className="text-lg font-bold gradient-text-warm">Flairer</h1>
+          {smartMode && <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ background: "linear-gradient(135deg, rgba(167,139,250,0.2), rgba(96,165,250,0.2))", color: "#a78bfa", border: "1px solid rgba(167,139,250,0.3)" }}>IA</span>}
           {streak >= 3 && (
             <span className="px-2 py-0.5 glass text-orange-300 rounded-full text-xs font-bold neon-orange"
               style={{ borderColor: "rgba(249,115,22,0.3)" }}>
@@ -601,9 +669,10 @@ export default function FlairerPage() {
             <div className="h-full rounded-full transition-all duration-500"
               style={{
                 width: (currentIndex / Math.max(animals.length, 1)) * 100 + "%",
-                background: "linear-gradient(90deg, #F97316, #A78BFA, #38BDF8)",
+                background: smartMode ? "linear-gradient(90deg, #a78bfa, #60a5fa, #38BDF8)" : "linear-gradient(90deg, #F97316, #A78BFA, #38BDF8)",
               }} />
           </div>
+        </div>
         </div>
       </div>
 
@@ -685,18 +754,65 @@ export default function FlairerPage() {
               </button>
             )}
 
-            {/* Compatibility badge with neon glow */}
+            {/* Compatibility badge with neon glow + Pourquoi tooltip */}
             {compat && activeMyAnimal && (
               <div className="compat-in absolute top-3 right-3 z-10">
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass font-bold"
+                <div
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass font-bold cursor-pointer"
                   style={{
                     boxShadow: `0 0 15px ${compat.color}40, 0 0 30px ${compat.color}15`,
                     borderColor: compat.color + "50",
-                  }}>
+                  }}
+                  onClick={(e) => { e.stopPropagation(); setShowScoreTooltip(!showScoreTooltip); }}
+                >
+                  {smartMode && <span className="text-[8px] font-bold px-1 py-0.5 rounded" style={{ background: "linear-gradient(135deg, #a78bfa, #60a5fa)", color: "#fff" }}>IA</span>}
                   <div className="w-2 h-2 rounded-full animate-breathe" style={{ backgroundColor: compat.color, boxShadow: `0 0 8px ${compat.color}` }} />
                   <span className="text-[var(--c-text)] font-bold text-xs">{compat.score}%</span>
                   <span className="text-xs font-medium" style={{ color: compat.color }}>{compat.label}</span>
                 </div>
+                {/* Pourquoi? tooltip */}
+                {showScoreTooltip && (
+                  <div
+                    className="absolute top-full right-0 mt-2 w-56 p-3 rounded-2xl backdrop-blur-xl z-30"
+                    style={{ background: "rgba(15,10,25,0.9)", border: "1px solid rgba(255,255,255,0.1)", boxShadow: `0 8px 32px rgba(0,0,0,0.5), 0 0 15px ${compat.color}20` }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--c-text-muted)]">Pourquoi {compat.score}% ?</span>
+                      <button onClick={(e) => { e.stopPropagation(); setShowScoreTooltip(false); }} className="text-[var(--c-text-muted)] hover:text-white text-xs">{"\u2715"}</button>
+                    </div>
+                    {compat.reasons && compat.reasons.length > 0 && (
+                      <div className="flex flex-col gap-1.5 mb-2">
+                        {compat.reasons.map((r: string, i: number) => (
+                          <div key={i} className="flex items-center gap-1.5 text-[11px] text-white/80">
+                            <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: compat.color }} />
+                            {r}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {smartMode && (compat as any).breakdown && (
+                      <div className="border-t border-white/10 pt-2 mt-1">
+                        <div className="text-[9px] font-semibold text-[var(--c-text-muted)] uppercase mb-1.5">Detail du score</div>
+                        {[
+                          { label: "Espece", value: (compat as any).breakdown.species, max: 30 },
+                          { label: "Canton", value: (compat as any).breakdown.canton, max: 25 },
+                          { label: "Activite", value: (compat as any).breakdown.activity, max: 15 },
+                          { label: "Age", value: (compat as any).breakdown.age, max: 10 },
+                          { label: "Affinites", value: (compat as any).breakdown.collaborative, max: 20 },
+                        ].map((item) => (
+                          <div key={item.label} className="flex items-center gap-2 mb-1">
+                            <span className="text-[9px] text-white/50 w-14 flex-shrink-0">{item.label}</span>
+                            <div className="flex-1 h-1 rounded-full bg-white/10 overflow-hidden">
+                              <div className="h-full rounded-full transition-all duration-500" style={{ width: (item.value / item.max * 100) + "%", backgroundColor: compat.color }} />
+                            </div>
+                            <span className="text-[9px] font-bold text-white/60 w-6 text-right">{item.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
@@ -710,7 +826,10 @@ export default function FlairerPage() {
               {compat && activeMyAnimal && (
                 <div className="mb-3 p-2.5 rounded-xl backdrop-blur-md" style={{ background: "rgba(0,0,0,0.35)" }}>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[10px] text-white/70 uppercase tracking-wider">Compatibilite avec {activeMyAnimal.name}</span>
+                    <span className="text-[10px] text-white/70 uppercase tracking-wider flex items-center gap-1">
+                      {smartMode && <span className="px-1 py-0 rounded text-[8px] font-bold" style={{ background: "linear-gradient(135deg, #a78bfa, #60a5fa)", color: "#fff" }}>IA</span>}
+                      Compatibilite avec {activeMyAnimal.name}
+                    </span>
                     <span className="text-xs font-bold" style={{ color: compat.color, textShadow: `0 0 10px ${compat.color}60` }}>{compat.score}%</span>
                   </div>
                   <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden relative">

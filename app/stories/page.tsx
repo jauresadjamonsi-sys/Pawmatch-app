@@ -90,14 +90,26 @@ export default function StoriesPage() {
   const isPausedRef = useRef(false);
   const [isPaused, setIsPaused] = useState(false);
 
-  // Touch tracking
-  const [touchStartY, setTouchStartY] = useState<number | null>(null);
+  // Touch tracking for swipe
+  const touchStartRef = useRef<{ x: number; y: number; t: number } | null>(null);
+  const [swipeOffset, setSwipeOffset] = useState(0);
+  const isSwipingRef = useRef(false);
 
   // Text animation
   const [textVisible, setTextVisible] = useState(false);
 
+  // Transition animation
+  const [transitioning, setTransitioning] = useState(false);
+  const [slideDirection, setSlideDirection] = useState<"left" | "right" | null>(null);
+
   // Track which stories we already recorded a view for
   const viewedRef = useRef<Set<string>>(new Set());
+
+  // Reply state
+  const [replyText, setReplyText] = useState("");
+  const [replySending, setReplySending] = useState(false);
+  const [replySent, setReplySent] = useState(false);
+  const replyInputRef = useRef<HTMLInputElement>(null);
 
   // Edit caption state
   const [isEditing, setIsEditing] = useState(false);
@@ -257,11 +269,13 @@ export default function StoriesPage() {
     }
   }, [groupIdx, storyIdx, story, trackView]);
 
-  // Reset edit/viewers state when story changes
+  // Reset edit/viewers/reply state when story changes
   useEffect(() => {
     setIsEditing(false);
     setShowViewers(false);
     setViewers([]);
+    setReplyText("");
+    setReplySent(false);
   }, [groupIdx, storyIdx]);
 
   // -----------------------------------------------------------------------
@@ -401,30 +415,75 @@ export default function StoriesPage() {
     setLoadingViewers(false);
   }, []);
 
+  // -----------------------------------------------------------------------
+  // Reply to story
+  // -----------------------------------------------------------------------
+
+  const handleReply = useCallback(async () => {
+    if (!replyText.trim() || !story || !currentUserId || replySending) return;
+    if (currentUserId === story.row.user_id) return; // Can't reply to own story
+
+    setReplySending(true);
+    try {
+      // Send reply as a notification / message (fire-and-forget)
+      await fetch("/api/stories/reply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          story_id: story.row.id,
+          story_owner_id: story.row.user_id,
+          message: replyText.trim(),
+        }),
+      });
+      setReplyText("");
+      setReplySent(true);
+      setTimeout(() => setReplySent(false), 2000);
+    } catch {
+      // Silent fail
+    } finally {
+      setReplySending(false);
+    }
+  }, [replyText, story, currentUserId, replySending]);
+
   const goNext = useCallback(() => {
     if (!group) return;
-    if (storyIdx < group.stories.length - 1) {
-      // Next story in current group
-      setStoryIdx((p) => p + 1);
-    } else if (groupIdx < groups.length - 1) {
-      // Move to next user group
-      setGroupIdx((p) => p + 1);
-      setStoryIdx(0);
-    } else {
-      // End of all stories
-      close();
-    }
+    setSlideDirection("left");
+    setTransitioning(true);
+
+    setTimeout(() => {
+      if (storyIdx < group.stories.length - 1) {
+        setStoryIdx((p) => p + 1);
+      } else if (groupIdx < groups.length - 1) {
+        setGroupIdx((p) => p + 1);
+        setStoryIdx(0);
+      } else {
+        close();
+        return;
+      }
+      setTimeout(() => {
+        setTransitioning(false);
+        setSlideDirection(null);
+      }, 50);
+    }, 150);
   }, [group, storyIdx, groupIdx, groups.length, close]);
 
   const goPrev = useCallback(() => {
-    if (storyIdx > 0) {
-      setStoryIdx((p) => p - 1);
-    } else if (groupIdx > 0) {
-      // Go to last story of previous group
-      setGroupIdx((p) => p - 1);
-      const prevGroup = groups[groupIdx - 1];
-      setStoryIdx(prevGroup ? prevGroup.stories.length - 1 : 0);
-    }
+    setSlideDirection("right");
+    setTransitioning(true);
+
+    setTimeout(() => {
+      if (storyIdx > 0) {
+        setStoryIdx((p) => p - 1);
+      } else if (groupIdx > 0) {
+        setGroupIdx((p) => p - 1);
+        const prevGroup = groups[groupIdx - 1];
+        setStoryIdx(prevGroup ? prevGroup.stories.length - 1 : 0);
+      }
+      setTimeout(() => {
+        setTransitioning(false);
+        setSlideDirection(null);
+      }, 50);
+    }, 150);
   }, [storyIdx, groupIdx, groups]);
 
   // -----------------------------------------------------------------------
@@ -508,7 +567,6 @@ export default function StoriesPage() {
     if (story?.mediaType === "video" && videoRef.current) {
       videoRef.current.pause();
     }
-    // For image timer: we freeze startTimeRef by adjusting it on resume
   }, [story]);
 
   const resume = useCallback(() => {
@@ -568,20 +626,65 @@ export default function StoriesPage() {
   }
 
   // -----------------------------------------------------------------------
-  // Swipe down to close
+  // Touch swipe (horizontal for prev/next, vertical down to close)
   // -----------------------------------------------------------------------
 
   function handleTouchStart(e: React.TouchEvent) {
-    setTouchStartY(e.touches[0].clientY);
+    const touch = e.touches[0];
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY, t: Date.now() };
+    isSwipingRef.current = false;
+    setSwipeOffset(0);
+  }
+
+  function handleTouchMove(e: React.TouchEvent) {
+    if (!touchStartRef.current) return;
+    const touch = e.touches[0];
+    const dx = touch.clientX - touchStartRef.current.x;
+    const dy = touch.clientY - touchStartRef.current.y;
+
+    // Determine swipe direction once
+    if (!isSwipingRef.current && (Math.abs(dx) > 10 || Math.abs(dy) > 10)) {
+      isSwipingRef.current = true;
+    }
+
+    if (isSwipingRef.current) {
+      // Horizontal swipe: apply rubber-band offset
+      if (Math.abs(dx) > Math.abs(dy)) {
+        setSwipeOffset(dx * 0.4);
+      }
+    }
   }
 
   function handleTouchEnd(e: React.TouchEvent) {
-    if (touchStartY === null) return;
-    const deltaY = e.changedTouches[0].clientY - touchStartY;
-    if (deltaY > 100) {
+    if (!touchStartRef.current) return;
+
+    const touch = e.changedTouches[0];
+    const dx = touch.clientX - touchStartRef.current.x;
+    const dy = touch.clientY - touchStartRef.current.y;
+    const elapsed = Date.now() - touchStartRef.current.t;
+    const velocity = Math.abs(dx) / Math.max(elapsed, 1);
+
+    // Swipe down to close
+    if (dy > 100 && Math.abs(dy) > Math.abs(dx)) {
       close();
+      touchStartRef.current = null;
+      setSwipeOffset(0);
+      return;
     }
-    setTouchStartY(null);
+
+    // Horizontal swipe threshold: either distance > 60px or fast flick
+    if (Math.abs(dx) > 60 || (velocity > 0.5 && Math.abs(dx) > 30)) {
+      if (dx < 0) {
+        // Swipe left -> next
+        goNext();
+      } else {
+        // Swipe right -> prev
+        goPrev();
+      }
+    }
+
+    touchStartRef.current = null;
+    setSwipeOffset(0);
   }
 
   // -----------------------------------------------------------------------
@@ -736,308 +839,365 @@ export default function StoriesPage() {
   const animalEmoji =
     row.animals?.species ? EMOJI_MAP[row.animals.species] || "\uD83D\uDC3E" : "\uD83D\uDC3E";
   const gradientBg = gradientForStory(row, storyIdx);
+  const isOwnStory = currentUserId === row.user_id;
 
   return (
     <div
-      className="fixed inset-0 z-[9999] select-none"
-      style={{ width: "100vw", height: "100dvh", background: "var(--c-deep)" }}
-      onMouseDown={handlePointerDown}
-      onMouseUp={handlePointerUp}
-      onMouseLeave={handlePointerLeave}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
+      className="fixed inset-0 z-[9999] select-none overflow-hidden"
+      style={{ width: "100vw", height: "100dvh", background: "#000" }}
     >
-      {/* ---- Background media ---- */}
-      {(() => {
-        const effectiveUrl = row.media_url || row.image_url || null;
-        if (story.mediaType === "video" && effectiveUrl) {
-          return (
-            <video
-              ref={videoRef}
-              key={row.id}
-              src={effectiveUrl}
-              autoPlay
-              playsInline
-              muted={false}
-              loop={false}
-              onTimeUpdate={handleVideoTimeUpdate}
-              onEnded={handleVideoEnded}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-          );
-        }
-        if (story.mediaType === "image" && effectiveUrl) {
-          return (
-            <Image
-              key={row.id}
-              src={effectiveUrl}
-              alt={row.caption || "Story"}
-              fill
-              className="object-cover"
-              sizes="100vw"
-              priority
-            />
-          );
-        }
-        return (
-          /* Text-only / template: gradient background */
-          <div className="absolute inset-0" style={{ background: gradientBg }} />
-        );
-      })()}
-
-      {/* Dark gradient overlay */}
+      {/* ---- Story content with swipe offset + transition ---- */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="absolute inset-0"
         style={{
-          background:
-            "linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.05) 30%, rgba(0,0,0,0.05) 60%, rgba(0,0,0,0.7) 100%)",
+          transform: `translateX(${swipeOffset}px)`,
+          opacity: transitioning ? 0 : 1,
+          transition: transitioning
+            ? "opacity 0.15s ease-out"
+            : swipeOffset !== 0
+            ? "none"
+            : "opacity 0.15s ease-in",
         }}
-      />
-
-      {/* ---- Progress bars (one per story in current group) ---- */}
-      <div className="absolute top-0 left-0 right-0 flex gap-1 px-3 pt-3 z-10">
-        {group.stories.map((_, idx) => (
-          <div
-            key={idx}
-            className="flex-1 h-[3px] rounded-full overflow-hidden"
-            style={{ background: "rgba(255,255,255,0.3)" }}
-          >
-            <div
-              className="h-full rounded-full"
-              style={{
-                width:
-                  idx < storyIdx
-                    ? "100%"
-                    : idx === storyIdx
-                    ? `${progress}%`
-                    : "0%",
-                background: "#fff",
-                transition: idx === storyIdx ? "none" : "width 0.3s",
-              }}
-            />
-          </div>
-        ))}
-      </div>
-
-      {/* ---- Top bar: user avatar + name + time ago + close ---- */}
-      <div className="absolute top-8 left-0 right-0 px-4 flex items-center justify-between z-10">
-        <div className="flex items-center gap-3">
-          {/* Avatar */}
-          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/30 flex-shrink-0">
-            {group.avatarUrl ? (
-              <Image
-                src={group.avatarUrl}
-                alt={group.displayName}
-                width={40}
-                height={40}
-                className="object-cover w-full h-full"
+        onMouseDown={handlePointerDown}
+        onMouseUp={handlePointerUp}
+        onMouseLeave={handlePointerLeave}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        {/* ---- Background media ---- */}
+        {(() => {
+          const effectiveUrl = row.media_url || row.image_url || null;
+          if (story.mediaType === "video" && effectiveUrl) {
+            return (
+              <video
+                ref={videoRef}
+                key={row.id}
+                src={effectiveUrl}
+                autoPlay
+                playsInline
+                muted={false}
+                loop={false}
+                onTimeUpdate={handleVideoTimeUpdate}
+                onEnded={handleVideoEnded}
+                className="absolute inset-0 w-full h-full object-cover"
               />
-            ) : (
+            );
+          }
+          if (story.mediaType === "image" && effectiveUrl) {
+            return (
+              <Image
+                key={row.id}
+                src={effectiveUrl}
+                alt={row.caption || "Story"}
+                fill
+                className="object-cover"
+                sizes="100vw"
+                priority
+              />
+            );
+          }
+          return (
+            /* Text-only / template: gradient background */
+            <div className="absolute inset-0" style={{ background: gradientBg }} />
+          );
+        })()}
+
+        {/* Dark gradient overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.05) 30%, rgba(0,0,0,0.05) 55%, rgba(0,0,0,0.7) 100%)",
+          }}
+        />
+
+        {/* ---- Progress bars (one per story in current group) ---- */}
+        <div className="absolute top-0 left-0 right-0 flex gap-[3px] px-3 pt-[max(0.75rem,env(safe-area-inset-top,0px))] z-10">
+          {group.stories.map((_, idx) => (
+            <div
+              key={idx}
+              className="flex-1 h-[2.5px] rounded-full overflow-hidden"
+              style={{ background: "rgba(255,255,255,0.25)" }}
+            >
               <div
-                className="w-full h-full flex items-center justify-center text-lg"
-                style={{ background: gradientBg }}
+                className="h-full rounded-full"
+                style={{
+                  width:
+                    idx < storyIdx
+                      ? "100%"
+                      : idx === storyIdx
+                      ? `${progress}%`
+                      : "0%",
+                  background: "#fff",
+                  transition: idx === storyIdx ? "none" : "width 0.3s",
+                }}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* ---- Top bar: user avatar + name + time ago + close ---- */}
+        <div
+          className="absolute left-0 right-0 px-4 flex items-center justify-between z-10"
+          style={{ top: "calc(max(0.75rem, env(safe-area-inset-top, 0px)) + 12px)" }}
+        >
+          <div className="flex items-center gap-3">
+            {/* Avatar */}
+            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/30 flex-shrink-0">
+              {group.avatarUrl ? (
+                <Image
+                  src={group.avatarUrl}
+                  alt={group.displayName}
+                  width={40}
+                  height={40}
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <div
+                  className="w-full h-full flex items-center justify-center text-lg"
+                  style={{ background: gradientBg }}
+                >
+                  {animalEmoji}
+                </div>
+              )}
+            </div>
+            <div>
+              <p className="text-white text-sm font-bold drop-shadow-md">
+                {group.displayName}
+              </p>
+              <p className="text-white/60 text-[10px] drop-shadow-sm">
+                {timeAgo(row.created_at)}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {/* Edit button (own stories only) */}
+            {isOwnStory && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  pause();
+                  setEditCaption(row.caption || "");
+                  setIsEditing(true);
+                }}
+                onMouseDown={(e) => e.stopPropagation()}
+                onMouseUp={(e) => e.stopPropagation()}
+                className="w-9 h-9 flex items-center justify-center rounded-full text-white active:scale-90 transition-transform"
+                style={{ background: "rgba(0,0,0,0.4)", backdropFilter: "blur(8px)" }}
+                aria-label="Modifier"
               >
-                {animalEmoji}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg>
+              </button>
+            )}
+
+            {/* Delete button (own stories only) */}
+            {isOwnStory && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteStory(row);
+                }}
+                onMouseDown={(e) => e.stopPropagation()}
+                onMouseUp={(e) => e.stopPropagation()}
+                className="w-9 h-9 flex items-center justify-center rounded-full text-red-400 active:scale-90 transition-transform"
+                style={{ background: "rgba(0,0,0,0.4)", backdropFilter: "blur(8px)" }}
+                aria-label="Supprimer"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+              </button>
+            )}
+
+            {/* Close button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                close();
+              }}
+              onMouseDown={(e) => e.stopPropagation()}
+              onMouseUp={(e) => e.stopPropagation()}
+              className="w-9 h-9 flex items-center justify-center rounded-full text-white active:scale-90 transition-transform"
+              style={{ background: "rgba(0,0,0,0.4)", backdropFilter: "blur(8px)" }}
+              aria-label={t.storiesBack || "Retour"}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* ---- Paused indicator ---- */}
+        {isPaused && (
+          <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+            <div
+              className="px-5 py-2.5 rounded-full text-white text-sm font-semibold flex items-center gap-2"
+              style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(8px)" }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="6" y="4" width="4" height="16" rx="1" />
+                <rect x="14" y="4" width="4" height="16" rx="1" />
+              </svg>
+              {t.storiesPaused || "En pause"}
+            </div>
+          </div>
+        )}
+
+        {/* ---- Story content (text-only / template stories) ---- */}
+        {story.mediaType === "none" && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center px-8 z-10 pointer-events-none">
+            {/* Sticker */}
+            {row.sticker && (
+              <div
+                className={`text-7xl mb-6 transition-all duration-700 ${
+                  textVisible ? "opacity-100 scale-100" : "opacity-0 scale-50"
+                }`}
+              >
+                {row.sticker}
+              </div>
+            )}
+
+            {/* Caption as large centered text */}
+            {row.caption && (
+              <div
+                className={`text-center transition-all duration-700 delay-200 ${
+                  textVisible
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-6"
+                }`}
+              >
+                <h1
+                  className="text-3xl font-black leading-tight whitespace-pre-line drop-shadow-lg"
+                  style={{ color: row.text_color || "#ffffff" }}
+                >
+                  {row.caption}
+                </h1>
+              </div>
+            )}
+
+            {/* Animal name badge */}
+            {row.animals && (
+              <div
+                className={`mt-6 transition-all duration-700 delay-500 ${
+                  textVisible
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-4"
+                }`}
+              >
+                <span
+                  className="px-4 py-2 rounded-full text-sm font-semibold text-white"
+                  style={{
+                    background: "rgba(255,255,255,0.2)",
+                    backdropFilter: "blur(10px)",
+                  }}
+                >
+                  {row.animals.name} {animalEmoji}
+                </span>
               </div>
             )}
           </div>
-          <div>
-            <p className="text-white text-sm font-bold drop-shadow-md">
-              {group.displayName}
-            </p>
-            <p className="text-white/60 text-[10px] drop-shadow-sm">
-              {timeAgo(row.created_at)}
-            </p>
-          </div>
-        </div>
+        )}
 
-        <div className="flex items-center gap-3">
-          {/* Edit button (own stories only) */}
-          {currentUserId === row.user_id && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                pause();
-                setEditCaption(row.caption || "");
-                setIsEditing(true);
-              }}
-              onMouseDown={(e) => e.stopPropagation()}
-              onMouseUp={(e) => e.stopPropagation()}
-              className="w-10 h-10 flex items-center justify-center rounded-full text-white active:scale-90 transition-transform"
-              style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(8px)" }}
-              aria-label="Modifier"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-              </svg>
-            </button>
-          )}
-
-          {/* Delete button (own stories only) */}
-          {currentUserId === row.user_id && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDeleteStory(row);
-              }}
-              onMouseDown={(e) => e.stopPropagation()}
-              onMouseUp={(e) => e.stopPropagation()}
-              className="w-10 h-10 flex items-center justify-center rounded-full text-red-400 active:scale-90 transition-transform"
-              style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(8px)" }}
-              aria-label="Supprimer"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polyline points="3 6 5 6 21 6" />
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-              </svg>
-            </button>
-          )}
-
-          {/* Close button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              close();
-            }}
-            onMouseDown={(e) => e.stopPropagation()}
-            onMouseUp={(e) => e.stopPropagation()}
-            className="w-10 h-10 flex items-center justify-center rounded-full text-white active:scale-90 transition-transform"
-            style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(8px)" }}
-            aria-label={t.storiesBack || "Retour"}
+        {/* ---- Caption overlay at bottom (for image/video stories) ---- */}
+        {story.mediaType !== "none" && row.caption && (
+          <div
+            className={`absolute left-0 right-0 px-6 z-10 pointer-events-none transition-all duration-500 ${
+              textVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            }`}
+            style={{ bottom: isOwnStory ? "7rem" : "6.5rem" }}
           >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
+            <p
+              className="text-center text-lg font-bold leading-snug"
+              style={{
+                color: row.text_color || "#ffffff",
+                textShadow: "0 2px 8px rgba(0,0,0,0.6)",
+              }}
             >
-              <path d="M18 6L6 18M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+              {row.caption}
+            </p>
+            {row.animals && (
+              <p className="text-center text-white/60 text-xs mt-2">
+                {row.animals.name} {animalEmoji}
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* ---- Paused indicator ---- */}
-      {isPaused && (
-        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+      {/* ---- Bottom section: reply + views + dots (always visible above swipe) ---- */}
+      <div
+        className="absolute left-0 right-0 z-20 flex flex-col items-center gap-2"
+        style={{ bottom: "max(1rem, env(safe-area-inset-bottom, 0px) + 0.5rem)" }}
+      >
+        {/* Reply input (only for other people's stories) */}
+        {!isOwnStory && (
           <div
-            className="px-4 py-2 rounded-full text-white text-xs font-semibold"
-            style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
+            className="w-full px-4 mb-1"
+            onMouseDown={(e) => e.stopPropagation()}
+            onMouseUp={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
           >
-            {"||  "}
-            {t.storiesPaused || "En pause"}
-          </div>
-        </div>
-      )}
-
-      {/* ---- Story content (text-only / template stories) ---- */}
-      {story.mediaType === "none" && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center px-8 z-10 pointer-events-none">
-          {/* Sticker */}
-          {row.sticker && (
             <div
-              className={`text-7xl mb-6 transition-all duration-700 ${
-                textVisible ? "opacity-100 scale-100" : "opacity-0 scale-50"
-              }`}
+              className="flex items-center gap-2 rounded-full overflow-hidden"
+              style={{
+                background: "rgba(255,255,255,0.12)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                border: "1px solid rgba(255,255,255,0.15)",
+              }}
             >
-              {row.sticker}
-            </div>
-          )}
-
-          {/* Caption as large centered text */}
-          {row.caption && (
-            <div
-              className={`text-center transition-all duration-700 delay-200 ${
-                textVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-6"
-              }`}
-            >
-              <h1
-                className="text-3xl font-black leading-tight whitespace-pre-line drop-shadow-lg"
-                style={{ color: row.text_color || "#ffffff" }}
-              >
-                {row.caption}
-              </h1>
-            </div>
-          )}
-
-          {/* Animal name badge */}
-          {row.animals && (
-            <div
-              className={`mt-6 transition-all duration-700 delay-500 ${
-                textVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-4"
-              }`}
-            >
-              <span
-                className="px-4 py-2 rounded-full text-sm font-semibold text-white"
-                style={{
-                  background: "rgba(255,255,255,0.2)",
-                  backdropFilter: "blur(10px)",
+              <input
+                ref={replyInputRef}
+                type="text"
+                value={replyText}
+                onChange={(e) => setReplyText(e.target.value)}
+                onFocus={() => pause()}
+                onBlur={() => {
+                  if (!replyText.trim()) resume();
                 }}
-              >
-                {row.animals.name} {animalEmoji}
-              </span>
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleReply();
+                  }
+                }}
+                placeholder="Envoyer un message..."
+                className="flex-1 bg-transparent px-4 py-3 text-sm text-white placeholder-white/50 outline-none"
+                maxLength={200}
+              />
+              {replyText.trim() && (
+                <button
+                  onClick={handleReply}
+                  disabled={replySending}
+                  className="pr-3 pl-1 py-2 text-white/90 active:scale-90 transition-transform disabled:opacity-50"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                  </svg>
+                </button>
+              )}
             </div>
-          )}
-        </div>
-      )}
+            {/* Reply sent confirmation */}
+            {replySent && (
+              <p className="text-center text-xs text-green-400 mt-1.5 font-medium animate-pulse">
+                Message envoye !
+              </p>
+            )}
+          </div>
+        )}
 
-      {/* ---- Caption overlay at bottom (for image/video stories) ---- */}
-      {story.mediaType !== "none" && row.caption && (
-        <div
-          className={`absolute bottom-20 left-0 right-0 px-6 z-10 pointer-events-none transition-all duration-500 ${
-            textVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          }`}
-        >
-          <p
-            className="text-center text-lg font-bold leading-snug"
-            style={{
-              color: row.text_color || "#ffffff",
-              textShadow: "0 2px 8px rgba(0,0,0,0.6)",
-            }}
-          >
-            {row.caption}
-          </p>
-          {row.animals && (
-            <p className="text-center text-white/60 text-xs mt-2">
-              {row.animals.name} {animalEmoji}
-            </p>
-          )}
-        </div>
-      )}
-
-      {/* ---- Bottom: views + story counter + group nav dots ---- */}
-      <div className="absolute left-0 right-0 flex flex-col items-center gap-2 z-10" style={{ bottom: "max(1.5rem, env(safe-area-inset-bottom, 0px) + 1rem)" }}>
         {/* View count — clickable for owner to see who viewed */}
         <button
           onClick={(e) => {
             e.stopPropagation();
-            if (currentUserId === row.user_id) {
+            if (isOwnStory) {
               pause();
               setShowViewers(true);
               fetchViewers(row.id);
@@ -1045,29 +1205,19 @@ export default function StoriesPage() {
           }}
           onMouseDown={(e) => e.stopPropagation()}
           onMouseUp={(e) => e.stopPropagation()}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-semibold active:scale-95 transition-transform"
+          className="flex items-center gap-2 px-4 py-2 rounded-full text-white text-xs font-semibold active:scale-95 transition-transform"
           style={{
-            background: "rgba(0,0,0,0.6)",
+            background: "rgba(0,0,0,0.5)",
             backdropFilter: "blur(10px)",
             WebkitBackdropFilter: "blur(10px)",
-            cursor: currentUserId === row.user_id ? "pointer" : "default",
-            boxShadow: "0 2px 12px rgba(0,0,0,0.3)",
+            cursor: isOwnStory ? "pointer" : "default",
           }}
         >
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
             <circle cx="12" cy="12" r="3" />
           </svg>
-          {row.views_count || 0} {currentUserId === row.user_id ? "vues" : ""}
+          {row.views_count || 0} {isOwnStory ? "vues" : ""}
         </button>
 
         {/* Group navigation dots */}
@@ -1078,8 +1228,8 @@ export default function StoriesPage() {
                 key={idx}
                 className="rounded-full transition-all duration-300"
                 style={{
-                  width: idx === groupIdx ? 16 : 6,
-                  height: 6,
+                  width: idx === groupIdx ? 14 : 5,
+                  height: 5,
                   background:
                     idx === groupIdx
                       ? "rgba(255,255,255,0.9)"
@@ -1089,7 +1239,7 @@ export default function StoriesPage() {
             ))}
           </div>
         )}
-        <p className="text-white/40 text-[10px] pointer-events-none">
+        <p className="text-white/30 text-[9px] pointer-events-none">
           {storyIdx + 1} / {totalStoriesInGroup}
         </p>
       </div>
@@ -1097,7 +1247,7 @@ export default function StoriesPage() {
       {/* ---- Edit caption overlay ---- */}
       {isEditing && (
         <div
-          className="absolute inset-0 z-20 flex items-center justify-center"
+          className="absolute inset-0 z-30 flex items-center justify-center"
           style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(6px)" }}
           onClick={(e) => e.stopPropagation()}
           onMouseDown={(e) => e.stopPropagation()}
@@ -1159,7 +1309,7 @@ export default function StoriesPage() {
       {/* ---- Viewers modal ---- */}
       {showViewers && (
         <div
-          className="absolute inset-0 z-20 flex items-end justify-center"
+          className="absolute inset-0 z-30 flex items-end justify-center"
           style={{ background: "rgba(0,0,0,0.5)" }}
           onClick={(e) => {
             e.stopPropagation();
@@ -1192,16 +1342,7 @@ export default function StoriesPage() {
                 className="text-base font-bold flex items-center gap-2"
                 style={{ color: "var(--c-text)" }}
               >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                   <circle cx="12" cy="12" r="3" />
                 </svg>
@@ -1216,16 +1357,7 @@ export default function StoriesPage() {
                 className="w-7 h-7 flex items-center justify-center rounded-full"
                 style={{ background: "var(--c-deep)" }}
               >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  style={{ color: "var(--c-text-muted)" }}
-                >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ color: "var(--c-text-muted)" }}>
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
               </button>

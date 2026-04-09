@@ -44,6 +44,52 @@ const TEXT_STYLES: TextStyle[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Background gradients for text-only stories
+// ---------------------------------------------------------------------------
+
+const BG_GRADIENTS = [
+  { label: "Violet", value: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" },
+  { label: "Rose", value: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" },
+  { label: "Ocean", value: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" },
+  { label: "Nature", value: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)" },
+  { label: "Sunset", value: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)" },
+  { label: "Lavande", value: "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)" },
+  { label: "Peach", value: "linear-gradient(135deg, #fccb90 0%, #d57eeb 100%)" },
+  { label: "Nuit", value: "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)" },
+  { label: "Feu", value: "linear-gradient(135deg, #f12711 0%, #f5af19 100%)" },
+  { label: "Foret", value: "linear-gradient(135deg, #134e5e 0%, #71b280 100%)" },
+];
+
+// ---------------------------------------------------------------------------
+// Pet stickers
+// ---------------------------------------------------------------------------
+
+const PET_STICKERS = [
+  { emoji: "\uD83D\uDC3E", label: "Patte" },
+  { emoji: "\uD83D\uDC15", label: "Chien" },
+  { emoji: "\uD83D\uDC31", label: "Chat" },
+  { emoji: "\uD83E\uDDB4", label: "Os" },
+  { emoji: "\u2764\uFE0F", label: "Coeur" },
+  { emoji: "\uD83D\uDD25", label: "Feu" },
+  { emoji: "\u2B50", label: "Etoile" },
+  { emoji: "\uD83C\uDF89", label: "Fete" },
+  { emoji: "\uD83D\uDE0D", label: "Amour" },
+  { emoji: "\uD83C\uDF1F", label: "Brille" },
+  { emoji: "\uD83D\uDC95", label: "Coeurs" },
+  { emoji: "\uD83C\uDF08", label: "Arc-en-ciel" },
+];
+
+// ---------------------------------------------------------------------------
+// Duration options
+// ---------------------------------------------------------------------------
+
+const DURATION_OPTIONS = [
+  { value: 5, label: "5s" },
+  { value: 10, label: "10s" },
+  { value: 15, label: "15s" },
+];
+
+// ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
 
@@ -93,6 +139,17 @@ export default function StoryCreatePage() {
   const [mediaPreviewUrl, setMediaPreviewUrl] = useState<string | null>(null);
   const [mediaType, setMediaType] = useState<MediaType | null>(null);
   const [videoDuration, setVideoDuration] = useState(0);
+
+  // Text-only story mode
+  const [isTextOnly, setIsTextOnly] = useState(false);
+  const [textOnlyContent, setTextOnlyContent] = useState("");
+  const [selectedBgIdx, setSelectedBgIdx] = useState(0);
+
+  // Sticker
+  const [selectedSticker, setSelectedSticker] = useState<string | null>(null);
+
+  // Duration for display
+  const [storyDuration, setStoryDuration] = useState(5);
 
   // Text overlay
   const [textOverlay, setTextOverlay] = useState("");
@@ -322,6 +379,7 @@ export default function StoryCreatePage() {
           setMediaFile(file);
           setMediaPreviewUrl(url);
           setMediaType("video");
+          setIsTextOnly(false);
           setStep("preview");
         };
         tempVideo.onerror = () => {
@@ -340,6 +398,7 @@ export default function StoryCreatePage() {
         setMediaFile(file);
         setMediaPreviewUrl(url);
         setMediaType("photo");
+        setIsTextOnly(false);
         setVideoDuration(0);
         setCropScale(1);
         setCropPos({ x: 0, y: 0 });
@@ -363,11 +422,80 @@ export default function StoryCreatePage() {
   );
 
   // -----------------------------------------------------------------------
+  // Start text-only story
+  // -----------------------------------------------------------------------
+
+  function handleTextOnlyMode() {
+    setIsTextOnly(true);
+    setMediaFile(null);
+    setMediaPreviewUrl(null);
+    setMediaType(null);
+    setStep("preview");
+  }
+
+  // -----------------------------------------------------------------------
   // Publish story
   // -----------------------------------------------------------------------
 
   async function handlePublish() {
-    if (!selectedAnimal || !mediaFile || !mediaType) return;
+    if (!selectedAnimal) return;
+
+    // Text-only story
+    if (isTextOnly) {
+      if (!textOnlyContent.trim() && !selectedSticker) {
+        setError("Ajoute du texte ou un sticker pour ta story");
+        return;
+      }
+
+      setPublishing(true);
+      setError(null);
+
+      try {
+        const supabase = createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) {
+          setPublishing(false);
+          return;
+        }
+
+        const { error: insertError } = await supabase
+          .from("stories")
+          .insert({
+            user_id: user.id,
+            animal_id: selectedAnimal.id,
+            media_url: null,
+            media_type: null,
+            caption: textOnlyContent || null,
+            bg_gradient: BG_GRADIENTS[selectedBgIdx].value,
+            text_color: TEXT_STYLES[textStyleIdx].color,
+            sticker: selectedSticker || null,
+            template: "text",
+            created_at: new Date().toISOString(),
+            expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+          })
+          .select("id")
+          .single();
+
+        if (insertError) {
+          console.error("[StoryCreate] insert error:", insertError);
+          setError("Erreur: " + insertError.message);
+          setPublishing(false);
+          return;
+        }
+
+        router.push("/stories");
+      } catch (e) {
+        console.error("[StoryCreate] publish error:", e);
+        setError(t.storiesPublishError || "Erreur lors de la publication. Reessayez.");
+        setPublishing(false);
+      }
+      return;
+    }
+
+    // Media story
+    if (!mediaFile || !mediaType) return;
 
     setPublishing(true);
     setUploadProgress(0);
@@ -388,7 +516,7 @@ export default function StoryCreatePage() {
       let contentType = mediaFile.type;
       let ext = getFileExtension(mediaFile) || (mediaType === "video" ? "mp4" : "jpg");
 
-      if (mediaType === "image" && imgNatural.w > 0) {
+      if (mediaType === "photo" && imgNatural.w > 0) {
         const croppedBlob = await cropImageToBlob();
         if (croppedBlob) {
           fileToUpload = croppedBlob;
@@ -439,6 +567,7 @@ export default function StoryCreatePage() {
           media_type: mediaType,
           caption: textOverlay || null,
           text_style: textOverlay ? TEXT_STYLES[textStyleIdx] : null,
+          sticker: selectedSticker || null,
           created_at: new Date().toISOString(),
           expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
         })
@@ -768,45 +897,30 @@ export default function StoryCreatePage() {
           )}
 
           {/* Two big capture buttons */}
-          <div className="grid grid-cols-1 gap-4 mb-6">
+          <div className="grid grid-cols-1 gap-4 mb-4">
             {/* Camera button */}
             <button
               onClick={() => cameraInputRef.current?.click()}
-              className="rounded-2xl p-8 flex flex-col items-center justify-center gap-4 transition-all active:scale-[0.97]"
+              className="rounded-2xl p-6 flex items-center gap-4 transition-all active:scale-[0.97]"
               style={{
                 background: "var(--c-card)",
                 border: "1px solid var(--c-border)",
               }}
             >
               <div
-                className="w-16 h-16 rounded-full flex items-center justify-center"
+                className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0"
                 style={{ background: "var(--c-accent)", color: "#fff" }}
               >
-                <svg
-                  width="28"
-                  height="28"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                   <circle cx="12" cy="13" r="4" />
                 </svg>
               </div>
-              <div className="text-center">
-                <p
-                  className="font-bold text-base"
-                  style={{ color: "var(--c-text)" }}
-                >
+              <div>
+                <p className="font-bold text-sm" style={{ color: "var(--c-text)" }}>
                   {t.storiesCameraButton || "Filmer / Photo"}
                 </p>
-                <p
-                  className="text-xs mt-1"
-                  style={{ color: "var(--c-text-muted)" }}
-                >
+                <p className="text-xs mt-0.5" style={{ color: "var(--c-text-muted)" }}>
                   {t.storiesCameraHint || "Ouvrir la camera"}
                 </p>
               </div>
@@ -815,54 +929,66 @@ export default function StoryCreatePage() {
             {/* Gallery button */}
             <button
               onClick={() => galleryInputRef.current?.click()}
-              className="rounded-2xl p-8 flex flex-col items-center justify-center gap-4 transition-all active:scale-[0.97]"
+              className="rounded-2xl p-6 flex items-center gap-4 transition-all active:scale-[0.97]"
               style={{
                 background: "var(--c-card)",
                 border: "1px solid var(--c-border)",
               }}
             >
               <div
-                className="w-16 h-16 rounded-full flex items-center justify-center"
+                className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0"
                 style={{
                   background: "transparent",
                   border: "2px solid var(--c-accent)",
                   color: "var(--c-accent)",
                 }}
               >
-                <svg
-                  width="28"
-                  height="28"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                   <circle cx="8.5" cy="8.5" r="1.5" />
                   <polyline points="21 15 16 10 5 21" />
                 </svg>
               </div>
-              <div className="text-center">
-                <p
-                  className="font-bold text-base"
-                  style={{ color: "var(--c-text)" }}
-                >
+              <div>
+                <p className="font-bold text-sm" style={{ color: "var(--c-text)" }}>
                   {t.storiesGalleryButton || "Galerie"}
                 </p>
-                <p
-                  className="text-xs mt-1"
-                  style={{ color: "var(--c-text-muted)" }}
-                >
+                <p className="text-xs mt-0.5" style={{ color: "var(--c-text-muted)" }}>
                   {t.storiesGalleryHint || "Choisir depuis la galerie"}
+                </p>
+              </div>
+            </button>
+
+            {/* Text-only story button */}
+            <button
+              onClick={handleTextOnlyMode}
+              className="rounded-2xl p-6 flex items-center gap-4 transition-all active:scale-[0.97]"
+              style={{
+                background: "linear-gradient(135deg, rgba(102,126,234,0.15) 0%, rgba(118,75,162,0.15) 100%)",
+                border: "1px solid rgba(102,126,234,0.3)",
+              }}
+            >
+              <div
+                className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 text-2xl"
+                style={{
+                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                }}
+              >
+                Aa
+              </div>
+              <div>
+                <p className="font-bold text-sm" style={{ color: "var(--c-text)" }}>
+                  Story texte
+                </p>
+                <p className="text-xs mt-0.5" style={{ color: "var(--c-text-muted)" }}>
+                  Fond colore + texte + stickers
                 </p>
               </div>
             </button>
           </div>
 
           {/* File size hints */}
-          <div className="text-center space-y-1">
+          <div className="text-center space-y-1 mt-4">
             <p className="text-xs" style={{ color: "var(--c-text-muted)" }}>
               {t.storiesVideoLimit || "Video : max 30s, 50 Mo"}
               {" | "}
@@ -909,7 +1035,289 @@ export default function StoryCreatePage() {
   }
 
   // -----------------------------------------------------------------------
-  // Step 3: Preview + Text Overlay + Publish
+  // Step 3: Text-only story preview
+  // -----------------------------------------------------------------------
+
+  if (step === "preview" && isTextOnly && selectedAnimal) {
+    const currentStyle = TEXT_STYLES[textStyleIdx];
+
+    return (
+      <main
+        className="min-h-screen px-4 md:px-6 pt-6 pb-32"
+        style={{ background: "var(--c-deep)" }}
+      >
+        <div className="mx-auto max-w-lg">
+          <StepIndicator />
+
+          {/* Header */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <BackButton
+                onClick={() => {
+                  setStep("media");
+                  setError(null);
+                  setIsTextOnly(false);
+                }}
+              />
+              <h1 className="text-xl font-extrabold" style={{ color: "var(--c-text)" }}>
+                Story texte
+              </h1>
+            </div>
+            {/* Pet badge */}
+            <span
+              className="px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5"
+              style={{
+                background: "var(--c-card)",
+                color: "var(--c-text)",
+                border: "1px solid var(--c-border)",
+              }}
+            >
+              {EMOJI_MAP[selectedAnimal.species] || "\uD83D\uDC3E"} {selectedAnimal.name}
+            </span>
+          </div>
+
+          {/* 9:16 preview */}
+          <div
+            className="relative rounded-3xl overflow-hidden mb-5 mx-auto flex items-center justify-center"
+            style={{
+              aspectRatio: "9 / 16",
+              maxHeight: "45vh",
+              background: BG_GRADIENTS[selectedBgIdx].value,
+            }}
+          >
+            {/* Sticker */}
+            {selectedSticker && (
+              <div className="absolute text-6xl" style={{ top: "20%", opacity: 0.9 }}>
+                {selectedSticker}
+              </div>
+            )}
+
+            {/* Text content */}
+            {textOnlyContent && (
+              <p
+                className="text-2xl font-bold text-center leading-tight px-6 drop-shadow-lg whitespace-pre-line"
+                style={{
+                  fontFamily: currentStyle.fontFamily,
+                  color: currentStyle.color,
+                  textShadow: "0 2px 8px rgba(0,0,0,0.5)",
+                }}
+              >
+                {textOnlyContent}
+              </p>
+            )}
+
+            {/* Animal badge */}
+            <div className="absolute bottom-3 left-3">
+              <span
+                className="px-3 py-1.5 rounded-full text-xs font-bold"
+                style={{
+                  background: "rgba(255,255,255,0.2)",
+                  backdropFilter: "blur(8px)",
+                  color: "#fff",
+                }}
+              >
+                {selectedAnimal.name} {EMOJI_MAP[selectedAnimal.species] || "\uD83D\uDC3E"}
+              </span>
+            </div>
+
+            {/* Duration badge */}
+            <div className="absolute top-3 right-3">
+              <span
+                className="px-2.5 py-1 rounded-full text-xs font-bold"
+                style={{
+                  background: "rgba(0,0,0,0.5)",
+                  color: "#fff",
+                  backdropFilter: "blur(6px)",
+                }}
+              >
+                {storyDuration}s
+              </span>
+            </div>
+          </div>
+
+          {/* Background color picker */}
+          <div className="mb-4">
+            <label className="block text-xs font-bold mb-2" style={{ color: "var(--c-text-muted)" }}>
+              Fond
+            </label>
+            <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
+              {BG_GRADIENTS.map((bg, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setSelectedBgIdx(idx)}
+                  className="w-10 h-10 rounded-full flex-shrink-0 transition-all"
+                  style={{
+                    background: bg.value,
+                    border: idx === selectedBgIdx ? "3px solid var(--c-accent)" : "2px solid transparent",
+                    transform: idx === selectedBgIdx ? "scale(1.15)" : "scale(1)",
+                    boxShadow: idx === selectedBgIdx ? "0 0 12px rgba(var(--c-accent-rgb, 139,92,246), 0.4)" : "none",
+                  }}
+                  aria-label={bg.label}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Text input */}
+          <div className="mb-4">
+            <label className="block text-xs font-bold mb-2" style={{ color: "var(--c-text-muted)" }}>
+              Texte
+            </label>
+            <textarea
+              value={textOnlyContent}
+              onChange={(e) => setTextOnlyContent(e.target.value)}
+              placeholder="Ecris quelque chose..."
+              maxLength={150}
+              rows={3}
+              className="w-full rounded-xl p-4 text-sm resize-none outline-none"
+              style={{
+                background: "var(--c-card)",
+                color: "var(--c-text)",
+                border: "1px solid var(--c-border)",
+              }}
+            />
+            <div className="flex justify-end mt-1">
+              <span className="text-xs" style={{ color: "var(--c-text-muted)" }}>
+                {textOnlyContent.length}/150
+              </span>
+            </div>
+          </div>
+
+          {/* Text style selector */}
+          {textOnlyContent.length > 0 && (
+            <div className="mb-4">
+              <label className="block text-xs font-bold mb-2" style={{ color: "var(--c-text-muted)" }}>
+                Style du texte
+              </label>
+              <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
+                {TEXT_STYLES.map((style, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setTextStyleIdx(idx)}
+                    className="flex-shrink-0 w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center text-xs font-bold"
+                    style={{
+                      background: style.color,
+                      borderColor: idx === textStyleIdx ? "var(--c-accent)" : "transparent",
+                      transform: idx === textStyleIdx ? "scale(1.15)" : "scale(1)",
+                    }}
+                    aria-label={style.label}
+                  >
+                    <span className="mix-blend-difference text-white">Aa</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Sticker selection */}
+          <div className="mb-4">
+            <label className="block text-xs font-bold mb-2" style={{ color: "var(--c-text-muted)" }}>
+              Sticker
+            </label>
+            <div className="flex gap-2 flex-wrap">
+              {/* No sticker option */}
+              <button
+                onClick={() => setSelectedSticker(null)}
+                className="w-11 h-11 rounded-xl flex items-center justify-center transition-all text-xs font-bold"
+                style={{
+                  background: !selectedSticker ? "var(--c-accent)" : "var(--c-card)",
+                  color: !selectedSticker ? "#fff" : "var(--c-text-muted)",
+                  border: "1px solid var(--c-border)",
+                }}
+              >
+                ----
+              </button>
+              {PET_STICKERS.map((s) => (
+                <button
+                  key={s.emoji}
+                  onClick={() => setSelectedSticker(s.emoji)}
+                  className="w-11 h-11 rounded-xl flex items-center justify-center text-xl transition-all"
+                  style={{
+                    background: selectedSticker === s.emoji ? "rgba(139,92,246,0.2)" : "var(--c-card)",
+                    border: selectedSticker === s.emoji ? "2px solid var(--c-accent)" : "1px solid var(--c-border)",
+                    transform: selectedSticker === s.emoji ? "scale(1.1)" : "scale(1)",
+                  }}
+                  aria-label={s.label}
+                >
+                  {s.emoji}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Duration picker */}
+          <div className="mb-5">
+            <label className="block text-xs font-bold mb-2" style={{ color: "var(--c-text-muted)" }}>
+              Duree d&apos;affichage
+            </label>
+            <div className="flex gap-2">
+              {DURATION_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => setStoryDuration(opt.value)}
+                  className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all"
+                  style={{
+                    background: storyDuration === opt.value ? "var(--c-accent)" : "var(--c-card)",
+                    color: storyDuration === opt.value ? "#fff" : "var(--c-text)",
+                    border: storyDuration === opt.value ? "none" : "1px solid var(--c-border)",
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Error */}
+          {error && (
+            <div
+              className="mb-4 rounded-xl p-3 text-center text-sm font-medium"
+              style={{
+                background: "rgba(239, 68, 68, 0.15)",
+                color: "#ef4444",
+                border: "1px solid rgba(239, 68, 68, 0.3)",
+              }}
+            >
+              {error}
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex gap-3">
+            <button
+              onClick={() => {
+                setStep("media");
+                setError(null);
+                setIsTextOnly(false);
+              }}
+              disabled={publishing}
+              className="flex-1 rounded-xl py-3.5 text-sm font-bold transition-all active:scale-[0.97] disabled:opacity-50"
+              style={{
+                background: "var(--c-card)",
+                color: "var(--c-text)",
+                border: "1px solid var(--c-border)",
+              }}
+            >
+              {t.storiesChangeMedia || "Changer"}
+            </button>
+            <button
+              onClick={handlePublish}
+              disabled={publishing}
+              className="flex-1 rounded-xl py-3.5 text-sm font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50"
+              style={{ background: "var(--c-accent)" }}
+            >
+              {publishing
+                ? t.storiesPublishing || "Publication..."
+                : t.storiesPublish || "Publier"}
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // -----------------------------------------------------------------------
+  // Step 3: Media Preview + Text Overlay + Stickers + Publish
   // -----------------------------------------------------------------------
 
   if (step === "preview" && selectedAnimal && mediaPreviewUrl && mediaType) {
@@ -965,7 +1373,7 @@ export default function StoryCreatePage() {
             className="relative rounded-3xl overflow-hidden mb-5 mx-auto"
             style={{
               aspectRatio: "9 / 16",
-              maxHeight: "55vh",
+              maxHeight: "45vh",
               background: "#000",
             }}
           >
@@ -1076,6 +1484,13 @@ export default function StoryCreatePage() {
               </div>
             )}
 
+            {/* Sticker on preview */}
+            {selectedSticker && (
+              <div className="absolute z-10 text-5xl pointer-events-none" style={{ top: "15%", left: "50%", transform: "translateX(-50%)" }}>
+                {selectedSticker}
+              </div>
+            )}
+
             {/* Text overlay display */}
             {textOverlay && (
               <div className="absolute inset-0 flex items-center justify-center p-6 z-10 pointer-events-none">
@@ -1123,6 +1538,42 @@ export default function StoryCreatePage() {
             </div>
           )}
 
+          {/* Sticker selection */}
+          <div className="mb-4">
+            <label className="block text-xs font-bold mb-2" style={{ color: "var(--c-text-muted)" }}>
+              Sticker (optionnel)
+            </label>
+            <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
+              {/* No sticker */}
+              <button
+                onClick={() => setSelectedSticker(null)}
+                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-all text-[10px] font-bold"
+                style={{
+                  background: !selectedSticker ? "var(--c-accent)" : "var(--c-card)",
+                  color: !selectedSticker ? "#fff" : "var(--c-text-muted)",
+                  border: "1px solid var(--c-border)",
+                }}
+              >
+                ----
+              </button>
+              {PET_STICKERS.map((s) => (
+                <button
+                  key={s.emoji}
+                  onClick={() => setSelectedSticker(s.emoji)}
+                  className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0 transition-all"
+                  style={{
+                    background: selectedSticker === s.emoji ? "rgba(139,92,246,0.2)" : "var(--c-card)",
+                    border: selectedSticker === s.emoji ? "2px solid var(--c-accent)" : "1px solid var(--c-border)",
+                    transform: selectedSticker === s.emoji ? "scale(1.1)" : "scale(1)",
+                  }}
+                  aria-label={s.label}
+                >
+                  {s.emoji}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Text overlay input */}
           <div className="mb-4">
             <label
@@ -1160,7 +1611,7 @@ export default function StoryCreatePage() {
           {/* Text style selector */}
           {textOverlay.length > 0 && (
             <div
-              className="flex gap-2 mb-5 overflow-x-auto pb-2"
+              className="flex gap-2 mb-4 overflow-x-auto pb-2"
               style={{ scrollbarWidth: "none" }}
             >
               {TEXT_STYLES.map((style, idx) => (
@@ -1181,6 +1632,29 @@ export default function StoryCreatePage() {
               ))}
             </div>
           )}
+
+          {/* Duration picker */}
+          <div className="mb-5">
+            <label className="block text-xs font-bold mb-2" style={{ color: "var(--c-text-muted)" }}>
+              Duree d&apos;affichage {!isVideo && "(images)"}
+            </label>
+            <div className="flex gap-2">
+              {DURATION_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => setStoryDuration(opt.value)}
+                  className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all"
+                  style={{
+                    background: storyDuration === opt.value ? "var(--c-accent)" : "var(--c-card)",
+                    color: storyDuration === opt.value ? "#fff" : "var(--c-text)",
+                    border: storyDuration === opt.value ? "none" : "1px solid var(--c-border)",
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
           {/* Upload progress bar */}
           {publishing && uploadProgress > 0 && (

@@ -184,12 +184,14 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-1">
               {!loading && (user ? (
                 <>
-                  <NavDropdown label="Decouvrir" light={isLight} activeInGroup={["/feed","/explore","/reels","/leaderboard"].some(p => isActive(p))} items={[
+                  <NavDropdown label="Decouvrir" light={isLight} activeInGroup={["/feed","/explore","/reels","/leaderboard","/live","/search"].some(p => isActive(p))} items={[
                     { href: "/feed", label: "Feed", active: isActive("/feed") },
                     { href: "/explore", label: "Explorer", active: isActive("/explore") },
                     { href: "/reels", label: "Reels", active: isActive("/reels") },
+                    { href: "/live", label: "Live", active: isActive("/live") },
                     { href: "/leaderboard", label: "Classement", active: isActive("/leaderboard") },
                     { href: "/concours", label: "Concours", active: isActive("/concours") },
+                    { href: "/search", label: "Recherche", active: isActive("/search") },
                   ]} />
                   <NavDropdown label="Social" light={isLight} activeInGroup={["/flairer","/matches","/groups"].some(p => isActive(p))} items={[
                     { href: "/flairer", label: t.navFlairer, active: isActive("/flairer") },
@@ -197,13 +199,18 @@ export default function Navbar() {
                     { href: "/groups", label: "Groupes", active: isActive("/groups") },
                     { href: "/stories", label: "Stories", active: isActive("/stories") },
                   ]} />
-                  <NavDropdown label="Outils" light={isLight} activeInGroup={["/carte","/wallet","/urgence","/balade","/marketplace"].some(p => isActive(p))} items={[
+                  <NavDropdown label="Outils" light={isLight} activeInGroup={["/carte","/wallet","/urgence","/balade","/marketplace","/filters","/settings"].some(p => isActive(p))} items={[
                     { href: "/carte", label: "Carte", active: isActive("/carte") },
                     { href: "/wallet", label: "PawCoins", active: isActive("/wallet") },
+                    { href: "/filters", label: "Filtres AR", active: isActive("/filters") },
                     { href: "/urgence", label: "SOS Animal", active: isActive("/urgence") },
                     { href: "/balade", label: "Balade live", active: isActive("/balade") },
                     { href: "/marketplace", label: "Marketplace", active: isActive("/marketplace") },
+                    { href: "/settings", label: "Parametres", active: isActive("/settings") },
                   ]} />
+                  <a href="https://pawdirectory.ch" target="_blank" rel="noopener noreferrer" className={"px-3 py-1.5 rounded-full text-sm font-medium transition-all " + (isLight ? "text-gray-600 hover:text-orange-600 hover:bg-orange-50" : "text-gray-400 hover:text-orange-400 hover:bg-orange-500/10")}>
+                    PawDirectory ↗
+                  </a>
                   <NL href="/profile" active={isActive("/profile")} label={t.navProfil} light={isLight} />
                 </>
               ) : (
