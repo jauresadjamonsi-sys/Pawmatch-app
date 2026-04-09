@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { EMOJI_MAP } from "@/lib/constants";
 import StoriesRing from "@/lib/components/StoriesRing";
+import PushPrompt from "@/lib/components/PushPrompt";
 import PromoSection from "@/lib/components/PromoSection";
 import {
   type AnimalSpecies,
@@ -325,6 +326,9 @@ export default function FeedPage() {
 
           {/* ═══════ STORIES ═══════ */}
           <StoriesRing />
+
+          {/* ═══════ PUSH NOTIFICATION PROMPT ═══════ */}
+          <PushPrompt />
 
           {/* ═══════ FEED MODE TOGGLE ═══════ */}
           <div className="flex items-center justify-center gap-1 p-1 rounded-full mx-auto w-fit" style={{ background: "var(--c-glass, rgba(255,255,255,0.06))", backdropFilter: "blur(12px)", border: "1px solid var(--c-border)" }}>

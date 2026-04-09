@@ -197,11 +197,12 @@ export default function Navbar() {
                     { href: "/groups", label: "Groupes", active: isActive("/groups") },
                     { href: "/stories", label: "Stories", active: isActive("/stories") },
                   ]} />
-                  <NavDropdown label="Outils" light={isLight} activeInGroup={["/carte","/wallet","/urgence","/balade"].some(p => isActive(p))} items={[
+                  <NavDropdown label="Outils" light={isLight} activeInGroup={["/carte","/wallet","/urgence","/balade","/marketplace"].some(p => isActive(p))} items={[
                     { href: "/carte", label: "Carte", active: isActive("/carte") },
                     { href: "/wallet", label: "PawCoins", active: isActive("/wallet") },
                     { href: "/urgence", label: "SOS Animal", active: isActive("/urgence") },
                     { href: "/balade", label: "Balade live", active: isActive("/balade") },
+                    { href: "/marketplace", label: "Marketplace", active: isActive("/marketplace") },
                   ]} />
                   <NL href="/profile" active={isActive("/profile")} label={t.navProfil} light={isLight} />
                 </>

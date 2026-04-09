@@ -389,6 +389,7 @@ export type PawCoinTxType =
   | "boost_purchased" | "boost_used"
   | "referral_bonus" | "challenge_completed"
   | "review_posted"
+  | "marketplace_listing"
   | "purchase" | "admin_grant";
 
 export interface PawCoinTransaction {

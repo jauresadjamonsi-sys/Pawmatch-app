@@ -1,4 +1,4 @@
-var CACHE_VERSION = 'pawly-v10';
+var CACHE_VERSION = 'pawly-v11';
 var STATIC_CACHE = CACHE_VERSION + '-static';
 var DYNAMIC_CACHE = CACHE_VERSION + '-dynamic';
 
@@ -256,24 +256,40 @@ function removeSyncRequest(id) {
 
 // Push notification handling
 self.addEventListener('push', function (event) {
-  if (!event.data) return;
-  try {
-    var data = event.data.json();
-    event.waitUntil(
-      self.registration.showNotification(data.title || 'Pawly', {
-        body: data.body || '',
-        icon: '/icons/icon-192.png',
-        badge: '/icons/icon-192.png',
-        data: { url: data.url || '/' },
-        vibrate: [100, 50, 100],
-      })
-    );
-  } catch (e) {}
+  var data = {};
+  if (event.data) {
+    try { data = event.data.json(); } catch (e) { data = {}; }
+  }
+  var options = {
+    body: data.body || 'Nouvelle notification Pawly',
+    icon: '/icon-192.png',
+    badge: '/icon-192.png',
+    tag: data.tag || 'pawly-notification',
+    data: { url: data.url || '/notifications' },
+    vibrate: [100, 50, 100],
+    actions: [
+      { action: 'open', title: 'Voir' },
+      { action: 'close', title: 'Fermer' },
+    ],
+  };
+  event.waitUntil(
+    self.registration.showNotification(data.title || 'Pawly', options)
+  );
 });
 
 self.addEventListener('notificationclick', function (event) {
   event.notification.close();
+  var url = (event.notification.data && event.notification.data.url) || '/';
+  if (event.action === 'close') return;
   event.waitUntil(
-    clients.openWindow(event.notification.data.url || '/')
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (clientList) {
+      for (var i = 0; i < clientList.length; i++) {
+        var client = clientList[i];
+        if (client.url.indexOf(url) !== -1 && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      return clients.openWindow(url);
+    })
   );
 });

@@ -1,15 +1,15 @@
 {
-  "name": "Pawly",
+  "name": "Pawly - Reseau social pour animaux",
   "short_name": "Pawly",
-  "description": "Ton compagnon de sortie en Suisse",
+  "description": "Trouve des compagnons pour ton animal en Suisse",
   "start_url": "/feed",
   "scope": "/",
   "id": "/",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait",
-  "background_color": "#2a2248",
-  "theme_color": "#2a2248",
+  "background_color": "#0f0c1a",
+  "theme_color": "#f97316",
   "categories": ["social", "lifestyle"],
   "prefer_related_applications": false,
   "launch_handler": {
@@ -22,9 +22,9 @@
     { "src": "/icons/icon-128.png", "sizes": "128x128", "type": "image/png" },
     { "src": "/icons/icon-144.png", "sizes": "144x144", "type": "image/png" },
     { "src": "/icons/icon-152.png", "sizes": "152x152", "type": "image/png" },
-    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "/icons/icon-384.png", "sizes": "384x384", "type": "image/png" },
-    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ],
   "screenshots": [
     {

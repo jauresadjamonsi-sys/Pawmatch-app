@@ -44,6 +44,9 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
     daysOnPawly: number;
     totalCoins: number;
   } | null>(null);
+  const [profileTab, setProfileTab] = useState<"posts" | "reels" | "animals">("posts");
+  const [userPhotos, setUserPhotos] = useState<{url: string; type: string; id: string}[]>([]);
+  const [userReels, setUserReels] = useState<{id: string; video_url: string; caption: string; views: number}[]>([]);
   const router = useRouter();
   const supabase = createClient();
 
@@ -139,6 +142,47 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
           });
         } catch (err) {
           console.error("[Profile] Failed to fetch wrapped stats:", err);
+        }
+
+        // Fetch user photos (animals + stories) for Instagram grid
+        try {
+          const [animalPhotosRes, storyPhotosRes] = await Promise.all([
+            supabase.from("animals").select("id, photo_url").eq("created_by", authUser.id).not("photo_url", "is", null),
+            supabase.from("stories").select("id, media_url").eq("user_id", authUser.id).not("media_url", "is", null),
+          ]);
+          const photos: {url: string; type: string; id: string}[] = [];
+          if (animalPhotosRes.data) {
+            animalPhotosRes.data.forEach((a: any) => {
+              if (a.photo_url) photos.push({ url: a.photo_url, type: "animal", id: a.id });
+            });
+          }
+          if (storyPhotosRes.data) {
+            storyPhotosRes.data.forEach((s: any) => {
+              if (s.media_url) photos.push({ url: s.media_url, type: "story", id: s.id });
+            });
+          }
+          setUserPhotos(photos);
+        } catch (err) {
+          console.error("[Profile] Failed to fetch user photos:", err);
+        }
+
+        // Fetch user reels for Reels tab
+        try {
+          const { data: reelsData } = await supabase
+            .from("reels")
+            .select("id, video_url, caption, views")
+            .eq("user_id", authUser.id)
+            .order("created_at", { ascending: false });
+          if (reelsData) {
+            setUserReels(reelsData.map((r: any) => ({
+              id: r.id,
+              video_url: r.video_url || "",
+              caption: r.caption || "",
+              views: r.views || 0,
+            })));
+          }
+        } catch (err) {
+          console.error("[Profile] Failed to fetch user reels:", err);
         }
       } catch (err) {
         console.error("[Profile] Failed to load profile stats:", err);
@@ -465,85 +509,205 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
           <ReferralCard userId={user.id} />
         </div>
 
-        {/* Mes compagnons */}
+        {/* Instagram-style tab bar + content grid */}
         <div className="mb-6 animate-slide-up" id="compagnons" style={{ animationDelay: "0.2s" }}>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-[var(--c-text)]">Mes compagnons</h2>
-            <Link href="/profile/animals/new" className="btn-futuristic neon-orange px-4 py-2 text-sm font-bold rounded-xl">
-              + Ajouter
-            </Link>
+          {/* Tab bar */}
+          <div className="flex" style={{ borderBottom: "1px solid var(--c-border)" }}>
+            <button
+              onClick={() => setProfileTab("posts")}
+              className="flex-1 flex flex-col items-center gap-1 py-3 transition-colors relative"
+              style={{ color: profileTab === "posts" ? "var(--c-text)" : "var(--c-text-muted)" }}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              <span className="text-[10px] font-bold">{userPhotos.length}</span>
+              {profileTab === "posts" && (
+                <span className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "#f97316" }} />
+              )}
+            </button>
+            <button
+              onClick={() => setProfileTab("reels")}
+              className="flex-1 flex flex-col items-center gap-1 py-3 transition-colors relative"
+              style={{ color: profileTab === "reels" ? "var(--c-text)" : "var(--c-text-muted)" }}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="8" y1="2" x2="8" y2="8"/><line x1="16" y1="2" x2="16" y2="8"/><polygon points="10,12 10,18 16,15"/></svg>
+              <span className="text-[10px] font-bold">{userReels.length}</span>
+              {profileTab === "reels" && (
+                <span className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "#f97316" }} />
+              )}
+            </button>
+            <button
+              onClick={() => setProfileTab("animals")}
+              className="flex-1 flex flex-col items-center gap-1 py-3 transition-colors relative"
+              style={{ color: profileTab === "animals" ? "var(--c-text)" : "var(--c-text-muted)" }}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21c-1.5 0-6-3.5-6-8.5C6 9 8.5 7 10 6c.7-.5 1.3-1.5 2-3 .7 1.5 1.3 2.5 2 3 1.5 1 4 3 4 6.5 0 5-4.5 8.5-6 8.5z"/><circle cx="8" cy="5" r="2"/><circle cx="16" cy="5" r="2"/><circle cx="5" cy="10" r="1.5"/><circle cx="19" cy="10" r="1.5"/></svg>
+              <span className="text-[10px] font-bold">{animals.length}</span>
+              {profileTab === "animals" && (
+                <span className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "#f97316" }} />
+              )}
+            </button>
           </div>
 
-          {animals.length === 0 ? (
-            <div className="text-center py-12 glass-strong gradient-border rounded-2xl">
-              <p className="text-4xl mb-3">🐾</p>
-              <p className="text-[var(--c-text-muted)] text-sm">Aucun compagnon pour l&apos;instant</p>
-              <Link href="/profile/animals/new" className="inline-block mt-4 btn-futuristic neon-orange px-5 py-2 text-sm font-bold rounded-xl">
-                + Ajouter mon premier compagnon
-              </Link>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-3">
-              {animals.map((animal, idx) => (
-                <div
-                  key={animal.id}
-                  className="glass card-futuristic rounded-2xl overflow-hidden animate-slide-up"
-                  style={{
-                    border: "1px solid var(--c-border)",
-                    animationDelay: `${0.25 + idx * 0.05}s`,
-                  }}
-                >
-                  <Link href={`/animals/${animal.id}`} className="block">
-                    <div className="aspect-square flex items-center justify-center overflow-hidden relative" style={{ background: "var(--c-card)" }}>
-                      {animal.photo_url
-                        ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="(max-width: 768px) 50vw, 200px" />
-                        : <span className="text-5xl">{EMOJI_MAP[animal.species] || "🐾"}</span>}
-                    </div>
-                    <div className="p-3">
-                      <p className="font-bold text-[var(--c-text)] text-sm truncate">{animal.name}</p>
-                      <p className="text-xs text-[var(--c-text-muted)] truncate">{animal.breed || animal.species}</p>
-                    </div>
-                  </Link>
-                  <div className="px-3 pb-3">
-                    {animal.canton && (
-                      <span
-                        className="inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full neon-orange"
-                        style={{
-                          background: "rgba(249,115,22,0.12)",
-                          border: "1px solid rgba(249,115,22,0.2)",
-                        }}
-                      >
-                        {animal.canton}
-                      </span>
-                    )}
-                    <div className="flex gap-2 mt-3">
-                      <Link
-                        href={"/animals/" + animal.id + "/edit"}
-                        className="flex-1 py-1.5 text-center text-xs font-bold glass rounded-lg transition"
-                        style={{
-                          color: "var(--c-text-muted)",
-                          border: "1px solid var(--c-border)",
-                          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                        }}
-                      >
-                        ✏️ Modifier
-                      </Link>
-                      <button
-                        onClick={() => setDeletingAnimal(animal.id)}
-                        className="flex-1 py-1.5 text-xs font-bold rounded-lg transition"
-                        style={{
-                          background: "rgba(239,68,68,0.08)",
-                          color: "#f87171",
-                          border: "1px solid rgba(239,68,68,0.15)",
-                          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                        }}
-                      >
-                        🗑️ Supprimer
-                      </button>
-                    </div>
-                  </div>
+          {/* Publications tab */}
+          {profileTab === "posts" && (
+            <div className="pt-3">
+              {userPhotos.length === 0 ? (
+                <div className="text-center py-12 glass-strong rounded-2xl" style={{ border: "1px solid var(--c-border)" }}>
+                  <p className="text-3xl mb-2">{"📷"}</p>
+                  <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Aucune publication</p>
                 </div>
-              ))}
+              ) : (
+                <>
+                  <p className="text-xs font-semibold mb-3" style={{ color: "var(--c-text-muted)" }}>{userPhotos.length} publication{userPhotos.length > 1 ? "s" : ""}</p>
+                  <div className="grid grid-cols-3 gap-[2px] rounded-xl overflow-hidden">
+                    {userPhotos.map((photo) => (
+                      <Link
+                        key={photo.id}
+                        href={photo.type === "animal" ? `/animals/${photo.id}` : `/stories`}
+                        className="block aspect-square relative overflow-hidden group"
+                        style={{ background: "var(--c-card)" }}
+                      >
+                        <Image
+                          src={photo.url}
+                          alt=""
+                          fill
+                          className="object-cover transition-transform group-hover:scale-105"
+                          sizes="(max-width: 768px) 33vw, 150px"
+                        />
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Reels tab */}
+          {profileTab === "reels" && (
+            <div className="pt-3">
+              {userReels.length === 0 ? (
+                <div className="text-center py-12 glass-strong rounded-2xl" style={{ border: "1px solid var(--c-border)" }}>
+                  <p className="text-3xl mb-2">{"🎬"}</p>
+                  <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Aucun reel</p>
+                  <Link href="/reels" className="inline-block mt-3 text-xs font-bold neon-orange">Decouvrir les Reels</Link>
+                </div>
+              ) : (
+                <>
+                  <p className="text-xs font-semibold mb-3" style={{ color: "var(--c-text-muted)" }}>{userReels.length} reel{userReels.length > 1 ? "s" : ""}</p>
+                  <div className="grid grid-cols-3 gap-[2px] rounded-xl overflow-hidden">
+                    {userReels.map((reel) => (
+                      <Link
+                        key={reel.id}
+                        href="/reels"
+                        className="block aspect-[9/16] relative overflow-hidden group"
+                        style={{ background: "var(--c-card)" }}
+                      >
+                        <video
+                          src={reel.video_url}
+                          className="w-full h-full object-cover"
+                          muted
+                          preload="metadata"
+                          playsInline
+                        />
+                        {/* Play overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
+                          <svg width="28" height="28" viewBox="0 0 24 24" fill="white" opacity="0.9"><polygon points="8,5 19,12 8,19"/></svg>
+                        </div>
+                        {/* View count */}
+                        <div className="absolute bottom-1.5 left-1.5 flex items-center gap-1">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><polygon points="8,5 19,12 8,19"/></svg>
+                          <span className="text-[10px] font-bold text-white drop-shadow">{reel.views >= 1000 ? `${(reel.views / 1000).toFixed(1)}k` : reel.views}</span>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Animaux tab (existing Mes compagnons content) */}
+          {profileTab === "animals" && (
+            <div className="pt-3">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-bold text-[var(--c-text)]">Mes compagnons</h2>
+                <Link href="/profile/animals/new" className="btn-futuristic neon-orange px-4 py-2 text-sm font-bold rounded-xl">
+                  + Ajouter
+                </Link>
+              </div>
+
+              {animals.length === 0 ? (
+                <div className="text-center py-12 glass-strong gradient-border rounded-2xl">
+                  <p className="text-4xl mb-3">{"🐾"}</p>
+                  <p className="text-[var(--c-text-muted)] text-sm">Aucun compagnon pour l&apos;instant</p>
+                  <Link href="/profile/animals/new" className="inline-block mt-4 btn-futuristic neon-orange px-5 py-2 text-sm font-bold rounded-xl">
+                    + Ajouter mon premier compagnon
+                  </Link>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-3">
+                  {animals.map((animal, idx) => (
+                    <div
+                      key={animal.id}
+                      className="glass card-futuristic rounded-2xl overflow-hidden animate-slide-up"
+                      style={{
+                        border: "1px solid var(--c-border)",
+                        animationDelay: `${0.25 + idx * 0.05}s`,
+                      }}
+                    >
+                      <Link href={`/animals/${animal.id}`} className="block">
+                        <div className="aspect-square flex items-center justify-center overflow-hidden relative" style={{ background: "var(--c-card)" }}>
+                          {animal.photo_url
+                            ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" sizes="(max-width: 768px) 50vw, 200px" />
+                            : <span className="text-5xl">{EMOJI_MAP[animal.species] || "🐾"}</span>}
+                        </div>
+                        <div className="p-3">
+                          <p className="font-bold text-[var(--c-text)] text-sm truncate">{animal.name}</p>
+                          <p className="text-xs text-[var(--c-text-muted)] truncate">{animal.breed || animal.species}</p>
+                        </div>
+                      </Link>
+                      <div className="px-3 pb-3">
+                        {animal.canton && (
+                          <span
+                            className="inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full neon-orange"
+                            style={{
+                              background: "rgba(249,115,22,0.12)",
+                              border: "1px solid rgba(249,115,22,0.2)",
+                            }}
+                          >
+                            {animal.canton}
+                          </span>
+                        )}
+                        <div className="flex gap-2 mt-3">
+                          <Link
+                            href={"/animals/" + animal.id + "/edit"}
+                            className="flex-1 py-1.5 text-center text-xs font-bold glass rounded-lg transition"
+                            style={{
+                              color: "var(--c-text-muted)",
+                              border: "1px solid var(--c-border)",
+                              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                            }}
+                          >
+                            Modifier
+                          </Link>
+                          <button
+                            onClick={() => setDeletingAnimal(animal.id)}
+                            className="flex-1 py-1.5 text-xs font-bold rounded-lg transition"
+                            style={{
+                              background: "rgba(239,68,68,0.08)",
+                              color: "#f87171",
+                              border: "1px solid rgba(239,68,68,0.15)",
+                              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                            }}
+                          >
+                            Supprimer
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>
