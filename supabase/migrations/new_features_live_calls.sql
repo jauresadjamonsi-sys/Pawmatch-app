@@ -160,7 +160,7 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- 11. Indexes for performance
-CREATE INDEX IF NOT EXISTS idx_notifications_user_unread ON notifications(user_id, is_read) WHERE is_read = false;
+CREATE INDEX IF NOT EXISTS idx_notifications_user_unread ON notifications(user_id, read) WHERE read = false;
 CREATE INDEX IF NOT EXISTS idx_stories_active ON stories(created_at DESC) WHERE expires_at > now();
 CREATE INDEX IF NOT EXISTS idx_animals_species_canton ON animals(species, canton);
 CREATE INDEX IF NOT EXISTS idx_reels_created ON reels(created_at DESC);
