@@ -46,10 +46,27 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Evenements pour animaux en Suisse",
+  "description": "Balades, rencontres et evenements pour animaux de compagnie dans les 26 cantons suisses",
+  "url": `${BASE_URL}/events`,
+  "isPartOf": { "@type": "WebSite", "name": "Pawly", "url": BASE_URL },
+};
+
 export default function EventsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {children}
+    </>
+  );
 }

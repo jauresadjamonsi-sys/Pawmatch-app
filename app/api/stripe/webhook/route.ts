@@ -153,16 +153,20 @@ export async function POST(request: Request) {
           if (priceId === premiumPriceId) plan = "premium";
           else if (priceId === proPriceId) plan = "pro";
 
+          const isCanceledOrUnpaid = subscription.status === "canceled" || subscription.status === "unpaid";
+
           await supabaseAdmin
             .from("profiles")
             .update({
-              subscription_end: endDate.toISOString(),
+              ...(isActive
+                ? { subscription_end: endDate.toISOString() }
+                : { subscription_end: isCanceledOrUnpaid ? null : endDate.toISOString() }),
               ...(!isActive && { subscription: "free" }),
               ...(isActive && plan && { subscription: plan }),
             })
             .eq("id", profile.id);
 
-          console.log(`[Webhook] 🔄 Subscription updated ${profile.id}: ${plan || "unknown"} (${subscription.status})`);
+          console.log(`[Webhook] 🔄 Subscription updated ${profile.id}: ${isActive ? (plan || "unknown") : "free"} (${subscription.status})`);
         }
         break;
       }

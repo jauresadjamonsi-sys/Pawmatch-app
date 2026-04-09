@@ -76,10 +76,40 @@ export async function GET(request: Request) {
     }
   }
 
-  // 3. Match du jour
-  const { data: activeUsers } = await supabase.from("profiles").select("id").limit(50);
+  // 3. Match du jour — smart targeting
+  // Only target users created in the last 30 days OR recently active (created_at as proxy for activity)
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const thirtyDaysStr = thirtyDaysAgo.toISOString();
+
+  const { data: activeUsers } = await supabase
+    .from("profiles")
+    .select("id")
+    .gte("created_at", thirtyDaysStr)
+    .limit(200);
+
   if (activeUsers) {
+    // Check which users already received a match-du-jour notification today
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    const todayStr = todayStart.toISOString();
+
+    const userIds = activeUsers.map((u) => u.id);
+    const { data: alreadyNotified } = await supabase
+      .from("notifications")
+      .select("user_id")
+      .in("user_id", userIds)
+      .gte("created_at", todayStr)
+      .or("type.ilike.%match%,type.ilike.%jour%");
+
+    const notifiedSet = new Set(
+      (alreadyNotified || []).map((n: { user_id: string }) => n.user_id)
+    );
+
     for (const user of activeUsers) {
+      // Skip users who already got a match notification today
+      if (notifiedSet.has(user.id)) continue;
+
       const { data: animals } = await supabase.from("animals").select("name").eq("created_by", user.id).limit(1);
       if (animals && animals.length > 0) {
         const sent = await sendPush(user.id, "Match du jour", animals[0].name + " a un nouveau copain recommandé !", "/flairer");

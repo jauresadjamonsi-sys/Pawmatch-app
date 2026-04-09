@@ -55,6 +55,71 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Erreur lors de l'enregistrement" }, { status: 500 });
     }
 
+    // --- Grant referral reward to the referrer ---
+
+    // Abuse prevention: cap at 10 successful referrals
+    const { count: referralCount, error: countError } = await supabaseAdmin
+      .from("profiles")
+      .select("id", { count: "exact", head: true })
+      .eq("referred_by", referral_code);
+
+    if (countError) {
+      console.error("[Referral] Erreur comptage parrainages:", countError);
+      // The referred_by was already saved, so we log but don't fail the whole request
+    }
+
+    const totalReferrals = referralCount ?? 0;
+
+    if (!countError && totalReferrals <= 10) {
+      // Fetch referrer's current subscription info
+      const { data: referrerProfile, error: referrerProfileError } = await supabaseAdmin
+        .from("profiles")
+        .select("subscription, subscription_end")
+        .eq("id", referral_code)
+        .single();
+
+      if (referrerProfileError) {
+        console.error("[Referral] Erreur lecture profil parrain:", referrerProfileError);
+      } else {
+        const now = new Date();
+        let newSubscriptionEnd: Date;
+
+        if (
+          referrerProfile.subscription === "premium" &&
+          referrerProfile.subscription_end &&
+          new Date(referrerProfile.subscription_end) > now
+        ) {
+          // Already premium and not expired: extend by 30 days
+          newSubscriptionEnd = new Date(referrerProfile.subscription_end);
+          newSubscriptionEnd.setDate(newSubscriptionEnd.getDate() + 30);
+        } else {
+          // Not premium or expired: start 30 days from now
+          newSubscriptionEnd = new Date(now);
+          newSubscriptionEnd.setDate(newSubscriptionEnd.getDate() + 30);
+        }
+
+        const { error: rewardError } = await supabaseAdmin
+          .from("profiles")
+          .update({
+            subscription: "premium",
+            subscription_end: newSubscriptionEnd.toISOString(),
+          })
+          .eq("id", referral_code);
+
+        if (rewardError) {
+          console.error("[Referral] Erreur attribution premium parrain:", rewardError);
+        } else {
+          console.log(
+            `[Referral] Premium accorde au parrain ${referral_code} jusqu'au ${newSubscriptionEnd.toISOString()} (parrainage #${totalReferrals})`
+          );
+        }
+      }
+    } else if (!countError && totalReferrals > 10) {
+      console.log(
+        `[Referral] Parrain ${referral_code} a atteint le cap de 10 parrainages, pas de premium supplementaire`
+      );
+    }
+
     console.log(`[Referral] ${referred_user_id} parraine par ${referral_code}`);
     return NextResponse.json({ success: true, referrer_name: referrer.full_name });
   } catch (e: any) {

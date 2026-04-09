@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { createAnimal, uploadAnimalPhoto } from "@/lib/services/animals";
 import { BREEDS } from "@/lib/breeds";
+import { CANTONS } from "@/lib/cantons";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "@/lib/contexts/AppContext";
 import ImageCropper from "@/lib/components/ImageCropper";
@@ -17,6 +18,38 @@ const SPECIES_OPTIONS = [
   { value: "rongeur", emoji: "🐹", label: "Rongeur" },
   { value: "autre", emoji: "🐾", label: "Autre" },
 ];
+
+const PERSONALITY_TRAITS = [
+  "Joueur", "Calme", "Sociable", "Timide", "Energique", "Protecteur",
+  "Curieux", "Independant", "Affectueux", "Dominant", "Docile", "Gourmand",
+];
+
+// Approximate canton center coordinates for geolocation matching
+const CANTON_COORDS: Record<string, { lat: number; lng: number }> = {
+  AG: { lat: 47.39, lng: 8.04 }, AI: { lat: 47.33, lng: 9.41 },
+  AR: { lat: 47.38, lng: 9.28 }, BE: { lat: 46.95, lng: 7.45 },
+  BL: { lat: 47.48, lng: 7.73 }, BS: { lat: 47.56, lng: 7.59 },
+  FR: { lat: 46.80, lng: 7.15 }, GE: { lat: 46.20, lng: 6.14 },
+  GL: { lat: 47.04, lng: 9.07 }, GR: { lat: 46.85, lng: 9.53 },
+  JU: { lat: 47.35, lng: 7.16 }, LU: { lat: 47.05, lng: 8.31 },
+  NE: { lat: 46.99, lng: 6.93 }, NW: { lat: 46.96, lng: 8.37 },
+  OW: { lat: 46.90, lng: 8.25 }, SG: { lat: 47.42, lng: 9.37 },
+  SH: { lat: 47.70, lng: 8.64 }, SO: { lat: 47.21, lng: 7.54 },
+  SZ: { lat: 47.02, lng: 8.65 }, TG: { lat: 47.57, lng: 9.10 },
+  TI: { lat: 46.19, lng: 8.95 }, UR: { lat: 46.88, lng: 8.64 },
+  VD: { lat: 46.52, lng: 6.63 }, VS: { lat: 46.23, lng: 7.36 },
+  ZG: { lat: 47.17, lng: 8.52 }, ZH: { lat: 47.38, lng: 8.54 },
+};
+
+function findNearestCanton(lat: number, lng: number): string {
+  let nearest = "";
+  let minDist = Infinity;
+  for (const [code, coords] of Object.entries(CANTON_COORDS)) {
+    const d = Math.sqrt((lat - coords.lat) ** 2 + (lng - coords.lng) ** 2);
+    if (d < minDist) { minDist = d; nearest = code; }
+  }
+  return nearest;
+}
 
 export default function OnboardingPage() {
   const [step, setStep] = useState(1);
@@ -33,11 +66,38 @@ export default function OnboardingPage() {
   // Crop state
   const [cropFile, setCropFile] = useState<File | null>(null);
   const [cropTarget, setCropTarget] = useState<"animal" | "verif" | null>(null);
+  // New fields
+  const [canton, setCanton] = useState("");
+  const [city, setCity] = useState("");
+  const [ageMonths, setAgeMonths] = useState<number | "">("");
+  const [gender, setGender] = useState("inconnu");
+  const [traits, setTraits] = useState<string[]>([]);
   const router = useRouter();
   const { t } = useAppContext();
   const supabase = createClient();
 
   const breedList = BREEDS[species] || [];
+
+  // Geolocation: auto-detect canton on mount
+  useEffect(() => {
+    if (typeof window === "undefined" || !("geolocation" in navigator)) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const detected = findNearestCanton(pos.coords.latitude, pos.coords.longitude);
+        if (detected && !canton) setCanton(detected);
+      },
+      () => { /* denied or error — ignore */ },
+      { timeout: 8000, maximumAge: 300000 }
+    );
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  function toggleTrait(trait: string) {
+    setTraits((prev) => {
+      if (prev.includes(trait)) return prev.filter((t) => t !== trait);
+      if (prev.length >= 5) return prev;
+      return [...prev, trait];
+    });
+  }
 
   function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -111,16 +171,16 @@ export default function OnboardingPage() {
       name: name.trim(),
       species: species || "chien",
       breed: breed || null,
-      age_months: null,
-      gender: "inconnu",
+      age_months: ageMonths === "" ? null : ageMonths,
+      gender: gender || "inconnu",
       description: null,
       photo_url,
-      city: null,
-      canton: null,
+      city: city.trim() || null,
+      canton: canton || null,
       weight_kg: null,
       vaccinated: false,
       sterilized: false,
-      traits: [],
+      traits,
     }, user.id);
 
     if (result.error) { setError(result.error); setLoading(false); return; }
@@ -229,6 +289,64 @@ export default function OnboardingPage() {
                   </select>
                 </div>
               )}
+
+              {/* Age & Gender row */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-[var(--c-text)] mb-1">Age (mois)</label>
+                  <input type="number" min={0} max={360} value={ageMonths} onChange={(e) => setAgeMonths(e.target.value === "" ? "" : parseInt(e.target.value, 10))}
+                    className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                    placeholder="Ex: 24" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--c-text)] mb-1">Genre</label>
+                  <select value={gender} onChange={(e) => setGender(e.target.value)}
+                    className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                    <option value="inconnu">Inconnu</option>
+                    <option value="male">Male</option>
+                    <option value="femelle">Femelle</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Canton & City row */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-[var(--c-text)] mb-1">Canton</label>
+                  <select value={canton} onChange={(e) => setCanton(e.target.value)}
+                    className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                    <option value="">Selectionner</option>
+                    {CANTONS.map((c) => (
+                      <option key={c.code} value={c.code}>{c.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--c-text)] mb-1">Ville</label>
+                  <input type="text" value={city} onChange={(e) => setCity(e.target.value)}
+                    className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                    placeholder="Ex: Lausanne" />
+                </div>
+              </div>
+
+              {/* Personality traits */}
+              <div>
+                <label className="block text-sm font-medium text-[var(--c-text)] mb-1">Personnalite <span className="text-xs text-[var(--c-text-muted)] font-normal">(max 5)</span></label>
+                <div className="grid grid-cols-3 gap-2">
+                  {PERSONALITY_TRAITS.map((trait) => {
+                    const selected = traits.includes(trait);
+                    return (
+                      <button key={trait} type="button" onClick={() => toggleTrait(trait)}
+                        className={"px-3 py-2 text-xs font-semibold rounded-xl border-2 transition-all " +
+                          (selected
+                            ? "border-[var(--c-accent)] bg-[var(--c-accent)]/10 text-[var(--c-accent)]"
+                            : "border-[var(--c-border)] bg-[var(--c-bg)] text-[var(--c-text-muted)] hover:border-[var(--c-accent)]/50")}>
+                        {trait}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
 
             <button onClick={() => {

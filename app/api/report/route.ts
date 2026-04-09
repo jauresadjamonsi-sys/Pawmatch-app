@@ -21,6 +21,30 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Raison requise" }, { status: 400 });
     }
 
+    // Check if already reported this target
+    const { data: existing } = await supabase
+      .from("reports")
+      .select("id")
+      .eq("reporter_id", user.id)
+      .eq("reported_user_id", reported_user_id)
+      .maybeSingle();
+
+    if (existing) {
+      return NextResponse.json({ ok: true, message: "Deja signale" });
+    }
+
+    // Rate limit: max 10 reports per 24h
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const { count: recentCount } = await supabase
+      .from("reports")
+      .select("id", { count: "exact", head: true })
+      .eq("reporter_id", user.id)
+      .gte("created_at", twentyFourHoursAgo);
+
+    if (recentCount !== null && recentCount >= 10) {
+      return NextResponse.json({ error: "Trop de signalements, reessayez plus tard" }, { status: 429 });
+    }
+
     const { error: insertError } = await supabase
       .from("reports")
       .insert({
