@@ -36,5 +36,18 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   }).select("*, profiles:user_id(id, full_name, avatar_url)").single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Notify reel owner
+  const { data: reel } = await supabase.from("reels").select("user_id").eq("id", reelId).single();
+  if (reel && reel.user_id !== user.id) {
+    await supabase.from("notifications").insert({
+      user_id: reel.user_id,
+      type: "message",
+      title: "Nouveau commentaire",
+      body: content.slice(0, 80),
+      link: "/reels",
+    }).catch(() => {});
+  }
+
   return NextResponse.json({ comment: data });
 }

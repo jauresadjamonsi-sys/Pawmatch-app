@@ -448,6 +448,28 @@ export default function AnimalDetailPage() {
               lang={typeof lang !== "undefined" ? lang : "fr"}
             />
 
+            {/* Partager */}
+            <button
+              onClick={() => {
+                const url = `https://pawlyapp.ch/animals/${animal.id}`;
+                const text = `Decouvre ${animal.name} sur Pawly ! ${url}`;
+                if (navigator.share) {
+                  navigator.share({ title: animal.name + " | Pawly", text, url }).catch(() => {});
+                } else {
+                  navigator.clipboard.writeText(url);
+                }
+              }}
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                padding: 14, background: "linear-gradient(135deg, rgba(249,115,22,0.08), rgba(167,139,250,0.06))",
+                border: "1.5px solid rgba(249,115,22,0.2)", borderRadius: 14,
+                fontWeight: 700, fontSize: 13, color: "#f97316",
+                width: "100%", marginBottom: 12, cursor: "pointer",
+              }}
+            >
+              📤 Partager le profil de {animal.name}
+            </button>
+
             {/* Carte digitale */}
             <Link
               href={"/animals/" + animal.id + "/card"}

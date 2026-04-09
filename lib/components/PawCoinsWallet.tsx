@@ -36,6 +36,8 @@ export default function PawCoinsWallet() {
   const [claiming, setClaiming] = useState(false);
   const [claimResult, setClaimResult] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [buyingItem, setBuyingItem] = useState<string | null>(null);
+  const [shopMsg, setShopMsg] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -66,6 +68,50 @@ export default function PawCoinsWallet() {
       setClaimResult(result.error || "Deja reclame");
     }
     setClaiming(false);
+  }
+
+  async function handleShopBuy(label: string, cost: number) {
+    if (!userId || buyingItem) return;
+    if (balance < cost) return;
+    setBuyingItem(label);
+    setShopMsg(null);
+    const supabase = createClient();
+
+    try {
+      if (label === "Boost 30min") {
+        // Get user's first animal
+        const { data: animals } = await supabase.from("animals").select("id").eq("created_by", userId).limit(1);
+        if (!animals || animals.length === 0) {
+          setShopMsg("Ajoute un animal d'abord !");
+          setBuyingItem(null);
+          return;
+        }
+        // Deduct coins
+        await supabase.from("profiles").update({ pawcoins: balance - cost }).eq("id", userId);
+        // Insert boost
+        await supabase.from("profile_boosts").insert({
+          user_id: userId,
+          animal_id: animals[0].id,
+          expires_at: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
+        });
+        // Log transaction
+        await supabase.from("pawcoin_transactions").insert({
+          user_id: userId,
+          type: "boost_purchased",
+          amount: -cost,
+          description: "Boost 30 min active",
+        });
+        setBalance(balance - cost);
+        setShopMsg("Boost active pendant 30 min !");
+      } else if (label === "Super Flair") {
+        setShopMsg("Utilise le Super Flair sur le profil d'un animal !");
+      } else if (label === "Stickers Premium") {
+        setShopMsg("Stickers bientot disponibles !");
+      }
+    } catch {
+      setShopMsg("Erreur, reessaye.");
+    }
+    setBuyingItem(null);
   }
 
   if (loading) {
@@ -143,7 +189,8 @@ export default function PawCoinsWallet() {
                 <p className="text-[10px]" style={{ color: "var(--c-text-muted)" }}>{item.desc}</p>
               </div>
               <button
-                disabled={balance < item.cost}
+                disabled={balance < item.cost || buyingItem === item.label}
+                onClick={() => handleShopBuy(item.label, item.cost)}
                 className="text-xs font-bold px-3 py-1.5 rounded-full transition-all"
                 style={{
                   background: balance >= item.cost ? "linear-gradient(135deg, #fbbf24, #f97316)" : "var(--c-border)",
@@ -152,10 +199,18 @@ export default function PawCoinsWallet() {
                   cursor: balance >= item.cost ? "pointer" : "not-allowed",
                 }}
               >
-                🪙 {item.cost}
+                {buyingItem === item.label ? "..." : `🪙 ${item.cost}`}
               </button>
             </div>
           ))}
+          {shopMsg && (
+            <p className="text-xs font-semibold text-center mt-2 py-2 rounded-lg" style={{
+              background: shopMsg.includes("Erreur") ? "rgba(239,68,68,0.1)" : "rgba(52,211,153,0.1)",
+              color: shopMsg.includes("Erreur") ? "#ef4444" : "#34d399",
+            }}>
+              {shopMsg}
+            </p>
+          )}
         </div>
       </section>
 

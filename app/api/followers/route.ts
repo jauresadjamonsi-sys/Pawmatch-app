@@ -43,6 +43,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  // Notify the followed user
+  await supabase.from("notifications").insert({
+    user_id: targetId,
+    type: "system",
+    title: "Nouvel abonne !",
+    body: "Quelqu'un a commence a te suivre.",
+    link: "/profile",
+  }).catch(() => {});
+
   return NextResponse.json({ message: "Followed" });
 }
 

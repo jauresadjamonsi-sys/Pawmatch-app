@@ -30,5 +30,17 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
+  // Notify reel owner
+  const { data: reel } = await supabase.from("reels").select("user_id").eq("id", reelId).single();
+  if (reel && reel.user_id !== user.id) {
+    await supabase.from("notifications").insert({
+      user_id: reel.user_id,
+      type: "system",
+      title: "Nouveau like !",
+      body: "Quelqu'un a aime ton reel.",
+      link: "/reels",
+    }).catch(() => {});
+  }
+
   return NextResponse.json({ liked: true });
 }
