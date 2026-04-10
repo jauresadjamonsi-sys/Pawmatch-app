@@ -14,13 +14,10 @@ export async function GET(request: NextRequest) {
   let query = supabase
     .from("reels")
     .select("*, profiles:user_id(id, full_name, avatar_url), animals:animal_id(id, name, species, breed, photo_url)")
-    .eq("status", "active");
+    .or("status.eq.active,status.is.null");
 
-  if (mode === "trending") {
-    query = query.order("engagement_score", { ascending: false });
-  } else {
-    query = query.order("created_at", { ascending: false });
-  }
+  // Always order by created_at (safe column), trending mode can be refined later
+  query = query.order("created_at", { ascending: false });
 
   const { data: reels, error } = await query.range(offset, offset + limit - 1);
 
@@ -32,16 +29,20 @@ export async function GET(request: NextRequest) {
   let followingIds: Set<string> = new Set();
 
   if (user && reels && reels.length > 0) {
-    const reelIds = reels.map((r: any) => r.id);
-    const userIds = [...new Set(reels.map((r: any) => r.user_id))];
+    try {
+      const reelIds = reels.map((r: any) => r.id);
+      const userIds = [...new Set(reels.map((r: any) => r.user_id))];
 
-    const [likesRes, followRes] = await Promise.all([
-      supabase.from("reel_likes").select("reel_id").eq("user_id", user.id).in("reel_id", reelIds),
-      supabase.from("followers").select("following_id").eq("follower_id", user.id).in("following_id", userIds),
-    ]);
+      const [likesRes, followRes] = await Promise.all([
+        supabase.from("reel_likes").select("reel_id").eq("user_id", user.id).in("reel_id", reelIds).then(r => r).catch(() => ({ data: [] })),
+        supabase.from("followers").select("following_id").eq("follower_id", user.id).in("following_id", userIds).then(r => r).catch(() => ({ data: [] })),
+      ]);
 
-    likedIds = new Set((likesRes.data || []).map((l: any) => l.reel_id));
-    followingIds = new Set((followRes.data || []).map((f: any) => f.following_id));
+      likedIds = new Set((likesRes.data || []).map((l: any) => l.reel_id));
+      followingIds = new Set((followRes.data || []).map((f: any) => f.following_id));
+    } catch {
+      // Non-critical: likes/follows enrichment failed, continue without
+    }
   }
 
   const enriched = (reels || []).map((r: any) => ({

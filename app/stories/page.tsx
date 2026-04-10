@@ -139,15 +139,32 @@ export default function StoriesPage() {
         }
         setCurrentUserId(user.id);
 
-        // Fetch stories with animal join only (profiles FK -> auth.users, not profiles)
-        const { data, error } = await supabase
+        // Fetch active stories (try with animal join, fallback without)
+        let data: any[] | null = null;
+        let error: any = null;
+
+        const res1 = await supabase
           .from("stories")
-          .select(
-            "*, animals(id, name, species, photo_url)"
-          )
+          .select("*, animals(id, name, species, photo_url)")
           .gt("expires_at", new Date().toISOString())
           .order("created_at", { ascending: false })
           .limit(50);
+
+        if (res1.error) {
+          // Fallback: fetch without animal join (FK may not exist)
+          console.warn("[StoriesPage] animal join failed, retrying without:", res1.error.message);
+          const res2 = await supabase
+            .from("stories")
+            .select("*")
+            .gt("expires_at", new Date().toISOString())
+            .order("created_at", { ascending: false })
+            .limit(50);
+          data = res2.data;
+          error = res2.error;
+        } else {
+          data = res1.data;
+          error = res1.error;
+        }
 
         if (error) {
           console.error("[StoriesPage] fetch error:", error.message, error);
@@ -876,11 +893,13 @@ export default function StoriesPage() {
                 src={effectiveUrl}
                 autoPlay
                 playsInline
+                preload="auto"
                 muted={false}
                 loop={false}
                 onTimeUpdate={handleVideoTimeUpdate}
                 onEnded={handleVideoEnded}
                 className="absolute inset-0 w-full h-full object-cover"
+                style={{ aspectRatio: "9/16" }}
               />
             );
           }

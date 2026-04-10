@@ -14,6 +14,7 @@ export default function ReelsPage() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const fetchReels = useCallback(async (p: number) => {
+    setLoading(true);
     try {
       const res = await fetch(`/api/reels?page=${p}&mode=trending`);
       const data = await res.json();
@@ -32,11 +33,14 @@ export default function ReelsPage() {
   // Infinite scroll — load more when near the end
   useEffect(() => {
     if (current >= reels.length - 3 && hasMore && !loading) {
-      const nextPage = page + 1;
-      setPage(nextPage);
-      fetchReels(nextPage);
+      setPage(prev => {
+        const nextPage = prev + 1;
+        fetchReels(nextPage);
+        return nextPage;
+      });
     }
-  }, [current, reels.length, hasMore, loading, page, fetchReels]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [current, reels.length, hasMore, loading, fetchReels]);
 
   // Snap scroll handling
   useEffect(() => {
@@ -138,7 +142,7 @@ export default function ReelsPage() {
 function ReelCard({ reel, index, isActive }: { reel: ReelWithAuthor; index: number; isActive: boolean }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [liked, setLiked] = useState(reel.is_liked || false);
-  const [likesCount, setLikesCount] = useState(reel.likes_count);
+  const [likesCount, setLikesCount] = useState(reel.likes_count ?? 0);
   const [showHeart, setShowHeart] = useState(false);
   const [paused, setPaused] = useState(false);
   const [showComments, setShowComments] = useState(false);
@@ -185,7 +189,9 @@ function ReelCard({ reel, index, isActive }: { reel: ReelWithAuthor; index: numb
         loop
         muted
         playsInline
+        preload={isActive ? "auto" : "metadata"}
         className="absolute inset-0 w-full h-full object-cover"
+        style={{ aspectRatio: "9/16" }}
         onClick={togglePlay}
         onDoubleClick={handleDoubleTap}
       />
@@ -263,7 +269,7 @@ function ReelCard({ reel, index, isActive }: { reel: ReelWithAuthor; index: numb
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
             </svg>
           </div>
-          <span className="text-white text-[10px] font-bold mt-1">{reel.comments_count}</span>
+          <span className="text-white text-[10px] font-bold mt-1">{reel.comments_count ?? 0}</span>
         </button>
 
         <button
@@ -291,7 +297,7 @@ function ReelCard({ reel, index, isActive }: { reel: ReelWithAuthor; index: numb
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </div>
-          <span className="text-white text-[10px] font-bold mt-1">{reel.views_count}</span>
+          <span className="text-white text-[10px] font-bold mt-1">{reel.views_count ?? 0}</span>
         </div>
       </div>
 
