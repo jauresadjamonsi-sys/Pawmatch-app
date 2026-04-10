@@ -15,6 +15,7 @@ const SmartCompanion = dynamic(() => import("@/lib/components/SmartCompanion"), 
 const EmotionalFeedback = dynamic(() => import("@/lib/components/EmotionalFeedback"), { ssr: false });
 const ReactionBar = dynamic(() => import("@/lib/components/ReactionBar"), { ssr: false });
 const CommentSheet = dynamic(() => import("@/lib/components/CommentSheet"), { ssr: false });
+const DailyChallenges = dynamic(() => import("@/lib/components/DailyChallenges"), { ssr: false });
 
 // Tiny 1x1 blurred placeholder for dynamic images
 const BLUR_PLACEHOLDER = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNlMmRkZDUiLz48L3N2Zz4=";
@@ -415,6 +416,11 @@ export default function FeedPage() {
           {/* ═══════ SMART COMPANION — Pet Wellbeing Score ═══════ */}
           {profile?.id && animals.length > 0 && (
             <SmartCompanion userId={profile.id} />
+          )}
+
+          {/* ═══════ DAILY CHALLENGES ═══════ */}
+          {profile?.id && (
+            <DailyChallenges userId={profile.id} />
           )}
 
           {/* ═══════ PUSH NOTIFICATION PROMPT ═══════ */}
