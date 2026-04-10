@@ -11,7 +11,14 @@ export default function ReelsPage() {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState(0);
+  const [showSwipeHint, setShowSwipeHint] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Hide swipe hint after 2 seconds
+  useEffect(() => {
+    const t = setTimeout(() => setShowSwipeHint(false), 2000);
+    return () => clearTimeout(t);
+  }, []);
 
   const fetchReels = useCallback(async (p: number) => {
     setLoading(true);
@@ -105,8 +112,7 @@ export default function ReelsPage() {
       <style>{`
         .reels-container { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100%; -webkit-overflow-scrolling: touch; }
         .reels-container::-webkit-scrollbar { display: none; }
-        .reel-item { scroll-snap-align: start; scroll-snap-stop: always; height: 100%; position: relative; }
-        @keyframes heartPop { 0% { transform: scale(0); opacity: 1; } 50% { transform: scale(1.4); } 100% { transform: scale(1); opacity: 1; } }
+        .reel-item { scroll-snap-align: start; scroll-snap-stop: always; height: 100%; position: relative; overflow: hidden; }
       `}</style>
 
       {/* Top bar */}
@@ -135,17 +141,39 @@ export default function ReelsPage() {
           <ReelCard key={reel.id} reel={reel} index={index} isActive={index === current} />
         ))}
       </div>
+
+      {/* Swipe hint on first load */}
+      {showSwipeHint && reels.length > 1 && (
+        <div className="absolute bottom-24 left-0 right-0 flex flex-col items-center pointer-events-none z-50 animate-swipe-hint">
+          <svg className="w-6 h-6 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+          </svg>
+          <span className="text-white/50 text-[10px] font-medium mt-0.5">Swipe up</span>
+        </div>
+      )}
     </main>
   );
 }
 
 function ReelCard({ reel, index, isActive }: { reel: ReelWithAuthor; index: number; isActive: boolean }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const lastTapRef = useRef<number>(0);
   const [liked, setLiked] = useState(reel.is_liked || false);
   const [likesCount, setLikesCount] = useState(reel.likes_count ?? 0);
-  const [showHeart, setShowHeart] = useState(false);
+  const [heartReelId, setHeartReelId] = useState<string | null>(null);
+  const [videoProgress, setVideoProgress] = useState(0);
   const [paused, setPaused] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [likeAnimating, setLikeAnimating] = useState(false);
+  const [countAnimating, setCountAnimating] = useState(false);
+  const [commentTap, setCommentTap] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
+  const [entered, setEntered] = useState(false);
+
+  // Fade-in-scale when reel enters viewport
+  useEffect(() => {
+    if (isActive && !entered) setEntered(true);
+  }, [isActive, entered]);
 
   // Play/pause based on visibility
   useEffect(() => {
@@ -158,21 +186,76 @@ function ReelCard({ reel, index, isActive }: { reel: ReelWithAuthor; index: numb
     }
   }, [isActive, paused]);
 
+  // Reset progress when not active
+  useEffect(() => {
+    if (!isActive) setVideoProgress(0);
+  }, [isActive]);
+
   async function toggleLike() {
     const newLiked = !liked;
     setLiked(newLiked);
     setLikesCount(prev => prev + (newLiked ? 1 : -1));
-    if (newLiked) { setShowHeart(true); setTimeout(() => setShowHeart(false), 800); }
+    // Heart burst on like button
+    setLikeAnimating(true);
+    setTimeout(() => setLikeAnimating(false), 400);
+    // Count bounce
+    setCountAnimating(true);
+    setTimeout(() => setCountAnimating(false), 600);
+    if (newLiked) {
+      setHeartReelId(reel.id);
+      setTimeout(() => setHeartReelId(null), 800);
+    }
     await fetch(`/api/reels/${reel.id}/like`, { method: "POST" });
   }
 
   function handleDoubleTap() {
-    if (!liked) toggleLike();
-    else { setShowHeart(true); setTimeout(() => setShowHeart(false), 800); }
+    if (!liked) {
+      toggleLike();
+    } else {
+      setHeartReelId(reel.id);
+      setTimeout(() => setHeartReelId(null), 800);
+    }
+  }
+
+  // Touch-based double-tap detection (for mobile, since onDoubleClick is unreliable)
+  function handleTouchEnd() {
+    const now = Date.now();
+    if (now - lastTapRef.current < 300) {
+      handleDoubleTap();
+      lastTapRef.current = 0;
+    } else {
+      lastTapRef.current = now;
+    }
   }
 
   function togglePlay() {
     setPaused(p => !p);
+  }
+
+  function handleTimeUpdate() {
+    const video = videoRef.current;
+    if (!video || !video.duration) return;
+    setVideoProgress((video.currentTime / video.duration) * 100);
+  }
+
+  function handleCommentTap() {
+    setCommentTap(true);
+    setTimeout(() => setCommentTap(false), 250);
+    setShowComments(true);
+  }
+
+  async function handleShare() {
+    const shareUrl = `https://pawlyapp.ch/reels/${reel.id}`;
+    const shareData = { title: "Pawly", text: "Regarde ce reel sur Pawly !", url: shareUrl };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        setShareCopied(true);
+        setTimeout(() => setShareCopied(false), 2000);
+      }
+    } catch { /* user cancelled share */ }
   }
 
   const authorName = reel.profiles?.full_name || "Utilisateur";
@@ -180,7 +263,21 @@ function ReelCard({ reel, index, isActive }: { reel: ReelWithAuthor; index: numb
   const animalName = reel.animals?.name;
 
   return (
-    <div className="reel-item" data-index={index}>
+    <div
+      className={`reel-item${entered ? " animate-fade-in-scale" : ""}`}
+      data-index={index}
+    >
+      {/* Progress bar at top */}
+      <div className="absolute top-0 left-0 right-0 z-30 h-[3px]" style={{ background: "rgba(255,255,255,0.1)" }}>
+        <div
+          className="h-full transition-[width] duration-200 ease-linear"
+          style={{
+            width: `${videoProgress}%`,
+            background: "linear-gradient(90deg, #f97316, var(--c-accent, #a78bfa))",
+          }}
+        />
+      </div>
+
       {/* Video */}
       <video
         ref={videoRef}
@@ -194,6 +291,8 @@ function ReelCard({ reel, index, isActive }: { reel: ReelWithAuthor; index: numb
         style={{ aspectRatio: "9/16" }}
         onClick={togglePlay}
         onDoubleClick={handleDoubleTap}
+        onTouchEnd={handleTouchEnd}
+        onTimeUpdate={handleTimeUpdate}
       />
 
       {/* Pause indicator */}
@@ -207,12 +306,8 @@ function ReelCard({ reel, index, isActive }: { reel: ReelWithAuthor; index: numb
         </div>
       )}
 
-      {/* Double-tap heart */}
-      {showHeart && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <span className="text-7xl" style={{ animation: "heartPop 0.6s ease-out forwards" }}>❤️</span>
-        </div>
-      )}
+      {/* Double-tap heart overlay */}
+      <HeartOverlay show={heartReelId === reel.id} />
 
       {/* Bottom gradient */}
       <div className="absolute bottom-0 left-0 right-0 h-1/3 pointer-events-none"
@@ -233,7 +328,7 @@ function ReelCard({ reel, index, isActive }: { reel: ReelWithAuthor; index: numb
           </div>
           <span className="text-white text-sm font-bold">{authorName}</span>
           {animalName && (
-            <span className="text-white/60 text-xs">· {animalName}</span>
+            <span className="text-white/60 text-xs">&middot; {animalName}</span>
           )}
         </div>
         {reel.caption && (
@@ -248,10 +343,11 @@ function ReelCard({ reel, index, isActive }: { reel: ReelWithAuthor; index: numb
 
       {/* Right action buttons */}
       <div className="absolute right-3 bottom-28 md:bottom-20 flex flex-col items-center gap-5">
+        {/* Like button */}
         <button onClick={toggleLike} className="flex flex-col items-center">
-          <div className="w-10 h-10 rounded-full bg-black/30 flex items-center justify-center backdrop-blur-sm">
+          <div className={`w-10 h-10 rounded-full bg-black/30 flex items-center justify-center backdrop-blur-sm${likeAnimating ? " animate-heart-burst" : ""}`}>
             {liked ? (
-              <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6" fill="#ef4444" viewBox="0 0 24 24">
                 <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
               </svg>
             ) : (
@@ -260,36 +356,36 @@ function ReelCard({ reel, index, isActive }: { reel: ReelWithAuthor; index: numb
               </svg>
             )}
           </div>
-          <span className="text-white text-[10px] font-bold mt-1">{likesCount}</span>
+          <span className={`text-white text-[10px] font-bold mt-1${countAnimating ? " animate-count-up" : ""}`}>
+            {likesCount}
+          </span>
         </button>
 
-        <button onClick={() => setShowComments(true)} className="flex flex-col items-center">
-          <div className="w-10 h-10 rounded-full bg-black/30 flex items-center justify-center backdrop-blur-sm">
+        {/* Comment button with tap scale */}
+        <button onClick={handleCommentTap} className="flex flex-col items-center">
+          <div className={`w-10 h-10 rounded-full bg-black/30 flex items-center justify-center backdrop-blur-sm transition-transform${commentTap ? " animate-tap-scale" : ""}`}>
             <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
             </svg>
           </div>
-          <span className="text-white text-[10px] font-bold mt-1">{reel.comments_count ?? 0}</span>
+          <span className={`text-white text-[10px] font-bold mt-1${commentTap ? " animate-count-up" : ""}`}>
+            {reel.comments_count ?? 0}
+          </span>
         </button>
 
-        <button
-          onClick={async () => {
-            const shareData = { title: "Pawly", text: "Regarde ce reel sur Pawly !", url: "https://pawlyapp.ch/reels" };
-            try {
-              if (navigator.share) { await navigator.share(shareData); }
-              else { await navigator.clipboard.writeText(shareData.url); alert("Lien copie !"); }
-            } catch { /* user cancelled share */ }
-          }}
-          className="flex flex-col items-center"
-        >
+        {/* Share button with copy-link */}
+        <button onClick={handleShare} className="flex flex-col items-center">
           <div className="w-10 h-10 rounded-full bg-black/30 flex items-center justify-center backdrop-blur-sm">
             <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
             </svg>
           </div>
-          <span className="text-white text-[10px] font-bold mt-1">Partager</span>
+          <span className="text-white text-[10px] font-bold mt-1">
+            {shareCopied ? "Copie !" : "Partager"}
+          </span>
         </button>
 
+        {/* Views count */}
         <div className="flex flex-col items-center">
           <div className="w-10 h-10 rounded-full bg-black/30 flex items-center justify-center backdrop-blur-sm">
             <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -303,6 +399,22 @@ function ReelCard({ reel, index, isActive }: { reel: ReelWithAuthor; index: numb
 
       {/* Comments drawer */}
       {showComments && <CommentsDrawer reelId={reel.id} onClose={() => setShowComments(false)} />}
+    </div>
+  );
+}
+
+function HeartOverlay({ show }: { show: boolean }) {
+  if (!show) return null;
+  return (
+    <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+      <svg
+        className="w-24 h-24 animate-heart-burst drop-shadow-2xl"
+        fill="#ef4444"
+        viewBox="0 0 24 24"
+        style={{ filter: "drop-shadow(0 0 20px rgba(239,68,68,0.5))" }}
+      >
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+      </svg>
     </div>
   );
 }

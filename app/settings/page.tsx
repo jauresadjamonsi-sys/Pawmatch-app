@@ -165,7 +165,7 @@ export default function SettingsPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
             </svg>
           </Link>
-          <h1 className="text-xl font-extrabold gradient-text-warm">Parametres</h1>
+          <h1 className="text-xl font-extrabold gradient-text-animated">Parametres</h1>
         </div>
 
         <div className="flex flex-col md:flex-row gap-4">
@@ -190,7 +190,7 @@ export default function SettingsPage() {
 
           {/* Content */}
           <div className="flex-1">
-            <div className="glass rounded-2xl p-5 border border-[var(--c-border)]">
+            <div key={section} className="glass rounded-2xl p-5 border border-[var(--c-border)] animate-fade-in-scale">
               {/* Account & Data */}
               {section === "account" && (
                 <div className="space-y-4">

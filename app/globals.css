@@ -365,10 +365,10 @@ html {
 .animate-slide-right { animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 .animate-scale-in { animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
-/* Staggered children animation */
+/* Staggered children animation (enhanced) */
 .stagger-children > * {
   opacity: 0;
-  animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slide-up-enter 0.4s ease-out both;
 }
 .stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
 .stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
@@ -378,6 +378,8 @@ html {
 .stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
 .stagger-children > *:nth-child(7) { animation-delay: 0.35s; }
 .stagger-children > *:nth-child(8) { animation-delay: 0.4s; }
+.stagger-children > *:nth-child(9) { animation-delay: 0.45s; }
+.stagger-children > *:nth-child(10) { animation-delay: 0.5s; }
 
 /* ============================================
    8. CARD HOVER EFFECTS
@@ -524,6 +526,61 @@ html {
 
 .animate-count-up {
   animation: count-up 0.6s ease-out forwards;
+}
+
+/* ============================================
+   16b. HEART BURST (Reels double-tap)
+   ============================================ */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 0; }
+  15% { transform: scale(1.4); opacity: 1; }
+  30% { transform: scale(0.95); opacity: 1; }
+  45% { transform: scale(1.15); opacity: 1; }
+  60% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.animate-heart-burst {
+  animation: heart-burst 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ============================================
+   16c. FADE IN SCALE (Reel entering viewport)
+   ============================================ */
+@keyframes fade-in-scale {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in-scale {
+  animation: fade-in-scale 0.4s ease-out forwards;
+}
+
+/* ============================================
+   16d. SWIPE HINT (Reels first-load arrow)
+   ============================================ */
+@keyframes swipe-hint {
+  0% { opacity: 0; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-12px); }
+  60% { opacity: 1; transform: translateY(-12px); }
+  100% { opacity: 0; transform: translateY(-24px); }
+}
+
+.animate-swipe-hint {
+  animation: swipe-hint 2s ease-out forwards;
+}
+
+/* ============================================
+   16e. COMMENT TAP SCALE
+   ============================================ */
+@keyframes tap-scale {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.animate-tap-scale {
+  animation: tap-scale 0.25s ease-out;
 }
 
 /* ============================================
@@ -1179,4 +1236,205 @@ html {
 [data-theme="aurore"] .neon-cyan,
 [data-theme="ocean"] .neon-cyan {
   box-shadow: 0 0 10px rgba(56, 189, 248, 0.12), 0 0 30px rgba(56, 189, 248, 0.06);
+}
+
+/* ============================================
+   24. MICRO-INTERACTIONS & ANIMATIONS LIBRARY
+   Instagram/TikTok-level feel
+   ============================================ */
+
+/* Heart burst animation (double-tap like) */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-heart-burst {
+  animation: heart-burst 0.4s cubic-bezier(0.17, 0.89, 0.32, 1.49);
+}
+
+/* Floating particles (for reactions) */
+@keyframes float-up {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-120px) scale(0.5); opacity: 0; }
+}
+.animate-float-up {
+  animation: float-up 1.2s ease-out forwards;
+}
+
+/* Slide up enter */
+@keyframes slide-up-enter {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Slide in from right */
+@keyframes slide-in-right {
+  from { transform: translateX(30px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.animate-slide-in-right {
+  animation: slide-in-right 0.35s ease-out both;
+}
+
+/* Fade in scale */
+@keyframes fade-in-scale {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.animate-fade-in-scale {
+  animation: fade-in-scale 0.3s ease-out both;
+}
+
+/* Bounce in */
+@keyframes bounce-in {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.05); }
+  70% { transform: scale(0.95); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-bounce-in {
+  animation: bounce-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Shimmer loading effect utility class (uses existing @keyframes shimmer) */
+.animate-shimmer {
+  background: linear-gradient(90deg, var(--c-border) 25%, var(--c-glass) 50%, var(--c-border) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Wiggle (for attention-grabbing elements) */
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+}
+.animate-wiggle {
+  animation: wiggle 0.5s ease-in-out;
+}
+
+/* Button press effect */
+.btn-press {
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+.btn-press:active {
+  transform: scale(0.95) !important;
+  box-shadow: none !important;
+}
+
+/* Card hover lift */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+.card-hover:active {
+  transform: translateY(0);
+}
+
+/* Gradient text shimmer */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.gradient-text-animated {
+  background: linear-gradient(270deg, var(--c-accent), #f97316, #ec4899, var(--c-accent));
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 4s ease infinite;
+}
+
+/* Notification badge bounce */
+@keyframes badge-bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+.animate-badge-bounce {
+  animation: badge-bounce 0.3s ease-in-out;
+}
+
+/* Swipe hint animation */
+@keyframes swipe-hint {
+  0% { transform: translateX(0); opacity: 0.5; }
+  50% { transform: translateX(-10px); opacity: 1; }
+  100% { transform: translateX(0); opacity: 0.5; }
+}
+.animate-swipe-hint {
+  animation: swipe-hint 2s ease-in-out infinite;
+}
+
+/* Confetti burst */
+@keyframes confetti-fall {
+  0% { transform: translateY(-10px) rotate(0deg) scale(1); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg) scale(0.5); opacity: 0; }
+}
+.animate-confetti {
+  animation: confetti-fall 2s ease-out forwards;
+}
+
+/* Story crossfade */
+@keyframes story-crossfade {
+  from { opacity: 0; transform: scale(1.02); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-story-crossfade {
+  animation: story-crossfade 0.3s ease-out forwards;
+}
+
+/* Slide up reply input */
+@keyframes reply-slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.animate-reply-slide-up {
+  animation: reply-slide-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Author info slide-in */
+@keyframes author-slide-in {
+  from { transform: translateX(-15px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.animate-author-slide-in {
+  animation: author-slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+/* Ripple effect on tap */
+.ripple-container {
+  position: relative;
+  overflow: hidden;
+}
+.ripple-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%), rgba(255,255,255,0.3) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.ripple-container:active::after {
+  opacity: 1;
+}
+
+/* Progress bar animated stripes */
+@keyframes progress-stripes {
+  0% { background-position: 1rem 0; }
+  100% { background-position: 0 0; }
+}
+.progress-animated {
+  background-image: linear-gradient(
+    45deg,
+    rgba(255,255,255,0.15) 25%, transparent 25%,
+    transparent 50%, rgba(255,255,255,0.15) 50%,
+    rgba(255,255,255,0.15) 75%, transparent 75%
+  );
+  background-size: 1rem 1rem;
+  animation: progress-stripes 1s linear infinite;
 }

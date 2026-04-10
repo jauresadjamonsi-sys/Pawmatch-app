@@ -287,9 +287,11 @@ export default function GroupsPage() {
           {profile ? (
             <button
               onClick={() => setShowCreate(true)}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-bold shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 hover:scale-[1.02] transition-all whitespace-nowrap"
+              className="btn-press relative px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-bold shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 transition-all whitespace-nowrap"
+              style={{ backgroundSize: "200% 200%", animation: "gradient-shift 3s ease infinite" }}
             >
-              + Creer un groupe
+              <span className="absolute inset-0 rounded-xl" style={{ background: "linear-gradient(135deg, #f97316, #a78bfa, #f97316)", opacity: 0.3, filter: "blur(4px)", animation: "gradient-shift 3s ease infinite", backgroundSize: "200% 200%" }} />
+              <span className="relative">+ Creer un groupe</span>
             </button>
           ) : !loading && (
             <button
@@ -316,10 +318,10 @@ export default function GroupsPage() {
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
               className={
-                "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all " +
+                "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 ease-out " +
                 (activeTab === tab.key
-                  ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md shadow-orange-500/20"
-                  : "glass text-[var(--c-text-muted)] hover:text-[var(--c-text)] hover:bg-[var(--c-glass)]")
+                  ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md shadow-orange-500/20 scale-105"
+                  : "glass text-[var(--c-text-muted)] hover:text-[var(--c-text)] hover:bg-[var(--c-glass)] hover:scale-[1.02]")
               }
             >
               {tab.label}
@@ -334,11 +336,23 @@ export default function GroupsPage() {
 
         {/* Loading state */}
         {loading && (
-          <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <div className="w-10 h-10 border-3 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
-            <p className="text-[var(--c-text-muted)] text-sm">
-              Chargement des groupes...
-            </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="rounded-2xl animate-shimmer overflow-hidden" style={{ border: "1px solid var(--c-border)" }}>
+                <div className="p-5 flex flex-col gap-3">
+                  <div className="flex items-start gap-3">
+                    <div className="w-12 h-12 rounded-xl" style={{ background: "var(--c-glass)" }} />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 rounded-lg w-3/4" style={{ background: "var(--c-glass)" }} />
+                      <div className="h-3 rounded-lg w-1/2" style={{ background: "var(--c-glass)" }} />
+                    </div>
+                  </div>
+                  <div className="h-3 rounded-lg w-full" style={{ background: "var(--c-glass)" }} />
+                  <div className="h-3 rounded-lg w-2/3" style={{ background: "var(--c-glass)" }} />
+                  <div className="h-9 rounded-xl w-full mt-auto" style={{ background: "var(--c-glass)" }} />
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
@@ -380,11 +394,11 @@ export default function GroupsPage() {
 
         {/* Group cards grid */}
         {!loading && !fetchError && filteredGroups.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
             {filteredGroups.map((group) => (
               <div
                 key={group.id}
-                className="glass-strong rounded-2xl p-5 flex flex-col gap-3 hover:scale-[1.01] transition-all duration-200 border border-[var(--c-border)]"
+                className="glass-strong rounded-2xl p-5 flex flex-col gap-3 card-hover animate-slide-up border border-[var(--c-border)]"
               >
                 {/* Icon + Name */}
                 <div className="flex items-start gap-3">
@@ -399,12 +413,23 @@ export default function GroupsPage() {
                       {group.name}
                     </Link>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-xs text-[var(--c-text-muted)]">
-                        {group.member_count}{" "}
-                        {group.member_count === 1 ? "membre" : "membres"}
-                      </span>
+                      {/* Overlapping avatar stack */}
+                      <div className="flex items-center -space-x-1.5 group/avatars hover:space-x-0.5 transition-all duration-300">
+                        {Array.from({ length: Math.min(group.member_count, 3) }).map((_, i) => (
+                          <div
+                            key={i}
+                            className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold border border-[var(--c-card)] transition-transform duration-300 group-hover/avatars:scale-110"
+                            style={{ background: ["#f97316", "#a78bfa", "#22c55e", "#3b82f6"][i % 4], zIndex: 3 - i }}
+                          >
+                            {CATEGORY_ICONS[group.category]?.slice(0, 1) || "🐾"}
+                          </div>
+                        ))}
+                        <span className="text-[10px] text-[var(--c-text-muted)] ml-1.5">
+                          {group.member_count}
+                        </span>
+                      </div>
                       <span className="w-1 h-1 rounded-full bg-[var(--c-text-muted)] opacity-40" />
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--c-glass)] text-[var(--c-text-muted)]">
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--c-glass)] text-[var(--c-text-muted)] transition-all duration-200">
                         {group.category}
                       </span>
                     </div>
@@ -566,10 +591,10 @@ export default function GroupsPage() {
                         setForm((f) => ({ ...f, category: cat.value }))
                       }
                       className={
-                        "px-3.5 py-1.5 rounded-full text-sm font-medium transition-all " +
+                        "px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ease-out " +
                         (form.category === cat.value
-                          ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md"
-                          : "border border-[var(--c-border)] text-[var(--c-text-muted)] hover:text-[var(--c-text)] hover:border-orange-500/30")
+                          ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md scale-105"
+                          : "border border-[var(--c-border)] text-[var(--c-text-muted)] hover:text-[var(--c-text)] hover:border-orange-500/30 hover:scale-[1.02]")
                       }
                     >
                       {CATEGORY_ICONS[cat.value]} {cat.label}

@@ -11,6 +11,7 @@ import Image from "next/image";
 import BlockReportModal from "@/lib/components/BlockReportModal";
 import SuperFlairModal from "@/lib/components/SuperFlairModal";
 import CompatibilityBadge from "@/lib/components/CompatibilityBadge";
+import ConfettiOverlay from "@/lib/components/ConfettiOverlay";
 import { formatAge } from "@/lib/utils";
 import type { AnimalRow, AnimalWithCompat } from "@/lib/types";
 
@@ -583,14 +584,36 @@ export default function FlairerPage() {
         </div>
       )}
 
-      {/* Coup de Truffe */}
+      {/* Coup de Truffe - Celebratory match modal */}
+      <ConfettiOverlay active={showCoupDeTruffe} />
       {showCoupDeTruffe && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md" onClick={() => setShowCoupDeTruffe(false)}>
-          <div className="relative glass-strong neon-orange p-6 md:p-10 text-center max-w-sm mx-4 animate-scale-in" onClick={e => e.stopPropagation()}>
+          <div className="relative glass-strong neon-orange p-6 md:p-10 text-center max-w-sm mx-4 animate-bounce-in" onClick={e => e.stopPropagation()}>
             <div className="absolute inset-0 rounded-[24px] gradient-border pointer-events-none" />
-            <div className="text-7xl mb-4 animate-float">{"🐾"}</div>
-            <h2 className="text-3xl font-extrabold gradient-text-warm mb-1">Coup de Truffe !</h2>
-            <p className="text-[var(--c-text-muted)] text-sm mb-4">Match mutuel avec {animal?.name} {"🎉"}</p>
+
+            {/* Both animal photos with heart between them */}
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="w-20 h-20 rounded-full overflow-hidden ring-3 ring-orange-400/60 shadow-[0_0_20px_rgba(249,115,22,0.3)] flex-shrink-0 relative">
+                {activeMyAnimal?.photo_url
+                  ? <Image src={activeMyAnimal.photo_url} alt={activeMyAnimal.name || ""} fill className="object-cover" sizes="80px" />
+                  : <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-[var(--c-text-muted)]" style={{ background: "var(--c-deep)" }}>{activeMyAnimal?.name?.charAt(0)}</div>
+                }
+              </div>
+              <div className="text-4xl animate-heart-burst">{"❤️"}</div>
+              <div className="w-20 h-20 rounded-full overflow-hidden ring-3 ring-orange-400/60 shadow-[0_0_20px_rgba(249,115,22,0.3)] flex-shrink-0 relative">
+                {animal?.photo_url
+                  ? <Image src={animal.photo_url} alt={animal.name || ""} fill className="object-cover" sizes="80px" />
+                  : <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-[var(--c-text-muted)]" style={{ background: "var(--c-deep)" }}>{animal?.name?.charAt(0)}</div>
+                }
+              </div>
+            </div>
+
+            <h2 className="text-3xl font-extrabold gradient-text-warm mb-1 animate-bounce-in" style={{ animationDelay: "0.15s" }}>
+              {"🎉"} Coup de Truffe !
+            </h2>
+            <p className="text-[var(--c-text-muted)] text-sm mb-4">
+              {activeMyAnimal?.name || "Ton compagnon"} et {animal?.name} se sont mutuellement flaires !
+            </p>
             <div className="text-left text-xs text-[var(--c-text-muted)] bg-[var(--c-bg)]/40 rounded-xl p-3 mb-5 space-y-1.5">
               <p className="font-semibold text-[var(--c-text)] text-sm mb-1">{"🤝"} Charte Pawly</p>
               <p>{"🐶"} Respecte les animaux et leurs humains</p>
@@ -600,9 +623,9 @@ export default function FlairerPage() {
             </div>
             <div className="flex gap-3">
               {mutualMatchData && (
-                <Link href={"/matches/" + mutualMatchData.id} className="flex-1 py-3 btn-futuristic text-center text-sm">{"💬"} Discuter</Link>
+                <Link href={"/matches/" + mutualMatchData.id} className="flex-1 py-3 btn-futuristic text-center text-sm btn-press">{"💬"} Discuter</Link>
               )}
-              <button onClick={() => setShowCoupDeTruffe(false)} className="px-4 py-3 glass text-[var(--c-text-muted)] text-sm hover:bg-[var(--c-card)] transition-all duration-300">Plus tard</button>
+              <button onClick={() => setShowCoupDeTruffe(false)} className="px-4 py-3 glass text-[var(--c-text-muted)] text-sm hover:bg-[var(--c-card)] transition-all duration-300 btn-press">Plus tard</button>
             </div>
           </div>
         </div>
@@ -676,8 +699,21 @@ export default function FlairerPage() {
         </div>
       </div>
 
-      {/* Card stack */}
+      {/* Card stack - 3 cards for depth effect */}
       <div className="w-full max-w-md relative" style={{ height: "62vh" }}>
+        {/* Third card (deepest) */}
+        {animals[currentIndex + 2] && (
+          <div className="absolute inset-0 rounded-3xl overflow-hidden glass"
+            style={{ transform: "scale(0.88) translateY(16px)", zIndex: 0, opacity: 0.25 }}>
+            <div className="w-full h-full bg-[var(--c-deep,#1a1225)] flex items-center justify-center relative">
+              {animals[currentIndex + 2].photo_url
+                ? <Image src={animals[currentIndex + 2].photo_url!} alt="" fill className="object-cover opacity-30" draggable={false} sizes="(max-width: 768px) 100vw, 448px" />
+                : <span className="text-[var(--c-text-muted)] text-4xl font-bold">{(animals[currentIndex + 2] as AnimalRow).name?.charAt(0)}</span>}
+            </div>
+          </div>
+        )}
+
+        {/* Second card (behind current) */}
         {nextAnimal && (
           <div className="absolute inset-0 rounded-3xl overflow-hidden glass"
             style={{ transform:`scale(${nextCardScale}) translateY(${(1-nextCardScale)*30}px)`, transition:isDragging?"none":"transform 0.4s ease", zIndex:1, opacity:0.5 }}>
@@ -691,25 +727,27 @@ export default function FlairerPage() {
 
         {/* Swipe indicator overlays with neon glows */}
         {likeOpacity > 0.2 && (
-          <div className="absolute top-8 left-6 z-20 rounded-2xl rotate-[-12deg] px-5 py-2 font-black text-base text-white"
+          <div className="absolute top-8 left-6 z-20 rounded-2xl rotate-[-12deg] px-5 py-2 font-black text-lg text-white"
             style={{
               opacity: likeOpacity,
               background: "linear-gradient(135deg, rgba(52,211,153,0.9), rgba(16,185,129,0.9))",
               boxShadow: `0 0 ${30 * likeOpacity}px rgba(52,211,153,0.5)`,
               border: "2px solid rgba(52,211,153,0.6)",
+              transform: `rotate(-12deg) scale(${0.8 + likeOpacity * 0.2})`,
             }}>
-            {"❤️"} FLAIRER !
+            {"💚"} LIKE
           </div>
         )}
         {passOpacity > 0.2 && (
-          <div className="absolute top-8 right-6 z-20 rounded-2xl rotate-[12deg] px-5 py-2 font-black text-base text-white"
+          <div className="absolute top-8 right-6 z-20 rounded-2xl rotate-[12deg] px-5 py-2 font-black text-lg text-white"
             style={{
               opacity: passOpacity,
               background: "linear-gradient(135deg, rgba(239,68,68,0.9), rgba(220,38,38,0.9))",
               boxShadow: `0 0 ${30 * passOpacity}px rgba(239,68,68,0.5)`,
               border: "2px solid rgba(239,68,68,0.6)",
+              transform: `rotate(12deg) scale(${0.8 + passOpacity * 0.2})`,
             }}>
-            PASSER {"✕"}
+            NOPE {"❌"}
           </div>
         )}
         {superOpacity > 0.2 && (
@@ -726,7 +764,7 @@ export default function FlairerPage() {
 
         {/* Main card with glassmorphism */}
         <div ref={cardRef}
-          className={`absolute inset-0 glass-strong rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing z-10 ${cardEntering ? "card-enter" : ""}`}
+          className={`absolute inset-0 glass-strong rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing z-10 ${cardEntering ? "card-enter animate-fade-in-scale" : ""}`}
           style={cardStyle}
           onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
           onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}
@@ -756,7 +794,7 @@ export default function FlairerPage() {
 
             {/* Compatibility badge with neon glow + Pourquoi tooltip */}
             {compat && activeMyAnimal && (
-              <div className="compat-in absolute top-3 right-3 z-10">
+              <div className="compat-in animate-badge-bounce absolute top-3 right-3 z-10">
                 <div
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass font-bold cursor-pointer"
                   style={{
@@ -883,9 +921,9 @@ export default function FlairerPage() {
         {/* Pass button - red neon glow on hover */}
         <button onClick={handlePass}
           className="w-14 h-14 glass rounded-full flex items-center justify-center
-            transition-all duration-300 group
+            transition-all duration-300 group btn-press
             hover:shadow-[0_0_25px_rgba(239,68,68,0.4),0_0_50px_rgba(239,68,68,0.15)]
-            hover:border-red-500/40 hover:scale-110 active:scale-95"
+            hover:border-red-500/40 hover:scale-110"
           style={{ borderColor: "var(--c-border)" }}>
           <svg className="w-6 h-6 text-[var(--c-text-muted)] group-hover:text-red-400 transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -895,9 +933,9 @@ export default function FlairerPage() {
         {/* Super like button - purple neon glow on hover */}
         <button onClick={() => handleLike(true)}
           className="w-12 h-12 glass rounded-full flex items-center justify-center
-            transition-all duration-300 group
+            transition-all duration-300 group btn-press
             hover:shadow-[0_0_25px_rgba(167,139,250,0.4),0_0_50px_rgba(167,139,250,0.15)]
-            hover:border-purple-500/40 hover:scale-110 active:scale-95"
+            hover:border-purple-500/40 hover:scale-110"
           style={{ borderColor: "rgba(167,139,250,0.3)", background: "rgba(167,139,250,0.08)" }}>
           <span className="text-xl group-hover:scale-110 transition-transform duration-300">{"⚡"}</span>
         </button>
@@ -905,8 +943,8 @@ export default function FlairerPage() {
         {/* Like button - green/orange neon glow */}
         <button onClick={() => handleLike()}
           className="w-16 h-16 rounded-full flex items-center justify-center
-            transition-all duration-300
-            hover:scale-110 active:scale-95 animate-pulse-glow"
+            transition-all duration-300 btn-press
+            hover:scale-110 animate-pulse-glow"
           style={{
             background: "linear-gradient(135deg, #F97316, #EA580C)",
             boxShadow: "0 0 20px rgba(249,115,22,0.3), 0 0 60px rgba(249,115,22,0.1)",

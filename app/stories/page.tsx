@@ -621,10 +621,10 @@ export default function StoriesPage() {
       return;
     }
 
-    // Tap navigation
+    // Tap navigation: left 30% = previous, right 70% = next (Instagram-style)
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
-    if (x < rect.width / 3) {
+    if (x < rect.width * 0.3) {
       goPrev();
     } else {
       goNext();
@@ -863,17 +863,18 @@ export default function StoriesPage() {
       className="fixed inset-0 z-[9999] select-none overflow-hidden"
       style={{ width: "100vw", height: "100dvh", background: "#000" }}
     >
-      {/* ---- Story content with swipe offset + transition ---- */}
+      {/* ---- Story content with swipe offset + crossfade transition ---- */}
       <div
-        className="absolute inset-0"
+        key={`story-${groupIdx}-${storyIdx}`}
+        className="absolute inset-0 animate-story-crossfade"
         style={{
           transform: `translateX(${swipeOffset}px)`,
-          opacity: transitioning ? 0 : 1,
+          opacity: transitioning ? 0 : undefined,
           transition: transitioning
             ? "opacity 0.15s ease-out"
             : swipeOffset !== 0
             ? "none"
-            : "opacity 0.15s ease-in",
+            : undefined,
         }}
         onMouseDown={handlePointerDown}
         onMouseUp={handlePointerUp}
@@ -882,7 +883,7 @@ export default function StoriesPage() {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* ---- Background media ---- */}
+        {/* ---- Background media with fade-in-scale on load ---- */}
         {(() => {
           const effectiveUrl = row.media_url || row.image_url || null;
           if (story.mediaType === "video" && effectiveUrl) {
@@ -898,7 +899,7 @@ export default function StoriesPage() {
                 loop={false}
                 onTimeUpdate={handleVideoTimeUpdate}
                 onEnded={handleVideoEnded}
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover animate-fade-in-scale"
                 style={{ aspectRatio: "9/16" }}
               />
             );
@@ -910,7 +911,7 @@ export default function StoriesPage() {
                 src={effectiveUrl}
                 alt={row.caption || "Story"}
                 fill
-                className="object-cover"
+                className="object-cover animate-fade-in-scale"
                 sizes="100vw"
                 priority
               />
@@ -918,7 +919,7 @@ export default function StoriesPage() {
           }
           return (
             /* Text-only / template: gradient background */
-            <div className="absolute inset-0" style={{ background: gradientBg }} />
+            <div className="absolute inset-0 animate-fade-in-scale" style={{ background: gradientBg }} />
           );
         })()}
 
@@ -949,7 +950,9 @@ export default function StoriesPage() {
                       ? `${progress}%`
                       : "0%",
                   background: "#fff",
-                  transition: idx === storyIdx ? "none" : "width 0.3s",
+                  transition: idx === storyIdx
+                    ? `width ${PROGRESS_TICK}ms linear`
+                    : "width 0.3s ease",
                 }}
               />
             </div>
@@ -961,7 +964,7 @@ export default function StoriesPage() {
           className="absolute left-0 right-0 px-4 flex items-center justify-between z-10"
           style={{ top: "calc(max(0.75rem, env(safe-area-inset-top, 0px)) + 12px)" }}
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 animate-author-slide-in">
             {/* Avatar */}
             <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/30 flex-shrink-0">
               {group.avatarUrl ? (
@@ -1158,7 +1161,7 @@ export default function StoriesPage() {
         {/* Reply input (only for other people's stories) */}
         {!isOwnStory && (
           <div
-            className="w-full px-4 mb-1"
+            className="w-full px-4 mb-1 animate-reply-slide-up"
             onMouseDown={(e) => e.stopPropagation()}
             onMouseUp={(e) => e.stopPropagation()}
             onClick={(e) => e.stopPropagation()}

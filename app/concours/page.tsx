@@ -218,19 +218,23 @@ export default function ConcoursPage() {
               { label: "heures", value: countdown.hours },
               { label: "min", value: countdown.minutes },
               { label: "sec", value: countdown.seconds },
-            ].map((unit) => (
-              <div
-                key={unit.label}
-                className="flex flex-col items-center px-4 py-2 rounded-xl bg-[var(--c-glass)] min-w-[60px]"
-              >
-                <span className="text-xl font-bold text-[var(--c-text)]">
-                  {String(unit.value).padStart(2, "0")}
-                </span>
-                <span className="text-[10px] text-[var(--c-text-muted)] uppercase tracking-wider">
-                  {unit.label}
-                </span>
-              </div>
-            ))}
+            ].map((unit) => {
+              const isUrgent = countdown.days === 0 && countdown.hours === 0;
+              return (
+                <div
+                  key={unit.label}
+                  className={`flex flex-col items-center px-4 py-2 rounded-xl bg-[var(--c-glass)] min-w-[60px] transition-all ${isUrgent ? "animate-pulse" : ""}`}
+                  style={isUrgent ? { boxShadow: "0 0 12px rgba(239,68,68,0.3)", borderColor: "rgba(239,68,68,0.3)" } : {}}
+                >
+                  <span className={`text-xl font-bold ${isUrgent ? "text-red-400" : "text-[var(--c-text)]"}`}>
+                    {String(unit.value).padStart(2, "0")}
+                  </span>
+                  <span className="text-[10px] text-[var(--c-text-muted)] uppercase tracking-wider">
+                    {unit.label}
+                  </span>
+                </div>
+              );
+            })}
             {countdown.isOver && (
               <span className="self-center text-sm font-semibold text-orange-400">
                 Concours termine !
@@ -254,7 +258,7 @@ export default function ConcoursPage() {
           {!countdown.isOver && (
             <button
               onClick={openParticipateModal}
-              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-purple-600 text-white text-sm font-bold shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 hover:scale-[1.02] transition-all"
+              className="btn-press px-6 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-purple-600 text-white text-sm font-bold shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 transition-all"
             >
               Participer au concours
             </button>
@@ -270,11 +274,19 @@ export default function ConcoursPage() {
             </h3>
 
             {loading ? (
-              <div className="flex flex-col items-center justify-center py-16 gap-3">
-                <div className="w-10 h-10 border-3 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
-                <p className="text-[var(--c-text-muted)] text-sm">
-                  Chargement des participants...
-                </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 stagger-children">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="rounded-2xl animate-shimmer overflow-hidden" style={{ border: "1px solid var(--c-border)" }}>
+                    <div className="aspect-square w-full" style={{ background: "var(--c-glass)" }} />
+                    <div className="p-4 space-y-3">
+                      <div className="flex justify-between">
+                        <div className="h-4 rounded-lg w-1/3" style={{ background: "var(--c-glass)" }} />
+                        <div className="h-3 rounded-lg w-1/4" style={{ background: "var(--c-glass)" }} />
+                      </div>
+                      <div className="h-9 rounded-xl w-full" style={{ background: "var(--c-glass)" }} />
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : entries.length === 0 ? (
               <div className="glass-strong rounded-2xl p-10 text-center">
@@ -287,19 +299,20 @@ export default function ConcoursPage() {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {entries.map((entry) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 stagger-children">
+                {entries.map((entry, entryIdx) => (
                   <div
                     key={entry.id}
-                    className="glass-strong rounded-2xl overflow-hidden border border-[var(--c-border)] hover:scale-[1.01] transition-all duration-200"
+                    className="glass-strong rounded-2xl overflow-hidden border border-[var(--c-border)] card-hover animate-fade-in-scale"
+                    style={{ animationDelay: `${entryIdx * 0.08}s`, animationFillMode: "both" }}
                   >
                     {/* Photo */}
-                    <div className="relative aspect-square w-full bg-[var(--c-deep)]">
+                    <div className="relative aspect-square w-full bg-[var(--c-deep)] overflow-hidden">
                       <Image
                         src={entry.photo_url}
                         alt={entry.animal?.name || "Photo concours"}
                         fill
-                        className="object-cover"
+                        className="object-cover transition-transform duration-500 ease-out hover:scale-110"
                         sizes="(max-width: 640px) 100vw, 50vw"
                       />
                     </div>
@@ -336,7 +349,7 @@ export default function ConcoursPage() {
                         onClick={() => handleVote(entry.id)}
                         disabled={voting === entry.id || countdown.isOver}
                         className={
-                          "w-full py-2 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-1.5 " +
+                          "btn-press w-full py-2 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-1.5 relative overflow-hidden " +
                           (entry.has_voted
                             ? "bg-gradient-to-r from-pink-500 to-red-500 text-white shadow-md shadow-pink-500/20"
                             : "border border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-pink-400/50 hover:text-pink-400 hover:bg-pink-500/10")
@@ -375,11 +388,12 @@ export default function ConcoursPage() {
                 <h3 className="text-base font-bold text-[var(--c-text)] mb-4">
                   Classement
                 </h3>
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3 stagger-children">
                   {leaderboard.map((entry, idx) => (
                     <div
                       key={entry.id}
-                      className="flex items-center gap-3"
+                      className="flex items-center gap-3 animate-slide-up"
+                      style={{ animationDelay: `${idx * 0.1}s`, animationFillMode: "both" }}
                     >
                       <span className="text-lg w-7 text-center">
                         {MEDAL[idx]}

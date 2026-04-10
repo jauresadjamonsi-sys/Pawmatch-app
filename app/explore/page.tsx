@@ -340,7 +340,7 @@ export default function ExplorePage() {
             placeholder="Rechercher par nom, race, canton..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-2xl text-sm outline-none"
+            className="w-full pl-10 pr-4 py-3 rounded-2xl text-sm outline-none transition-all duration-300 focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500/50"
             style={{ background: "var(--c-glass, rgba(255,255,255,0.05))", border: "1px solid var(--c-border)", color: "var(--c-text)" }}
           />
         </div>
@@ -352,11 +352,13 @@ export default function ExplorePage() {
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-300 ease-out"
             style={{
               background: tab === t.key ? "linear-gradient(135deg, #f97316, #a78bfa)" : "var(--c-glass, rgba(255,255,255,0.05))",
               color: tab === t.key ? "#fff" : "var(--c-text-muted)",
               border: tab === t.key ? "none" : "1px solid var(--c-border)",
+              transform: tab === t.key ? "scale(1.05)" : "scale(1)",
+              boxShadow: tab === t.key ? "0 4px 12px rgba(249,115,22,0.25)" : "none",
             }}
           >
             <span>{t.icon}</span>
@@ -367,16 +369,17 @@ export default function ExplorePage() {
 
       {/* Species filter chips */}
       {tab === "species" && (
-        <div className="flex gap-2 mb-4 overflow-x-auto pb-1 scrollbar-hide">
+        <div className="flex gap-2 mb-4 overflow-x-auto pb-1 scrollbar-hide stagger-children">
           {SPECIES_FILTERS.map((sp) => (
             <button
               key={sp}
               onClick={() => setSpeciesFilter(speciesFilter === sp ? null : sp)}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-300 ease-out"
               style={{
                 background: speciesFilter === sp ? "rgba(249,115,22,0.15)" : "var(--c-glass, rgba(255,255,255,0.05))",
                 color: speciesFilter === sp ? "#f97316" : "var(--c-text-muted)",
                 border: `1px solid ${speciesFilter === sp ? "rgba(249,115,22,0.3)" : "var(--c-border)"}`,
+                transform: speciesFilter === sp ? "scale(1.08)" : "scale(1)",
               }}
             >
               <span>{EMOJI_MAP[sp] || "🐾"}</span>
@@ -430,9 +433,9 @@ export default function ExplorePage() {
 
           {/* Events loading */}
           {eventsLoading ? (
-            <div className="space-y-3">
+            <div className="space-y-3 stagger-children">
               {[0, 1, 2].map(i => (
-                <div key={i} className="glass rounded-2xl animate-breathe" style={{ height: 130, animationDelay: `${i * 0.15}s` }} />
+                <div key={i} className="glass rounded-2xl animate-shimmer" style={{ height: 130 }} />
               ))}
             </div>
           ) : events.length === 0 ? (
@@ -484,7 +487,7 @@ export default function ExplorePage() {
                 const colorClass = CANTON_COLORS[event.canton.charCodeAt(0) % CANTON_COLORS.length];
 
                 return (
-                  <div key={event.id} className={`glass bg-gradient-to-br ${colorClass} rounded-2xl p-4 transition-all`}>
+                  <div key={event.id} className={`glass bg-gradient-to-br ${colorClass} rounded-2xl p-4 transition-all card-hover`}>
                     {/* Header row */}
                     <div className="flex items-start justify-between gap-3 mb-2">
                       <div className="flex-1 min-w-0">
@@ -548,9 +551,11 @@ export default function ExplorePage() {
         /* ═══ ANIMALS GRID ═══ */
         <>
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 stagger-children">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="rounded-2xl animate-pulse" style={{ background: "var(--c-glass)", aspectRatio: "3/4" }} />
+                <div key={i} className="rounded-2xl animate-shimmer overflow-hidden" style={{ aspectRatio: "3/4" }}>
+                  <div className="w-full h-full" style={{ background: "var(--c-glass)" }} />
+                </div>
               ))}
             </div>
           ) : animals.length === 0 ? (
@@ -561,9 +566,9 @@ export default function ExplorePage() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 stagger-children">
               {animals.map((animal) => (
-                <Link key={animal.id} href={`/animals/${animal.id}`} className="group">
+                <Link key={animal.id} href={`/animals/${animal.id}`} className="group card-hover">
                   <div className="relative rounded-2xl overflow-hidden" style={{ aspectRatio: "3/4" }}>
                     {animal.photo_url ? (
                       <Image
@@ -600,7 +605,7 @@ export default function ExplorePage() {
               <h2 className="text-sm font-bold mb-3" style={{ color: "var(--c-text)" }}>
                 Decouvre par canton
               </h2>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 stagger-children">
                 {CANTONS.map((canton, i) => (
                   <Link
                     key={canton.code}

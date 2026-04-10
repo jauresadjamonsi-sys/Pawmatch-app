@@ -178,8 +178,8 @@ export default function BaladePage() {
     <div className="min-h-screen px-4 py-6 pb-32" style={{ background: "var(--c-deep)" }}>
       <div className="max-w-lg mx-auto">
         {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-[var(--c-text)]">Balade en cours</h1>
+        <div className="mb-6 animate-slide-up">
+          <h1 className="text-2xl font-bold gradient-text-animated">Balade en cours</h1>
           <p className="text-[var(--c-text-muted)] text-sm mt-1">
             Partagez votre position en toute securite pendant vos sorties
           </p>
@@ -211,8 +211,8 @@ export default function BaladePage() {
               <button
                 onClick={() => (sharing ? stopSharing() : startSharing())}
                 className={
-                  "relative w-14 h-7 rounded-full transition-colors duration-300 " +
-                  (sharing ? "bg-green-500" : "bg-[var(--c-border)]")
+                  "btn-press relative w-14 h-7 rounded-full transition-colors duration-300 " +
+                  (sharing ? "bg-green-500 animate-pulse-glow" : "bg-[var(--c-border)]")
                 }
               >
                 <div

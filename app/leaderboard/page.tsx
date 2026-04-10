@@ -136,7 +136,7 @@ export default function LeaderboardPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-4">
+      <div className="relative flex gap-2 mb-4">
         {[
           { key: "global", label: "Global" },
           { key: "canton", label: "Mon canton" },
@@ -144,11 +144,13 @@ export default function LeaderboardPage() {
           <button
             key={t.key}
             onClick={() => setTab(t.key as "global" | "canton")}
-            className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all"
+            className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ease-out"
             style={{
               background: tab === t.key ? "linear-gradient(135deg, #f97316, #fb923c)" : "var(--c-glass)",
               color: tab === t.key ? "#fff" : "var(--c-text-muted)",
               border: tab === t.key ? "none" : "1px solid var(--c-border)",
+              transform: tab === t.key ? "scale(1.02)" : "scale(1)",
+              boxShadow: tab === t.key ? "0 4px 15px rgba(249,115,22,0.25)" : "none",
             }}
           >
             {t.key === "global" ? "🌍 " : "📍 "}{t.label}
@@ -162,11 +164,12 @@ export default function LeaderboardPage() {
           <button
             key={sp.key}
             onClick={() => setSpeciesFilter(sp.key)}
-            className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
+            className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ease-out"
             style={{
               background: speciesFilter === sp.key ? "rgba(249,115,22,0.15)" : "var(--c-glass)",
               color: speciesFilter === sp.key ? "#f97316" : "var(--c-text-muted)",
               border: speciesFilter === sp.key ? "1.5px solid rgba(249,115,22,0.3)" : "1px solid var(--c-border)",
+              transform: speciesFilter === sp.key ? "scale(1.08)" : "scale(1)",
             }}
           >
             {sp.key !== "all" && (EMOJI_MAP[sp.key] || "")} {sp.label}
@@ -177,14 +180,20 @@ export default function LeaderboardPage() {
       {/* Loading */}
       {loading && (
         <div className="space-y-4">
-          <div className="flex justify-center gap-4">
+          <div className="flex justify-center gap-4 stagger-children">
             {[0, 1, 2].map(i => (
-              <div key={i} className="glass rounded-2xl animate-breathe" style={{ width: 110, height: 150, animationDelay: `${i * 0.15}s` }} />
+              <div key={i} className="rounded-2xl animate-shimmer overflow-hidden" style={{ width: 110, height: 150 }}>
+                <div className="w-full h-full" style={{ background: "var(--c-glass)" }} />
+              </div>
             ))}
           </div>
-          {[0, 1, 2, 3].map(i => (
-            <div key={i} className="glass rounded-xl animate-breathe" style={{ height: 64, animationDelay: `${(i + 3) * 0.1}s` }} />
-          ))}
+          <div className="stagger-children space-y-2">
+            {[0, 1, 2, 3].map(i => (
+              <div key={i} className="rounded-xl animate-shimmer overflow-hidden" style={{ height: 64 }}>
+                <div className="w-full h-full" style={{ background: "var(--c-glass)" }} />
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -205,28 +214,34 @@ export default function LeaderboardPage() {
         <div className="flex justify-center items-end gap-3 mb-6">
           {/* 2nd place */}
           {top3[1] && (
-            <PodiumCard entry={top3[1]} rank={1} />
+            <div className="animate-bounce-in" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>
+              <PodiumCard entry={top3[1]} rank={1} />
+            </div>
           )}
           {/* 1st place */}
           {top3[0] && (
-            <PodiumCard entry={top3[0]} rank={0} isFirst />
+            <div className="animate-bounce-in" style={{ animationDelay: "0s", animationFillMode: "both" }}>
+              <PodiumCard entry={top3[0]} rank={0} isFirst />
+            </div>
           )}
           {/* 3rd place */}
           {top3[2] && (
-            <PodiumCard entry={top3[2]} rank={2} />
+            <div className="animate-bounce-in" style={{ animationDelay: "0.4s", animationFillMode: "both" }}>
+              <PodiumCard entry={top3[2]} rank={2} />
+            </div>
           )}
         </div>
       )}
 
       {/* Ranking list */}
       {!loading && rest.length > 0 && (
-        <div className="space-y-2">
+        <div className="space-y-2 stagger-children">
           {rest.map((entry, idx) => (
             <Link
               key={entry.id}
               href={`/animals/${entry.id}`}
-              className="glass flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all hover:scale-[1.01]"
-              style={{ textDecoration: "none" }}
+              className="glass flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all hover:scale-[1.01] animate-slide-up"
+              style={{ textDecoration: "none", animationDelay: `${idx * 0.05}s`, animationFillMode: "both" }}
             >
               {/* Rank */}
               <span className="text-sm font-black w-7 text-center" style={{ color: "var(--c-text-muted)" }}>
@@ -262,7 +277,7 @@ export default function LeaderboardPage() {
                 <span className="text-[10px] font-semibold" style={{ color: "var(--c-text-muted)" }}>
                   ❤️ {entry.like_count}
                 </span>
-                <span className="text-xs font-black px-2 py-0.5 rounded-full" style={{
+                <span className="text-xs font-black px-2 py-0.5 rounded-full animate-count-up" style={{
                   background: "rgba(251,191,36,0.1)",
                   color: "#fbbf24",
                 }}>
@@ -289,7 +304,7 @@ function PodiumCard({ entry, rank, isFirst }: { entry: LeaderEntry; rank: number
       style={{ textDecoration: "none", width: isFirst ? 130 : 110 }}
     >
       {/* Crown / medal */}
-      <span className="text-2xl mb-1">{crowns[rank]}</span>
+      <span className={`text-2xl mb-1 ${isFirst ? "animate-wiggle" : ""}`}>{crowns[rank]}</span>
 
       {/* Photo */}
       <div
@@ -320,7 +335,7 @@ function PodiumCard({ entry, rank, isFirst }: { entry: LeaderEntry; rank: number
       </p>
 
       {/* Score badge */}
-      <span className="mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full" style={{
+      <span className="mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full animate-count-up" style={{
         background: medal.bg,
         color: "#fff",
       }}>

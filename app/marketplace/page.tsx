@@ -207,7 +207,7 @@ export default function MarketplacePage() {
           {user && (
             <button
               onClick={() => setShowModal(true)}
-              className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-[1.02]"
+              className="btn-press px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-[1.02]"
               style={{
                 background: "linear-gradient(135deg, #f97316, #a78bfa)",
                 boxShadow: "0 4px 15px rgba(249,115,22,0.3)",
@@ -224,11 +224,11 @@ export default function MarketplacePage() {
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="glass rounded-2xl overflow-hidden animate-pulse" style={{ border: "1px solid var(--c-border)" }}>
-                <div className="aspect-square" style={{ background: "var(--c-card)" }} />
+              <div key={i} className="rounded-2xl overflow-hidden" style={{ border: "1px solid var(--c-border)" }}>
+                <div className="aspect-square animate-shimmer" />
                 <div className="p-3 space-y-2">
-                  <div className="h-4 rounded" style={{ background: "var(--c-card)", width: "70%" }} />
-                  <div className="h-3 rounded" style={{ background: "var(--c-card)", width: "40%" }} />
+                  <div className="h-4 rounded animate-shimmer" style={{ width: "70%" }} />
+                  <div className="h-3 rounded animate-shimmer" style={{ width: "40%" }} />
                 </div>
               </div>
             ))}
@@ -244,11 +244,11 @@ export default function MarketplacePage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 stagger-children">
             {listings.map((listing) => (
               <div
                 key={listing.id}
-                className="glass rounded-2xl overflow-hidden transition-all hover:scale-[1.02] hover:shadow-lg"
+                className="glass rounded-2xl overflow-hidden card-hover"
                 style={{ border: "1px solid var(--c-border)" }}
               >
                 {/* Photo */}

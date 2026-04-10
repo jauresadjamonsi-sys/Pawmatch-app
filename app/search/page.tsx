@@ -272,7 +272,7 @@ export default function SearchPage() {
 
         {/* Results */}
         {!loading && query.length >= 2 && results.length > 0 && (
-          <div className="space-y-2">
+          <div className="space-y-2 stagger-children">
             <p className="text-xs text-[var(--c-text-muted)] mb-3">
               {results.length} resultat{results.length > 1 ? "s" : ""} pour &quot;{query}&quot;
             </p>
@@ -280,7 +280,7 @@ export default function SearchPage() {
               <Link
                 key={`${r.type}-${r.id}-${i}`}
                 href={r.link}
-                className="flex items-center gap-3 p-3 rounded-2xl border border-[var(--c-border)] bg-[var(--c-card)] hover:border-orange-500/30 hover:bg-orange-500/5 transition-all group"
+                className="flex items-center gap-3 p-3 rounded-2xl border border-[var(--c-border)] bg-[var(--c-card)] card-hover group"
               >
                 {/* Icon/Image */}
                 {r.image ? (
@@ -401,7 +401,7 @@ export default function SearchPage() {
             {/* Categories grid */}
             <div>
               <h3 className="text-sm font-semibold text-[var(--c-text)] mb-3">Explorer par categorie</h3>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3 stagger-children">
                 {[
                   { label: "Chiens", icon: "🐕", query: "chien", color: "from-amber-500 to-orange-600" },
                   { label: "Chats", icon: "🐱", query: "chat", color: "from-purple-500 to-pink-600" },
@@ -413,7 +413,7 @@ export default function SearchPage() {
                   <button
                     key={cat.label}
                     onClick={() => { setQuery(cat.query); setTab("animals"); }}
-                    className={`p-4 rounded-2xl bg-gradient-to-br ${cat.color} text-white text-left transition-all hover:scale-[1.02] hover:shadow-lg active:scale-95`}
+                    className={`btn-press p-4 rounded-2xl bg-gradient-to-br ${cat.color} text-white text-left card-hover`}
                   >
                     <p className="text-2xl mb-1">{cat.icon}</p>
                     <p className="text-sm font-bold">{cat.label}</p>

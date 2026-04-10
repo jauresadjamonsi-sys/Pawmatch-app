@@ -208,8 +208,8 @@ export default function UrgencePage() {
     <div className="min-h-screen pb-32" style={{ background: "var(--c-deep)" }}>
      <div className="px-4 pt-6 max-w-2xl mx-auto">
       {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-extrabold gradient-text-warm mb-2">
+      <div className="text-center mb-8 animate-slide-up">
+        <h1 className="text-3xl font-extrabold gradient-text-animated mb-2">
           {"\u{1F198}"} Animal perdu
         </h1>
         <p className="text-[var(--c-text-muted)] text-sm">
@@ -219,7 +219,7 @@ export default function UrgencePage() {
 
       {/* Success state */}
       {sent && sentAnimal ? (
-        <div className="glass-strong rounded-2xl p-6 text-center space-y-4">
+        <div className="glass-strong rounded-2xl p-6 text-center space-y-4 animate-bounce-in">
           {sentAnimal.photo_url && (
             <div className="relative w-32 h-32 mx-auto rounded-2xl overflow-hidden border-2 border-orange-500/30">
               <Image

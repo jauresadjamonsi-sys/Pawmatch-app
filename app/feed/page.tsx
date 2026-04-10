@@ -110,6 +110,21 @@ function greetingWord(): string {
 }
 
 // ---------------------------------------------------------------------------
+// Heart overlay for double-tap like
+// ---------------------------------------------------------------------------
+
+function HeartOverlay({ show }: { show: boolean }) {
+  if (!show) return null;
+  return (
+    <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+      <svg className="w-20 h-20 animate-heart-burst text-red-500 drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+      </svg>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
@@ -132,6 +147,9 @@ export default function FeedPage() {
   const [feedMode, setFeedMode] = useState<"algo" | "chrono">("algo");
   const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
   const [suggestions, setSuggestions] = useState<AnimalRow[]>([]);
+  const [likedReels, setLikedReels] = useState<Set<string>>(new Set());
+  const [heartReelId, setHeartReelId] = useState<string | null>(null);
+  const [heartBurstId, setHeartBurstId] = useState<string | null>(null);
 
   // -------------------------------------------------------------------------
   // Data fetching
@@ -286,6 +304,28 @@ export default function FeedPage() {
     }
   }
 
+  function toggleLikeReel(reelId: string) {
+    setLikedReels((prev) => {
+      const updated = new Set(prev);
+      if (updated.has(reelId)) {
+        updated.delete(reelId);
+      } else {
+        updated.add(reelId);
+      }
+      return updated;
+    });
+    setHeartBurstId(reelId);
+    setTimeout(() => setHeartBurstId(null), 600);
+  }
+
+  function handleDoubleTapReel(reelId: string) {
+    if (!likedReels.has(reelId)) {
+      toggleLikeReel(reelId);
+    }
+    setHeartReelId(reelId);
+    setTimeout(() => setHeartReelId(null), 800);
+  }
+
   function scrollToCard(idx: number) {
     setActiveCard(idx);
     const el = carouselRef.current?.children[idx] as HTMLElement | undefined;
@@ -378,7 +418,7 @@ export default function FeedPage() {
           <section className="glass rounded-2xl p-5 relative overflow-hidden">
             <div className="absolute -top-6 -right-6 text-[80px] opacity-10 pointer-events-none select-none animate-paw-drift">{"\uD83D\uDC3E"}</div>
             <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: "var(--c-text-muted)" }}>{formatDate()}</p>
-            <h1 className="text-2xl font-extrabold" style={{ color: "var(--c-text)" }}>
+            <h1 className="text-2xl font-extrabold gradient-text-animated">
               {greetingWord()} {firstName} {"\uD83D\uDC3E"}
             </h1>
             {profile.city && (
@@ -495,8 +535,8 @@ export default function FeedPage() {
                 {"\uD83D\uDD0D"} {nearbyAnimals.length} compagnon{nearbyAnimals.length > 1 ? "s" : ""} {animals[0]?.canton ? "dans ton canton" : "r\u00e9cents"}
               </h3>
               <div className="flex -space-x-2 mb-3">
-                {nearbyAnimals.slice(0, 5).map((a) => (
-                  <div key={a.id} className="w-10 h-10 rounded-full border-2 border-[var(--c-deep)] overflow-hidden flex-shrink-0 relative">
+                {nearbyAnimals.slice(0, 5).map((a, i) => (
+                  <div key={a.id} className="w-10 h-10 rounded-full border-2 border-[var(--c-deep)] overflow-hidden flex-shrink-0 relative animate-slide-in-right" style={{ animationDelay: `${i * 0.1}s` }}>
                     {a.photo_url ? (
                       <Image src={a.photo_url} alt={a.name} fill className="object-cover" sizes="40px" loading="lazy" placeholder="blur" blurDataURL={BLUR_PLACEHOLDER} />
                     ) : (
@@ -528,11 +568,30 @@ export default function FeedPage() {
                 {feedMode === "algo" ? "Tendances" : "Fil recent"}
               </h2>
               <div className="space-y-4">
-                {sortedFeedItems.map((item, idx) => (
-                  <div key={`feed-${idx}`}>
+                {sortedFeedItems.map((item, idx) => {
+                  const reelId = item.data.id || `reel-${idx}`;
+                  const isLiked = likedReels.has(reelId);
+                  const likesCount = (item.data.likes_count ?? 0) + (isLiked ? 1 : 0);
+
+                  return (
+                  <div key={`feed-${idx}`} className="card-hover animate-slide-up" style={{ animationDelay: `${idx * 0.08}s` }}>
                     {/* Reel feed card */}
-                    <Link href={`/reels`} className="block glass rounded-2xl overflow-hidden transition-transform active:scale-[0.98]">
-                      <div className="relative aspect-[16/9] w-full">
+                    <div className="block glass rounded-2xl overflow-hidden transition-transform active:scale-[0.98]">
+                      <div
+                        className="relative aspect-[16/9] w-full cursor-pointer select-none"
+                        onClick={() => {
+                          const now = Date.now();
+                          const el = document.getElementById(`reel-tap-${reelId}`);
+                          const last = parseInt(el?.dataset.lastTap || "0", 10);
+                          if (now - last < 300) {
+                            handleDoubleTapReel(reelId);
+                          }
+                          if (el) el.dataset.lastTap = String(now);
+                        }}
+                        id={`reel-tap-${reelId}`}
+                        data-last-tap="0"
+                      >
+                        <Link href="/reels" className="absolute inset-0 z-[1]" />
                         {item.data.thumbnail_url ? (
                           <Image src={item.data.thumbnail_url} alt={item.data.caption || "Reel"} fill className="object-cover" sizes="(max-width:640px) 100vw, 512px" loading="lazy" placeholder="blur" blurDataURL={BLUR_PLACEHOLDER} />
                         ) : item.data.animals?.photo_url ? (
@@ -542,7 +601,10 @@ export default function FeedPage() {
                             {"\uD83C\uDFAC"}
                           </div>
                         )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                        {/* Enhanced gradient overlay for readability */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/20" />
+                        {/* Heart overlay on double-tap */}
+                        <HeartOverlay show={heartReelId === reelId} />
                         {/* Score badge (algo mode) */}
                         {feedMode === "algo" && (
                           <div className="absolute top-2 right-2 px-2 py-1 rounded-full text-[10px] font-bold" style={{ background: "rgba(249,115,22,0.85)", color: "#fff" }}>
@@ -550,7 +612,7 @@ export default function FeedPage() {
                           </div>
                         )}
                         {/* Author info */}
-                        <div className="absolute bottom-2 left-3 right-3 flex items-center gap-2">
+                        <div className="absolute bottom-2 left-3 right-3 flex items-center gap-2 z-[2]">
                           <div className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0 border border-white/30">
                             {item.data.profiles?.avatar_url ? (
                               <Image src={item.data.profiles.avatar_url} alt="" width={28} height={28} className="object-cover w-full h-full" loading="lazy" />
@@ -570,26 +632,35 @@ export default function FeedPage() {
                           <p className="text-xs mb-2 line-clamp-2" style={{ color: "var(--c-text)" }}>{item.data.caption}</p>
                         )}
                         <div className="flex items-center gap-4 text-[11px]" style={{ color: "var(--c-text-muted)" }}>
-                          <span>{"\u2764\uFE0F"} {item.data.likes_count ?? 0}</span>
+                          <button
+                            className="flex items-center gap-1 btn-press transition-transform"
+                            onClick={(e) => { e.preventDefault(); toggleLikeReel(reelId); }}
+                          >
+                            <span className={heartBurstId === reelId ? "animate-heart-burst inline-block" : "inline-block transition-transform"} style={{ color: isLiked ? "#ef4444" : "var(--c-text-muted)" }}>
+                              {isLiked ? "\u2764\uFE0F" : "\uD83E\uDE76"}
+                            </span>
+                            <span className={heartBurstId === reelId ? "animate-count-up" : ""}>{likesCount}</span>
+                          </button>
                           <span>{"\uD83D\uDCAC"} {item.data.comments_count ?? 0}</span>
                           <span>{"\uD83D\uDC41"} {item.data.views_count ?? 0}</span>
                         </div>
                       </div>
-                    </Link>
+                    </div>
 
                     {/* ═══════ SUGGESTIONS POUR TOI (after 3rd item) ═══════ */}
                     {idx === 2 && suggestions.length > 0 && (
-                      <section className="mt-4 glass rounded-2xl p-4 overflow-hidden" style={{ border: "1px solid var(--c-border)" }}>
+                      <section className="mt-4 glass rounded-2xl p-4 overflow-hidden animate-fade-in-scale" style={{ border: "1px solid var(--c-border)" }}>
                         <h3 className="text-sm font-bold mb-3" style={{ color: "var(--c-text)" }}>
                           {"\u2728"} Suggestions pour toi
                         </h3>
                         <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1" style={{ scrollbarWidth: "none" }}>
-                          {suggestions.map((animal) => (
+                          {suggestions.map((animal, sIdx) => (
                             <Link
                               key={animal.id}
                               href={`/animals/${animal.id}`}
-                              className="flex-shrink-0 rounded-xl overflow-hidden transition-transform active:scale-95"
+                              className="flex-shrink-0 rounded-xl overflow-hidden transition-transform active:scale-95 animate-fade-in-scale"
                               style={{
+                                animationDelay: `${sIdx * 0.1}s`,
                                 width: 100,
                                 background: "var(--c-glass, rgba(255,255,255,0.06))",
                                 backdropFilter: "blur(12px)",
@@ -619,24 +690,26 @@ export default function FeedPage() {
                       </section>
                     )}
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </section>
           )}
 
           {/* ═══════ SUGGESTIONS (standalone when no feed items or < 3 items) ═══════ */}
           {(sortedFeedItems.length < 3 && suggestions.length > 0) && (
-            <section className="glass rounded-2xl p-4 overflow-hidden" style={{ border: "1px solid var(--c-border)" }}>
+            <section className="glass rounded-2xl p-4 overflow-hidden animate-fade-in-scale" style={{ border: "1px solid var(--c-border)" }}>
               <h3 className="text-sm font-bold mb-3" style={{ color: "var(--c-text)" }}>
                 {"\u2728"} Suggestions pour toi
               </h3>
               <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1" style={{ scrollbarWidth: "none" }}>
-                {suggestions.map((animal) => (
+                {suggestions.map((animal, sIdx) => (
                   <Link
                     key={animal.id}
                     href={`/animals/${animal.id}`}
-                    className="flex-shrink-0 rounded-xl overflow-hidden transition-transform active:scale-95"
+                    className="flex-shrink-0 rounded-xl overflow-hidden transition-transform active:scale-95 animate-fade-in-scale"
                     style={{
+                      animationDelay: `${sIdx * 0.1}s`,
                       width: 100,
                       background: "var(--c-glass, rgba(255,255,255,0.06))",
                       backdropFilter: "blur(12px)",
@@ -729,7 +802,7 @@ export default function FeedPage() {
           )}
 
           {/* ═══════ DAILY CHALLENGE ═══════ */}
-          <section className="glass rounded-2xl p-5">
+          <section className={`glass rounded-2xl p-5${!challengeDone ? " animate-wiggle" : ""}`} style={!challengeDone ? { animationIterationCount: 1 } : undefined}>
             <div className="flex items-start gap-3">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0" style={{ background: "rgba(168,85,247,0.1)" }}>
                 {"\uD83C\uDFAF"}
@@ -820,7 +893,7 @@ export default function FeedPage() {
       {/* ═══════ BADGE CELEBRATION MODAL ═══════ */}
       {showBadgeModal && activeBadge && (
         <div className="fixed inset-0 z-[100] flex items-start justify-center pt-20 bg-black/60 backdrop-blur-sm" onClick={dismissBadge}>
-          <div className="bg-[var(--c-card)] rounded-3xl p-8 max-w-xs w-full mx-4 text-center relative overflow-hidden shadow-2xl" onClick={(e) => e.stopPropagation()} style={{ animation: "badgeSlideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)" }}>
+          <div className="bg-[var(--c-card)] rounded-3xl p-8 max-w-xs w-full mx-4 text-center relative overflow-hidden shadow-2xl animate-bounce-in" onClick={(e) => e.stopPropagation()}>
             {/* Sparkles */}
             <div className="absolute inset-0 pointer-events-none">
               {Array.from({ length: 12 }).map((_, i) => (
