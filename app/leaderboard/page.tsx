@@ -48,8 +48,9 @@ export default function LeaderboardPage() {
     async function loadUser() {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const { data: profile } = await supabase.from("profiles").select("canton").eq("id", user.id).single();
-        if (profile?.canton) setMyCanton(profile.canton);
+        const { data: profile, error: profileErr } = await supabase.from("profiles").select("canton").eq("id", user.id).single();
+        // Fallback: canton column may not exist on profiles table
+        if (!profileErr && profile?.canton) setMyCanton(profile.canton);
       }
     }
     loadUser();

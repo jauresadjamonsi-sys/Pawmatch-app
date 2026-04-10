@@ -19,9 +19,21 @@ export async function GET(request: NextRequest) {
   // Always order by created_at (safe column), trending mode can be refined later
   query = query.order("created_at", { ascending: false });
 
-  const { data: reels, error } = await query.range(offset, offset + limit - 1);
+  let { data: reels, error } = await query.range(offset, offset + limit - 1);
 
-  // If RLS blocks access (no auth) or table error, return empty
+  // Fallback: if query failed (missing columns, FK relationships, or status filter issue),
+  // retry with a simpler query without joins or status filter
+  if (error) {
+    const fallback = await supabase
+      .from("reels")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
+    reels = fallback.data;
+    error = fallback.error;
+  }
+
+  // If still failing (RLS blocks access, no auth, or table missing), return empty
   if (error) return NextResponse.json({ reels: [], page, hasMore: false, error: error.message });
 
   // Check which reels the current user has liked
