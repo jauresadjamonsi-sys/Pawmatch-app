@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import PawCoinsWallet from "@/lib/components/PawCoinsWallet";
 
 export const metadata: Metadata = {
@@ -9,7 +10,15 @@ export const metadata: Metadata = {
 export default function WalletPage() {
   return (
     <main id="main-content" className="max-w-lg mx-auto px-4 py-6 pb-32">
-      <PawCoinsWallet />
+      <Suspense fallback={
+        <div className="space-y-4 stagger-children">
+          <div className="glass rounded-2xl p-8 animate-breathe" style={{ height: 160 }} />
+          <div className="glass rounded-2xl p-5 animate-breathe" style={{ height: 120, animationDelay: "0.15s" }} />
+          <div className="glass rounded-2xl p-5 animate-breathe" style={{ height: 200, animationDelay: "0.3s" }} />
+        </div>
+      }>
+        <PawCoinsWallet />
+      </Suspense>
     </main>
   );
 }

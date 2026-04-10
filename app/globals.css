@@ -1438,3 +1438,172 @@ html {
   background-size: 1rem 1rem;
   animation: progress-stripes 1s linear infinite;
 }
+
+/* ============================================
+   25. TYPOGRAPHY SYSTEM
+   Consistent scale across the app.
+   Uses Inter (loaded in layout.tsx).
+   ============================================ */
+.text-display {
+  font-size: 1.75rem; /* 28px */
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.text-title {
+  font-size: 1.25rem; /* 20px */
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.text-subtitle {
+  font-size: 1rem; /* 16px */
+  line-height: 1.4;
+  font-weight: 600;
+}
+.text-body {
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.5;
+  font-weight: 400;
+}
+.text-caption {
+  font-size: 0.75rem; /* 12px */
+  line-height: 1.4;
+  font-weight: 500;
+}
+.text-micro {
+  font-size: 0.6875rem; /* 11px */
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+/* ============================================
+   26. RESPONSIVE UTILITIES
+   ============================================ */
+
+/* Content container — max 480px on mobile, centered */
+.content-narrow {
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Full-width buttons on mobile */
+@media (max-width: 640px) {
+  .btn-responsive {
+    width: 100%;
+    display: block;
+    text-align: center;
+  }
+
+  /* Tighter padding on small screens */
+  .px-responsive {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Safe area for notched phones */
+.safe-bottom {
+  padding-bottom: max(2rem, env(safe-area-inset-bottom, 0px));
+}
+
+/* Touch targets — minimum 44px (accessibility) */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================
+   27. EMOTIONAL FEEDBACK ANIMATIONS
+   ============================================ */
+
+/* Bounce-in for emotional feedback toast */
+@keyframes emotional-bounce-in {
+  0% { opacity: 0; transform: translate(-50%, -20px) scale(0.8); }
+  50% { opacity: 1; transform: translate(-50%, 4px) scale(1.03); }
+  100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+.animate-emotional-bounce-in {
+  animation: emotional-bounce-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Wiggle for emoji in feedback toast */
+@keyframes emotional-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(-12deg); }
+  40% { transform: rotate(10deg); }
+  60% { transform: rotate(-6deg); }
+  80% { transform: rotate(4deg); }
+}
+.animate-emotional-wiggle {
+  animation: emotional-wiggle 0.6s ease-in-out 0.2s;
+}
+
+/* Score counter animation */
+@keyframes score-count-up {
+  from { opacity: 0; transform: translateY(10px) scale(0.8); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-score {
+  animation: score-count-up 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ============================================
+   28. BOTTOM NAVBAR ENHANCEMENTS
+   Native app feel for mobile bottom bar.
+   ============================================ */
+
+/* Bottom nav green glow top border */
+.bottom-nav-glow-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 5%,
+    rgba(34, 197, 94, 0.25) 20%,
+    rgba(249, 115, 22, 0.4) 50%,
+    rgba(167, 139, 250, 0.25) 80%,
+    transparent 95%
+  );
+  box-shadow: 0 -1px 8px rgba(249, 115, 22, 0.15);
+}
+
+/* Active green dot indicator below icon */
+.bottom-nav-active-dot {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+}
+
+/* Haptic-like tap scale for bottom nav items */
+.bottom-nav-item {
+  transition: transform 0.1s ease;
+}
+.bottom-nav-item:active {
+  transform: scale(0.88);
+}
+
+/* Ensure 44px touch targets for bottom nav */
+.bottom-nav-touch {
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}

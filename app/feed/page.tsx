@@ -12,6 +12,9 @@ const StoriesRing = dynamic(() => import("@/lib/components/StoriesRing"), { ssr:
 const PushPrompt = dynamic(() => import("@/lib/components/PushPrompt"), { ssr: false });
 const PromoSection = dynamic(() => import("@/lib/components/PromoSection"), { ssr: false });
 const SmartCompanion = dynamic(() => import("@/lib/components/SmartCompanion"), { ssr: false });
+const EmotionalFeedback = dynamic(() => import("@/lib/components/EmotionalFeedback"), { ssr: false });
+const ReactionBar = dynamic(() => import("@/lib/components/ReactionBar"), { ssr: false });
+const CommentSheet = dynamic(() => import("@/lib/components/CommentSheet"), { ssr: false });
 
 // Tiny 1x1 blurred placeholder for dynamic images
 const BLUR_PLACEHOLDER = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNlMmRkZDUiLz48L3N2Zz4=";
@@ -150,6 +153,8 @@ export default function FeedPage() {
   const [likedReels, setLikedReels] = useState<Set<string>>(new Set());
   const [heartReelId, setHeartReelId] = useState<string | null>(null);
   const [heartBurstId, setHeartBurstId] = useState<string | null>(null);
+  const [commentReelId, setCommentReelId] = useState<string | null>(null);
+  const [emotionalFeedback, setEmotionalFeedback] = useState<{ type: "celebration" | "encouragement" | "streak" | "milestone" | "comeback"; count?: number } | null>(null);
 
   // -------------------------------------------------------------------------
   // Data fetching
@@ -192,6 +197,24 @@ export default function FeedPage() {
         setActiveBadgeIdx(0);
         setShowBadgeModal(true);
       }
+
+      // Emotional feedback triggers
+      try {
+        const lastFeedbackDate = localStorage.getItem("pawly_feedback_date");
+        const todayDate = todayStr();
+        if (lastFeedbackDate !== todayDate) {
+          if (s.count >= 5 && s.count % 5 === 0) {
+            setEmotionalFeedback({ type: "streak", count: s.count });
+            localStorage.setItem("pawly_feedback_date", todayDate);
+          } else if (s.count === 1 && s.lastDate !== yesterdayStr()) {
+            setEmotionalFeedback({ type: "comeback" });
+            localStorage.setItem("pawly_feedback_date", todayDate);
+          } else if (mCount >= 10 && mCount % 10 === 0) {
+            setEmotionalFeedback({ type: "milestone" });
+            localStorage.setItem("pawly_feedback_date", todayDate);
+          }
+        }
+      } catch { /* ignore */ }
 
       // Challenge done today?
       try {
@@ -373,7 +396,17 @@ export default function FeedPage() {
   // -------------------------------------------------------------------------
   return (
     <>
-      <main id="main-content" className="min-h-screen px-4 pt-6 pb-32" style={{ background: "var(--c-deep)" }}>
+      {/* Emotional Feedback Toast */}
+      {emotionalFeedback && (
+        <EmotionalFeedback
+          type={emotionalFeedback.type}
+          count={emotionalFeedback.count}
+          show={!!emotionalFeedback}
+          onDismiss={() => setEmotionalFeedback(null)}
+        />
+      )}
+
+      <main id="main-content" className="min-h-screen px-4 pt-6 pb-32 page-enter" style={{ background: "var(--c-deep)" }}>
         <div className="mx-auto max-w-lg space-y-5 stagger-children">
 
           {/* ═══════ STORIES ═══════ */}
@@ -634,7 +667,8 @@ export default function FeedPage() {
                         {item.data.caption && (
                           <p className="text-xs mb-2 line-clamp-2" style={{ color: "var(--c-text)" }}>{item.data.caption}</p>
                         )}
-                        <div className="flex items-center gap-4 text-[11px]" style={{ color: "var(--c-text-muted)" }}>
+                        {/* Like + Views + Comment button row */}
+                        <div className="flex items-center gap-4 text-[11px] mb-2" style={{ color: "var(--c-text-muted)" }}>
                           <button
                             className="flex items-center gap-1 btn-press transition-transform"
                             onClick={(e) => { e.preventDefault(); toggleLikeReel(reelId); }}
@@ -644,9 +678,17 @@ export default function FeedPage() {
                             </span>
                             <span className={heartBurstId === reelId ? "animate-count-up" : ""}>{likesCount}</span>
                           </button>
-                          <span>{"\uD83D\uDCAC"} {item.data.comments_count ?? 0}</span>
+                          <button
+                            className="flex items-center gap-1 btn-press transition-transform"
+                            onClick={(e) => { e.preventDefault(); setCommentReelId(reelId); }}
+                          >
+                            <span>{"\uD83D\uDCAC"}</span>
+                            <span>{item.data.comments_count ?? 0}</span>
+                          </button>
                           <span>{"\uD83D\uDC41"} {item.data.views_count ?? 0}</span>
                         </div>
+                        {/* Emoji reactions */}
+                        <ReactionBar reelId={reelId} />
                       </div>
                     </div>
 
@@ -923,6 +965,13 @@ export default function FeedPage() {
           </div>
         </div>
       )}
+      {/* ═══════ COMMENT SHEET ═══════ */}
+      <CommentSheet
+        reelId={commentReelId || ""}
+        isOpen={!!commentReelId}
+        onClose={() => setCommentReelId(null)}
+      />
+
       {/* Badge slide-down animation */}
       <style>{`
         @keyframes badgeSlideDown {

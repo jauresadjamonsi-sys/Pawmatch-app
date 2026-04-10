@@ -44,6 +44,49 @@ export async function POST(request: Request) {
       // ═══ Premier paiement réussi ═══
       case "checkout.session.completed": {
         const session = event.data.object as any;
+
+        // ═══ PawCoins one-time purchase ═══
+        if (session.metadata?.type === "pawcoins") {
+          const pcUserId = session.metadata.user_id;
+          const coins = parseInt(session.metadata.coins || "0", 10);
+
+          if (pcUserId && coins > 0) {
+            const { data: pcProfile } = await supabaseAdmin
+              .from("profiles")
+              .select("pawcoins")
+              .eq("id", pcUserId)
+              .single();
+
+            const currentBalance = pcProfile?.pawcoins ?? 0;
+            const newBalance = currentBalance + coins;
+
+            await Promise.all([
+              supabaseAdmin
+                .from("profiles")
+                .update({ pawcoins: newBalance })
+                .eq("id", pcUserId),
+              supabaseAdmin.from("pawcoin_transactions").insert({
+                user_id: pcUserId,
+                amount: coins,
+                type: "purchase",
+                description: `Achat de ${coins} PawCoins`,
+                balance_after: newBalance,
+              }),
+              supabaseAdmin.from("notifications").insert({
+                user_id: pcUserId,
+                type: "system",
+                title: `+${coins} PawCoins!`,
+                body: `Tes ${coins} PawCoins ont ete credites sur ton compte.`,
+                link: "/wallet",
+              }),
+            ]);
+
+            console.log(`[Webhook] ✅ PawCoins: +${coins} pour ${pcUserId} (solde: ${newBalance})`);
+          }
+          break;
+        }
+
+        // ═══ Subscription purchase ═══
         const userId = session.metadata?.supabase_user_id;
         const plan = session.metadata?.plan;
 

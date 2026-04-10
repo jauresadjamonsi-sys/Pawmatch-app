@@ -340,11 +340,11 @@ export default function Navbar() {
 
       {/* ═══ MOBILE BOTTOM NAV ═══ */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 safe-area-bottom" role="navigation" aria-label="Navigation mobile" style={{
-        background: isLight ? "rgba(255,255,255,0.9)" : "rgba(15,12,26,0.88)",
-        backdropFilter: "blur(30px)", WebkitBackdropFilter: "blur(30px)",
+        background: isLight ? "rgba(255,255,255,0.92)" : "rgba(15,12,26,0.9)",
+        backdropFilter: "blur(20px) saturate(1.2)", WebkitBackdropFilter: "blur(20px) saturate(1.2)",
       }}>
-        <div className="bottom-nav-accent-line" />
-        <div className="flex items-center justify-around h-14 px-2 relative">
+        <div className="bottom-nav-glow-line" />
+        <div className="flex items-center justify-around h-[58px] px-1 relative">
           <BT href={user ? "/feed" : "/"} active={isActive("/feed") || isActive("/")} label={t.navHome} light={isLight}>
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={(isActive("/feed") || isActive("/")) ? 2.5 : 1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
@@ -487,7 +487,7 @@ function BT({ href, active, label, featured, pulse, badge, light, children }: {
 }) {
   if (featured) {
     return (
-      <Link href={href} aria-label={label} aria-current={active ? "page" : undefined} className="flex flex-col items-center -mt-5 relative">
+      <Link href={href} aria-label={label} aria-current={active ? "page" : undefined} className="bottom-nav-item flex flex-col items-center -mt-5 relative bottom-nav-touch">
         <div className={"featured-btn-ring transition-all duration-300 " + (pulse ? "nav-pulse" : "")}>
           <div className={
             "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 " +
@@ -497,17 +497,19 @@ function BT({ href, active, label, featured, pulse, badge, light, children }: {
           >{children}</div>
         </div>
         <span aria-hidden="true" className={"text-[9px] mt-1 font-medium " + (active ? "text-orange-400 font-bold" : "text-gray-500")}>{label}</span>
+        {active && <span className="bottom-nav-active-dot" style={{ bottom: "-2px" }} />}
       </Link>
     );
   }
   return (
-    <Link href={href} aria-label={label} aria-current={active ? "page" : undefined} className="flex flex-col items-center py-1 px-2 relative group">
+    <Link href={href} aria-label={label} aria-current={active ? "page" : undefined} className="bottom-nav-item flex flex-col items-center py-1 px-2 relative group bottom-nav-touch">
       {active && <span className="absolute -top-0 left-1/2 -translate-x-1/2 w-6 h-[3px] rounded-full" style={{ background: "linear-gradient(90deg, #f97316, #a78bfa)", boxShadow: "0 0 8px rgba(249,115,22,0.5)" }} />}
       <span className={"transition-all duration-300 " + (active ? "text-orange-400 scale-110 glow-float" : light ? "text-gray-500 group-hover:text-gray-700" : "text-gray-500 group-hover:text-gray-300")}
         style={active ? { filter: "drop-shadow(0 0 6px rgba(249,115,22,0.4))" } : undefined}
       >{children}</span>
       {badge && !active && <span aria-label="Nouvelles notifications" className="badge-pulse absolute top-0 right-1 w-2.5 h-2.5 rounded-full" style={{ background: "linear-gradient(135deg, #ef4444, #f97316)", boxShadow: "0 0 8px rgba(239,68,68,0.6)" }} />}
       {active && <div className="bottom-tab-active-glow" />}
+      {active && <span className="bottom-nav-active-dot" />}
       <span aria-hidden="true" className={"text-[9px] mt-0.5 " + (active ? "text-orange-400 font-bold" : light ? "text-gray-400" : "text-gray-500")}>{label}</span>
     </Link>
   );

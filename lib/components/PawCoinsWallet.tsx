@@ -1,9 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getWallet, getDailyLoginBonus, getStreakBonus } from "@/lib/services/pawcoins";
 import type { PawCoinTransaction, PawCoinTxType } from "@/lib/types";
+
+// ---------------------------------------------------------------------------
+// Coin pack types
+// ---------------------------------------------------------------------------
+
+interface CoinPack {
+  id: string;
+  coins: number;
+  price: number;
+  label: string;
+  popular: boolean;
+}
 
 // ---------------------------------------------------------------------------
 // Streak helpers
@@ -116,6 +129,7 @@ const SHOP_ITEMS = [
 ];
 
 export default function PawCoinsWallet() {
+  const searchParams = useSearchParams();
   const [balance, setBalance] = useState(0);
   const [transactions, setTransactions] = useState<PawCoinTransaction[]>([]);
   const [loading, setLoading] = useState(true);
@@ -126,6 +140,63 @@ export default function PawCoinsWallet() {
   const [shopMsg, setShopMsg] = useState<string | null>(null);
   const [streak, setStreak] = useState<StreakInfo>({ count: 0, weekDays: Array(7).fill(false) });
   const [challengeProgress, setChallengeProgress] = useState<Record<string, number>>({});
+
+  // PawCoins purchase state
+  const [coinPacks, setCoinPacks] = useState<CoinPack[]>([]);
+  const [buyingPack, setBuyingPack] = useState<string | null>(null);
+  const [purchaseToast, setPurchaseToast] = useState<string | null>(null);
+
+  // Detect ?purchase=success from Stripe redirect
+  useEffect(() => {
+    const purchaseStatus = searchParams.get("purchase");
+    const coins = searchParams.get("coins");
+    if (purchaseStatus === "success" && coins) {
+      setPurchaseToast(`+${coins} PawCoins credites sur ton compte !`);
+      // Clear the toast after 5s
+      const timer = setTimeout(() => setPurchaseToast(null), 5000);
+      // Remove query params from URL without reload
+      window.history.replaceState({}, "", "/wallet");
+      return () => clearTimeout(timer);
+    }
+    if (purchaseStatus === "cancelled") {
+      setPurchaseToast("Achat annule.");
+      const timer = setTimeout(() => setPurchaseToast(null), 4000);
+      window.history.replaceState({}, "", "/wallet");
+      return () => clearTimeout(timer);
+    }
+  }, [searchParams]);
+
+  // Fetch coin packs
+  useEffect(() => {
+    fetch("/api/stripe/pawcoins")
+      .then((res) => res.json())
+      .then((data) => setCoinPacks(data.packs || []))
+      .catch(() => {});
+  }, []);
+
+  async function handleBuyPack(packId: string) {
+    if (buyingPack) return;
+    setBuyingPack(packId);
+    try {
+      const res = await fetch("/api/stripe/pawcoins", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ packId }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setPurchaseToast(data.error || "Erreur, reessaye.");
+        setTimeout(() => setPurchaseToast(null), 4000);
+        setBuyingPack(null);
+      }
+    } catch {
+      setPurchaseToast("Erreur de connexion.");
+      setTimeout(() => setPurchaseToast(null), 4000);
+      setBuyingPack(null);
+    }
+  }
 
   useEffect(() => {
     async function load() {
@@ -246,8 +317,31 @@ export default function PawCoinsWallet() {
     );
   }
 
+  // Format price in CHF
+  function formatCHF(cents: number) {
+    return `CHF ${(cents / 100).toFixed(2)}`;
+  }
+
   return (
     <div className="space-y-5">
+      {/* Purchase toast */}
+      {purchaseToast && (
+        <div
+          className="animate-slide-up rounded-2xl p-4 text-center text-sm font-bold"
+          style={{
+            background: purchaseToast.startsWith("+")
+              ? "linear-gradient(135deg, rgba(52,211,153,0.15), rgba(16,185,129,0.1))"
+              : "rgba(239,68,68,0.1)",
+            color: purchaseToast.startsWith("+") ? "#34d399" : "#ef4444",
+            border: purchaseToast.startsWith("+")
+              ? "1px solid rgba(52,211,153,0.3)"
+              : "1px solid rgba(239,68,68,0.3)",
+          }}
+        >
+          {purchaseToast}
+        </div>
+      )}
+
       {/* Balance Card */}
       <section className="glass-strong rounded-2xl p-6 text-center relative overflow-hidden">
         <div className="absolute -top-8 -right-8 text-[100px] opacity-5 pointer-events-none select-none">🪙</div>
@@ -275,6 +369,89 @@ export default function PawCoinsWallet() {
           {claiming ? "..." : claimResult || "☀️ Reclamer le bonus quotidien (+5)"}
         </button>
       </section>
+
+      {/* Buy PawCoins */}
+      {coinPacks.length > 0 && (
+        <section className="glass rounded-2xl p-5 relative overflow-hidden">
+          <div className="absolute -top-6 -right-6 text-[80px] opacity-5 pointer-events-none select-none">
+            {"\uD83D\uDCB0"}
+          </div>
+          <h2
+            className="text-sm font-bold uppercase tracking-wider mb-4"
+            style={{ color: "var(--c-text-muted)" }}
+          >
+            Acheter des PawCoins
+          </h2>
+          <div className="grid grid-cols-2 gap-3">
+            {coinPacks.map((pack, idx) => (
+              <div
+                key={pack.id}
+                className="animate-slide-up relative rounded-xl p-4 flex flex-col items-center text-center transition-all"
+                style={{
+                  animationDelay: `${idx * 0.08}s`,
+                  animationFillMode: "backwards",
+                  background:
+                    "linear-gradient(135deg, rgba(251,191,36,0.06), rgba(245,158,11,0.03))",
+                  border: pack.popular
+                    ? "2px solid rgba(251,191,36,0.5)"
+                    : "1px solid var(--c-border)",
+                  boxShadow: pack.popular
+                    ? "0 0 20px rgba(251,191,36,0.1), inset 0 1px 0 rgba(255,215,0,0.15)"
+                    : "none",
+                }}
+              >
+                {pack.popular && (
+                  <span
+                    className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-3 py-0.5 text-[10px] font-bold uppercase tracking-wide rounded-full text-white"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #fbbf24, #f59e0b)",
+                      boxShadow: "0 2px 8px rgba(251,191,36,0.3)",
+                    }}
+                  >
+                    Populaire
+                  </span>
+                )}
+
+                <span className="text-3xl mb-1">{"\uD83E\uDE99"}</span>
+                <p
+                  className="text-lg font-black mb-0.5"
+                  style={{ color: "#fbbf24" }}
+                >
+                  {pack.coins}
+                </p>
+                <p
+                  className="text-[10px] mb-3"
+                  style={{ color: "var(--c-text-muted)" }}
+                >
+                  {formatCHF(pack.price)}
+                </p>
+
+                <button
+                  onClick={() => handleBuyPack(pack.id)}
+                  disabled={!!buyingPack}
+                  className="btn-press w-full py-2 rounded-xl font-bold text-xs transition-all disabled:opacity-50"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #fbbf24, #f59e0b)",
+                    color: "#fff",
+                    boxShadow: "0 3px 12px rgba(251,191,36,0.25)",
+                    cursor: buyingPack ? "wait" : "pointer",
+                  }}
+                >
+                  {buyingPack === pack.id ? "Redirection..." : "Acheter"}
+                </button>
+              </div>
+            ))}
+          </div>
+          <p
+            className="text-[10px] text-center mt-3"
+            style={{ color: "var(--c-text-muted)" }}
+          >
+            Paiement securise par Stripe
+          </p>
+        </section>
+      )}
 
       {/* Streak Display */}
       <section className="glass rounded-2xl p-5 relative overflow-hidden">
