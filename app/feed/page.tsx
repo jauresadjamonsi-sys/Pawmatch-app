@@ -54,7 +54,7 @@ function computeRecencyBonus(createdAt: string): number {
 }
 
 function scoreFeedItem(item: { likes_count: number; comments_count: number; created_at: string }): number {
-  return (item.likes_count * 3) + (item.comments_count * 5) + computeRecencyBonus(item.created_at);
+  return ((item.likes_count ?? 0) * 3) + ((item.comments_count ?? 0) * 5) + computeRecencyBonus(item.created_at);
 }
 
 // ---------------------------------------------------------------------------
@@ -143,7 +143,7 @@ export default function FeedPage() {
       if (!user) { setLoading(false); return; }
 
       const [profileRes, animalsRes, matchRes, msgRes] = await Promise.all([
-        supabase.from("profiles").select("id, full_name, email, avatar_url, role, subscription, city, created_at").eq("id", user.id).single(),
+        supabase.from("profiles").select("id, full_name, email, avatar_url, role, subscription, city, canton, created_at").eq("id", user.id).single(),
         supabase.from("animals").select("id, name, species, breed, photo_url, canton, city, created_by, age_months, gender, traits").eq("created_by", user.id).order("created_at", { ascending: false }),
         supabase.from("matches").select("*", { count: "exact", head: true }).or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`),
         supabase.from("messages").select("*", { count: "exact", head: true }).eq("sender_id", user.id),
@@ -181,71 +181,73 @@ export default function FeedPage() {
 
       setLoading(false);
 
-      // Secondary queries (non-blocking)
+      // Secondary queries (all in parallel for speed)
       const myCanton = anims[0]?.canton || prof?.canton;
       const nearbyQuery = myCanton
         ? supabase.from("animals").select("id, name, species, breed, photo_url, canton, city, created_by, age_months, gender, traits").eq("canton", myCanton).neq("created_by", user.id).order("created_at", { ascending: false }).limit(6)
         : supabase.from("animals").select("id, name, species, breed, photo_url, canton, city, created_by, age_months, gender, traits").neq("created_by", user.id).order("created_at", { ascending: false }).limit(6);
-      Promise.resolve(nearbyQuery).then(({ data }) => setNearbyAnimals((data || []) as unknown as AnimalRow[])).catch(() => {});
 
-      Promise.resolve(
+      const [nearbyRes, newMatchesRes, reelsRes, matchedAnimalsRes] = await Promise.all([
+        nearbyQuery.then(({ data }) => data).catch(() => null),
         supabase
           .from("matches")
           .select("*", { count: "exact", head: true })
           .or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`)
           .gte("created_at", new Date(Date.now() - 48 * 3600000).toISOString())
-      ).then(({ count }) => setNewMatches(count || 0)).catch(() => {});
-
-      // Feed items: fetch recent reels with engagement metrics
-      Promise.resolve(
+          .then(({ count }) => count)
+          .catch(() => 0),
         supabase
           .from("reels")
           .select("*, profiles:user_id(id, full_name, avatar_url), animals:animal_id(id, name, species, breed, photo_url)")
-          .eq("status", "active")
+          .or("status.eq.active,status.is.null")
           .order("created_at", { ascending: false })
           .limit(20)
-      ).then(({ data }) => {
-        if (data) {
-          const items: FeedItem[] = (data as unknown as ReelWithAuthor[]).map((reel) => ({
-            type: "reel" as const,
-            data: reel,
-            score: scoreFeedItem(reel),
-            created_at: reel.created_at,
-          }));
-          setFeedItems(items);
-        }
-      }).catch(() => {});
-
-      // Suggestions: animals the user hasn't matched with
-      Promise.resolve(
+          .then(({ data }) => data)
+          .catch(() => null),
         supabase
           .from("matches")
           .select("sender_animal_id, receiver_animal_id")
           .or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`)
-      ).then(({ data: matchData }) => {
+          .then(({ data }) => data)
+          .catch(() => null),
+      ]);
+
+      if (nearbyRes) setNearbyAnimals(nearbyRes as unknown as AnimalRow[]);
+      setNewMatches(newMatchesRes || 0);
+
+      if (reelsRes) {
+        const items: FeedItem[] = (reelsRes as unknown as ReelWithAuthor[]).map((reel) => ({
+          type: "reel" as const,
+          data: reel,
+          score: scoreFeedItem(reel),
+          created_at: reel.created_at,
+        }));
+        setFeedItems(items);
+      }
+
+      // Suggestions: filter out already-matched animals (depends on matchedAnimalsRes)
+      if (matchedAnimalsRes) {
         const matchedAnimalIds = new Set<string>();
-        (matchData || []).forEach((m: { sender_animal_id: string; receiver_animal_id: string }) => {
+        (matchedAnimalsRes as { sender_animal_id: string; receiver_animal_id: string }[]).forEach((m) => {
           matchedAnimalIds.add(m.sender_animal_id);
           matchedAnimalIds.add(m.receiver_animal_id);
         });
-        // Also exclude user's own animals
         const myAnimalIds = anims.map((a) => a.id);
         const excludeIds = [...matchedAnimalIds, ...myAnimalIds];
 
-        Promise.resolve(
-          supabase
-            .from("animals")
-            .select("id, name, species, breed, photo_url, canton, city, created_by, age_months, gender, traits")
-            .neq("created_by", user.id)
-            .order("created_at", { ascending: false })
-            .limit(12)
-        ).then(({ data: suggestData }) => {
-          const filtered = ((suggestData || []) as unknown as AnimalRow[])
-            .filter((a) => !excludeIds.includes(a.id))
-            .slice(0, 4);
-          setSuggestions(filtered);
-        }).catch(() => {});
-      }).catch(() => {});
+        supabase
+          .from("animals")
+          .select("id, name, species, breed, photo_url, canton, city, created_by, age_months, gender, traits")
+          .neq("created_by", user.id)
+          .order("created_at", { ascending: false })
+          .limit(12)
+          .then(({ data: suggestData }) => {
+            const filtered = ((suggestData || []) as unknown as AnimalRow[])
+              .filter((a) => !excludeIds.includes(a.id))
+              .slice(0, 4);
+            setSuggestions(filtered);
+          }).catch(() => {});
+      }
     }
 
     load();
@@ -562,9 +564,9 @@ export default function FeedPage() {
                           <p className="text-xs mb-2 line-clamp-2" style={{ color: "var(--c-text)" }}>{item.data.caption}</p>
                         )}
                         <div className="flex items-center gap-4 text-[11px]" style={{ color: "var(--c-text-muted)" }}>
-                          <span>{"\u2764\uFE0F"} {item.data.likes_count}</span>
-                          <span>{"\uD83D\uDCAC"} {item.data.comments_count}</span>
-                          <span>{"\uD83D\uDC41"} {item.data.views_count}</span>
+                          <span>{"\u2764\uFE0F"} {item.data.likes_count ?? 0}</span>
+                          <span>{"\uD83D\uDCAC"} {item.data.comments_count ?? 0}</span>
+                          <span>{"\uD83D\uDC41"} {item.data.views_count ?? 0}</span>
                         </div>
                       </div>
                     </Link>
