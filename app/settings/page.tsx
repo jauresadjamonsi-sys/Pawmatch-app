@@ -15,7 +15,7 @@ export default function SettingsPage() {
   const supabase = createClient();
   const router = useRouter();
 
-  const [section, setSection] = useState<SettingsSection>("account");
+  const [section, setSection] = useState<SettingsSection>("privacy");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -126,11 +126,11 @@ export default function SettingsPage() {
   }
 
   const SECTIONS: { key: SettingsSection; label: string; icon: string }[] = [
-    { key: "account", label: "Compte", icon: "👤" },
     { key: "privacy", label: "Confidentialite", icon: "🔒" },
     { key: "notifications", label: "Notifications", icon: "🔔" },
     { key: "matching", label: "Matching", icon: "💕" },
     { key: "appearance", label: "Apparence", icon: "🎨" },
+    { key: "account", label: "Compte & donnees", icon: "⚙️" },
     { key: "about", label: "A propos", icon: "ℹ️" },
   ];
 
@@ -191,33 +191,45 @@ export default function SettingsPage() {
           {/* Content */}
           <div className="flex-1">
             <div className="glass rounded-2xl p-5 border border-[var(--c-border)]">
-              {/* Account */}
+              {/* Account & Data */}
               {section === "account" && (
                 <div className="space-y-4">
-                  <h2 className="text-lg font-bold text-[var(--c-text)] mb-4">Compte</h2>
+                  <h2 className="text-lg font-bold text-[var(--c-text)] mb-4">Compte & donnees</h2>
+                  <p className="text-xs text-[var(--c-text-muted)] mb-3">
+                    Pour modifier votre profil, photo ou abonnement, rendez-vous sur votre <Link href="/profile" className="text-orange-400 hover:underline">page Profil</Link>.
+                  </p>
                   <div className="space-y-3">
-                    <Link href="/profile/edit" className="flex items-center justify-between p-3 rounded-xl bg-[var(--c-card)] border border-[var(--c-border)] hover:border-orange-500/30 transition-all">
+                    <button
+                      onClick={async () => {
+                        try {
+                          const res = await fetch("/api/user/export");
+                          if (res.ok) {
+                            const blob = await res.blob();
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement("a");
+                            a.href = url;
+                            a.download = "pawly-mes-donnees.json";
+                            a.click();
+                            URL.revokeObjectURL(url);
+                          } else {
+                            alert("Erreur lors de l'export");
+                          }
+                        } catch { alert("Erreur reseau"); }
+                      }}
+                      className="w-full flex items-center justify-between p-3 rounded-xl bg-[var(--c-card)] border border-[var(--c-border)] hover:border-orange-500/30 transition-all text-left"
+                    >
                       <div>
-                        <p className="text-sm font-medium text-[var(--c-text)]">Modifier le profil</p>
-                        <p className="text-xs text-[var(--c-text-muted)]">Photo, bio, informations</p>
+                        <p className="text-sm font-medium text-[var(--c-text)]">Exporter mes donnees</p>
+                        <p className="text-xs text-[var(--c-text-muted)]">Telecharger toutes vos donnees (RGPD)</p>
                       </div>
-                      <svg className="w-4 h-4 text-[var(--c-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                      </svg>
-                    </Link>
+                      <span className="text-[var(--c-text-muted)]">📥</span>
+                    </button>
                     <Link href="/profile/verify" className="flex items-center justify-between p-3 rounded-xl bg-[var(--c-card)] border border-[var(--c-border)] hover:border-blue-500/30 transition-all">
                       <div>
                         <p className="text-sm font-medium text-[var(--c-text)]">Verification du profil</p>
-                        <p className="text-xs text-[var(--c-text-muted)]">Obtenez le badge verifie</p>
+                        <p className="text-xs text-[var(--c-text-muted)]">Badge verifie + 15 PawCoins</p>
                       </div>
                       <span className="text-blue-400">✓</span>
-                    </Link>
-                    <Link href="/wallet" className="flex items-center justify-between p-3 rounded-xl bg-[var(--c-card)] border border-[var(--c-border)] hover:border-orange-500/30 transition-all">
-                      <div>
-                        <p className="text-sm font-medium text-[var(--c-text)]">PawCoins & Abonnement</p>
-                        <p className="text-xs text-[var(--c-text-muted)]">Solde, boosts, Pawly Gold</p>
-                      </div>
-                      <span className="text-orange-400">🪙</span>
                     </Link>
                   </div>
                   <div className="pt-4 border-t border-[var(--c-border)] space-y-2">
