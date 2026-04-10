@@ -127,14 +127,14 @@ export default function SearchPage() {
       if (activeTab === "all" || activeTab === "reels") {
         const { data: reels } = await supabase
           .from("reels")
-          .select("id, caption, thumbnail_url, user_id, profiles:user_id(full_name)")
+          .select("id, caption, thumbnail_url, user_id")
           .ilike("caption", searchTerm)
           .limit(activeTab === "reels" ? 30 : 6);
         (reels || []).forEach((r: any) => allResults.push({
           type: "reel",
           id: r.id,
           title: r.caption?.slice(0, 60) || "Reel sans legende",
-          subtitle: `par ${r.profiles?.full_name || "Anonyme"}`,
+          subtitle: "Reel",
           image: r.thumbnail_url || null,
           link: `/reels?id=${r.id}`,
         }));

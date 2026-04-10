@@ -212,7 +212,7 @@ export default function BroadcastPage() {
     if (watchId) {
       supabase
         .from("live_streams")
-        .select("*, profiles:user_id(id, full_name, avatar_url)")
+        .select("*")
         .eq("id", watchId)
         .single()
         .then(({ data }) => {

@@ -9,9 +9,10 @@ export async function GET(request: NextRequest) {
   const category = request.nextUrl.searchParams.get("category");
   const search = request.nextUrl.searchParams.get("search");
 
+  // user_id FK may point to auth.users — fetch without profile join
   let query = supabase
     .from("marketplace_listings")
-    .select("*, profiles:user_id(full_name, avatar_url)")
+    .select("*")
     .eq("status", "active")
     .order("created_at", { ascending: false });
 

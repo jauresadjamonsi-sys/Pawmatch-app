@@ -161,18 +161,13 @@ export default function FeedPage() {
       const user = authData?.user;
       if (!user) { setLoading(false); return; }
 
-      const [profileResInit, animalsRes, matchRes, msgRes] = await Promise.all([
-        supabase.from("profiles").select("id, full_name, email, avatar_url, role, subscription, city, canton, created_at").eq("id", user.id).single(),
+      // Note: profiles table does NOT have a canton column — canton lives on animals
+      const [profileRes, animalsRes, matchRes, msgRes] = await Promise.all([
+        supabase.from("profiles").select("id, full_name, email, avatar_url, role, subscription, city, created_at").eq("id", user.id).single(),
         supabase.from("animals").select("id, name, species, breed, photo_url, canton, city, created_by, age_months, gender, traits").eq("created_by", user.id).order("created_at", { ascending: false }),
         supabase.from("matches").select("*", { count: "exact", head: true }).or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`),
         supabase.from("messages").select("*", { count: "exact", head: true }).eq("sender_id", user.id),
       ]);
-
-      // Fallback: if profiles query failed (e.g. canton column missing), retry without canton
-      let profileRes = profileResInit;
-      if (profileRes.error) {
-        profileRes = await supabase.from("profiles").select("id, full_name, email, avatar_url, role, subscription, city, created_at").eq("id", user.id).single();
-      }
 
       const prof = (profileRes.data || null) as ProfileRow | null;
       const anims = ((animalsRes.data || []) as unknown) as AnimalRow[];
@@ -207,7 +202,8 @@ export default function FeedPage() {
       setLoading(false);
 
       // Secondary queries (all in parallel for speed)
-      const myCanton = anims[0]?.canton || prof?.canton;
+      // canton lives on animals, not profiles
+      const myCanton = anims[0]?.canton;
       const nearbyQuery = myCanton
         ? supabase.from("animals").select("id, name, species, breed, photo_url, canton, city, created_by, age_months, gender, traits").eq("canton", myCanton).neq("created_by", user.id).order("created_at", { ascending: false }).limit(6)
         : supabase.from("animals").select("id, name, species, breed, photo_url, canton, city, created_by, age_months, gender, traits").neq("created_by", user.id).order("created_at", { ascending: false }).limit(6);
@@ -221,24 +217,14 @@ export default function FeedPage() {
           .gte("created_at", new Date(Date.now() - 48 * 3600000).toISOString())
           .then(({ count }) => count)
           .catch(() => 0),
+        // Note: reels.user_id FK points to auth.users, not profiles — embedded join fails
+        // Fetch reels without joins, then enrich with separate profile queries if needed
         supabase
           .from("reels")
-          .select("*, profiles:user_id(id, full_name, avatar_url), animals:animal_id(id, name, species, breed, photo_url)")
-          .or("status.eq.active,status.is.null")
+          .select("*")
           .order("created_at", { ascending: false })
           .limit(20)
-          .then(({ data, error }) => {
-            if (error) {
-              // Fallback: no joins, no status filter (columns or FK may not exist)
-              return supabase
-                .from("reels")
-                .select("*")
-                .order("created_at", { ascending: false })
-                .limit(20)
-                .then(({ data: fallbackData }) => fallbackData);
-            }
-            return data;
-          })
+          .then(({ data }) => data)
           .catch(() => null),
         supabase
           .from("matches")

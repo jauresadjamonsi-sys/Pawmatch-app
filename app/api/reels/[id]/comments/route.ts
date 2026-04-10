@@ -6,9 +6,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const { id: reelId } = await params;
   const supabase = await createClient();
 
+  // user_id FK may point to auth.users — fetch without profile join
   const { data, error } = await supabase
     .from("reel_comments")
-    .select("*, profiles:user_id(id, full_name, avatar_url)")
+    .select("*")
     .eq("reel_id", reelId)
     .order("created_at", { ascending: true })
     .limit(100);
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     reel_id: reelId,
     user_id: user.id,
     content,
-  }).select("*, profiles:user_id(id, full_name, avatar_url)").single();
+  }).select("*").single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 

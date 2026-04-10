@@ -11,29 +11,15 @@ export async function GET(request: NextRequest) {
   const offset = page * limit;
   const mode = request.nextUrl.searchParams.get("mode") || "latest"; // "latest" | "trending"
 
-  let query = supabase
+  // Note: reels.user_id FK points to auth.users (not profiles), so embedded joins fail.
+  // Fetch reels without joins; enrich with profile data separately if needed.
+  const { data: reels, error } = await supabase
     .from("reels")
-    .select("*, profiles:user_id(id, full_name, avatar_url), animals:animal_id(id, name, species, breed, photo_url)")
-    .or("status.eq.active,status.is.null");
+    .select("*")
+    .order("created_at", { ascending: false })
+    .range(offset, offset + limit - 1);
 
-  // Always order by created_at (safe column), trending mode can be refined later
-  query = query.order("created_at", { ascending: false });
-
-  let { data: reels, error } = await query.range(offset, offset + limit - 1);
-
-  // Fallback: if query failed (missing columns, FK relationships, or status filter issue),
-  // retry with a simpler query without joins or status filter
-  if (error) {
-    const fallback = await supabase
-      .from("reels")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .range(offset, offset + limit - 1);
-    reels = fallback.data;
-    error = fallback.error;
-  }
-
-  // If still failing (RLS blocks access, no auth, or table missing), return empty
+  // If RLS blocks access (no auth) or table error, return empty
   if (error) return NextResponse.json({ reels: [], page, hasMore: false, error: error.message });
 
   // Check which reels the current user has liked

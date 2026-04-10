@@ -5,36 +5,13 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET() {
   const supabase = await createClient();
 
-  let { data, error } = await supabase
+  // user_id FK may point to auth.users, not profiles — fetch without join
+  const { data, error } = await supabase
     .from("live_streams")
-    .select("*, profiles:user_id(id, full_name, avatar_url, canton)")
+    .select("*")
     .eq("is_live", true)
     .order("viewer_count", { ascending: false })
     .limit(50);
-
-  // Fallback: if join or canton column fails, retry without canton in profiles join
-  if (error) {
-    const fallback = await supabase
-      .from("live_streams")
-      .select("*, profiles:user_id(id, full_name, avatar_url)")
-      .eq("is_live", true)
-      .order("viewer_count", { ascending: false })
-      .limit(50);
-    data = fallback.data;
-    error = fallback.error;
-  }
-
-  // Second fallback: if join itself fails, just get streams without profile data
-  if (error) {
-    const fallback2 = await supabase
-      .from("live_streams")
-      .select("*")
-      .eq("is_live", true)
-      .order("viewer_count", { ascending: false })
-      .limit(50);
-    data = fallback2.data;
-    error = fallback2.error;
-  }
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ streams: data || [] });
