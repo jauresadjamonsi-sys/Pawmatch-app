@@ -199,19 +199,21 @@ export default function Navbar() {
                     { href: "/groups", label: "Groupes", active: isActive("/groups") },
                     { href: "/stories", label: "Stories", active: isActive("/stories") },
                   ]} />
-                  <NavDropdown label="Outils" light={isLight} activeInGroup={["/carte","/wallet","/urgence","/balade","/marketplace","/filters","/settings"].some(p => isActive(p))} items={[
+                  <NavDropdown label="Outils" light={isLight} activeInGroup={["/carte","/wallet","/urgence","/balade","/marketplace","/filters"].some(p => isActive(p))} items={[
                     { href: "/carte", label: "Carte", active: isActive("/carte") },
                     { href: "/wallet", label: "PawCoins", active: isActive("/wallet") },
                     { href: "/filters", label: "Filtres AR", active: isActive("/filters") },
                     { href: "/urgence", label: "SOS Animal", active: isActive("/urgence") },
                     { href: "/balade", label: "Balade live", active: isActive("/balade") },
                     { href: "/marketplace", label: "Marketplace", active: isActive("/marketplace") },
-                    { href: "/settings", label: "Parametres", active: isActive("/settings") },
                   ]} />
                   <a href="https://pawdirectory.ch" target="_blank" rel="noopener noreferrer" className={"px-3 py-1.5 rounded-full text-sm font-medium transition-all " + (isLight ? "text-gray-600 hover:text-orange-600 hover:bg-orange-50" : "text-gray-400 hover:text-orange-400 hover:bg-orange-500/10")}>
                     PawDirectory ↗
                   </a>
-                  <NL href="/profile" active={isActive("/profile")} label={t.navProfil} light={isLight} />
+                  <NavDropdown label={t.navProfil} light={isLight} activeInGroup={["/profile","/settings"].some(p => isActive(p))} items={[
+                    { href: "/profile", label: "Mon profil", active: isActive("/profile") },
+                    { href: "/settings", label: "Parametres", active: isActive("/settings") },
+                  ]} />
                 </>
               ) : (
                 <>
