@@ -416,7 +416,7 @@ export default function VideoCallPage() {
         return "bg-green-500";
       case "ringing":
       case "connecting":
-        return "bg-orange-500";
+        return "bg-green-500";
       case "disconnected":
       case "error":
         return "bg-red-500";
@@ -492,8 +492,8 @@ export default function VideoCallPage() {
             {/* Ringing animation */}
             {(connectionState === "ringing" || connectionState === "connecting") && (
               <div className="relative w-24 h-24 mx-auto mb-6">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-orange-500/20 to-orange-600/10 ring-anim" />
-                <div className="absolute inset-2 rounded-full bg-gradient-to-br from-orange-500/30 to-orange-600/20 flex items-center justify-center ring-anim" style={{ animationDelay: "0.3s" }}>
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-green-500/20 to-green-600/10 ring-anim" />
+                <div className="absolute inset-2 rounded-full bg-gradient-to-br from-green-500/30 to-green-600/20 flex items-center justify-center ring-anim" style={{ animationDelay: "0.3s" }}>
                   <span className="text-4xl">📹</span>
                 </div>
                 <div className="call-pulse absolute inset-0 rounded-full" />
@@ -522,9 +522,9 @@ export default function VideoCallPage() {
 
             {(connectionState === "ringing" || connectionState === "connecting") && (
               <div className="flex items-center justify-center gap-1 mt-2">
-                <span className="w-2 h-2 rounded-full bg-orange-500 dot-blink" />
-                <span className="w-2 h-2 rounded-full bg-orange-500 dot-blink" />
-                <span className="w-2 h-2 rounded-full bg-orange-500 dot-blink" />
+                <span className="w-2 h-2 rounded-full bg-green-500 dot-blink" />
+                <span className="w-2 h-2 rounded-full bg-green-500 dot-blink" />
+                <span className="w-2 h-2 rounded-full bg-green-500 dot-blink" />
               </div>
             )}
 

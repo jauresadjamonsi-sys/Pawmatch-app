@@ -61,7 +61,7 @@ export default function SharePage() {
     ctx.fillRect(0, 0, 1080, 1920);
 
     // Subtle pattern dots
-    ctx.fillStyle = "rgba(249,115,22,0.05)";
+    ctx.fillStyle = "rgba(34, 197, 94,0.05)";
     for (let i = 0; i < 60; i++) {
       const x = Math.random() * 1080;
       const y = Math.random() * 1920;
@@ -82,11 +82,11 @@ export default function SharePage() {
 
       // Orange glow
       ctx.save();
-      ctx.shadowColor = "rgba(249,115,22,0.6)";
+      ctx.shadowColor = "rgba(34, 197, 94,0.6)";
       ctx.shadowBlur = 60;
       ctx.beginPath();
       ctx.arc(540, 520, 200, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(249,115,22,0.3)";
+      ctx.fillStyle = "rgba(34, 197, 94,0.3)";
       ctx.fill();
       ctx.restore();
 
@@ -102,7 +102,7 @@ export default function SharePage() {
       ctx.restore();
 
       // Orange ring
-      ctx.strokeStyle = "rgba(249,115,22,0.7)";
+      ctx.strokeStyle = "rgba(34, 197, 94,0.7)";
       ctx.lineWidth = 6;
       ctx.beginPath();
       ctx.arc(540, 520, 193, 0, Math.PI * 2);
@@ -111,14 +111,14 @@ export default function SharePage() {
       // If Ruby fails to load, draw paw emoji
       ctx.font = "180px serif";
       ctx.textAlign = "center";
-      ctx.fillStyle = "#f97316";
+      ctx.fillStyle = "#22C55E";
       ctx.fillText("🐾", 540, 560);
     }
 
     // "PAWLY" title
     ctx.font = "bold 72px -apple-system, BlinkMacSystemFont, sans-serif";
     ctx.textAlign = "center";
-    ctx.fillStyle = "#f97316";
+    ctx.fillStyle = "#22C55E";
     ctx.fillText("PAWLY", 540, 820);
 
     // Tagline
@@ -130,7 +130,7 @@ export default function SharePage() {
     // Divider line
     const divGrad = ctx.createLinearGradient(300, 980, 780, 980);
     divGrad.addColorStop(0, "transparent");
-    divGrad.addColorStop(0.5, "rgba(249,115,22,0.6)");
+    divGrad.addColorStop(0.5, "rgba(34, 197, 94,0.6)");
     divGrad.addColorStop(1, "transparent");
     ctx.strokeStyle = divGrad;
     ctx.lineWidth = 2;
@@ -177,7 +177,7 @@ export default function SharePage() {
 
     // CTA
     ctx.font = "bold 30px -apple-system, BlinkMacSystemFont, sans-serif";
-    ctx.fillStyle = "#f97316";
+    ctx.fillStyle = "#22C55E";
     ctx.fillText("Scanne pour rejoindre", 540, 1680);
 
     // Footer
@@ -271,7 +271,7 @@ export default function SharePage() {
             />
             <button
               onClick={copyLink}
-              className="btn-futuristic px-4 py-2 text-sm font-bold whitespace-nowrap neon-orange"
+              className="btn-futuristic px-4 py-2 text-sm font-bold whitespace-nowrap neon-green"
             >
               {copied ? "✅ " + t.shareCopied : "📋 " + t.shareCopy}
             </button>
@@ -422,7 +422,7 @@ export default function SharePage() {
                 <div
                   key={r.friends}
                   className={"flex items-center gap-3 p-3 rounded-xl transition-all duration-300 " +
-                    (unlocked ? "glass neon-orange" : "opacity-60")}
+                    (unlocked ? "glass neon-green" : "opacity-60")}
                 >
                   <span className="text-2xl">{r.badge.split(" ")[0]}</span>
                   <div className="flex-1">

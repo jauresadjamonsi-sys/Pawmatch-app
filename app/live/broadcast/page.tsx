@@ -310,7 +310,7 @@ export default function BroadcastPage() {
 
               {!profile && (
                 <p className="text-center text-xs text-[var(--c-text-muted)]">
-                  <Link href="/login" className="text-orange-400">Connectez-vous</Link> pour lancer un live
+                  <Link href="/login" className="text-green-400">Connectez-vous</Link> pour lancer un live
                 </p>
               )}
             </div>
@@ -408,7 +408,7 @@ export default function BroadcastPage() {
           <div className="max-h-48 overflow-y-auto px-4 pb-2 space-y-1.5">
             {chatMessages.map(msg => (
               <div key={msg.id} className="flex items-start gap-2">
-                <span className="text-xs font-bold text-orange-400 whitespace-nowrap">{msg.user}</span>
+                <span className="text-xs font-bold text-green-400 whitespace-nowrap">{msg.user}</span>
                 <span className="text-xs text-white/90">{msg.text}</span>
               </div>
             ))}
@@ -442,7 +442,7 @@ export default function BroadcastPage() {
             <button
               onClick={sendChat}
               disabled={!chatInput.trim()}
-              className="w-10 h-10 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 flex items-center justify-center text-white shadow-lg disabled:opacity-40 transition-all"
+              className="w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 flex items-center justify-center text-white shadow-lg disabled:opacity-40 transition-all"
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />

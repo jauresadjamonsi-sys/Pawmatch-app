@@ -281,16 +281,16 @@ export default function GroupsPage() {
               placeholder="Rechercher un groupe..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border border-[var(--c-border)] bg-[var(--c-card)] text-[var(--c-text)] placeholder:text-[var(--c-text-muted)] focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500/50 transition-all"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border border-[var(--c-border)] bg-[var(--c-card)] text-[var(--c-text)] placeholder:text-[var(--c-text-muted)] focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500/50 transition-all"
             />
           </div>
           {profile ? (
             <button
               onClick={() => setShowCreate(true)}
-              className="btn-press relative px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-bold shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 transition-all whitespace-nowrap"
+              className="btn-press relative px-5 py-2.5 rounded-xl bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-bold shadow-lg shadow-green-500/20 hover:shadow-green-500/40 transition-all whitespace-nowrap"
               style={{ backgroundSize: "200% 200%", animation: "gradient-shift 3s ease infinite" }}
             >
-              <span className="absolute inset-0 rounded-xl" style={{ background: "linear-gradient(135deg, #f97316, #a78bfa, #f97316)", opacity: 0.3, filter: "blur(4px)", animation: "gradient-shift 3s ease infinite", backgroundSize: "200% 200%" }} />
+              <span className="absolute inset-0 rounded-xl" style={{ background: "linear-gradient(135deg, #22c55e, #a78bfa, #22c55e)", opacity: 0.3, filter: "blur(4px)", animation: "gradient-shift 3s ease infinite", backgroundSize: "200% 200%" }} />
               <span className="relative">+ Creer un groupe</span>
             </button>
           ) : !loading && (
@@ -320,7 +320,7 @@ export default function GroupsPage() {
               className={
                 "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 ease-out " +
                 (activeTab === tab.key
-                  ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md shadow-orange-500/20 scale-105"
+                  ? "bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md shadow-green-500/20 scale-105"
                   : "glass text-[var(--c-text-muted)] hover:text-[var(--c-text)] hover:bg-[var(--c-glass)] hover:scale-[1.02]")
               }
             >
@@ -362,7 +362,7 @@ export default function GroupsPage() {
             <p className="text-red-400 mb-3">{fetchError}</p>
             <button
               onClick={fetchGroups}
-              className="px-4 py-2 rounded-xl bg-orange-500/20 text-orange-400 text-sm font-medium hover:bg-orange-500/30 transition-all"
+              className="px-4 py-2 rounded-xl bg-green-500/20 text-green-400 text-sm font-medium hover:bg-green-500/30 transition-all"
             >
               Reessayer
             </button>
@@ -408,7 +408,7 @@ export default function GroupsPage() {
                   <div className="min-w-0 flex-1">
                     <Link
                       href={`/groups/${group.id}`}
-                      className="font-bold text-[var(--c-text)] hover:text-orange-400 transition-colors line-clamp-1 block"
+                      className="font-bold text-[var(--c-text)] hover:text-green-400 transition-colors line-clamp-1 block"
                     >
                       {group.name}
                     </Link>
@@ -419,7 +419,7 @@ export default function GroupsPage() {
                           <div
                             key={i}
                             className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold border border-[var(--c-card)] transition-transform duration-300 group-hover/avatars:scale-110"
-                            style={{ background: ["#f97316", "#a78bfa", "#22c55e", "#3b82f6"][i % 4], zIndex: 3 - i }}
+                            style={{ background: ["#22C55E", "#a78bfa", "#22c55e", "#3b82f6"][i % 4], zIndex: 3 - i }}
                           >
                             {CATEGORY_ICONS[group.category]?.slice(0, 1) || "🐾"}
                           </div>
@@ -464,7 +464,7 @@ export default function GroupsPage() {
                     "mt-auto w-full py-2 rounded-xl text-sm font-semibold transition-all " +
                     (group.is_member
                       ? "border border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-red-400/50 hover:text-red-400 hover:bg-red-500/10"
-                      : "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md shadow-orange-500/15 hover:shadow-orange-500/30")
+                      : "bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md shadow-green-500/15 hover:shadow-green-500/30")
                   }
                 >
                   {joining === group.id
@@ -532,7 +532,7 @@ export default function GroupsPage() {
                       className={
                         "w-10 h-10 rounded-xl flex items-center justify-center text-xl transition-all " +
                         (form.icon === icon
-                          ? "bg-orange-500/20 ring-2 ring-orange-500 scale-110"
+                          ? "bg-green-500/20 ring-2 ring-green-500 scale-110"
                           : "bg-[var(--c-glass)] hover:bg-[var(--c-glass)] hover:scale-105")
                       }
                     >
@@ -556,7 +556,7 @@ export default function GroupsPage() {
                     setForm((f) => ({ ...f, name: e.target.value }))
                   }
                   placeholder="ex: Golden Retrievers Suisse"
-                  className="w-full px-3 py-2.5 rounded-xl text-sm border border-[var(--c-border)] bg-[var(--c-card)] text-[var(--c-text)] placeholder:text-[var(--c-text-muted)] focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500/50 transition-all"
+                  className="w-full px-3 py-2.5 rounded-xl text-sm border border-[var(--c-border)] bg-[var(--c-card)] text-[var(--c-text)] placeholder:text-[var(--c-text-muted)] focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500/50 transition-all"
                 />
               </div>
 
@@ -573,7 +573,7 @@ export default function GroupsPage() {
                     setForm((f) => ({ ...f, description: e.target.value }))
                   }
                   placeholder="Decris ton groupe en quelques mots..."
-                  className="w-full px-3 py-2.5 rounded-xl text-sm border border-[var(--c-border)] bg-[var(--c-card)] text-[var(--c-text)] placeholder:text-[var(--c-text-muted)] focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500/50 transition-all resize-none"
+                  className="w-full px-3 py-2.5 rounded-xl text-sm border border-[var(--c-border)] bg-[var(--c-card)] text-[var(--c-text)] placeholder:text-[var(--c-text-muted)] focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500/50 transition-all resize-none"
                 />
               </div>
 
@@ -593,8 +593,8 @@ export default function GroupsPage() {
                       className={
                         "px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ease-out " +
                         (form.category === cat.value
-                          ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md scale-105"
-                          : "border border-[var(--c-border)] text-[var(--c-text-muted)] hover:text-[var(--c-text)] hover:border-orange-500/30 hover:scale-[1.02]")
+                          ? "bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md scale-105"
+                          : "border border-[var(--c-border)] text-[var(--c-text-muted)] hover:text-[var(--c-text)] hover:border-green-500/30 hover:scale-[1.02]")
                       }
                     >
                       {CATEGORY_ICONS[cat.value]} {cat.label}
@@ -616,7 +616,7 @@ export default function GroupsPage() {
                   onChange={(e) =>
                     setForm((f) => ({ ...f, canton: e.target.value }))
                   }
-                  className="w-full px-3 py-2.5 rounded-xl text-sm border border-[var(--c-border)] bg-[var(--c-card)] text-[var(--c-text)] focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500/50 transition-all"
+                  className="w-full px-3 py-2.5 rounded-xl text-sm border border-[var(--c-border)] bg-[var(--c-card)] text-[var(--c-text)] focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500/50 transition-all"
                 >
                   <option value="">Tous les cantons</option>
                   {CANTONS.map((c) => (
@@ -640,7 +640,7 @@ export default function GroupsPage() {
                   onChange={(e) =>
                     setForm((f) => ({ ...f, species: e.target.value }))
                   }
-                  className="w-full px-3 py-2.5 rounded-xl text-sm border border-[var(--c-border)] bg-[var(--c-card)] text-[var(--c-text)] focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500/50 transition-all"
+                  className="w-full px-3 py-2.5 rounded-xl text-sm border border-[var(--c-border)] bg-[var(--c-card)] text-[var(--c-text)] focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500/50 transition-all"
                 >
                   <option value="">Toutes les especes</option>
                   <option value="chien">Chien</option>
@@ -663,7 +663,7 @@ export default function GroupsPage() {
               <button
                 type="submit"
                 disabled={creating || !form.name.trim()}
-                className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-green-500 to-green-600 text-white font-bold shadow-lg shadow-green-500/20 hover:shadow-green-500/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 {creating ? "Creation..." : "Creer le groupe"}
               </button>

@@ -396,7 +396,7 @@ export default function ConversationPage() {
   if (loading) return (
     <div className="min-h-screen bg-[var(--c-deep)] flex items-center justify-center">
       <div className="text-center">
-        <div className="w-8 h-8 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin mx-auto mb-3" />
+        <div className="w-8 h-8 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin mx-auto mb-3" />
         <p className="text-[var(--c-text-muted)] text-sm">Chargement...</p>
       </div>
     </div>
@@ -408,7 +408,7 @@ export default function ConversationPage() {
         <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-5 md:p-8 text-center w-full max-w-sm md:max-w-md mx-4">
           <h2 className="text-xl font-bold text-[var(--c-text)] mb-2">Conversation indisponible</h2>
           <p className="text-[var(--c-text-muted)]">Ce match n'existe pas ou n'a pas encore été accepté.</p>
-          <Link href="/matches" className="inline-block mt-4 text-orange-500 font-medium">← Retour</Link>
+          <Link href="/matches" className="inline-block mt-4 text-green-500 font-medium">← Retour</Link>
         </div>
       </div>
     );
@@ -498,19 +498,19 @@ export default function ConversationPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </Link>
-          <Link href={"/animals/" + theirAnimal.id} className="w-9 h-9 rounded-full bg-[var(--c-card)] border border-orange-500/30 flex items-center justify-center overflow-hidden flex-shrink-0 relative">
+          <Link href={"/animals/" + theirAnimal.id} className="w-9 h-9 rounded-full bg-[var(--c-card)] border border-green-500/30 flex items-center justify-center overflow-hidden flex-shrink-0 relative">
             {theirAnimal.photo_url
               ? <Image src={theirAnimal.photo_url} alt={theirAnimal.name} fill className="object-cover" sizes="(max-width: 768px) 36px, 36px" />
               : <span className="text-base">{EMOJI_MAP[theirAnimal.species] || "🐾"}</span>}
           </Link>
           <Link href={"/animals/" + theirAnimal.id} className="flex-1 min-w-0 no-underline">
-            <p className="font-semibold text-[var(--c-text)] text-sm truncate hover:text-orange-400 transition">
+            <p className="font-semibold text-[var(--c-text)] text-sm truncate hover:text-green-400 transition">
               {otherProfile.full_name || otherProfile.email}
             </p>
             <p className="text-xs text-[var(--c-text-muted)]">
               {theirAnimal.name} x {myAnimal.name}
               {isOtherTyping && (
-                <span className="ml-1.5 text-[var(--c-accent,#f97316)]">
+                <span className="ml-1.5 text-[var(--c-accent,#22C55E)]">
                   -- est en train d'ecrire...
                 </span>
               )}
@@ -519,10 +519,10 @@ export default function ConversationPage() {
           <PresenceDot isOnline={isOtherOnline} size="sm" />
           <Link
             href={`/matches/${matchId}/call`}
-            className="p-1.5 rounded-full hover:bg-orange-500/10 transition flex-shrink-0"
+            className="p-1.5 rounded-full hover:bg-green-500/10 transition flex-shrink-0"
             title="Appel video"
           >
-            <svg className="w-4.5 h-4.5 text-[var(--c-accent,#f97316)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-4.5 h-4.5 text-[var(--c-accent,#22C55E)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9A2.25 2.25 0 0013.5 5.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
             </svg>
           </Link>
@@ -540,8 +540,8 @@ export default function ConversationPage() {
 
       {/* Reconnection banner */}
       {reconnecting && (
-        <div className="reconnect-banner bg-[var(--c-accent,#f97316)]/10 border-b border-[var(--c-accent,#f97316)]/20 px-4 py-1.5 text-center">
-          <p className="text-xs text-[var(--c-accent,#f97316)] font-medium">
+        <div className="reconnect-banner bg-[var(--c-accent,#22C55E)]/10 border-b border-[var(--c-accent,#22C55E)]/20 px-4 py-1.5 text-center">
+          <p className="text-xs text-[var(--c-accent,#22C55E)] font-medium">
             Reconnexion en cours...
           </p>
         </div>
@@ -551,7 +551,7 @@ export default function ConversationPage() {
       <div className="flex-1 overflow-y-auto px-4 py-4">
         <div className="max-w-3xl mx-auto space-y-2">
           {/* Code de conduite — toujours visible en haut */}
-          <div className="glass rounded-2xl p-4 mb-4 text-center" style={{ borderLeft: "3px solid var(--c-accent, #f97316)" }}>
+          <div className="glass rounded-2xl p-4 mb-4 text-center" style={{ borderLeft: "3px solid var(--c-accent, #22C55E)" }}>
             <p className="text-sm font-semibold text-[var(--c-text)] mb-2">{"🐾"} Charte de bienveillance Pawly</p>
             <div className="grid grid-cols-2 gap-1.5 text-[11px] text-[var(--c-text-muted)]">
               <span>{"🤝"} Respect mutuel</span>
@@ -596,7 +596,7 @@ export default function ConversationPage() {
                     <div
                       className={"rounded-2xl text-sm select-none " +
                         (isMine
-                          ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-br-md"
+                          ? "bg-gradient-to-br from-green-500 to-green-600 text-white rounded-br-md"
                           : "bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text)] rounded-bl-md") +
                         (isImage ? " p-1.5" : isVoice ? " p-0.5" : " px-4 py-2.5")}
                       onDoubleClick={() => handleMsgDoubleClick(msg.id)}
@@ -645,7 +645,7 @@ export default function ConversationPage() {
                             onClick={() => handleReactionSelect(msg.id, r.emoji)}
                             className={"reaction-badge-pop inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-xs border transition " +
                               (r.isMine
-                                ? "bg-orange-500/15 border-orange-500/30 text-orange-400"
+                                ? "bg-green-500/15 border-green-500/30 text-green-400"
                                 : "bg-[var(--c-card)] border-[var(--c-border)] text-[var(--c-text-muted)]")}
                           >
                             <span>{r.emoji}</span>
@@ -709,9 +709,9 @@ export default function ConversationPage() {
                 key={s + i}
                 onClick={() => handleSuggestionTap(s)}
                 disabled={sending}
-                className="suggestion-chip flex-shrink-0 px-3 py-1.5 bg-[var(--c-card)] border border-[var(--c-border)] hover:border-orange-500/40 hover:bg-orange-500/10 text-[var(--c-text-muted)] hover:text-[var(--c-text)] rounded-full text-xs transition-all duration-150 active:scale-95 whitespace-nowrap"
+                className="suggestion-chip flex-shrink-0 px-3 py-1.5 bg-[var(--c-card)] border border-[var(--c-border)] hover:border-green-500/40 hover:bg-green-500/10 text-[var(--c-text-muted)] hover:text-[var(--c-text)] rounded-full text-xs transition-all duration-150 active:scale-95 whitespace-nowrap"
                 style={{ animationDelay: i * 0.05 + "s" }}>
-                {aiReady && i === 0 && <span className="mr-1 text-orange-400">✦</span>}
+                {aiReady && i === 0 && <span className="mr-1 text-green-400">✦</span>}
                 {s}
               </button>
             ))}
@@ -725,7 +725,7 @@ export default function ConversationPage() {
           {error && <p className="text-red-400 text-xs mb-2">{error}</p>}
           {uploadingVoice && (
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-4 h-4 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin" />
               <span className="text-[var(--c-text-muted)] text-xs">Envoi du message vocal...</span>
             </div>
           )}
@@ -751,11 +751,11 @@ export default function ConversationPage() {
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploadingPhoto || uploadingVoice}
-                  className="w-10 h-10 bg-[var(--c-card)] border border-[var(--c-border)] hover:border-orange-500/30 hover:bg-orange-500/10 rounded-2xl flex items-center justify-center transition active:scale-95 flex-shrink-0"
+                  className="w-10 h-10 bg-[var(--c-card)] border border-[var(--c-border)] hover:border-green-500/30 hover:bg-green-500/10 rounded-2xl flex items-center justify-center transition active:scale-95 flex-shrink-0"
                   title="Envoyer une photo"
                 >
                   {uploadingPhoto
-                    ? <div className="w-4 h-4 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
+                    ? <div className="w-4 h-4 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin" />
                     : <svg className="w-4.5 h-4.5 text-[var(--c-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
@@ -765,7 +765,7 @@ export default function ConversationPage() {
                 <div className="relative">
                   <button
                     onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                    className={"w-10 h-10 border rounded-2xl flex items-center justify-center transition active:scale-95 flex-shrink-0 " + (showEmojiPicker ? "bg-orange-500/10 border-orange-500/40" : "bg-[var(--c-card)] border-[var(--c-border)] hover:border-orange-500/30 hover:bg-orange-500/10")}
+                    className={"w-10 h-10 border rounded-2xl flex items-center justify-center transition active:scale-95 flex-shrink-0 " + (showEmojiPicker ? "bg-green-500/10 border-green-500/40" : "bg-[var(--c-card)] border-[var(--c-border)] hover:border-green-500/30 hover:bg-green-500/10")}
                     title="Emojis animaux"
                   >
                     <span className="text-lg">🐾</span>
@@ -805,14 +805,14 @@ export default function ConversationPage() {
                   onFocus={() => setShowEmojiPicker(false)}
                   placeholder="Message..."
                   maxLength={2000}
-                  className="flex-1 px-4 py-2.5 bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-1 focus:ring-orange-500/50 focus:border-orange-500/30 outline-none text-sm transition"
+                  className="flex-1 px-4 py-2.5 bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-1 focus:ring-green-500/50 focus:border-green-500/30 outline-none text-sm transition"
                 />
                 {/* Mic button - show when no text typed */}
                 {!newMessage.trim() ? (
                   <button
                     onClick={() => setIsRecordingVoice(true)}
                     disabled={uploadingVoice || uploadingPhoto}
-                    className="w-10 h-10 bg-[var(--c-card)] border border-[var(--c-border)] hover:border-orange-500/30 hover:bg-orange-500/10 rounded-2xl flex items-center justify-center transition active:scale-95 flex-shrink-0"
+                    className="w-10 h-10 bg-[var(--c-card)] border border-[var(--c-border)] hover:border-green-500/30 hover:bg-green-500/10 rounded-2xl flex items-center justify-center transition active:scale-95 flex-shrink-0"
                     title="Message vocal"
                   >
                     <svg className="w-4.5 h-4.5 text-[var(--c-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -823,7 +823,7 @@ export default function ConversationPage() {
                   <button
                     onClick={() => handleSend()}
                     disabled={sending || !newMessage.trim()}
-                    className="w-10 h-10 bg-orange-500 hover:bg-orange-600 disabled:opacity-30 rounded-2xl flex items-center justify-center transition active:scale-95 flex-shrink-0">
+                    className="w-10 h-10 bg-green-500 hover:bg-green-600 disabled:opacity-30 rounded-2xl flex items-center justify-center transition active:scale-95 flex-shrink-0">
                     {sending
                       ? <div className="w-4 h-4 border-2 border-[var(--c-border)] border-t-white rounded-full animate-spin" />
                       : <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -888,7 +888,7 @@ export default function ConversationPage() {
       {voiceToast && (
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 toast-enter">
           <div className="flex items-center gap-2 px-4 py-2.5 bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl shadow-xl">
-            <svg className="w-4 h-4 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <svg className="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
             </svg>
             <span className="text-sm text-[var(--c-text)]">Bientot disponible</span>

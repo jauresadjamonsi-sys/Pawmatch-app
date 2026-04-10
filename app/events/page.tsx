@@ -45,7 +45,7 @@ const SPECIES_EMOJI: Record<string, string> = {
 };
 
 const CANTON_COLORS = [
-  "from-orange-500/20 to-orange-600/10",
+  "from-green-500/20 to-green-600/10",
   "from-blue-500/20 to-blue-600/10",
   "from-green-500/20 to-green-600/10",
   "from-purple-500/20 to-purple-600/10",
@@ -289,7 +289,7 @@ export default function EventsPage() {
           </div>
           {profile ? (
             <button onClick={() => setShowCreate(true)}
-              className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-semibold rounded-full hover:from-orange-600 hover:to-orange-700 transition shadow-lg shadow-orange-500/20">
+              className="px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-semibold rounded-full hover:from-green-600 hover:to-green-700 transition shadow-lg shadow-green-500/20">
               {t.eventsCreate}
             </button>
           ) : (
@@ -315,7 +315,7 @@ export default function EventsPage() {
           <select
             value={filterCanton}
             onChange={(e) => setFilterCanton(e.target.value)}
-            className="flex-1 px-4 py-2.5 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-sm text-[var(--c-text)] focus:ring-1 focus:ring-orange-500/50 outline-none appearance-none"
+            className="flex-1 px-4 py-2.5 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-sm text-[var(--c-text)] focus:ring-1 focus:ring-green-500/50 outline-none appearance-none"
             style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23999' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6.5 6 6.5-6'/%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "right 12px center" }}
           >
             <option value="">{t.eventsAll}</option>
@@ -350,7 +350,7 @@ export default function EventsPage() {
                 <label className="block text-xs font-medium text-[var(--c-text-muted)] mb-1.5">{t.eventsEventTitle} *</label>
                 <input value={form.title} onChange={e => setForm(f => ({...f, title: e.target.value}))} required
                   placeholder="Balade dominicale au parc..."
-                  className="w-full px-4 py-2.5 bg-[var(--c-deep)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-1 focus:ring-orange-500/50 outline-none text-sm" />
+                  className="w-full px-4 py-2.5 bg-[var(--c-deep)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-1 focus:ring-green-500/50 outline-none text-sm" />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
@@ -358,19 +358,19 @@ export default function EventsPage() {
                   <label className="block text-xs font-medium text-[var(--c-text-muted)] mb-1.5">{t.eventsDate} *</label>
                   <input type="date" value={form.event_date} onChange={e => setForm(f => ({...f, event_date: e.target.value}))} required
                     min={new Date().toISOString().split("T")[0]}
-                    className="w-full px-3 py-2.5 bg-[var(--c-deep)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-1 focus:ring-orange-500/50 outline-none text-sm" />
+                    className="w-full px-3 py-2.5 bg-[var(--c-deep)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-1 focus:ring-green-500/50 outline-none text-sm" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-[var(--c-text-muted)] mb-1.5">{t.eventsTime} *</label>
                   <input type="time" value={form.event_time} onChange={e => setForm(f => ({...f, event_time: e.target.value}))}
-                    className="w-full px-3 py-2.5 bg-[var(--c-deep)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-1 focus:ring-orange-500/50 outline-none text-sm" />
+                    className="w-full px-3 py-2.5 bg-[var(--c-deep)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-1 focus:ring-green-500/50 outline-none text-sm" />
                 </div>
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-[var(--c-text-muted)] mb-1.5">Canton *</label>
                 <select value={form.canton} onChange={e => setForm(f => ({...f, canton: e.target.value}))} required
-                  className="w-full px-3 py-2.5 bg-[var(--c-deep)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-1 focus:ring-orange-500/50 outline-none text-sm">
+                  className="w-full px-3 py-2.5 bg-[var(--c-deep)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-1 focus:ring-green-500/50 outline-none text-sm">
                   <option value="">{t.eventsSelectCanton}</option>
                   {CANTONS.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}
                 </select>
@@ -380,7 +380,7 @@ export default function EventsPage() {
                 <label className="block text-xs font-medium text-[var(--c-text-muted)] mb-1.5">{t.eventsLocation} *</label>
                 <input value={form.location} onChange={e => setForm(f => ({...f, location: e.target.value}))} required
                   placeholder="Parc de la Grange, Genève"
-                  className="w-full px-4 py-2.5 bg-[var(--c-deep)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-1 focus:ring-orange-500/50 outline-none text-sm" />
+                  className="w-full px-4 py-2.5 bg-[var(--c-deep)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-1 focus:ring-green-500/50 outline-none text-sm" />
               </div>
 
               <div>
@@ -389,7 +389,7 @@ export default function EventsPage() {
                   {Object.entries(SPECIES_EMOJI).map(([s, emoji]) => (
                     <button key={s} type="button" onClick={() => toggleSpecies(s)}
                       className={"px-3 py-1.5 rounded-full text-xs border transition " +
-                        (form.species.includes(s) ? "bg-orange-500/20 border-orange-500/40 text-orange-300" : "bg-[var(--c-card)] border-[var(--c-border)] text-[var(--c-text-muted)]")}>
+                        (form.species.includes(s) ? "bg-green-500/20 border-green-500/40 text-green-300" : "bg-[var(--c-card)] border-[var(--c-border)] text-[var(--c-text-muted)]")}>
                       {emoji} {s.charAt(0).toUpperCase() + s.slice(1)}
                     </button>
                   ))}
@@ -401,7 +401,7 @@ export default function EventsPage() {
                   <label className="block text-xs font-medium text-[var(--c-text-muted)] mb-1.5">{t.eventsMax}</label>
                   <input type="number" value={form.max_participants} onChange={e => setForm(f => ({...f, max_participants: e.target.value}))}
                     min="2" max="200"
-                    className="w-full px-3 py-2.5 bg-[var(--c-deep)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-1 focus:ring-orange-500/50 outline-none text-sm" />
+                    className="w-full px-3 py-2.5 bg-[var(--c-deep)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-1 focus:ring-green-500/50 outline-none text-sm" />
                 </div>
               </div>
 
@@ -410,7 +410,7 @@ export default function EventsPage() {
                 <textarea value={form.description} onChange={e => setForm(f => ({...f, description: e.target.value}))}
                   placeholder="Décris l'événement, le point de rendez-vous..."
                   rows={3}
-                  className="w-full px-4 py-2.5 bg-[var(--c-deep)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-1 focus:ring-orange-500/50 outline-none text-sm resize-none" />
+                  className="w-full px-4 py-2.5 bg-[var(--c-deep)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-1 focus:ring-green-500/50 outline-none text-sm resize-none" />
               </div>
 
               <div className="flex gap-3 pt-2">
@@ -419,7 +419,7 @@ export default function EventsPage() {
                   {t.eventsCancel}
                 </button>
                 <button type="submit" disabled={creating}
-                  className="flex-1 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-2xl text-sm disabled:opacity-50">
+                  className="flex-1 py-2.5 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold rounded-2xl text-sm disabled:opacity-50">
                   {creating ? t.eventsCreating : t.eventsCreateBtn}
                 </button>
               </div>
@@ -455,8 +455,8 @@ export default function EventsPage() {
         ) : events.length === 0 ? (
           <div className="text-center py-16">
             {/* Real date calendar icon */}
-            <div className="inline-flex flex-col items-center justify-center w-16 h-16 rounded-2xl border-2 border-orange-500/30 bg-[var(--c-card)] mb-4 shadow-sm">
-              <span className="text-[10px] font-bold uppercase text-orange-500 leading-none mt-1">{new Date().toLocaleDateString(lang === "de" ? "de-CH" : lang === "en" ? "en-GB" : "fr-CH", { month: "short" })}</span>
+            <div className="inline-flex flex-col items-center justify-center w-16 h-16 rounded-2xl border-2 border-green-500/30 bg-[var(--c-card)] mb-4 shadow-sm">
+              <span className="text-[10px] font-bold uppercase text-green-500 leading-none mt-1">{new Date().toLocaleDateString(lang === "de" ? "de-CH" : lang === "en" ? "en-GB" : "fr-CH", { month: "short" })}</span>
               <span className="text-2xl font-extrabold text-[var(--c-text)] leading-none">{new Date().getDate()}</span>
             </div>
             <h2 className="text-xl font-bold text-[var(--c-text)] mb-2">{t.eventsNone}</h2>
@@ -465,7 +465,7 @@ export default function EventsPage() {
             </p>
             {profile && (
               <button onClick={() => setShowCreate(true)}
-                className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition text-sm">
+                className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition text-sm">
                 {t.eventsCreateFirst}
               </button>
             )}
@@ -517,7 +517,7 @@ export default function EventsPage() {
                                 ? "bg-green-500/20 border border-green-500/40 text-green-300 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300"
                                 : isFull
                                 ? "bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text-muted)] cursor-not-allowed"
-                                : "bg-orange-500 hover:bg-orange-600 text-white")}>
+                                : "bg-green-500 hover:bg-green-600 text-white")}>
                             {joining === event.id ? "..." : event.is_joined ? t.eventsJoined : isFull ? t.eventsFull : t.eventsJoin}
                           </button>
                         </div>
@@ -575,7 +575,7 @@ export default function EventsPage() {
             <div className="space-y-3">
               {discoveredEvents.map((ev, i) => (
                 <a key={ev.id} href={ev.url} target="_blank" rel="noopener noreferrer"
-                  className="fade-up block bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-4 hover:border-orange-500/30 transition-all group"
+                  className="fade-up block bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-4 hover:border-green-500/30 transition-all group"
                   style={{ animationDelay: i * 0.05 + "s" }}>
                   <div className="flex gap-3">
                     {ev.image && (
@@ -590,11 +590,11 @@ export default function EventsPage() {
                         </span>
                         <span className="text-[10px] text-[var(--c-text-muted)] truncate">{ev.source}</span>
                       </div>
-                      <h3 className="text-sm font-semibold text-[var(--c-text)] line-clamp-1 group-hover:text-orange-400 transition-colors">{ev.title}</h3>
+                      <h3 className="text-sm font-semibold text-[var(--c-text)] line-clamp-1 group-hover:text-green-400 transition-colors">{ev.title}</h3>
                       <p className="text-xs text-[var(--c-text-muted)] line-clamp-2 mt-0.5">{ev.snippet}</p>
                     </div>
                     <div className="flex-shrink-0 flex items-center">
-                      <span className="text-[var(--c-text-muted)] group-hover:text-orange-400 transition-colors text-sm">{"→"}</span>
+                      <span className="text-[var(--c-text-muted)] group-hover:text-green-400 transition-colors text-sm">{"→"}</span>
                     </div>
                   </div>
                 </a>
@@ -620,12 +620,12 @@ export default function EventsPage() {
             <div className="grid gap-2 sm:grid-cols-2">
               {curatedSources.map((src, i) => (
                 <a key={i} href={src.url} target="_blank" rel="noopener noreferrer"
-                  className="block bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl p-3 hover:border-orange-500/30 transition-all group">
+                  className="block bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl p-3 hover:border-green-500/30 transition-all group">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-[10px] px-1.5 py-0.5 bg-purple-500/15 border border-purple-500/25 text-purple-300 rounded-full font-semibold">
                       {"⭐"}
                     </span>
-                    <span className="text-sm font-semibold text-[var(--c-text)] group-hover:text-orange-400 transition-colors truncate">{src.name}</span>
+                    <span className="text-sm font-semibold text-[var(--c-text)] group-hover:text-green-400 transition-colors truncate">{src.name}</span>
                   </div>
                   <p className="text-[11px] text-[var(--c-text-muted)] line-clamp-2">{src.description}</p>
                 </a>

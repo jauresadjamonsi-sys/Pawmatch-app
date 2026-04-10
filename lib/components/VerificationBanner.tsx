@@ -164,8 +164,8 @@ export default function VerificationBanner() {
   // Pending (never submitted)
   return (
     <div className="mx-4 mt-2 rounded-xl overflow-hidden" style={{
-      background: "rgba(249,115,22,0.06)",
-      border: "1px solid rgba(249,115,22,0.2)",
+      background: "rgba(34,197,94,0.06)",
+      border: "1px solid rgba(34,197,94,0.2)",
     }}>
       <div className="p-3 flex items-center gap-3">
         <span className="text-lg">📸</span>
@@ -182,9 +182,9 @@ export default function VerificationBanner() {
         <button onClick={() => setShowUpload(true)}
           className="w-full py-2.5 text-sm font-bold transition"
           style={{
-            background: "rgba(249,115,22,0.1)",
+            background: "rgba(34,197,94,0.1)",
             color: "var(--c-accent)",
-            borderTop: "1px solid rgba(249,115,22,0.15)",
+            borderTop: "1px solid rgba(34,197,94,0.15)",
           }}>
           Envoyer ma photo
         </button>
@@ -217,7 +217,7 @@ function UploadZone({ preview, onChange, onSubmit, uploading, file }: {
   file: File | null;
 }) {
   return (
-    <div className="p-3 pt-0" style={{ borderTop: "1px solid rgba(249,115,22,0.1)" }}>
+    <div className="p-3 pt-0" style={{ borderTop: "1px solid rgba(34,197,94,0.1)" }}>
       <div className="mt-3 flex gap-3 items-center">
         <div className="w-20 h-20 rounded-xl bg-[var(--c-bg)] border-2 border-dashed border-[var(--c-border)] flex items-center justify-center overflow-hidden flex-shrink-0 relative">
           {preview ? (

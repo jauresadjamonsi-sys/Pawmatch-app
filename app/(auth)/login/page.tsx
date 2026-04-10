@@ -99,7 +99,7 @@ function LoginForm() {
         </div>
         <button
           type="submit" disabled={loading}
-          className="btn-futuristic neon-orange w-full py-3 font-semibold rounded-xl disabled:opacity-50"
+          className="btn-futuristic neon-green w-full py-3 font-semibold rounded-xl disabled:opacity-50"
         >
           {loading ? t.loading : t.loginButton}
         </button>

@@ -174,8 +174,8 @@ export default function MarketplacePage() {
               className={
                 "px-4 py-1.5 rounded-full text-sm font-medium transition-all border " +
                 (tab === t.key
-                  ? "bg-orange-500/15 text-orange-400 border-orange-500/30 font-semibold"
-                  : "border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-orange-500/30 hover:text-orange-400")
+                  ? "bg-green-500/15 text-green-400 border-green-500/30 font-semibold"
+                  : "border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-green-500/30 hover:text-green-400")
               }
             >
               {t.label}
@@ -200,7 +200,7 @@ export default function MarketplacePage() {
               placeholder="Rechercher..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm glass border border-[var(--c-border)] focus:border-orange-500/50 focus:outline-none transition-all"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm glass border border-[var(--c-border)] focus:border-green-500/50 focus:outline-none transition-all"
               style={{ color: "var(--c-text)", background: "var(--c-glass)" }}
             />
           </div>
@@ -209,8 +209,8 @@ export default function MarketplacePage() {
               onClick={() => setShowModal(true)}
               className="btn-press px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-[1.02]"
               style={{
-                background: "linear-gradient(135deg, #f97316, #a78bfa)",
-                boxShadow: "0 4px 15px rgba(249,115,22,0.3)",
+                background: "linear-gradient(135deg, #22c55e, #a78bfa)",
+                boxShadow: "0 4px 15px rgba(34,197,94,0.3)",
               }}
             >
               Publier une annonce
@@ -324,7 +324,7 @@ export default function MarketplacePage() {
                   {user && user.id !== listing.user_id && (
                     <button
                       onClick={() => handleContact(listing)}
-                      className="w-full py-1.5 rounded-lg text-xs font-semibold transition-all border hover:bg-orange-500/10"
+                      className="w-full py-1.5 rounded-lg text-xs font-semibold transition-all border hover:bg-green-500/10"
                       style={{
                         color: "var(--c-text)",
                         borderColor: "var(--c-border)",
@@ -376,7 +376,7 @@ export default function MarketplacePage() {
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
                   placeholder="Ex: Laisse retractable pour chien"
-                  className="w-full px-3 py-2 rounded-xl text-sm border border-[var(--c-border)] focus:border-orange-500/50 focus:outline-none transition-all"
+                  className="w-full px-3 py-2 rounded-xl text-sm border border-[var(--c-border)] focus:border-green-500/50 focus:outline-none transition-all"
                   style={{ color: "var(--c-text)", background: "var(--c-glass)" }}
                 />
               </div>
@@ -391,7 +391,7 @@ export default function MarketplacePage() {
                   value={formDesc}
                   onChange={(e) => setFormDesc(e.target.value)}
                   placeholder="Decris ton article ou service..."
-                  className="w-full px-3 py-2 rounded-xl text-sm border border-[var(--c-border)] focus:border-orange-500/50 focus:outline-none transition-all resize-none"
+                  className="w-full px-3 py-2 rounded-xl text-sm border border-[var(--c-border)] focus:border-green-500/50 focus:outline-none transition-all resize-none"
                   style={{ color: "var(--c-text)", background: "var(--c-glass)" }}
                 />
               </div>
@@ -404,7 +404,7 @@ export default function MarketplacePage() {
                 <select
                   value={formCategory}
                   onChange={(e) => setFormCategory(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl text-sm border border-[var(--c-border)] focus:border-orange-500/50 focus:outline-none transition-all"
+                  className="w-full px-3 py-2 rounded-xl text-sm border border-[var(--c-border)] focus:border-green-500/50 focus:outline-none transition-all"
                   style={{ color: "var(--c-text)", background: "var(--c-glass)" }}
                 >
                   {CATEGORIES.map((c) => (
@@ -429,8 +429,8 @@ export default function MarketplacePage() {
                       className={
                         "flex-1 py-2 rounded-xl text-sm font-medium border transition-all " +
                         (formCondition === c.value
-                          ? "bg-orange-500/15 text-orange-400 border-orange-500/30"
-                          : "border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-orange-500/20")
+                          ? "bg-green-500/15 text-green-400 border-green-500/30"
+                          : "border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-green-500/20")
                       }
                     >
                       {c.label}
@@ -452,7 +452,7 @@ export default function MarketplacePage() {
                     value={formPrice}
                     onChange={(e) => setFormPrice(e.target.value)}
                     placeholder="0.00"
-                    className="w-full px-3 py-2 rounded-xl text-sm border border-[var(--c-border)] focus:border-orange-500/50 focus:outline-none transition-all"
+                    className="w-full px-3 py-2 rounded-xl text-sm border border-[var(--c-border)] focus:border-green-500/50 focus:outline-none transition-all"
                     style={{ color: "var(--c-text)", background: "var(--c-glass)" }}
                   />
                 </div>
@@ -464,7 +464,7 @@ export default function MarketplacePage() {
                   Photo
                 </label>
                 <div
-                  className="relative border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all hover:border-orange-500/40"
+                  className="relative border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all hover:border-green-500/40"
                   style={{ borderColor: "var(--c-border)" }}
                   onClick={() => document.getElementById("photo-input")?.click()}
                 >
@@ -513,8 +513,8 @@ export default function MarketplacePage() {
                 disabled={submitting || !formTitle.trim()}
                 className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-50"
                 style={{
-                  background: "linear-gradient(135deg, #f97316, #a78bfa)",
-                  boxShadow: "0 4px 15px rgba(249,115,22,0.3)",
+                  background: "linear-gradient(135deg, #22c55e, #a78bfa)",
+                  boxShadow: "0 4px 15px rgba(34,197,94,0.3)",
                 }}
               >
                 {submitting ? "Publication..." : "Publier"}

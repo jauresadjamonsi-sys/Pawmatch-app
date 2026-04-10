@@ -262,7 +262,7 @@ export default function StatsPage() {
             value={stats.matchesTotal}
             label={t.statsMatches || "Matches"}
             sublabel={`${stats.matchesAccepted} ${t.statsAccepted || "acceptés"} · ${stats.matchesPending} ${t.statsPending || "en attente"}`}
-            colorClass="bg-orange-500/20 text-orange-400"
+            colorClass="bg-green-500/20 text-green-400"
             delay={80}
           />
           <StatCard

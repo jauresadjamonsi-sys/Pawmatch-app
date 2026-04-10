@@ -100,7 +100,7 @@ export default async function CantonPage({ params }: Props) {
           <p
             className="text-2xl font-black"
             style={{
-              background: "linear-gradient(135deg, #f97316, #a78bfa)",
+              background: "linear-gradient(135deg, #22C55E, #FACC15)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -124,7 +124,7 @@ export default async function CantonPage({ params }: Props) {
           <p
             className="text-2xl font-black"
             style={{
-              background: "linear-gradient(135deg, #f97316, #a78bfa)",
+              background: "linear-gradient(135deg, #22C55E, #FACC15)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}

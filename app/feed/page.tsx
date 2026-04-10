@@ -433,10 +433,10 @@ export default function FeedPage() {
               className="px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300"
               style={{
                 background: feedMode === "algo"
-                  ? "linear-gradient(135deg, #f97316, #ea580c)"
+                  ? "linear-gradient(135deg, #22C55E, #16A34A)"
                   : "transparent",
                 color: feedMode === "algo" ? "#fff" : "var(--c-text-muted)",
-                boxShadow: feedMode === "algo" ? "0 2px 8px rgba(249,115,22,0.3)" : "none",
+                boxShadow: feedMode === "algo" ? "0 2px 8px rgba(34, 197, 94,0.3)" : "none",
               }}
             >
               Algorithmique
@@ -446,10 +446,10 @@ export default function FeedPage() {
               className="px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300"
               style={{
                 background: feedMode === "chrono"
-                  ? "linear-gradient(135deg, #f97316, #ea580c)"
+                  ? "linear-gradient(135deg, #22C55E, #16A34A)"
                   : "transparent",
                 color: feedMode === "chrono" ? "#fff" : "var(--c-text-muted)",
-                boxShadow: feedMode === "chrono" ? "0 2px 8px rgba(249,115,22,0.3)" : "none",
+                boxShadow: feedMode === "chrono" ? "0 2px 8px rgba(34, 197, 94,0.3)" : "none",
               }}
             >
               Chronologique
@@ -541,7 +541,7 @@ export default function FeedPage() {
                       </div>
                       {/* Fact */}
                       <div className="p-4">
-                        <div className="rounded-xl px-3 py-2.5 text-xs leading-relaxed" style={{ background: "rgba(249,115,22,0.06)", color: "var(--c-text-muted)" }}>
+                        <div className="rounded-xl px-3 py-2.5 text-xs leading-relaxed" style={{ background: "rgba(34, 197, 94,0.06)", color: "var(--c-text-muted)" }}>
                           <span className="font-bold" style={{ color: "var(--c-accent)" }}>{"\uD83D\uDCA1"} Le sais-tu ?</span>{" "}{fact}
                         </div>
                       </div>
@@ -649,7 +649,7 @@ export default function FeedPage() {
                         <HeartOverlay show={heartReelId === reelId} />
                         {/* Score badge (algo mode) */}
                         {feedMode === "algo" && (
-                          <div className="absolute top-2 right-2 px-2 py-1 rounded-full text-[10px] font-bold" style={{ background: "rgba(249,115,22,0.85)", color: "#fff" }}>
+                          <div className="absolute top-2 right-2 px-2 py-1 rounded-full text-[10px] font-bold" style={{ background: "rgba(34, 197, 94,0.85)", color: "#fff" }}>
                             {item.score} pts
                           </div>
                         )}
@@ -793,7 +793,7 @@ export default function FeedPage() {
           {/* ═══════ STREAK (ENHANCED) ═══════ */}
           <section className="glass rounded-2xl p-5 relative overflow-hidden">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl animate-pulse-glow" style={{ background: "linear-gradient(135deg, rgba(249,115,22,0.2), rgba(234,88,12,0.1))" }}>
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl animate-pulse-glow" style={{ background: "linear-gradient(135deg, rgba(34, 197, 94,0.2), rgba(22,163,74,0.1))" }}>
                 {streak.count >= 7 ? "\uD83D\uDD25" : "\u2B50"}
               </div>
               <div className="flex-1">
@@ -817,7 +817,7 @@ export default function FeedPage() {
               </div>
             </div>
             {milestone && (
-              <div className="mt-3 rounded-xl px-3 py-2 text-xs font-medium animate-scale-in" style={{ background: "rgba(249,115,22,0.08)", color: "var(--c-accent)" }}>
+              <div className="mt-3 rounded-xl px-3 py-2 text-xs font-medium animate-scale-in" style={{ background: "rgba(34, 197, 94,0.08)", color: "var(--c-accent)" }}>
                 {milestone}
               </div>
             )}
@@ -897,7 +897,7 @@ export default function FeedPage() {
               {[
                 { label: "Matchs", value: matchCount, icon: "\uD83D\uDC95", glow: "rgba(244,114,182,0.15)", href: "/matches" },
                 { label: "Messages", value: messageCount, icon: "\uD83D\uDCAC", glow: "rgba(96,165,250,0.15)", href: "/matches" },
-                { label: "Animaux", value: animals.length, icon: "\uD83D\uDC3E", glow: "rgba(249,115,22,0.15)", href: "/profile" },
+                { label: "Animaux", value: animals.length, icon: "\uD83D\uDC3E", glow: "rgba(34, 197, 94,0.15)", href: "/profile" },
               ].map((stat) => (
                 <Link key={stat.label} href={stat.href} className="rounded-xl p-3 text-center block transition-transform active:scale-95 hover:scale-105" style={{ background: stat.glow }}>
                   <div className="text-xl mb-1">{stat.icon}</div>
@@ -913,7 +913,7 @@ export default function FeedPage() {
             <h2 className="text-sm font-bold uppercase tracking-wider mb-3 px-1" style={{ color: "var(--c-text-muted)" }}>Actions rapides</h2>
             <div className="grid grid-cols-2 gap-3">
               {[
-                { emoji: "\uD83D\uDD0D", label: "Flairer", href: "/flairer", gradient: "linear-gradient(135deg, rgba(249,115,22,0.15), rgba(234,88,12,0.08))" },
+                { emoji: "\uD83D\uDD0D", label: "Flairer", href: "/flairer", gradient: "linear-gradient(135deg, rgba(34, 197, 94,0.15), rgba(22,163,74,0.08))" },
                 { emoji: "\uD83D\uDCAC", label: "Messages", href: "/matches", gradient: "linear-gradient(135deg, rgba(96,165,250,0.15), rgba(59,130,246,0.08))" },
                 { emoji: "\uD83D\uDCCD", label: "Carte", href: "/carte", gradient: "linear-gradient(135deg, rgba(52,211,153,0.15), rgba(16,185,129,0.08))" },
                 { emoji: "\uD83D\uDC3E", label: "Mon profil", href: "/profile", gradient: "linear-gradient(135deg, rgba(167,139,250,0.15), rgba(139,92,246,0.08))" },
@@ -929,7 +929,7 @@ export default function FeedPage() {
           {/* ═══════ PAWDIRECTORY CTA ═══════ */}
           <section>
             <a href="https://pawdirectory.ch" target="_blank" rel="noopener noreferrer" className="glass gradient-border rounded-2xl p-5 flex items-center gap-4 active:scale-[0.98] transition-transform block">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0" style={{ background: "rgba(249,115,22,0.12)" }}>{"\uD83C\uDFE5"}</div>
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0" style={{ background: "rgba(34, 197, 94,0.12)" }}>{"\uD83C\uDFE5"}</div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold" style={{ color: "var(--c-text)" }}>Besoin d&apos;un v&eacute;to ?</p>
                 <p className="text-xs" style={{ color: "var(--c-text-muted)" }}>Trouve un v&eacute;t&eacute;rinaire de confiance sur PawDirectory</p>

@@ -87,7 +87,7 @@ export default function InstallPrompt() {
                 boxShadow: "0 8px 40px rgba(0,0,0,0.3)",
               }}
             >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-lg flex-shrink-0 shadow-lg shadow-orange-500/30">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-lg flex-shrink-0 shadow-lg shadow-green-500/30">
                 🐾
               </div>
               <div className="flex-1 min-w-0">
@@ -96,7 +96,7 @@ export default function InstallPrompt() {
               </div>
               <button
                 onClick={() => setShowIOSGuide(true)}
-                className="flex-shrink-0 px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-bold rounded-full shadow-lg shadow-orange-500/20"
+                className="flex-shrink-0 px-3 py-1.5 bg-gradient-to-r from-green-500 to-green-600 text-white text-xs font-bold rounded-full shadow-lg shadow-green-500/20"
               >
                 Comment ?
               </button>
@@ -123,21 +123,21 @@ export default function InstallPrompt() {
 
                 <div className="space-y-4 text-left">
                   <div className="flex items-start gap-3">
-                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center text-xs font-bold">1</span>
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-xs font-bold">1</span>
                     <div>
                       <p className="text-sm font-medium text-[var(--c-text)]">Appuie sur <span className="inline-block px-1.5 py-0.5 bg-blue-500/20 text-blue-400 rounded text-xs font-mono">⬆ Partager</span></p>
                       <p className="text-xs text-[var(--c-text-muted)] mt-0.5">En bas de Safari</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center text-xs font-bold">2</span>
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-xs font-bold">2</span>
                     <div>
-                      <p className="text-sm font-medium text-[var(--c-text)]">Scrolle vers le bas et appuie sur <span className="inline-block px-1.5 py-0.5 bg-orange-500/20 text-orange-400 rounded text-xs font-mono">＋ Sur l&apos;&eacute;cran d&apos;accueil</span></p>
+                      <p className="text-sm font-medium text-[var(--c-text)]">Scrolle vers le bas et appuie sur <span className="inline-block px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded text-xs font-mono">＋ Sur l&apos;&eacute;cran d&apos;accueil</span></p>
                       <p className="text-xs text-[var(--c-text-muted)] mt-0.5">C&apos;est en dessous de &laquo;&nbsp;Ajouter un signet&nbsp;&raquo;</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center text-xs font-bold">3</span>
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-xs font-bold">3</span>
                     <div>
                       <p className="text-sm font-medium text-[var(--c-text)]">Appuie sur &laquo;&nbsp;Ajouter&nbsp;&raquo;</p>
                       <p className="text-xs text-[var(--c-text-muted)] mt-0.5">Pawly appara&icirc;t comme une vraie app !</p>
@@ -153,7 +153,7 @@ export default function InstallPrompt() {
                 </button>
                 <div className="w-px" style={{ background: "var(--c-border)" }} />
                 <button onClick={handleDismiss}
-                  className="flex-1 py-3.5 text-sm font-bold text-orange-400 hover:text-orange-300 transition">
+                  className="flex-1 py-3.5 text-sm font-bold text-green-400 hover:text-green-300 transition">
                   Compris !
                 </button>
               </div>
@@ -175,7 +175,7 @@ export default function InstallPrompt() {
           boxShadow: "0 8px 40px rgba(0,0,0,0.3)",
         }}
       >
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-lg flex-shrink-0 shadow-lg shadow-orange-500/30">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-lg flex-shrink-0 shadow-lg shadow-green-500/30">
           🐾
         </div>
         <div className="flex-1 min-w-0">
@@ -184,7 +184,7 @@ export default function InstallPrompt() {
         </div>
         <button
           onClick={handleInstall}
-          className="flex-shrink-0 px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-bold rounded-full shadow-lg shadow-orange-500/20 active:scale-95 transition-transform"
+          className="flex-shrink-0 px-3 py-1.5 bg-gradient-to-r from-green-500 to-green-600 text-white text-xs font-bold rounded-full shadow-lg shadow-green-500/20 active:scale-95 transition-transform"
         >
           Installer
         </button>

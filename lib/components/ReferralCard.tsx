@@ -123,7 +123,7 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
   const emailUrl = `mailto:?subject=${encodeURIComponent("Rejoins Pawly !")}&body=${shareText}`;
 
   return (
-    <div className="glass rounded-2xl p-6 mb-6" style={{ border: "1px solid rgba(249,115,22,0.2)", boxShadow: "0 0 20px rgba(249,115,22,0.05)" }}>
+    <div className="glass rounded-2xl p-6 mb-6" style={{ border: "1px solid rgba(34,197,94,0.2)", boxShadow: "0 0 20px rgba(34,197,94,0.05)" }}>
       <div className="flex items-center gap-3 mb-4">
         <span className="text-2xl">{"🎁"}</span>
         <div>
@@ -134,8 +134,8 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 mb-4">
-        <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(249,115,22,0.15)" }}>
-          <p className="text-2xl font-black" style={{ color: "#f97316", textShadow: "0 0 10px rgba(249,115,22,0.3)" }}>{referralCount}</p>
+        <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(34,197,94,0.15)" }}>
+          <p className="text-2xl font-black" style={{ color: "#22C55E", textShadow: "0 0 10px rgba(34,197,94,0.3)" }}>{referralCount}</p>
           <p className="text-[10px] text-[var(--c-text-muted)] font-bold uppercase">
             {referralCount === 1 ? "Parrainage" : "Parrainages"}
           </p>
@@ -155,16 +155,16 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
             className="w-full flex items-center justify-between px-4 py-3 rounded-xl transition hover:scale-[1.01]"
             style={{
               background: "var(--c-glass)",
-              border: "1.5px dashed rgba(249,115,22,0.35)",
+              border: "1.5px dashed rgba(34,197,94,0.35)",
             }}
           >
             <span className="font-mono text-lg font-black tracking-widest" style={{ color: "var(--c-text)" }}>
               {referralCode.toUpperCase()}
             </span>
             <span className="text-xs font-bold px-2 py-1 rounded-lg" style={{
-              background: codeCopied ? "rgba(34,197,94,0.2)" : "rgba(249,115,22,0.15)",
-              color: codeCopied ? "#22c55e" : "#f97316",
-              border: codeCopied ? "1px solid rgba(34,197,94,0.3)" : "1px solid rgba(249,115,22,0.25)",
+              background: codeCopied ? "rgba(34,197,94,0.2)" : "rgba(34,197,94,0.15)",
+              color: codeCopied ? "#22c55e" : "#22C55E",
+              border: codeCopied ? "1px solid rgba(34,197,94,0.3)" : "1px solid rgba(34,197,94,0.25)",
             }}>
               {codeCopied ? "Copie !" : "Copier"}
             </span>
@@ -191,9 +191,9 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
             onClick={copyLink}
             className="px-3 py-2 text-xs font-bold rounded-xl transition whitespace-nowrap"
             style={{
-              background: copied ? "rgba(34,197,94,0.2)" : "rgba(249,115,22,0.15)",
-              color: copied ? "#22c55e" : "#f97316",
-              border: copied ? "1px solid rgba(34,197,94,0.3)" : "1px solid rgba(249,115,22,0.25)",
+              background: copied ? "rgba(34,197,94,0.2)" : "rgba(34,197,94,0.15)",
+              color: copied ? "#22c55e" : "#22C55E",
+              border: copied ? "1px solid rgba(34,197,94,0.3)" : "1px solid rgba(34,197,94,0.25)",
             }}
           >
             {copied ? "Copie !" : "Copier"}
@@ -206,9 +206,9 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
         onClick={handleShare}
         className="w-full py-2.5 rounded-xl font-bold text-sm mb-4 transition-all hover:scale-[1.02]"
         style={{
-          background: "linear-gradient(135deg, #f97316, #ea580c)",
+          background: "linear-gradient(135deg, #22C55E, #16A34A)",
           color: "#fff",
-          boxShadow: "0 4px 16px rgba(249,115,22,0.25)",
+          boxShadow: "0 4px 16px rgba(34,197,94,0.25)",
         }}
       >
         {"📤"} Partager mon lien

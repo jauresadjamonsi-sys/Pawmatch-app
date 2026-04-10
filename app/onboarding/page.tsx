@@ -209,7 +209,7 @@ export default function OnboardingPage() {
         <div className="flex justify-center gap-2 mb-8">
           {[1, 2, 3, 4, 5, 6].map((s) => (
             <div key={s} className={"h-1.5 rounded-full transition-all duration-500 " + (s <= step ? "w-10" : "w-6")}
-              style={{ background: s <= step ? "var(--c-accent, #f97316)" : "var(--c-border)" }} />
+              style={{ background: s <= step ? "var(--c-accent, #22C55E)" : "var(--c-border)" }} />
           ))}
         </div>
 
@@ -237,7 +237,7 @@ export default function OnboardingPage() {
             <button onClick={() => { if (species) setStep(2); }}
               disabled={!species}
               className="w-full py-3.5 font-bold rounded-xl text-white transition disabled:opacity-40"
-              style={{ background: "#f97316" }}>
+              style={{ background: "#22C55E" }}>
               {t.onboardContinue}
             </button>
           </div>
@@ -270,7 +270,7 @@ export default function OnboardingPage() {
                     Photo de l'animal
                     <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
                   </label>
-                  <p className="text-[10px] text-orange-400 mt-1 font-medium">Obligatoire *</p>
+                  <p className="text-[10px] text-green-400 mt-1 font-medium">Obligatoire *</p>
                 </div>
               </div>
 
@@ -278,7 +278,7 @@ export default function OnboardingPage() {
               <div>
                 <label className="block text-sm font-medium text-[var(--c-text)] mb-1">{t.onboardNamePlaceholder} *</label>
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                  className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
                   placeholder={t.onboardNameEx} autoFocus />
               </div>
 
@@ -287,7 +287,7 @@ export default function OnboardingPage() {
                 <div>
                   <label className="block text-sm font-medium text-[var(--c-text)] mb-1">{t.onboardBreed}</label>
                   <select value={breed} onChange={(e) => setBreed(e.target.value)}
-                    className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                    className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-green-500 outline-none appearance-none">
                     <option value="">{t.onboardSelect}</option>
                     {breedList.map((b: string) => (
                       <option key={b} value={b}>{b}</option>
@@ -301,13 +301,13 @@ export default function OnboardingPage() {
                 <div>
                   <label className="block text-sm font-medium text-[var(--c-text)] mb-1">Age (mois)</label>
                   <input type="number" min={0} max={360} value={ageMonths} onChange={(e) => setAgeMonths(e.target.value === "" ? "" : parseInt(e.target.value, 10))}
-                    className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                    className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
                     placeholder="Ex: 24" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-[var(--c-text)] mb-1">Genre</label>
                   <select value={gender} onChange={(e) => setGender(e.target.value)}
-                    className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                    className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-green-500 outline-none appearance-none">
                     <option value="inconnu">Inconnu</option>
                     <option value="male">Male</option>
                     <option value="femelle">Femelle</option>
@@ -320,7 +320,7 @@ export default function OnboardingPage() {
                 <div>
                   <label className="block text-sm font-medium text-[var(--c-text)] mb-1">Canton</label>
                   <select value={canton} onChange={(e) => setCanton(e.target.value)}
-                    className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                    className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-green-500 outline-none appearance-none">
                     <option value="">Selectionner</option>
                     {CANTONS.map((c) => (
                       <option key={c.code} value={c.code}>{c.name}</option>
@@ -330,7 +330,7 @@ export default function OnboardingPage() {
                 <div>
                   <label className="block text-sm font-medium text-[var(--c-text)] mb-1">Ville</label>
                   <input type="text" value={city} onChange={(e) => setCity(e.target.value)}
-                    className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                    className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
                     placeholder="Ex: Lausanne" />
                 </div>
               </div>
@@ -362,7 +362,7 @@ export default function OnboardingPage() {
               }}
               disabled={!name.trim() || !photoFile}
               className="w-full mt-5 py-3.5 font-bold rounded-xl text-white transition disabled:opacity-40"
-              style={{ background: "#f97316" }}>
+              style={{ background: "#22C55E" }}>
               Continuer
             </button>
 
@@ -417,8 +417,8 @@ export default function OnboardingPage() {
                 </label>
 
                 <div className="w-full p-3 rounded-xl text-xs leading-relaxed" style={{
-                  background: "rgba(249,115,22,0.06)",
-                  border: "1px solid rgba(249,115,22,0.15)",
+                  background: "rgba(34, 197, 94,0.06)",
+                  border: "1px solid rgba(34, 197, 94,0.15)",
                   color: "var(--c-text-muted)",
                 }}>
                   <strong style={{ color: "var(--c-accent)" }}>Pourquoi ?</strong> Cette photo nous permet de verifier que tu es bien le proprietaire. Elle ne sera <strong>jamais publiee</strong> — seule l'equipe Pawly y a acces.
@@ -428,7 +428,7 @@ export default function OnboardingPage() {
 
             <button onClick={handleFinish} disabled={loading || !verifFile}
               className="w-full mt-5 py-3.5 font-bold rounded-xl text-white transition disabled:opacity-40"
-              style={{ background: "#f97316" }}>
+              style={{ background: "#22C55E" }}>
               {loading ? "Creation en cours..." : "Valider mon inscription"}
             </button>
 
@@ -471,7 +471,7 @@ export default function OnboardingPage() {
                       type="text"
                       value={referralCode}
                       onChange={(e) => { setReferralCode(e.target.value); setReferralError(null); }}
-                      className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                      className="w-full px-4 py-3 bg-[var(--c-bg)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
                       placeholder="Ex: a1b2c3d4"
                       disabled={referralLoading}
                     />
@@ -504,7 +504,7 @@ export default function OnboardingPage() {
                     }}
                     disabled={referralLoading || !referralCode.trim()}
                     className="w-full py-3 font-bold rounded-xl text-white transition disabled:opacity-40"
-                    style={{ background: "#f97316" }}
+                    style={{ background: "#22C55E" }}
                   >
                     {referralLoading ? "Verification..." : "Appliquer"}
                   </button>
@@ -560,7 +560,7 @@ export default function OnboardingPage() {
             <button
               onClick={() => setStep(6)}
               className="btn-futuristic w-full mt-6 py-3.5 font-bold rounded-xl text-white transition"
-              style={{ background: "#f97316", boxShadow: "0 0 30px rgba(249,115,22,0.3)" }}
+              style={{ background: "#22C55E", boxShadow: "0 0 30px rgba(34, 197, 94,0.3)" }}
             >
               C&apos;est parti !
             </button>
@@ -574,7 +574,7 @@ export default function OnboardingPage() {
             <div className="text-7xl mb-4">🎉</div>
             <h1 className="text-2xl font-extrabold text-[var(--c-text)] mb-2">{t.onboardReady}</h1>
             <p className="text-sm text-[var(--c-text-muted)] mb-2">
-              <span className="font-bold" style={{ color: "var(--c-accent, #f97316)" }}>{name}</span> {t.onboardReadyMsg}
+              <span className="font-bold" style={{ color: "var(--c-accent, #22C55E)" }}>{name}</span> {t.onboardReadyMsg}
             </p>
             <p className="text-xs text-[var(--c-text-muted)] mb-2">Ta photo de verification sera examinee sous 24h.</p>
             <p className="text-xs text-[var(--c-text-muted)] mb-8">{t.onboardComplete}</p>
@@ -582,7 +582,7 @@ export default function OnboardingPage() {
             <div className="flex flex-col gap-3">
               <button onClick={() => router.push("/flairer")}
                 className="w-full py-3.5 font-bold rounded-xl text-white"
-                style={{ background: "#f97316", boxShadow: "0 0 30px rgba(249,115,22,0.3)" }}>
+                style={{ background: "#22C55E", boxShadow: "0 0 30px rgba(34, 197, 94,0.3)" }}>
                 {t.onboardStart}
               </button>
               <button onClick={() => router.push("/profile")}

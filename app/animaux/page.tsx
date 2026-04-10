@@ -66,7 +66,7 @@ export default async function AnimauxIndexPage() {
   return (
     <div className="min-h-screen bg-white text-gray-900">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 py-16 px-4">
+      <section className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-16 px-4">
         <div className="max-w-5xl mx-auto text-center">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
             Trouvez des compagnons de balade pour votre animal en Suisse
@@ -92,13 +92,13 @@ export default async function AnimauxIndexPage() {
               <Link
                 key={canton.slug}
                 href={`/animaux/${canton.slug}`}
-                className="group block bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg hover:border-orange-300 transition-all duration-200"
+                className="group block bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg hover:border-green-300 transition-all duration-200"
               >
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-xl font-semibold text-gray-900 group-hover:text-orange-600 transition-colors">
+                  <h3 className="text-xl font-semibold text-gray-900 group-hover:text-green-600 transition-colors">
                     {canton.name}
                   </h3>
-                  <span className="text-sm font-medium text-orange-600 bg-orange-50 px-3 py-1 rounded-full">
+                  <span className="text-sm font-medium text-green-600 bg-green-50 px-3 py-1 rounded-full">
                     {cantonCount} {cantonCount === 1 ? "animal" : "animaux"}
                   </span>
                 </div>
@@ -125,7 +125,7 @@ export default async function AnimauxIndexPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-gradient-to-r from-orange-500 to-rose-500 py-16 px-4">
+      <section className="bg-gradient-to-r from-green-500 to-emerald-600 py-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
             Votre animal cherche un compagnon de balade ?
@@ -135,7 +135,7 @@ export default async function AnimauxIndexPage() {
           </p>
           <Link
             href="/signup"
-            className="inline-block bg-white text-orange-600 font-semibold px-8 py-3 rounded-full hover:bg-orange-50 transition-colors text-lg"
+            className="inline-block bg-white text-green-600 font-semibold px-8 py-3 rounded-full hover:bg-green-50 transition-colors text-lg"
           >
             Creer un compte gratuit
           </Link>

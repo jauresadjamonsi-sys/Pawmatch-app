@@ -159,7 +159,7 @@ export default function PricingPage() {
                   isGold
                     ? "border-yellow-400 shadow-xl"
                     : isPopular
-                    ? "border-orange-400 shadow-lg"
+                    ? "border-green-400 shadow-lg"
                     : ""
                 }`}
                 style={{
@@ -185,7 +185,7 @@ export default function PricingPage() {
                 )}
 
                 {isPopular && !isGold && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-orange-500 text-white text-xs font-bold rounded-full uppercase tracking-wide">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-green-500 text-white text-xs font-bold rounded-full uppercase tracking-wide">
                     {t.pricingPopular}
                   </div>
                 )}
@@ -232,7 +232,7 @@ export default function PricingPage() {
                     >
                       <svg
                         className={`w-5 h-5 flex-shrink-0 ${
-                          isGold ? "text-yellow-500" : isPopular ? "text-orange-500" : "text-green-500"
+                          isGold ? "text-yellow-500" : isPopular ? "text-green-500" : "text-green-500"
                         }`}
                         fill="none"
                         viewBox="0 0 24 24"
@@ -272,7 +272,7 @@ export default function PricingPage() {
                       isGold
                         ? "text-white"
                         : isPopular
-                        ? "bg-orange-500 hover:bg-orange-600 text-white"
+                        ? "bg-green-500 hover:bg-green-600 text-white"
                         : "text-white"
                     }`}
                     style={
@@ -351,14 +351,14 @@ export default function PricingPage() {
             </div>
 
             {/* Pawly */}
-            <div className="rounded-2xl border-2 p-6 relative" style={{ background: "rgba(249,115,22,0.04)", borderColor: "rgba(249,115,22,0.4)" }}>
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-orange-500 text-white text-xs font-bold rounded-full uppercase tracking-wide">
+            <div className="rounded-2xl border-2 p-6 relative" style={{ background: "rgba(34,197,94,0.04)", borderColor: "rgba(34,197,94,0.4)" }}>
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-green-500 text-white text-xs font-bold rounded-full uppercase tracking-wide">
                 Pawly
               </div>
               <div className="text-center mb-5">
                 <span className="text-3xl block mb-2">🐾</span>
                 <h3 className="font-bold text-lg" style={{ color: "var(--c-text, #111827)" }}>Pawly</h3>
-                <p className="text-xs mt-1 font-semibold" style={{ color: "var(--c-accent, #f97316)" }}>{t.whySwiss}</p>
+                <p className="text-xs mt-1 font-semibold" style={{ color: "var(--c-accent, #22c55e)" }}>{t.whySwiss}</p>
               </div>
               <ul className="space-y-2.5 text-sm" style={{ color: "var(--c-text, #374151)" }}>
                 {[t.whyFeat1, t.whyFeat2, t.whyFeat3, t.whyFeat4, t.whyFeat5, t.whyFeat6, t.whyFeat7, t.whyFeat8].map((feat, i) => (
@@ -372,7 +372,7 @@ export default function PricingPage() {
           </div>
 
           <div className="text-center mt-8">
-            <Link href="/signup" className="inline-block px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition text-sm">
+            <Link href="/signup" className="inline-block px-8 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl transition text-sm">
               {t.heroStartFree}
             </Link>
           </div>

@@ -413,7 +413,7 @@ export default function FiltersPage() {
             <h1 className="text-2xl font-extrabold gradient-text-warm">Filtres AR</h1>
             <p className="text-xs text-[var(--c-text-muted)] mt-0.5">Embellissez les photos de votre animal</p>
           </div>
-          <Link href="/stories/create" className="text-xs text-orange-400 hover:text-orange-300">
+          <Link href="/stories/create" className="text-xs text-green-400 hover:text-green-300">
             Creer Story →
           </Link>
         </div>
@@ -429,13 +429,13 @@ export default function FiltersPage() {
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={() => fileRef.current?.click()}
-                className="px-6 py-3 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-sm shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all"
+                className="px-6 py-3 rounded-2xl bg-gradient-to-r from-green-500 to-green-600 text-white font-bold text-sm shadow-lg shadow-green-500/25 hover:shadow-green-500/40 transition-all"
               >
                 Galerie
               </button>
               <button
                 onClick={startCamera}
-                className="px-6 py-3 rounded-2xl bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text)] font-bold text-sm hover:border-orange-500/30 transition-all"
+                className="px-6 py-3 rounded-2xl bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text)] font-bold text-sm hover:border-green-500/30 transition-all"
               >
                 Camera
               </button>
@@ -457,7 +457,7 @@ export default function FiltersPage() {
               </button>
               <button
                 onClick={capturePhoto}
-                className="w-16 h-16 rounded-full bg-white border-4 border-orange-500 shadow-lg shadow-orange-500/40"
+                className="w-16 h-16 rounded-full bg-white border-4 border-green-500 shadow-lg shadow-green-500/40"
               />
             </div>
           </div>
@@ -482,7 +482,7 @@ export default function FiltersPage() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-bold shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all disabled:opacity-50"
+                className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-bold shadow-lg shadow-green-500/25 hover:shadow-green-500/40 transition-all disabled:opacity-50"
               >
                 {saving ? "..." : saved ? "Sauvegarde!" : "Telecharger"}
               </button>
@@ -506,7 +506,7 @@ export default function FiltersPage() {
                   className={
                     "px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all " +
                     (category === c.key
-                      ? "bg-orange-500 text-white shadow-lg shadow-orange-500/25"
+                      ? "bg-green-500 text-white shadow-lg shadow-green-500/25"
                       : "bg-[var(--c-card)] text-[var(--c-text-muted)] border border-[var(--c-border)]")
                   }
                 >
@@ -524,8 +524,8 @@ export default function FiltersPage() {
                   className={
                     "p-3 rounded-2xl text-center transition-all " +
                     (selectedFilter === f.id
-                      ? "bg-orange-500/15 border-2 border-orange-500 shadow-lg shadow-orange-500/20 scale-105"
-                      : "bg-[var(--c-card)] border border-[var(--c-border)] hover:border-orange-500/30 hover:scale-102")
+                      ? "bg-green-500/15 border-2 border-green-500 shadow-lg shadow-green-500/20 scale-105"
+                      : "bg-[var(--c-card)] border border-[var(--c-border)] hover:border-green-500/30 hover:scale-102")
                   }
                 >
                   <p className="text-2xl mb-1">{f.icon}</p>

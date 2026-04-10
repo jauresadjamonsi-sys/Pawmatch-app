@@ -202,10 +202,10 @@ export default function SearchPage() {
 
   const typeColor = (type: string) => {
     switch (type) {
-      case "animal": return "from-orange-500 to-amber-500";
+      case "animal": return "from-green-500 to-emerald-500";
       case "user": return "from-blue-500 to-cyan-500";
       case "group": return "from-purple-500 to-pink-500";
-      case "reel": return "from-red-500 to-orange-500";
+      case "reel": return "from-red-500 to-pink-500";
       case "hashtag": return "from-green-500 to-emerald-500";
       default: return "from-gray-500 to-gray-600";
     }
@@ -230,11 +230,11 @@ export default function SearchPage() {
               placeholder="Rechercher animaux, profils, groupes, reels..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full pl-12 pr-10 py-3.5 rounded-2xl text-sm border border-[var(--c-border)] bg-[var(--c-card)] text-[var(--c-text)] placeholder:text-[var(--c-text-muted)] focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500/50 transition-all"
+              className="w-full pl-12 pr-10 py-3.5 rounded-2xl text-sm border border-[var(--c-border)] bg-[var(--c-card)] text-[var(--c-text)] placeholder:text-[var(--c-text-muted)] focus:outline-none focus:ring-2 focus:ring-green-500/40 focus:border-green-500/50 transition-all"
             />
             {query && (
               <button type="button" onClick={() => { setQuery(""); setResults([]); inputRef.current?.focus(); }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[var(--c-border)] flex items-center justify-center text-[var(--c-text-muted)] hover:bg-orange-500/20 transition-all">
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[var(--c-border)] flex items-center justify-center text-[var(--c-text-muted)] hover:bg-green-500/20 transition-all">
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -251,8 +251,8 @@ export default function SearchPage() {
                 className={
                   "px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all " +
                   (tab === t.key
-                    ? "bg-orange-500 text-white shadow-lg shadow-orange-500/25"
-                    : "bg-[var(--c-card)] text-[var(--c-text-muted)] border border-[var(--c-border)] hover:border-orange-500/30")
+                    ? "bg-green-500 text-white shadow-lg shadow-green-500/25"
+                    : "bg-[var(--c-card)] text-[var(--c-text-muted)] border border-[var(--c-border)] hover:border-green-500/30")
                 }
               >
                 {t.icon} {t.label}
@@ -266,7 +266,7 @@ export default function SearchPage() {
         {/* Loading */}
         {loading && (
           <div className="flex justify-center py-12">
-            <div className="w-8 h-8 border-3 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
+            <div className="w-8 h-8 border-3 border-green-500/30 border-t-green-500 rounded-full animate-spin" />
           </div>
         )}
 
@@ -294,7 +294,7 @@ export default function SearchPage() {
                 )}
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-[var(--c-text)] truncate group-hover:text-orange-400 transition-colors">
+                  <p className="text-sm font-semibold text-[var(--c-text)] truncate group-hover:text-green-400 transition-colors">
                     {r.title}
                   </p>
                   {r.subtitle && (
@@ -332,7 +332,7 @@ export default function SearchPage() {
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-sm font-semibold text-[var(--c-text)]">Recherches recentes</h3>
-                  <button onClick={clearRecent} className="text-xs text-orange-400 hover:text-orange-300 transition-colors">
+                  <button onClick={clearRecent} className="text-xs text-green-400 hover:text-green-300 transition-colors">
                     Effacer
                   </button>
                 </div>
@@ -341,7 +341,7 @@ export default function SearchPage() {
                     <button
                       key={i}
                       onClick={() => { setQuery(s); saveSearch(s); }}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-orange-500/30 hover:text-orange-400 transition-all"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-green-500/30 hover:text-green-400 transition-all"
                     >
                       <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -364,11 +364,11 @@ export default function SearchPage() {
                       onClick={() => setQuery(t.tag)}
                       className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-[var(--c-card)] transition-all text-left group"
                     >
-                      <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500/20 to-purple-500/20 flex items-center justify-center text-sm font-bold text-orange-400">
+                      <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-500/20 to-purple-500/20 flex items-center justify-center text-sm font-bold text-green-400">
                         {i + 1}
                       </span>
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-[var(--c-text)] group-hover:text-orange-400 transition-colors">
+                        <p className="text-sm font-medium text-[var(--c-text)] group-hover:text-green-400 transition-colors">
                           #{t.tag}
                         </p>
                         <p className="text-xs text-[var(--c-text-muted)]">{t.count} publication{t.count > 1 ? "s" : ""}</p>
@@ -390,7 +390,7 @@ export default function SearchPage() {
                   <button
                     key={s}
                     onClick={() => setQuery(s)}
-                    className="px-3.5 py-2 rounded-full text-xs bg-gradient-to-r from-[var(--c-card)] to-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text)] hover:border-orange-500/30 hover:text-orange-400 hover:shadow-lg hover:shadow-orange-500/10 transition-all"
+                    className="px-3.5 py-2 rounded-full text-xs bg-gradient-to-r from-[var(--c-card)] to-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text)] hover:border-green-500/30 hover:text-green-400 hover:shadow-lg hover:shadow-green-500/10 transition-all"
                   >
                     {s}
                   </button>
@@ -403,7 +403,7 @@ export default function SearchPage() {
               <h3 className="text-sm font-semibold text-[var(--c-text)] mb-3">Explorer par categorie</h3>
               <div className="grid grid-cols-2 gap-3 stagger-children">
                 {[
-                  { label: "Chiens", icon: "🐕", query: "chien", color: "from-amber-500 to-orange-600" },
+                  { label: "Chiens", icon: "🐕", query: "chien", color: "from-green-500 to-emerald-600" },
                   { label: "Chats", icon: "🐱", query: "chat", color: "from-purple-500 to-pink-600" },
                   { label: "Rongeurs", icon: "🐹", query: "rongeur", color: "from-green-500 to-emerald-600" },
                   { label: "Oiseaux", icon: "🐦", query: "oiseau", color: "from-blue-500 to-cyan-600" },

@@ -271,7 +271,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
   const subColor = profile?.subscription === "pro"
     ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
     : profile?.subscription === "premium"
-    ? "bg-orange-500/20 text-orange-300 border border-orange-500/30"
+    ? "bg-green-500/20 text-green-300 border border-green-500/30"
     : "bg-[var(--c-border)] text-[var(--c-text-muted)]";
 
   return (
@@ -315,16 +315,16 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
             >
               {profile?.avatar_url ? (
                 <div className="w-20 h-20 rounded-full overflow-hidden relative"
-                  style={{ boxShadow: isPremium ? "0 0 20px rgba(249,115,22,0.3), 0 0 40px rgba(167,139,250,0.15)" : "none" }}>
+                  style={{ boxShadow: isPremium ? "0 0 20px rgba(34,197,94,0.3), 0 0 40px rgba(167,139,250,0.15)" : "none" }}>
                   <Image src={profile.avatar_url} alt="Avatar" fill className="object-cover" sizes="80px" />
                 </div>
               ) : (
                 <div
                   className="w-20 h-20 rounded-full flex items-center justify-center"
                   style={{
-                    background: "rgba(249,115,22,0.15)",
+                    background: "rgba(34,197,94,0.15)",
                     boxShadow: isPremium
-                      ? "0 0 20px rgba(249,115,22,0.3), 0 0 40px rgba(167,139,250,0.15)"
+                      ? "0 0 20px rgba(34,197,94,0.3), 0 0 40px rgba(167,139,250,0.15)"
                       : "none",
                   }}
                 >
@@ -346,7 +346,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
               <p className="text-sm text-[var(--c-text-muted)] truncate">{user.email}</p>
               <span
                 className={"inline-block mt-1 text-xs px-3 py-1 rounded-full font-semibold " + subColor}
-                style={isPremium ? { boxShadow: "0 0 12px rgba(249,115,22,0.2)" } : {}}
+                style={isPremium ? { boxShadow: "0 0 12px rgba(34,197,94,0.2)" } : {}}
               >
                 {subLabel}
               </span>
@@ -367,12 +367,12 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
               onClick={() => document.getElementById("compagnons")?.scrollIntoView({ behavior: "smooth" })}
               className="glass rounded-xl p-3 text-center transition cursor-pointer profile-stat-card"
               style={{
-                border: "1px solid rgba(249,115,22,0.15)",
-                boxShadow: "0 0 12px rgba(249,115,22,0.05)",
+                border: "1px solid rgba(34,197,94,0.15)",
+                boxShadow: "0 0 12px rgba(34,197,94,0.05)",
                 transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
               }}
             >
-              <p className="text-lg font-black neon-orange">{stats.animals}</p>
+              <p className="text-lg font-black neon-green">{stats.animals}</p>
               <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Animaux</p>
             </button>
             <Link
@@ -471,7 +471,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
             <PushButton />
             <Link
               href="/pricing"
-              className="btn-futuristic px-4 py-2 text-sm font-medium rounded-xl neon-orange"
+              className="btn-futuristic px-4 py-2 text-sm font-medium rounded-xl neon-green"
             >
               {profile?.subscription === "free" ? "⭐ Passer Premium" : "⚙️ Gérer mon plan"}
             </Link>
@@ -521,7 +521,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
               <span className="text-[10px] font-bold">{userPhotos.length}</span>
               {profileTab === "posts" && (
-                <span className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "#f97316" }} />
+                <span className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "#22C55E" }} />
               )}
             </button>
             <button
@@ -532,7 +532,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="8" y1="2" x2="8" y2="8"/><line x1="16" y1="2" x2="16" y2="8"/><polygon points="10,12 10,18 16,15"/></svg>
               <span className="text-[10px] font-bold">{userReels.length}</span>
               {profileTab === "reels" && (
-                <span className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "#f97316" }} />
+                <span className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "#22C55E" }} />
               )}
             </button>
             <button
@@ -543,7 +543,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21c-1.5 0-6-3.5-6-8.5C6 9 8.5 7 10 6c.7-.5 1.3-1.5 2-3 .7 1.5 1.3 2.5 2 3 1.5 1 4 3 4 6.5 0 5-4.5 8.5-6 8.5z"/><circle cx="8" cy="5" r="2"/><circle cx="16" cy="5" r="2"/><circle cx="5" cy="10" r="1.5"/><circle cx="19" cy="10" r="1.5"/></svg>
               <span className="text-[10px] font-bold">{animals.length}</span>
               {profileTab === "animals" && (
-                <span className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "#f97316" }} />
+                <span className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "#22C55E" }} />
               )}
             </button>
           </div>
@@ -589,7 +589,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
                 <div className="text-center py-12 glass-strong rounded-2xl" style={{ border: "1px solid var(--c-border)" }}>
                   <p className="text-3xl mb-2">{"🎬"}</p>
                   <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Aucun reel</p>
-                  <Link href="/reels" className="inline-block mt-3 text-xs font-bold neon-orange">Decouvrir les Reels</Link>
+                  <Link href="/reels" className="inline-block mt-3 text-xs font-bold neon-green">Decouvrir les Reels</Link>
                 </div>
               ) : (
                 <>
@@ -631,7 +631,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
             <div className="pt-3">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-bold text-[var(--c-text)]">Mes compagnons</h2>
-                <Link href="/profile/animals/new" className="btn-futuristic neon-orange px-4 py-2 text-sm font-bold rounded-xl">
+                <Link href="/profile/animals/new" className="btn-futuristic neon-green px-4 py-2 text-sm font-bold rounded-xl">
                   + Ajouter
                 </Link>
               </div>
@@ -640,7 +640,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
                 <div className="text-center py-12 glass-strong gradient-border rounded-2xl">
                   <p className="text-4xl mb-3">{"🐾"}</p>
                   <p className="text-[var(--c-text-muted)] text-sm">Aucun compagnon pour l&apos;instant</p>
-                  <Link href="/profile/animals/new" className="inline-block mt-4 btn-futuristic neon-orange px-5 py-2 text-sm font-bold rounded-xl">
+                  <Link href="/profile/animals/new" className="inline-block mt-4 btn-futuristic neon-green px-5 py-2 text-sm font-bold rounded-xl">
                     + Ajouter mon premier compagnon
                   </Link>
                 </div>
@@ -669,10 +669,10 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
                       <div className="px-3 pb-3">
                         {animal.canton && (
                           <span
-                            className="inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full neon-orange"
+                            className="inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full neon-green"
                             style={{
-                              background: "rgba(249,115,22,0.12)",
-                              border: "1px solid rgba(249,115,22,0.2)",
+                              background: "rgba(34,197,94,0.12)",
+                              border: "1px solid rgba(34,197,94,0.2)",
                             }}
                           >
                             {animal.canton}
@@ -718,9 +718,9 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
             <div
               className="rounded-2xl p-6 relative overflow-hidden"
               style={{
-                background: "linear-gradient(135deg, rgba(249,115,22,0.2), rgba(168,85,247,0.2))",
-                border: "1px solid rgba(249,115,22,0.25)",
-                boxShadow: "0 0 30px rgba(249,115,22,0.1), 0 0 60px rgba(168,85,247,0.05)",
+                background: "linear-gradient(135deg, rgba(34,197,94,0.2), rgba(168,85,247,0.2))",
+                border: "1px solid rgba(34,197,94,0.25)",
+                boxShadow: "0 0 30px rgba(34,197,94,0.1), 0 0 60px rgba(168,85,247,0.05)",
               }}
             >
               <div
@@ -731,7 +731,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
               <h3
                 className="text-lg font-black mb-4"
                 style={{
-                  background: "linear-gradient(135deg, #f97316, #a78bfa)",
+                  background: "linear-gradient(135deg, #22C55E, #a78bfa)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -740,8 +740,8 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
                 {"\uD83C\uDF81"} Ton Pawly Wrapped
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5">
-                <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(249,115,22,0.15)" }}>
-                  <p className="text-2xl font-black" style={{ color: "#f97316", textShadow: "0 0 12px rgba(249,115,22,0.4)" }}>
+                <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(34,197,94,0.15)" }}>
+                  <p className="text-2xl font-black" style={{ color: "#22C55E", textShadow: "0 0 12px rgba(34,197,94,0.4)" }}>
                     {wrappedStats.totalMatches}
                   </p>
                   <p className="text-[10px] font-bold uppercase" style={{ color: "var(--c-text-muted)" }}>Matchs</p>
@@ -789,9 +789,9 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
                 }}
                 className="w-full py-2.5 rounded-xl font-bold text-sm transition-all hover:scale-[1.02]"
                 style={{
-                  background: "linear-gradient(135deg, #f97316, #a78bfa)",
+                  background: "linear-gradient(135deg, #22C55E, #a78bfa)",
                   color: "#fff",
-                  boxShadow: "0 4px 20px rgba(249,115,22,0.25), 0 4px 20px rgba(168,85,247,0.15)",
+                  boxShadow: "0 4px 20px rgba(34,197,94,0.25), 0 4px 20px rgba(168,85,247,0.15)",
                 }}
               >
                 {"\uD83D\uDCE4"} Partage tes stats
@@ -1007,7 +1007,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
 
       <style>{`
         .profile-name-hover:hover {
-          background: linear-gradient(135deg, #f97316, #a78bfa);
+          background: linear-gradient(135deg, #22C55E, #a78bfa);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;

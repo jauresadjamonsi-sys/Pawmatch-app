@@ -17,7 +17,7 @@ const FEEDBACK_CONFIG: Record<FeedbackType, { emoji: string; messages: string[];
   streak: {
     emoji: "\uD83D\uDD25",
     messages: ["S\u00e9rie en feu !", "{count} jours d'affil\u00e9e !", "Inarr\u00eatable !"],
-    color: "rgba(249, 115, 22, 0.15)",
+    color: "rgba(34, 197, 94, 0.15)",
   },
   milestone: {
     emoji: "\uD83C\uDFC6",

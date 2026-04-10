@@ -158,7 +158,7 @@ export default function PublicProfilePage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center pb-32" style={{ background: "var(--c-deep)" }}>
-        <div className="w-10 h-10 border-3 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
+        <div className="w-10 h-10 border-3 border-green-500/30 border-t-green-500 rounded-full animate-spin" />
       </div>
     );
   }
@@ -168,7 +168,7 @@ export default function PublicProfilePage() {
       <div className="min-h-screen flex flex-col items-center justify-center pb-32" style={{ background: "var(--c-deep)" }}>
         <p className="text-5xl mb-4">👻</p>
         <p className="text-lg font-semibold text-[var(--c-text)]">Profil introuvable</p>
-        <Link href="/explore" className="mt-4 text-orange-400 hover:text-orange-300 text-sm">
+        <Link href="/explore" className="mt-4 text-green-400 hover:text-green-300 text-sm">
           ← Retour a l&apos;exploration
         </Link>
       </div>
@@ -178,7 +178,7 @@ export default function PublicProfilePage() {
   return (
     <div className="min-h-screen pb-32" style={{ background: "var(--c-deep)" }}>
       {/* Header banner */}
-      <div className="relative h-32 bg-gradient-to-br from-orange-500 via-purple-500 to-pink-500">
+      <div className="relative h-32 bg-gradient-to-br from-green-500 via-purple-500 to-pink-500">
         <div className="absolute inset-0 bg-black/20" />
       </div>
 
@@ -192,7 +192,7 @@ export default function PublicProfilePage() {
                 {profile.avatar_url ? (
                   <Image src={profile.avatar_url} alt={profile.full_name} width={96} height={96} className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-3xl bg-gradient-to-br from-orange-500 to-purple-500 text-white">
+                  <div className="w-full h-full flex items-center justify-center text-3xl bg-gradient-to-br from-green-500 to-emerald-600 text-white">
                     {profile.full_name?.[0]?.toUpperCase() || "?"}
                   </div>
                 )}
@@ -231,21 +231,21 @@ export default function PublicProfilePage() {
                     "px-5 py-2 rounded-xl text-sm font-bold transition-all " +
                     (isFollowing
                       ? "bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text)] hover:border-red-500/30 hover:text-red-400"
-                      : "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/25")
+                      : "bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg shadow-green-500/25")
                   }
                 >
                   {followLoading ? "..." : isFollowing ? "Abonne" : "Suivre"}
                 </button>
                 <button
                   onClick={handleDM}
-                  className="px-4 py-2 rounded-xl bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text)] text-sm font-medium hover:border-orange-500/30 transition-all"
+                  className="px-4 py-2 rounded-xl bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text)] text-sm font-medium hover:border-green-500/30 transition-all"
                 >
                   💬
                 </button>
               </div>
             )}
             {isOwnProfile && (
-              <Link href="/profile/edit" className="px-5 py-2 rounded-xl bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text)] text-sm font-medium hover:border-orange-500/30 transition-all">
+              <Link href="/profile/edit" className="px-5 py-2 rounded-xl bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text)] text-sm font-medium hover:border-green-500/30 transition-all">
                 Modifier
               </Link>
             )}
@@ -284,7 +284,7 @@ export default function PublicProfilePage() {
             className={
               "flex-1 py-2.5 rounded-xl text-sm font-medium transition-all " +
               (tab === "animals"
-                ? "bg-orange-500 text-white shadow-lg shadow-orange-500/25"
+                ? "bg-green-500 text-white shadow-lg shadow-green-500/25"
                 : "bg-[var(--c-card)] text-[var(--c-text-muted)] border border-[var(--c-border)]")
             }
           >
@@ -295,7 +295,7 @@ export default function PublicProfilePage() {
             className={
               "flex-1 py-2.5 rounded-xl text-sm font-medium transition-all " +
               (tab === "reels"
-                ? "bg-orange-500 text-white shadow-lg shadow-orange-500/25"
+                ? "bg-green-500 text-white shadow-lg shadow-green-500/25"
                 : "bg-[var(--c-card)] text-[var(--c-text-muted)] border border-[var(--c-border)]")
             }
           >
@@ -310,7 +310,7 @@ export default function PublicProfilePage() {
               <Link
                 key={a.id}
                 href={`/animals/${a.id}`}
-                className="rounded-2xl overflow-hidden bg-[var(--c-card)] border border-[var(--c-border)] hover:border-orange-500/30 transition-all group"
+                className="rounded-2xl overflow-hidden bg-[var(--c-card)] border border-[var(--c-border)] hover:border-green-500/30 transition-all group"
               >
                 <div className="aspect-square bg-[var(--c-border)] relative">
                   {a.photos?.[0] ? (
@@ -346,7 +346,7 @@ export default function PublicProfilePage() {
                 {r.thumbnail_url ? (
                   <Image src={r.thumbnail_url} alt={r.caption || ""} fill className="object-cover group-hover:scale-105 transition-transform" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-2xl bg-gradient-to-br from-purple-500/20 to-orange-500/20">
+                  <div className="w-full h-full flex items-center justify-center text-2xl bg-gradient-to-br from-purple-500/20 to-green-500/20">
                     🎬
                   </div>
                 )}

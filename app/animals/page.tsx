@@ -78,7 +78,7 @@ export default function AnimalsPage() {
   return (
     <div className="min-h-screen px-4 md:px-6 py-6 pb-28">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-[var(--c-text)] mb-2">Ton prochain <span className="text-orange-400">pote</span></h1>
+        <h1 className="text-3xl font-bold text-[var(--c-text)] mb-2">Ton prochain <span className="text-green-400">pote</span></h1>
         <p className="text-[var(--c-text-muted)] mb-6">Découvre les compagnons qui t'attendent en Suisse</p>
 
         {/* Filtres */}
@@ -88,12 +88,12 @@ export default function AnimalsPage() {
             placeholder="Rechercher..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="px-4 py-2 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+            className="px-4 py-2 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
           />
           <select
             value={species}
             onChange={(e) => setSpecies(e.target.value)}
-            className="px-4 py-2 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] text-sm focus:ring-2 focus:ring-orange-500 outline-none appearance-none"
+            className="px-4 py-2 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] text-sm focus:ring-2 focus:ring-green-500 outline-none appearance-none"
           >
             {SPECIES_LIST.map((s) => (
               <option key={s.value} value={s.value} className="bg-[var(--c-deep)]">{s.label}</option>
@@ -102,7 +102,7 @@ export default function AnimalsPage() {
           <select
             value={canton}
             onChange={(e) => setCanton(e.target.value)}
-            className="px-4 py-2 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] text-sm focus:ring-2 focus:ring-orange-500 outline-none appearance-none"
+            className="px-4 py-2 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] text-sm focus:ring-2 focus:ring-green-500 outline-none appearance-none"
           >
             <option value="" className="bg-[var(--c-deep)]">Tous les cantons</option>
             {CANTONS.map((c) => (
@@ -139,7 +139,7 @@ export default function AnimalsPage() {
                   </p>
                   <div className="flex items-center gap-2">
                     {animal.canton && (
-                      <span className="text-[10px] px-2 py-0.5 bg-orange-500/20 text-orange-300 rounded-full">{animal.canton}</span>
+                      <span className="text-[10px] px-2 py-0.5 bg-green-500/20 text-green-300 rounded-full">{animal.canton}</span>
                     )}
                     {animal.city && (
                       <span className="text-[10px] text-[var(--c-text-muted)]">{animal.city}</span>

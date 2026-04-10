@@ -13,24 +13,24 @@ import Image from "next/image";
 import { EMOJI_MAP } from "@/lib/constants";
 
 const SPECIES_GLOW: Record<string, string> = {
-  chien: "neon-orange",
+  chien: "neon-green",
   chat: "neon-purple",
   lapin: "neon-cyan",
   oiseau: "neon-cyan",
   rongeur: "neon-purple",
-  autre: "neon-orange",
+  autre: "neon-green",
 };
 
 const SPECIES_RING: Record<string, string> = {
-  chien: "ring-orange-500/60 shadow-[0_0_15px_rgba(249,115,22,0.3)]",
+  chien: "ring-green-500/60 shadow-[0_0_15px_rgba(34,197,94,0.3)]",
   chat: "ring-purple-400/60 shadow-[0_0_15px_rgba(167,139,250,0.3)]",
   lapin: "ring-cyan-400/60 shadow-[0_0_15px_rgba(56,189,248,0.3)]",
   oiseau: "ring-cyan-400/60 shadow-[0_0_15px_rgba(56,189,248,0.3)]",
   rongeur: "ring-purple-400/60 shadow-[0_0_15px_rgba(167,139,250,0.3)]",
-  autre: "ring-orange-500/60 shadow-[0_0_15px_rgba(249,115,22,0.3)]",
+  autre: "ring-green-500/60 shadow-[0_0_15px_rgba(34,197,94,0.3)]",
 };
 
-const CONFETTI_COLORS = ["#f97316","#fb923c","#fbbf24","#34d399","#60a5fa","#f472b6","#a78bfa"];
+const CONFETTI_COLORS = ["#22C55E","#4ADE80","#fbbf24","#34d399","#60a5fa","#f472b6","#a78bfa"];
 const CONFETTI_SHAPES = ["circle", "square", "star", "heart", "paw"];
 
 function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose: () => void; t: Record<string, string> }) {
@@ -78,16 +78,16 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
           100% { transform: scale(1) rotate(0deg); opacity: 1; }
         }
         @keyframes pawBeat {
-          0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(249,115,22,0.4)); }
-          50% { transform: scale(1.2); filter: drop-shadow(0 0 20px rgba(249,115,22,0.7)); }
+          0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(34, 197, 94,0.4)); }
+          50% { transform: scale(1.2); filter: drop-shadow(0 0 20px rgba(34, 197, 94,0.7)); }
         }
         @keyframes slideUp {
           from { transform: translateY(30px); opacity: 0; }
           to { transform: translateY(0); opacity: 1; }
         }
         @keyframes ringPulse {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(249,115,22,0.4), 0 0 20px rgba(249,115,22,0.2); }
-          50% { box-shadow: 0 0 0 8px rgba(249,115,22,0), 0 0 30px rgba(249,115,22,0.4); }
+          0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94,0.4), 0 0 20px rgba(34, 197, 94,0.2); }
+          50% { box-shadow: 0 0 0 8px rgba(34, 197, 94,0), 0 0 30px rgba(34, 197, 94,0.4); }
         }
         .confetti-piece { animation: confettiFall linear infinite; }
         .truffe-pop { animation: truffePop 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards; }
@@ -119,14 +119,14 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
       </div>
 
       {/* Card */}
-      <div className="relative truffe-pop glass-strong p-6 md:p-10 text-center max-w-sm mx-4 neon-orange"
+      <div className="relative truffe-pop glass-strong p-6 md:p-10 text-center max-w-sm mx-4 neon-green"
         onClick={(e) => e.stopPropagation()}>
 
         {/* Animated gradient border */}
         <div className="absolute inset-0 rounded-[24px] gradient-border pointer-events-none" />
 
         {/* Background glow */}
-        <div className="absolute inset-0 rounded-[24px] bg-orange-500/5 blur-2xl" />
+        <div className="absolute inset-0 rounded-[24px] bg-green-500/5 blur-2xl" />
 
         {/* Paw */}
         <div className="paw-beat text-7xl mb-4">🐾</div>
@@ -143,7 +143,7 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
         {/* Animals */}
         <div className="slide-up flex items-center justify-center gap-4 mb-6" style={{ animationDelay: "0.4s" }}>
           <div className="text-center">
-            <div className="w-16 h-16 rounded-full bg-orange-500/20 ring-2 ring-orange-500/50 flex items-center justify-center overflow-hidden mx-auto mb-1 ring-pulse relative">
+            <div className="w-16 h-16 rounded-full bg-green-500/20 ring-2 ring-green-500/50 flex items-center justify-center overflow-hidden mx-auto mb-1 ring-pulse relative">
               {match.sender_animal.photo_url
                 ? <Image src={match.sender_animal.photo_url} alt={match.sender_animal.name} fill className="object-cover" sizes="(max-width: 768px) 64px, 64px" />
                 : <span className="text-2xl">{EMOJI_MAP[match.sender_animal.species] || "🐾"}</span>}
@@ -233,8 +233,8 @@ export default function MatchesPage() {
         <div className="aurora-bg" />
         <div className="flex flex-col items-center gap-4">
           <div className="relative">
-            <div className="w-14 h-14 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
-            <div className="absolute inset-0 w-14 h-14 rounded-full neon-orange animate-breathe" />
+            <div className="w-14 h-14 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin" />
+            <div className="absolute inset-0 w-14 h-14 rounded-full neon-green animate-breathe" />
           </div>
           <p className="text-[var(--c-text-muted)] text-sm animate-breathe">{t.loading}</p>
         </div>
@@ -362,17 +362,17 @@ export default function MatchesPage() {
                   glass px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap
                   transition-all duration-300 flex items-center gap-2
                   ${activeTab === tab.key
-                    ? "neon-orange text-orange-300 border-orange-500/40 bg-orange-500/10"
+                    ? "neon-green text-green-300 border-green-500/40 bg-green-500/10"
                     : "text-[var(--c-text-muted)] hover:text-[var(--c-text)] hover:bg-[var(--c-card)]"
                   }
                 `}
-                style={activeTab === tab.key ? { borderColor: "rgba(249,115,22,0.4)" } : {}}
+                style={activeTab === tab.key ? { borderColor: "rgba(34, 197, 94,0.4)" } : {}}
               >
                 {tab.label}
                 {tab.count > 0 && (
                   <span className={`
                     px-1.5 py-0.5 rounded-full text-xs font-bold
-                    ${activeTab === tab.key ? "bg-orange-500/30 text-orange-300" : "bg-[var(--c-card)] text-[var(--c-text-muted)]"}
+                    ${activeTab === tab.key ? "bg-green-500/30 text-green-300" : "bg-[var(--c-card)] text-[var(--c-text-muted)]"}
                   `}>
                     {tab.count}
                   </span>
@@ -387,10 +387,10 @@ export default function MatchesPage() {
           <div className="mb-8 animate-slide-up" style={{ animationDelay: "0.15s" }}>
             <h2 className="text-sm font-semibold text-[var(--c-text-muted)] uppercase tracking-widest mb-3 flex items-center gap-2">
               {t.matchesReceived}
-              <span className="px-2 py-0.5 bg-orange-500/20 text-orange-300 rounded-full normal-case text-xs neon-orange">
+              <span className="px-2 py-0.5 bg-green-500/20 text-green-300 rounded-full normal-case text-xs neon-green">
                 {current.pendingReceived.length}
               </span>
-              <span className="w-2 h-2 rounded-full bg-orange-500 animate-breathe ml-1" />
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-breathe ml-1" />
             </h2>
             <div className="space-y-3 stagger-children">
               {current.pendingReceived.map((match) => (
@@ -398,7 +398,7 @@ export default function MatchesPage() {
                   <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-4">
                       <AnimalBadge animal={match.sender_animal} isNew userId={match.sender_user_id} />
-                      <span className="text-orange-500 font-bold animate-float">→</span>
+                      <span className="text-green-500 font-bold animate-float">→</span>
                       <AnimalBadge animal={match.receiver_animal} userId={match.receiver_user_id} />
                     </div>
                     <p className="text-sm text-[var(--c-text-muted)] mb-4">
@@ -449,9 +449,9 @@ export default function MatchesPage() {
                     </div>
                     <div className="flex gap-3 mt-3">
                       <button onClick={() => setCoupDeTruffe(match)}
-                        className="px-4 py-2 glass text-orange-300 rounded-xl text-xs font-semibold
-                          hover:neon-orange hover:bg-orange-500/10 transition-all duration-300"
-                        style={{ borderColor: "rgba(249,115,22,0.3)" }}>
+                        className="px-4 py-2 glass text-green-300 rounded-xl text-xs font-semibold
+                          hover:neon-green hover:bg-green-500/10 transition-all duration-300"
+                        style={{ borderColor: "rgba(34, 197, 94,0.3)" }}>
                         {"🐾 " + t.matchesCoup}
                       </button>
                       <Link href={"/matches/" + match.id}
@@ -474,7 +474,7 @@ export default function MatchesPage() {
               <span className="px-2 py-0.5 bg-[var(--c-card)] text-[var(--c-text-muted)] rounded-full normal-case text-xs">
                 {current.pendingSent.length}
               </span>
-              <span className="w-2 h-2 rounded-full bg-orange-400 animate-breathe ml-1" />
+              <span className="w-2 h-2 rounded-full bg-green-400 animate-breathe ml-1" />
             </h2>
             <div className="space-y-3 stagger-children">
               {current.pendingSent.map((match) => (
@@ -485,7 +485,7 @@ export default function MatchesPage() {
                     <AnimalBadge animal={match.receiver_animal} userId={match.receiver_user_id} />
                   </div>
                   <p className="text-xs text-[var(--c-text-muted)] mt-3 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-breathe" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-breathe" />
                     {t.matchesWaiting} {match.receiver_profile.full_name || match.receiver_profile.email}
                   </p>
                 </div>

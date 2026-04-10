@@ -98,7 +98,7 @@ export function BadgesSection({ matchCount, messageCount, animalCount, daysMembe
       <div className="h-2 bg-[var(--c-border)] rounded-full overflow-hidden mb-4">
         <div className="h-full rounded-full transition-all" style={{
           width: `${(earned.length / badges.length) * 100}%`,
-          background: "linear-gradient(to right, #f97316, #22c55e)",
+          background: "linear-gradient(to right, #22c55e, #16a34a)",
         }} />
       </div>
 
@@ -107,7 +107,7 @@ export function BadgesSection({ matchCount, messageCount, animalCount, daysMembe
         <div className="flex flex-wrap gap-2 mb-3">
           {earned.map(b => (
             <div key={b.id} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border" style={{
-              background: "rgba(249,115,22,0.1)", borderColor: "rgba(249,115,22,0.3)", color: "#f97316",
+              background: "rgba(34,197,94,0.1)", borderColor: "rgba(34,197,94,0.3)", color: "#22c55e",
             }}>
               <span>{b.emoji}</span> {b.name}
             </div>
@@ -126,7 +126,7 @@ export function BadgesSection({ matchCount, messageCount, animalCount, daysMembe
                 <p className="text-[10px] text-[var(--c-text-muted)]">{b.description}</p>
                 {b.progress !== undefined && b.max && (
                   <div className="h-1 bg-[var(--c-border)] rounded-full mt-1 overflow-hidden" style={{ width: 80 }}>
-                    <div className="h-full bg-orange-500/50 rounded-full" style={{ width: `${(b.progress / b.max) * 100}%` }} />
+                    <div className="h-full bg-green-500/50 rounded-full" style={{ width: `${(b.progress / b.max) * 100}%` }} />
                   </div>
                 )}
               </div>

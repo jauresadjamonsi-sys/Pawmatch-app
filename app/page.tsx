@@ -49,7 +49,7 @@ export default function HomePage() {
               <span className="gradient-text">Transforme ses journées en aventures</span>
             </h1>
 
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4" style={{ color: "var(--c-accent, #f97316)" }}>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4" style={{ color: "var(--c-accent, #22C55E)" }}>
               Trouve-lui des copains de balade
             </h2>
 
@@ -76,7 +76,7 @@ export default function HomePage() {
 
             {/* CTA */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-              <Link href="/signup" className="btn-futuristic neon-orange text-base tracking-wide">
+              <Link href="/signup" className="btn-futuristic neon-green text-base tracking-wide">
                 Commencer gratuitement
               </Link>
             </div>
@@ -86,15 +86,15 @@ export default function HomePage() {
           <section className="mb-16" aria-label="Statistiques Pawly">
             <div className="flex justify-around items-center gap-4 p-6 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
               <div className="text-center">
-                <p className="text-3xl font-black" style={{ color: "var(--c-accent, #f97316)" }}>150+</p>
+                <p className="text-3xl font-black" style={{ color: "var(--c-accent, #22C55E)" }}>150+</p>
                 <p className="text-xs uppercase tracking-widest mt-1" style={{ color: "var(--c-text-muted)" }}>Compagnons</p>
               </div>
               <div className="text-center">
-                <p className="text-3xl font-black" style={{ color: "var(--c-accent, #f97316)" }}>92%</p>
+                <p className="text-3xl font-black" style={{ color: "var(--c-accent, #22C55E)" }}>92%</p>
                 <p className="text-xs uppercase tracking-widest mt-1" style={{ color: "var(--c-text-muted)" }}>Balades réussies</p>
               </div>
               <div className="text-center">
-                <p className="text-3xl font-black" style={{ color: "var(--c-accent, #f97316)" }}>26</p>
+                <p className="text-3xl font-black" style={{ color: "var(--c-accent, #22C55E)" }}>26</p>
                 <p className="text-xs uppercase tracking-widest mt-1" style={{ color: "var(--c-text-muted)" }}>cantons couverts</p>
               </div>
             </div>
@@ -107,7 +107,7 @@ export default function HomePage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="p-6 text-center rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <span className="text-xs font-black tracking-widest" style={{ color: "var(--c-accent, #f97316)" }}>01</span>
+                <span className="text-xs font-black tracking-widest" style={{ color: "var(--c-accent, #22C55E)" }}>01</span>
                 <div className="text-4xl my-4">📝</div>
                 <h3 className="font-bold text-lg mb-2">Décris ton compagnon</h3>
                 <p className="text-sm leading-relaxed" style={{ color: "var(--c-text-muted)" }}>
@@ -115,7 +115,7 @@ export default function HomePage() {
                 </p>
               </div>
               <div className="p-6 text-center rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <span className="text-xs font-black tracking-widest" style={{ color: "var(--c-accent, #f97316)" }}>02</span>
+                <span className="text-xs font-black tracking-widest" style={{ color: "var(--c-accent, #22C55E)" }}>02</span>
                 <div className="text-4xl my-4">🧠</div>
                 <h3 className="font-bold text-lg mb-2">Découvre ses copains idéaux</h3>
                 <p className="text-sm leading-relaxed" style={{ color: "var(--c-text-muted)" }}>
@@ -123,7 +123,7 @@ export default function HomePage() {
                 </p>
               </div>
               <div className="p-6 text-center rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <span className="text-xs font-black tracking-widest" style={{ color: "var(--c-accent, #f97316)" }}>03</span>
+                <span className="text-xs font-black tracking-widest" style={{ color: "var(--c-accent, #22C55E)" }}>03</span>
                 <div className="text-4xl my-4">🤝</div>
                 <h3 className="font-bold text-lg mb-2">Organisez votre balade</h3>
                 <p className="text-sm leading-relaxed" style={{ color: "var(--c-text-muted)" }}>
@@ -132,7 +132,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="text-center mt-8">
-              <Link href="/signup" className="btn-futuristic neon-orange">
+              <Link href="/signup" className="btn-futuristic neon-green">
                 Commencer gratuitement
               </Link>
             </div>
@@ -146,32 +146,32 @@ export default function HomePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <span className="text-3xl">💕</span>
-                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #f97316)" }}>Flairer</h3>
+                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #22C55E)" }}>Flairer</h3>
                 <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Swipe et trouve des copains compatibles avec notre IA</p>
               </div>
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <span className="text-3xl">🎬</span>
-                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #f97316)" }}>PawReels</h3>
+                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #22C55E)" }}>PawReels</h3>
                 <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Partage les meilleurs moments de ton animal en vidéo courte</p>
               </div>
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <span className="text-3xl">🔍</span>
-                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #f97316)" }}>Explorer</h3>
+                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #22C55E)" }}>Explorer</h3>
                 <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Découvre les animaux les plus populaires et le contenu tendance</p>
               </div>
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <span className="text-3xl">⭐</span>
-                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #f97316)" }}>Super Flair</h3>
+                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #22C55E)" }}>Super Flair</h3>
                 <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Envoie un coup de coeur spécial pour te démarquer</p>
               </div>
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <span className="text-3xl">🪙</span>
-                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #f97316)" }}>PawCoins</h3>
+                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #22C55E)" }}>PawCoins</h3>
                 <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Gagne des coins, boost ton profil et débloque des avantages</p>
               </div>
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <span className="text-3xl">🏆</span>
-                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #f97316)" }}>Classement</h3>
+                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #22C55E)" }}>Classement</h3>
                 <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Ton animal peut devenir la star de son canton</p>
               </div>
             </div>
@@ -190,7 +190,7 @@ export default function HomePage() {
                 <p className="text-sm italic mb-3">
                   &ldquo;Depuis Pawly, mon chien a 3 copains de balade réguliers. Il est tellement plus épanoui !&rdquo;
                 </p>
-                <p className="text-xs font-bold" style={{ color: "var(--c-accent, #f97316)" }}>Sophie, Lausanne</p>
+                <p className="text-xs font-bold" style={{ color: "var(--c-accent, #22C55E)" }}>Sophie, Lausanne</p>
                 <p className="text-[10px]" style={{ color: "var(--c-text-muted)" }}>Avec Kiko, Border Collie</p>
               </div>
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
@@ -200,7 +200,7 @@ export default function HomePage() {
                 <p className="text-sm italic mb-3">
                   &ldquo;J'ai déménagé à Genève et grâce à Pawly, j'ai trouvé des balades pour mon chat en 2 jours.&rdquo;
                 </p>
-                <p className="text-xs font-bold" style={{ color: "var(--c-accent, #f97316)" }}>Marc, Genève</p>
+                <p className="text-xs font-bold" style={{ color: "var(--c-accent, #22C55E)" }}>Marc, Genève</p>
                 <p className="text-[10px]" style={{ color: "var(--c-text-muted)" }}>Avec Simba, Chat Européen</p>
               </div>
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
@@ -210,7 +210,7 @@ export default function HomePage() {
                 <p className="text-sm italic mb-3">
                   &ldquo;Le test de personnalité est génial — ça a matché tout de suite avec un Golden du quartier.&rdquo;
                 </p>
-                <p className="text-xs font-bold" style={{ color: "var(--c-accent, #f97316)" }}>Anna, Zurich</p>
+                <p className="text-xs font-bold" style={{ color: "var(--c-accent, #22C55E)" }}>Anna, Zurich</p>
                 <p className="text-[10px]" style={{ color: "var(--c-text-muted)" }}>Avec Bella, Labrador</p>
               </div>
             </div>
@@ -234,7 +234,7 @@ export default function HomePage() {
               </div>
               <div className="p-5 text-center rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <span className="text-2xl block mb-2">🐾</span>
-                <h3 className="font-bold text-sm mb-1" style={{ color: "var(--c-accent, #f97316)" }}>Pawly</h3>
+                <h3 className="font-bold text-sm mb-1" style={{ color: "var(--c-accent, #22C55E)" }}>Pawly</h3>
                 <p className="text-xs font-medium">La seule app suisse dédiée aux rencontres entre animaux</p>
               </div>
             </div>
@@ -242,13 +242,13 @@ export default function HomePage() {
 
           {/* Final CTA */}
           <section className="mb-16 text-center" aria-label="Inscription">
-            <h2 className="text-2xl sm:text-3xl font-black mb-3" style={{ color: "var(--c-accent, #f97316)" }}>
+            <h2 className="text-2xl sm:text-3xl font-black mb-3" style={{ color: "var(--c-accent, #22C55E)" }}>
               Ton compagnon mérite des amis
             </h2>
             <p className="text-sm mb-6 max-w-md mx-auto" style={{ color: "var(--c-text-muted)" }}>
               Rejoins les propriétaires qui offrent une vie sociale à leur animal
             </p>
-            <Link href="/signup" className="btn-futuristic neon-orange text-base inline-block">
+            <Link href="/signup" className="btn-futuristic neon-green text-base inline-block">
               Trouver un copain de balade 🐾
             </Link>
             <p className="text-[10px] mt-4" style={{ color: "var(--c-text-muted)" }}>

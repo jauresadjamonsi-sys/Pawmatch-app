@@ -159,7 +159,7 @@ function ChallengeRow({
           : "var(--c-card)",
         border: `1px solid ${
           ch.completed && !ch.claimed
-            ? "rgba(249,115,22,0.3)"
+            ? "rgba(34,197,94,0.3)"
             : ch.claimed
             ? "rgba(34,197,94,0.15)"
             : "var(--c-border)"
@@ -188,7 +188,7 @@ function ChallengeRow({
                 ? "linear-gradient(90deg, #22c55e, #16a34a)"
                 : isWeekly
                 ? "linear-gradient(90deg, #8b5cf6, #a78bfa)"
-                : "linear-gradient(90deg, #f97316, var(--c-accent))",
+                : "linear-gradient(90deg, #22C55E, var(--c-accent))",
             }}
           />
         </div>
@@ -205,8 +205,8 @@ function ChallengeRow({
           disabled={claimingId === ch.id}
           className="btn-press px-3 py-1.5 rounded-full text-[10px] font-bold text-white flex-shrink-0"
           style={{
-            background: "linear-gradient(135deg, #f97316, #eab308)",
-            boxShadow: "0 2px 8px rgba(249,115,22,0.3)",
+            background: "linear-gradient(135deg, #22C55E, #16A34A)",
+            boxShadow: "0 2px 8px rgba(34,197,94,0.3)",
           }}
         >
           {claimingId === ch.id ? "..." : `+${ch.reward} 🪙`}

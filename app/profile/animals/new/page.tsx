@@ -392,7 +392,7 @@ export default function NewAnimalPage() {
             <div>
               <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.animalName} *</label>
               <input name="name" type="text" required
-                className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
                 placeholder="Comment s'appelle ton compagnon ?" />
             </div>
 
@@ -404,7 +404,7 @@ export default function NewAnimalPage() {
                   <button key={s.value} type="button" onClick={() => { setSpecies(s.value); setCustomBreed(false); setSelectedTraits([]); }}
                     className={"px-3 py-2 rounded-xl text-sm font-medium transition border " +
                       (species === s.value
-                        ? "bg-orange-500/20 border-orange-500/50 text-orange-300"
+                        ? "bg-green-500/20 border-green-500/50 text-green-300"
                         : "bg-[var(--c-card)] border-[var(--c-border)] text-[var(--c-text-muted)] hover:bg-[var(--c-card)]")
                     }>
                     {s.label}
@@ -418,11 +418,11 @@ export default function NewAnimalPage() {
               <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.animalBreed}</label>
               {customBreed ? (
                 <input name="breed_custom" type="text"
-                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
                   placeholder="Quelle race ?" />
               ) : (
                 <select name="breed" onChange={(e) => { if (e.target.value === "__other") setCustomBreed(true); }}
-                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-green-500 outline-none appearance-none">
                   <option value="" className="bg-[var(--c-deep)]">Sélectionner</option>
                   {breedList.map((b: string) => (
                     <option key={b} value={b} className="bg-[var(--c-deep)]">{b}</option>
@@ -440,19 +440,19 @@ export default function NewAnimalPage() {
                   <div className="flex-1">
                     <label className="block text-xs text-[var(--c-text-muted)] mb-1">Années</label>
                     <input name="age_years" type="number" min="0" max="30" placeholder="0"
-                      className="w-full px-3 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition" />
+                      className="w-full px-3 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition" />
                   </div>
                   <div className="flex-1">
                     <label className="block text-xs text-[var(--c-text-muted)] mb-1">Mois</label>
                     <input name="age_extra_months" type="number" min="0" max="11" placeholder="0"
-                      className="w-full px-3 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition" />
+                      className="w-full px-3 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition" />
                   </div>
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.animalGender}</label>
                 <select name="gender"
-                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-green-500 outline-none appearance-none">
                   <option value="inconnu" className="bg-[var(--c-deep)]">{t.animalUnknown}</option>
                   <option value="male" className="bg-[var(--c-deep)]">{t.animalMale}</option>
                   <option value="femelle" className="bg-[var(--c-deep)]">{t.animalFemale}</option>
@@ -461,7 +461,7 @@ export default function NewAnimalPage() {
               <div>
                 <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.animalWeight}</label>
                 <input name="weight_kg" type="number" step="0.1" min="0"
-                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition" />
+                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition" />
               </div>
             </div>
 
@@ -470,7 +470,7 @@ export default function NewAnimalPage() {
               <div>
                 <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">Canton</label>
                 <select name="canton" value={selectedCanton} onChange={(e) => { setSelectedCanton(e.target.value); setCustomCity(false); }}
-                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-green-500 outline-none appearance-none">
                   <option value="" className="bg-[var(--c-deep)]">Canton</option>
                   {CANTONS.map((c) => (
                     <option key={c.code} value={c.code} className="bg-[var(--c-deep)]">{c.name}</option>
@@ -481,11 +481,11 @@ export default function NewAnimalPage() {
                 <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">Ville</label>
                 {customCity ? (
                   <input name="city_custom" type="text"
-                    className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                    className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
                     placeholder="Votre ville" />
                 ) : (
                   <select name="city" onChange={(e) => { if (e.target.value === "__other") setCustomCity(true); }}
-                    className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                    className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-green-500 outline-none appearance-none">
                     <option value="" className="bg-[var(--c-deep)]">Ville</option>
                     {cantonCities.map((city: string) => (
                       <option key={city} value={city} className="bg-[var(--c-deep)]">{city}</option>
@@ -499,17 +499,17 @@ export default function NewAnimalPage() {
             {/* Pedigree */}
             <div>
               <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">Pedigree / LOF / LOSH</label>
-              <input type="text" name="pedigree" placeholder="Ex: LOF 123456, SHSB/LOS 789..." className="w-full bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl px-4 py-2.5 text-sm text-[var(--c-text)] focus:ring-1 focus:ring-orange-500 outline-none" />
+              <input type="text" name="pedigree" placeholder="Ex: LOF 123456, SHSB/LOS 789..." className="w-full bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl px-4 py-2.5 text-sm text-[var(--c-text)] focus:ring-1 focus:ring-green-500 outline-none" />
             </div>
 
             {/* Sante */}
             <div className="flex gap-6">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" name="vaccinated" className="w-4 h-4 rounded bg-[var(--c-card)] border-[var(--c-border)] text-orange-500 focus:ring-orange-500" />
+                <input type="checkbox" name="vaccinated" className="w-4 h-4 rounded bg-[var(--c-card)] border-[var(--c-border)] text-green-500 focus:ring-green-500" />
                 <span className="text-sm text-[var(--c-text-muted)]">{t.animalVaccinated}</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" name="sterilized" className="w-4 h-4 rounded bg-[var(--c-card)] border-[var(--c-border)] text-orange-500 focus:ring-orange-500" />
+                <input type="checkbox" name="sterilized" className="w-4 h-4 rounded bg-[var(--c-card)] border-[var(--c-border)] text-green-500 focus:ring-green-500" />
                 <span className="text-sm text-[var(--c-text-muted)]">{t.animalSterilized}</span>
               </label>
             </div>
@@ -523,7 +523,7 @@ export default function NewAnimalPage() {
                     <button key={trait} type="button" onClick={() => toggleTrait(trait)}
                       className={"px-3 py-1.5 rounded-full text-xs font-medium transition border " +
                         (selectedTraits.includes(trait)
-                          ? "bg-orange-500/20 border-orange-500/50 text-orange-300"
+                          ? "bg-green-500/20 border-green-500/50 text-green-300"
                           : "bg-[var(--c-card)] border-[var(--c-border)] text-[var(--c-text-muted)] hover:bg-[var(--c-card)]")
                       }>
                       {trait}
@@ -571,7 +571,7 @@ export default function NewAnimalPage() {
               <div className="mb-3">
                 <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.dietBrand}</label>
                 <input name="food_brand" type="text"
-                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
                   placeholder={t.dietBrandPlaceholder} />
               </div>
 
@@ -579,7 +579,7 @@ export default function NewAnimalPage() {
               <div className="mb-3">
                 <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.dietTreats}</label>
                 <input name="treats" type="text"
-                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
                   placeholder={t.dietTreatsPlaceholder} />
               </div>
 
@@ -587,7 +587,7 @@ export default function NewAnimalPage() {
               <div>
                 <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.dietAllergies}</label>
                 <input name="allergies" type="text"
-                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
                   placeholder={t.dietAllergiesPlaceholder} />
               </div>
             </div>
@@ -596,7 +596,7 @@ export default function NewAnimalPage() {
             <div>
               <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.animalDescription}</label>
               <textarea name="description" rows={3}
-                className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition resize-none"
+                className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition resize-none"
                 placeholder="Décris ton compagnon en quelques mots..." />
             </div>
 
@@ -604,9 +604,9 @@ export default function NewAnimalPage() {
             <button type="submit" disabled={loading || !hasOwnerPhoto}
               className="w-full py-3 font-semibold rounded-xl transition text-lg disabled:opacity-70"
               style={{
-                background: hasOwnerPhoto ? "#f97316" : "rgba(249,115,22,0.15)",
-                color: hasOwnerPhoto ? "#fff" : "#f97316",
-                border: hasOwnerPhoto ? "none" : "2px dashed rgba(249,115,22,0.4)",
+                background: hasOwnerPhoto ? "#22C55E" : "rgba(34, 197, 94,0.15)",
+                color: hasOwnerPhoto ? "#fff" : "#22C55E",
+                border: hasOwnerPhoto ? "none" : "2px dashed rgba(34, 197, 94,0.4)",
                 cursor: hasOwnerPhoto ? "pointer" : "not-allowed",
               }}>
               {loading ? t.animalCreating : !hasOwnerPhoto ? "📸 " + t.animalPhotoWithOwner : t.animalAddButton}

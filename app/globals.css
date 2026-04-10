@@ -150,13 +150,13 @@ html {
 
 /* === GLOBAL: Selection color === */
 ::selection {
-  background: rgba(249, 115, 22, 0.3);
+  background: rgba(34, 197, 94, 0.3);
   color: inherit;
 }
 
 /* === GLOBAL: Focus ring === */
 *:focus-visible {
-  outline: 2px solid rgba(249, 115, 22, 0.5);
+  outline: 2px solid rgba(34, 197, 94, 0.5);
   outline-offset: 2px;
   border-radius: 8px;
 }
@@ -176,9 +176,9 @@ html {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(ellipse at 20% 50%, rgba(167, 139, 250, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(249, 115, 22, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(56, 189, 248, 0.06) 0%, transparent 50%);
+    radial-gradient(ellipse at 20% 50%, rgba(34, 197, 94, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(250, 204, 21, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(139, 92, 246, 0.04) 0%, transparent 50%);
   background-size: 200% 200%;
   animation: aurora 15s ease infinite;
   pointer-events: none;
@@ -221,8 +221,10 @@ html {
 /* ============================================
    3. NEON GLOW EFFECTS
    ============================================ */
-.neon-orange {
-  box-shadow: 0 0 20px rgba(249, 115, 22, 0.3), 0 0 60px rgba(249, 115, 22, 0.1);
+/* Legacy alias — maps to green identity */
+.neon-orange,
+.neon-green {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3), 0 0 60px rgba(34, 197, 94, 0.1);
 }
 
 .neon-purple {
@@ -241,7 +243,7 @@ html {
    4. GRADIENT TEXT
    ============================================ */
 .gradient-text {
-  background: linear-gradient(135deg, #F97316, #A78BFA, #38BDF8);
+  background: linear-gradient(135deg, #22C55E, #FACC15, #8B5CF6);
   background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -250,7 +252,7 @@ html {
 }
 
 .gradient-text-warm {
-  background: linear-gradient(135deg, #F97316, #EC4899, #F59E0B);
+  background: linear-gradient(135deg, #22C55E, #FACC15);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -271,7 +273,7 @@ html {
   inset: 0;
   padding: 1.5px;
   border-radius: inherit;
-  background: linear-gradient(135deg, #F97316, #A78BFA, #38BDF8, #F97316);
+  background: linear-gradient(135deg, #22C55E, #FACC15, #8B5CF6, #22C55E);
   background-size: 300% 300%;
   animation: aurora 6s ease infinite;
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -291,21 +293,21 @@ html {
 .btn-futuristic {
   position: relative;
   padding: 14px 32px;
-  border-radius: 16px;
-  font-weight: 800;
+  border-radius: 14px;
+  font-weight: 700;
   font-size: 15px;
   color: white;
-  background: linear-gradient(135deg, #F97316, #EA580C);
+  background: linear-gradient(135deg, #22C55E, #16A34A);
   border: none;
   cursor: pointer;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 24px rgba(249, 115, 22, 0.3);
+  box-shadow: 0 4px 24px rgba(34, 197, 94, 0.3);
 }
 
 .btn-futuristic:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 40px rgba(249, 115, 22, 0.5);
+  box-shadow: 0 8px 40px rgba(34, 197, 94, 0.4);
 }
 
 .btn-futuristic:active {
@@ -391,12 +393,12 @@ html {
 
 .card-futuristic:hover {
   transform: translateY(-4px);
-  border-color: rgba(249, 115, 22, 0.3);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px rgba(249, 115, 22, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px rgba(34, 197, 94, 0.1);
 }
 
 [data-theme="clair"] .card-futuristic:hover {
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 0 40px rgba(249, 115, 22, 0.08);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 0 40px rgba(34, 197, 94, 0.08);
 }
 
 /* ============================================
@@ -459,8 +461,8 @@ html {
 }
 
 .input-futuristic:focus {
-  border-color: rgba(249, 115, 22, 0.5);
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1), 0 0 20px rgba(249, 115, 22, 0.1);
+  border-color: rgba(34, 197, 94, 0.5);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1), 0 0 20px rgba(34, 197, 94, 0.1);
 }
 
 [data-theme="clair"] .input-futuristic {
@@ -469,8 +471,8 @@ html {
 }
 
 [data-theme="clair"] .input-futuristic:focus {
-  border-color: rgba(249, 115, 22, 0.4);
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.08);
+  border-color: rgba(34, 197, 94, 0.4);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.08);
 }
 
 /* ============================================
@@ -508,8 +510,8 @@ html {
    15. PULSING GLOW BUTTON
    ============================================ */
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(249, 115, 22, 0.3), 0 0 60px rgba(249, 115, 22, 0.1); }
-  50% { box-shadow: 0 0 30px rgba(249, 115, 22, 0.5), 0 0 80px rgba(249, 115, 22, 0.2); }
+  0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.3), 0 0 60px rgba(34, 197, 94, 0.1); }
+  50% { box-shadow: 0 0 30px rgba(34, 197, 94, 0.5), 0 0 80px rgba(34, 197, 94, 0.2); }
 }
 
 .animate-pulse-glow {
@@ -602,7 +604,7 @@ html {
    18. GRADIENT LINE CONNECTOR
    ============================================ */
 .gradient-line {
-  background: linear-gradient(180deg, #F97316, #A78BFA, #38BDF8);
+  background: linear-gradient(180deg, #22C55E, #FACC15, #8B5CF6);
   width: 2px;
   border-radius: 2px;
 }
@@ -859,14 +861,14 @@ html {
 
 [data-theme="aurore"] .input-futuristic:focus,
 [data-theme="ocean"] .input-futuristic:focus {
-  border-color: rgba(249, 115, 22, 0.4);
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.08);
+  border-color: rgba(34, 197, 94, 0.4);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.08);
 }
 
 /* --- Glass overrides for aurore and ocean card-futuristic hover --- */
 [data-theme="aurore"] .card-futuristic:hover,
 [data-theme="ocean"] .card-futuristic:hover {
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 0 40px rgba(249, 115, 22, 0.08);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 0 40px rgba(34, 197, 94, 0.08);
 }
 
 /* --- Scrollbar for aurore and ocean --- */
@@ -1148,7 +1150,7 @@ html {
 [data-theme="clair"] [class*="ring-orange-500\/"],
 [data-theme="aurore"] [class*="ring-orange-500\/"],
 [data-theme="ocean"] [class*="ring-orange-500\/"] {
-  --tw-ring-color: rgba(234, 88, 12, 0.5);
+  --tw-ring-color: rgba(34, 197, 94, 0.5);
 }
 
 /* --- Capacity/progress bar backgrounds --- */
@@ -1219,11 +1221,47 @@ html {
   background: rgba(194, 65, 12, 0.08) !important;
 }
 
+/* --- GREEN IDENTITY: light theme overrides for green utility classes --- */
+[data-theme="clair"] .text-green-400,
+[data-theme="aurore"] .text-green-400 {
+  color: #15803d !important; /* green-700 for readability on light */
+}
+
+[data-theme="clair"] .text-green-300,
+[data-theme="aurore"] .text-green-300 {
+  color: #16a34a !important; /* green-600 */
+}
+
+[data-theme="clair"] .hover\:text-green-600:hover,
+[data-theme="aurore"] .hover\:text-green-600:hover {
+  color: #15803d !important;
+}
+
+[data-theme="clair"] .hover\:bg-green-50:hover,
+[data-theme="aurore"] .hover\:bg-green-50:hover {
+  background: rgba(34, 197, 94, 0.08) !important;
+}
+
+[data-theme="clair"] .hover\:bg-green-500\/10:hover,
+[data-theme="aurore"] .hover\:bg-green-500\/10:hover,
+[data-theme="ocean"] .hover\:bg-green-500\/10:hover {
+  background: rgba(21, 128, 61, 0.08) !important;
+}
+
+[data-theme="clair"] .bg-green-500\/15,
+[data-theme="aurore"] .bg-green-500\/15,
+[data-theme="ocean"] .bg-green-500\/15 {
+  background: rgba(21, 128, 61, 0.12) !important;
+}
+
 /* --- Neon glow tones subdued for light --- */
 [data-theme="clair"] .neon-orange,
+[data-theme="clair"] .neon-green,
 [data-theme="aurore"] .neon-orange,
-[data-theme="ocean"] .neon-orange {
-  box-shadow: 0 0 10px rgba(249, 115, 22, 0.12), 0 0 30px rgba(249, 115, 22, 0.06);
+[data-theme="aurore"] .neon-green,
+[data-theme="ocean"] .neon-orange,
+[data-theme="ocean"] .neon-green {
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.12), 0 0 30px rgba(34, 197, 94, 0.06);
 }
 
 [data-theme="clair"] .neon-purple,
@@ -1342,7 +1380,7 @@ html {
   100% { background-position: 0% 50%; }
 }
 .gradient-text-animated {
-  background: linear-gradient(270deg, var(--c-accent), #f97316, #ec4899, var(--c-accent));
+  background: linear-gradient(270deg, var(--c-accent), #FACC15, #8B5CF6, var(--c-accent));
   background-size: 300% 300%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -1606,4 +1644,338 @@ html {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+/* ============================================
+   29. SIGNATURE GLOW EFFECTS
+   Green-first depth system.
+   ============================================ */
+
+/* Primary green glow — buttons, CTAs */
+.glow-green {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.25), 0 0 60px rgba(34, 197, 94, 0.08);
+}
+.glow-green-strong {
+  box-shadow: 0 0 30px rgba(34, 197, 94, 0.4), 0 0 80px rgba(34, 197, 94, 0.15);
+}
+
+/* Premium purple glow — premium badges, VIP */
+.glow-premium {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.25), 0 0 60px rgba(139, 92, 246, 0.08);
+}
+
+/* Accent yellow glow — rewards, coins */
+.glow-accent {
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.25), 0 0 60px rgba(250, 204, 21, 0.08);
+}
+
+/* Neon green (alias for identity consistency) */
+.neon-green {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3), 0 0 60px rgba(34, 197, 94, 0.1);
+}
+
+/* Light themes: subdued glows */
+[data-theme="clair"] .glow-green,
+[data-theme="aurore"] .glow-green,
+[data-theme="ocean"] .glow-green {
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.12), 0 0 30px rgba(34, 197, 94, 0.06);
+}
+[data-theme="clair"] .glow-premium,
+[data-theme="aurore"] .glow-premium,
+[data-theme="ocean"] .glow-premium {
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.12), 0 0 30px rgba(139, 92, 246, 0.06);
+}
+
+/* ============================================
+   30. SIGNATURE GLASS VARIANTS
+   ============================================ */
+
+/* Signature glass — subtle green tint */
+.glass-signature {
+  background: rgba(34, 197, 94, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(34, 197, 94, 0.1);
+  border-radius: 20px;
+}
+
+/* Dark glass — for overlays, modals */
+.glass-dark {
+  background: rgba(11, 15, 12, 0.85);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(34, 197, 94, 0.08);
+  border-radius: 20px;
+}
+
+/* Light theme signature glass */
+[data-theme="clair"] .glass-signature,
+[data-theme="aurore"] .glass-signature,
+[data-theme="ocean"] .glass-signature {
+  background: rgba(34, 197, 94, 0.04);
+  border: 1px solid rgba(34, 197, 94, 0.12);
+}
+
+/* ============================================
+   31. PREMIUM CARD SYSTEM
+   Deep shadows, living borders.
+   ============================================ */
+
+.card-premium {
+  background: var(--c-card);
+  border-radius: 20px;
+  border: 1px solid var(--c-border);
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.07),
+    0 12px 40px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(34, 197, 94, 0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card-premium:hover {
+  transform: translateY(-2px) scale(1.005);
+  border-color: rgba(34, 197, 94, 0.2);
+  box-shadow:
+    0 8px 16px rgba(0, 0, 0, 0.1),
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 0 40px rgba(34, 197, 94, 0.06);
+}
+
+/* Living card — subtle animated border */
+.card-living {
+  position: relative;
+  background: var(--c-card);
+  border-radius: 20px;
+  overflow: hidden;
+}
+.card-living::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(34,197,94,0.2), rgba(250,204,21,0.1), rgba(139,92,246,0.1), rgba(34,197,94,0.2));
+  background-size: 300% 300%;
+  animation: aurora 8s ease infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Score card with count-up animation */
+.card-score {
+  background: var(--c-card);
+  border-radius: 20px;
+  border: 1px solid var(--c-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+.card-score::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #22C55E, #FACC15);
+  border-radius: 20px 20px 0 0;
+}
+
+/* Light theme premium card */
+[data-theme="clair"] .card-premium,
+[data-theme="aurore"] .card-premium,
+[data-theme="ocean"] .card-premium {
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.04),
+    0 12px 40px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(34, 197, 94, 0.06);
+}
+
+/* ============================================
+   32. AMBIENT GLOW BACKGROUND
+   Subtle green ambient for key sections.
+   ============================================ */
+
+.ambient-glow {
+  position: relative;
+}
+.ambient-glow::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -25%;
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(ellipse at center, rgba(34, 197, 94, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ============================================
+   33. BUTTON GLOW SYSTEM
+   Pulsing glow for primary actions.
+   ============================================ */
+
+@keyframes btn-glow-pulse {
+  0%, 100% { box-shadow: 0 4px 24px rgba(34, 197, 94, 0.3), 0 0 0 0 rgba(34, 197, 94, 0.2); }
+  50% { box-shadow: 0 4px 32px rgba(34, 197, 94, 0.5), 0 0 0 6px rgba(34, 197, 94, 0); }
+}
+
+.btn-glow {
+  background: linear-gradient(135deg, #22C55E, #16A34A);
+  color: white;
+  font-weight: 700;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  animation: btn-glow-pulse 2.5s ease-in-out infinite;
+}
+.btn-glow:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 40px rgba(34, 197, 94, 0.4);
+}
+.btn-glow:active {
+  transform: scale(0.97);
+  animation: none;
+}
+
+/* Premium button variant */
+.btn-premium {
+  background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+  color: white;
+  font-weight: 700;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 24px rgba(139, 92, 246, 0.3);
+}
+.btn-premium:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 40px rgba(139, 92, 246, 0.4);
+}
+
+/* Coin/reward button variant */
+.btn-reward {
+  background: linear-gradient(135deg, #F97316, #FACC15);
+  color: white;
+  font-weight: 700;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 24px rgba(249, 115, 22, 0.3);
+}
+
+/* ============================================
+   34. SCORE COUNT-UP ANIMATION
+   Animated number reveal for scores.
+   ============================================ */
+
+@keyframes score-reveal {
+  0% { opacity: 0; transform: scale(0.5) translateY(10px); filter: blur(4px); }
+  60% { opacity: 1; transform: scale(1.1) translateY(-2px); filter: blur(0); }
+  80% { transform: scale(0.97) translateY(1px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+}
+.animate-score-reveal {
+  animation: score-reveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Score number styling */
+.score-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  background: linear-gradient(135deg, #22C55E, #FACC15);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Score circle ring */
+@keyframes score-ring-draw {
+  from { stroke-dashoffset: 283; }
+}
+.score-ring {
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   35. PAGE TRANSITION SYSTEM
+   ============================================ */
+
+@keyframes page-slide-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes page-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.page-slide-in {
+  animation: page-slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.page-fade-in {
+  animation: page-fade-in 0.3s ease-out forwards;
+}
+
+/* ============================================
+   36. ENHANCED RESPONSIVE BREAKPOINTS
+   320px–768px mobile perfection.
+   ============================================ */
+
+/* Ultra-small phones (320px) */
+@media (max-width: 340px) {
+  .content-narrow {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  .text-display { font-size: 1.375rem; }
+  .text-title { font-size: 1.1rem; }
+  .card-premium, .glass, .glass-strong, .glass-signature {
+    border-radius: 16px;
+  }
+}
+
+/* Standard mobile (375px-480px) */
+@media (min-width: 341px) and (max-width: 480px) {
+  .content-narrow {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Large mobile / small tablet (481px-768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .content-narrow {
+    max-width: 540px;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+/* ============================================
+   37. GREEN IDENTITY — BOTTOM NAV UPGRADE
+   ============================================ */
+
+.bottom-nav-glow-line {
+  background: linear-gradient(
+    90deg,
+    transparent 5%,
+    rgba(34, 197, 94, 0.2) 20%,
+    rgba(34, 197, 94, 0.4) 50%,
+    rgba(139, 92, 246, 0.2) 80%,
+    transparent 95%
+  );
+  box-shadow: 0 -1px 8px rgba(34, 197, 94, 0.12);
+}
+
+/* Bottom nav active dot — green */
+.bottom-nav-active-dot {
+  background: #22C55E;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
 }

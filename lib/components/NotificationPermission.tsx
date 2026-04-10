@@ -46,7 +46,7 @@ export default function NotificationPermission() {
       className="mx-4 mb-4 rounded-2xl border p-4 flex items-center gap-3 transition-all"
       style={{
         background:
-          "linear-gradient(135deg, rgba(249,115,22,0.08), rgba(167,139,250,0.08))",
+          "linear-gradient(135deg, rgba(34,197,94,0.08), rgba(167,139,250,0.08))",
         borderColor: "var(--c-border)",
       }}
     >
@@ -82,7 +82,7 @@ export default function NotificationPermission() {
         <button
           onClick={handleEnable}
           disabled={subscribing}
-          className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-bold rounded-full hover:from-orange-600 hover:to-orange-700 transition shadow-lg shadow-orange-500/20 disabled:opacity-50"
+          className="px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white text-xs font-bold rounded-full hover:from-green-600 hover:to-green-700 transition shadow-lg shadow-green-500/20 disabled:opacity-50"
         >
           {subscribing ? "..." : t.notifEnableBtn}
         </button>

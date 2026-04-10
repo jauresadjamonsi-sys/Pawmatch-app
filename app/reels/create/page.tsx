@@ -261,8 +261,8 @@ export default function CreateReelPage() {
                 border: "2px dashed var(--c-border)",
               }}
             >
-              <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: "rgba(249,115,22,0.1)" }}>
-                <svg className="w-8 h-8" style={{ color: "#f97316" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: "rgba(34, 197, 94,0.1)" }}>
+                <svg className="w-8 h-8" style={{ color: "#22C55E" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
               </div>
@@ -288,8 +288,8 @@ export default function CreateReelPage() {
                   onClick={() => setSelectedAnimal(a.id)}
                   className="flex items-center gap-2 px-3 py-2 rounded-xl whitespace-nowrap transition-all flex-shrink-0"
                   style={{
-                    background: selectedAnimal === a.id ? "rgba(249,115,22,0.15)" : "var(--c-glass, rgba(255,255,255,0.05))",
-                    border: `1.5px solid ${selectedAnimal === a.id ? "rgba(249,115,22,0.4)" : "var(--c-border)"}`,
+                    background: selectedAnimal === a.id ? "rgba(34, 197, 94,0.15)" : "var(--c-glass, rgba(255,255,255,0.05))",
+                    border: `1.5px solid ${selectedAnimal === a.id ? "rgba(34, 197, 94,0.4)" : "var(--c-border)"}`,
                   }}
                 >
                   <div className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0 relative" style={{ background: "var(--c-glass)" }}>
@@ -299,7 +299,7 @@ export default function CreateReelPage() {
                       <span className="text-sm flex items-center justify-center w-full h-full">🐾</span>
                     )}
                   </div>
-                  <span className="text-xs font-semibold" style={{ color: selectedAnimal === a.id ? "#f97316" : "var(--c-text)" }}>
+                  <span className="text-xs font-semibold" style={{ color: selectedAnimal === a.id ? "#22C55E" : "var(--c-text)" }}>
                     {a.name}
                   </span>
                 </button>
@@ -365,7 +365,7 @@ export default function CreateReelPage() {
                 <span
                   key={t.id}
                   className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-semibold"
-                  style={{ background: "rgba(249,115,22,0.12)", border: "1px solid rgba(249,115,22,0.3)", color: "var(--c-text)" }}
+                  style={{ background: "rgba(34, 197, 94,0.12)", border: "1px solid rgba(34, 197, 94,0.3)", color: "var(--c-text)" }}
                 >
                   <span className="w-5 h-5 rounded-full overflow-hidden flex-shrink-0 relative" style={{ background: "var(--c-glass)" }}>
                     {t.photo_url ? (
@@ -457,8 +457,8 @@ export default function CreateReelPage() {
           disabled={!videoFile || uploading}
           className="w-full py-3.5 rounded-2xl text-sm font-bold text-white transition-all"
           style={{
-            background: videoFile ? "linear-gradient(135deg, #f97316, #a78bfa)" : "var(--c-border)",
-            boxShadow: videoFile ? "0 4px 20px rgba(249,115,22,0.3)" : "none",
+            background: videoFile ? "linear-gradient(135deg, #22C55E, #FACC15)" : "var(--c-border)",
+            boxShadow: videoFile ? "0 4px 20px rgba(34, 197, 94,0.3)" : "none",
             opacity: uploading ? 0.7 : 1,
             cursor: !videoFile || uploading ? "not-allowed" : "pointer",
           }}

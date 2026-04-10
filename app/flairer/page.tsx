@@ -20,7 +20,7 @@ const SPECIES: Record<string, string> = {
   oiseau: "Oiseau", rongeur: "Rongeur", autre: "Autre",
 };
 
-const CONFETTI_COLORS = ["#f97316","#fb923c","#fbbf24","#34d399","#60a5fa","#f472b6","#a78bfa"];
+const CONFETTI_COLORS = ["#22C55E","#4ADE80","#fbbf24","#34d399","#60a5fa","#f472b6","#a78bfa"];
 
 let _audioCtx: AudioContext | null = null;
 function getAudioCtx() {
@@ -312,8 +312,8 @@ export default function FlairerPage() {
   useEffect(() => { setShowScoreTooltip(false); }, [currentIndex]);
 
   function spawnParticles(x: number, y: number, type: "like"|"super"|"pass") {
-    const colors = type === "like" ? ["#f97316","#fb923c","#fbbf24","#f472b6","#ef4444"]
-      : type === "super" ? ["#60a5fa","#a78bfa","#34d399","#fbbf24","#f97316"]
+    const colors = type === "like" ? ["#22C55E","#4ADE80","#fbbf24","#f472b6","#ef4444"]
+      : type === "super" ? ["#60a5fa","#a78bfa","#34d399","#fbbf24","#22C55E"]
       : ["#6b7280","#9ca3af"];
     const emojis = type === "like" ? ["❤️","🐾","✨","💛","🧡"] : type === "super" ? ["⚡","💙","🌟","💫","🔥"] : [];
     const count = type === "pass" ? 8 : 20;
@@ -435,7 +435,7 @@ export default function FlairerPage() {
         <div className="text-center">
           <div className="relative">
             <div className="text-5xl mb-4 animate-float">{"🐾"}</div>
-            <div className="absolute inset-0 blur-xl bg-orange-500/20 rounded-full animate-breathe" />
+            <div className="absolute inset-0 blur-xl bg-green-500/20 rounded-full animate-breathe" />
           </div>
           <p className="text-[var(--c-text-muted)] text-sm animate-breathe mt-2">Calcul des compatibilités...</p>
         </div>
@@ -455,7 +455,7 @@ export default function FlairerPage() {
         <div className="text-center max-w-sm animate-scale-in">
           <div className="relative mb-6">
             <div className="text-6xl animate-float">{"🐾"}</div>
-            <div className="absolute inset-0 blur-2xl bg-orange-500/15 rounded-full animate-breathe" />
+            <div className="absolute inset-0 blur-2xl bg-green-500/15 rounded-full animate-breathe" />
           </div>
           <h2 className="text-2xl font-bold gradient-text-warm mb-2">Ajoute ton premier compagnon !</h2>
           <p className="text-[var(--c-text-muted)] mb-6 text-sm leading-relaxed">
@@ -491,13 +491,13 @@ export default function FlairerPage() {
           <div className="glass-strong p-5 mt-6 mb-4 text-left">
             <p className="text-xs font-semibold text-[var(--c-text-muted)] uppercase tracking-wider mb-3">En attendant...</p>
             <div className="flex flex-col gap-3 stagger-children">
-              <Link href="/events" className="flex items-center gap-3 text-sm text-[var(--c-text)] hover:text-orange-400 transition-colors duration-300">
+              <Link href="/events" className="flex items-center gap-3 text-sm text-[var(--c-text)] hover:text-green-400 transition-colors duration-300">
                 <span className="text-lg">{"📅"}</span> Découvre les événements près de toi
               </Link>
-              <Link href="/carte" className="flex items-center gap-3 text-sm text-[var(--c-text)] hover:text-orange-400 transition-colors duration-300">
+              <Link href="/carte" className="flex items-center gap-3 text-sm text-[var(--c-text)] hover:text-green-400 transition-colors duration-300">
                 <span className="text-lg">{"🗺️"}</span> Explore la carte des animaux
               </Link>
-              <Link href="/matches" className="flex items-center gap-3 text-sm text-[var(--c-text)] hover:text-orange-400 transition-colors duration-300">
+              <Link href="/matches" className="flex items-center gap-3 text-sm text-[var(--c-text)] hover:text-green-400 transition-colors duration-300">
                 <span className="text-lg">{"💬"}</span> Consulte tes matchs
               </Link>
             </div>
@@ -543,7 +543,7 @@ export default function FlairerPage() {
           ? `0 0 ${40 * likeOpacity}px rgba(52,211,153,${0.4 * likeOpacity}), 0 0 ${80 * likeOpacity}px rgba(52,211,153,${0.15 * likeOpacity})`
           : passOpacity > 0 ? `0 0 ${40 * passOpacity}px rgba(239,68,68,${0.4 * passOpacity}), 0 0 ${80 * passOpacity}px rgba(239,68,68,${0.15 * passOpacity})`
           : superOpacity > 0 ? `0 0 ${40 * superOpacity}px rgba(167,139,250,${0.4 * superOpacity}), 0 0 ${80 * superOpacity}px rgba(167,139,250,${0.15 * superOpacity})`
-          : "0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(249,115,22,0.05)",
+          : "0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(34, 197, 94,0.05)",
       };
 
   return (
@@ -578,7 +578,7 @@ export default function FlairerPage() {
       {/* Streak */}
       {showStreak && (
         <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[150] streak-pop">
-          <div className="glass-strong neon-orange text-[var(--c-text)] font-extrabold text-xl px-6 py-3 shadow-2xl">
+          <div className="glass-strong neon-green text-[var(--c-text)] font-extrabold text-xl px-6 py-3 shadow-2xl">
             {streakLabel}
           </div>
         </div>
@@ -588,19 +588,19 @@ export default function FlairerPage() {
       <ConfettiOverlay active={showCoupDeTruffe} />
       {showCoupDeTruffe && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md" onClick={() => setShowCoupDeTruffe(false)}>
-          <div className="relative glass-strong neon-orange p-6 md:p-10 text-center max-w-sm mx-4 animate-bounce-in" onClick={e => e.stopPropagation()}>
+          <div className="relative glass-strong neon-green p-6 md:p-10 text-center max-w-sm mx-4 animate-bounce-in" onClick={e => e.stopPropagation()}>
             <div className="absolute inset-0 rounded-[24px] gradient-border pointer-events-none" />
 
             {/* Both animal photos with heart between them */}
             <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-20 h-20 rounded-full overflow-hidden ring-3 ring-orange-400/60 shadow-[0_0_20px_rgba(249,115,22,0.3)] flex-shrink-0 relative">
+              <div className="w-20 h-20 rounded-full overflow-hidden ring-3 ring-green-400/60 shadow-[0_0_20px_rgba(34,197,94,0.3)] flex-shrink-0 relative">
                 {activeMyAnimal?.photo_url
                   ? <Image src={activeMyAnimal.photo_url} alt={activeMyAnimal.name || ""} fill className="object-cover" sizes="80px" />
                   : <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-[var(--c-text-muted)]" style={{ background: "var(--c-deep)" }}>{activeMyAnimal?.name?.charAt(0)}</div>
                 }
               </div>
               <div className="text-4xl animate-heart-burst">{"❤️"}</div>
-              <div className="w-20 h-20 rounded-full overflow-hidden ring-3 ring-orange-400/60 shadow-[0_0_20px_rgba(249,115,22,0.3)] flex-shrink-0 relative">
+              <div className="w-20 h-20 rounded-full overflow-hidden ring-3 ring-green-400/60 shadow-[0_0_20px_rgba(34,197,94,0.3)] flex-shrink-0 relative">
                 {animal?.photo_url
                   ? <Image src={animal.photo_url} alt={animal.name || ""} fill className="object-cover" sizes="80px" />
                   : <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-[var(--c-text-muted)]" style={{ background: "var(--c-deep)" }}>{animal?.name?.charAt(0)}</div>
@@ -641,9 +641,9 @@ export default function FlairerPage() {
                 onClick={() => { setSmartMode(false); if (smartMode) { fetchData(); } }}
                 className="px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300"
                 style={{
-                  background: !smartMode ? "linear-gradient(135deg, #F97316, #EA580C)" : "transparent",
+                  background: !smartMode ? "linear-gradient(135deg, #22C55E, #16A34A)" : "transparent",
                   color: !smartMode ? "#fff" : "var(--c-text-muted)",
-                  boxShadow: !smartMode ? "0 0 12px rgba(249,115,22,0.3)" : "none",
+                  boxShadow: !smartMode ? "0 0 12px rgba(34, 197, 94,0.3)" : "none",
                 }}
               >
                 Standard
@@ -671,8 +671,8 @@ export default function FlairerPage() {
           <h1 className="text-lg font-bold gradient-text-warm">Flairer</h1>
           {smartMode && <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ background: "linear-gradient(135deg, rgba(167,139,250,0.2), rgba(96,165,250,0.2))", color: "#a78bfa", border: "1px solid rgba(167,139,250,0.3)" }}>IA</span>}
           {streak >= 3 && (
-            <span className="px-2 py-0.5 glass text-orange-300 rounded-full text-xs font-bold neon-orange"
-              style={{ borderColor: "rgba(249,115,22,0.3)" }}>
+            <span className="px-2 py-0.5 glass text-green-300 rounded-full text-xs font-bold neon-green"
+              style={{ borderColor: "rgba(34,197,94,0.3)" }}>
               {"🔥"} {"×"}{streak}
             </span>
           )}
@@ -692,7 +692,7 @@ export default function FlairerPage() {
             <div className="h-full rounded-full transition-all duration-500"
               style={{
                 width: (currentIndex / Math.max(animals.length, 1)) * 100 + "%",
-                background: smartMode ? "linear-gradient(90deg, #a78bfa, #60a5fa, #38BDF8)" : "linear-gradient(90deg, #F97316, #A78BFA, #38BDF8)",
+                background: smartMode ? "linear-gradient(90deg, #a78bfa, #60a5fa, #38BDF8)" : "linear-gradient(90deg, #22C55E, #FACC15, #38BDF8)",
               }} />
           </div>
         </div>
@@ -898,7 +898,7 @@ export default function FlairerPage() {
               <p className="text-sm text-white/70 mb-2">{SPECIES[animal.species] || animal.species}{animal.breed ? " · " + animal.breed : ""}</p>
 
               <div className="flex flex-wrap gap-1.5">
-                {animal.canton && <span className="px-2.5 py-1 rounded-full text-xs font-medium text-orange-300 backdrop-blur-sm" style={{ background: "rgba(249,115,22,0.2)" }}>{cantonName || animal.canton}</span>}
+                {animal.canton && <span className="px-2.5 py-1 rounded-full text-xs font-medium text-green-300 backdrop-blur-sm" style={{ background: "rgba(34,197,94,0.2)" }}>{cantonName || animal.canton}</span>}
                 {userCanton && animal.canton && <span className="px-2.5 py-1 rounded-full text-xs font-bold text-green-400 backdrop-blur-sm" style={{ background: "rgba(52,211,153,0.15)" }}>{getProximityLabel(userCanton, animal.canton)}</span>}
                 {animal.city && <span className="px-2.5 py-1 rounded-full text-xs text-white/60 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.1)" }}>{animal.city}</span>}
                 <span className="px-2.5 py-1 rounded-full text-xs text-white/60 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.1)" }}>{formatAge(animal.age_months)}</span>
@@ -940,14 +940,14 @@ export default function FlairerPage() {
           <span className="text-xl group-hover:scale-110 transition-transform duration-300">{"⚡"}</span>
         </button>
 
-        {/* Like button - green/orange neon glow */}
+        {/* Like button - green neon glow */}
         <button onClick={() => handleLike()}
           className="w-16 h-16 rounded-full flex items-center justify-center
             transition-all duration-300 btn-press
             hover:scale-110 animate-pulse-glow"
           style={{
-            background: "linear-gradient(135deg, #F97316, #EA580C)",
-            boxShadow: "0 0 20px rgba(249,115,22,0.3), 0 0 60px rgba(249,115,22,0.1)",
+            background: "linear-gradient(135deg, #22C55E, #16A34A)",
+            boxShadow: "0 0 20px rgba(34,197,94,0.3), 0 0 60px rgba(34,197,94,0.1)",
           }}>
           <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
             <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
@@ -982,7 +982,7 @@ export default function FlairerPage() {
       {/* Paywall modal */}
       {showPaywall && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-md p-4">
-          <div className="relative glass-strong neon-orange p-8 max-w-sm w-full text-center animate-scale-in">
+          <div className="relative glass-strong neon-green p-8 max-w-sm w-full text-center animate-scale-in">
             <div className="absolute inset-0 rounded-[24px] gradient-border pointer-events-none" />
             <div className="text-5xl mb-4 animate-float">{"🐾"}</div>
             <h2 className="text-xl font-extrabold gradient-text-warm mb-2">3 matchs gratuits utilisés !</h2>
@@ -1057,8 +1057,8 @@ export default function FlairerPage() {
                     return (
                       <button key={myAnimal.id} onClick={() => handleMatch(myAnimal.id)}
                         className="w-full flex items-center gap-3 p-3 glass card-futuristic rounded-2xl text-left">
-                        <div className="w-12 h-12 rounded-full bg-[var(--c-deep,#1a1225)] ring-2 ring-orange-400/50 flex items-center justify-center overflow-hidden flex-shrink-0 relative
-                          shadow-[0_0_10px_rgba(249,115,22,0.2)]">
+                        <div className="w-12 h-12 rounded-full bg-[var(--c-deep,#1a1225)] ring-2 ring-green-400/50 flex items-center justify-center overflow-hidden flex-shrink-0 relative
+                          shadow-[0_0_10px_rgba(34,197,94,0.2)]">
                           {myAnimal.photo_url
                             ? <Image src={myAnimal.photo_url} alt={myAnimal.name} fill className="object-cover" sizes="(max-width: 768px) 48px, 48px" />
                             : <span className="text-sm font-bold text-[var(--c-text-muted)]">{myAnimal.name?.charAt(0)}</span>}

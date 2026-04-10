@@ -76,7 +76,7 @@ export default function SignupPage() {
       <div style={{
         position: "absolute",
         inset: 0,
-        background: "radial-gradient(ellipse at 30% 40%, rgba(167,139,250,0.08) 0%, transparent 50%), radial-gradient(ellipse at 70% 70%, rgba(249,115,22,0.08) 0%, transparent 50%), radial-gradient(ellipse at 50% 20%, rgba(13,148,136,0.06) 0%, transparent 50%)",
+        background: "radial-gradient(ellipse at 30% 40%, rgba(167,139,250,0.08) 0%, transparent 50%), radial-gradient(ellipse at 70% 70%, rgba(34, 197, 94,0.08) 0%, transparent 50%), radial-gradient(ellipse at 50% 20%, rgba(13,148,136,0.06) 0%, transparent 50%)",
         pointerEvents: "none",
       }} />
 
@@ -87,13 +87,13 @@ export default function SignupPage() {
 
       <div className="w-full max-w-md" style={{ position: "relative", zIndex: 1 }}>
         <div className="text-center mb-8 animate-slide-up">
-          <span className="text-4xl block mb-2" style={{ filter: "drop-shadow(0 0 12px rgba(249,115,22,0.2))" }}>🐾</span>
+          <span className="text-4xl block mb-2" style={{ filter: "drop-shadow(0 0 12px rgba(34, 197, 94,0.2))" }}>🐾</span>
           <h1 className="text-4xl font-bold" style={{
-            background: "linear-gradient(135deg, #f97316, #a78bfa)",
+            background: "linear-gradient(135deg, #22C55E, #FACC15)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             backgroundClip: "text",
-            filter: "drop-shadow(0 0 20px rgba(249,115,22,0.2))",
+            filter: "drop-shadow(0 0 20px rgba(34, 197, 94,0.2))",
           }}>
             Pawly
           </h1>
@@ -117,13 +117,13 @@ export default function SignupPage() {
                   fontWeight: 700,
                   transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                   background: s <= step
-                    ? "linear-gradient(135deg, rgba(249,115,22,0.8), rgba(167,139,250,0.8))"
+                    ? "linear-gradient(135deg, rgba(34, 197, 94,0.8), rgba(250,204,21,0.8))"
                     : "var(--c-card)",
                   color: s <= step ? "#fff" : "var(--c-text-muted)",
                   border: s <= step
-                    ? "1px solid rgba(249,115,22,0.4)"
+                    ? "1px solid rgba(34, 197, 94,0.4)"
                     : "1px solid var(--c-border)",
-                  boxShadow: s <= step ? "0 0 12px rgba(249,115,22,0.2)" : "none",
+                  boxShadow: s <= step ? "0 0 12px rgba(34, 197, 94,0.2)" : "none",
                 }}
               >
                 {s}
@@ -136,7 +136,7 @@ export default function SignupPage() {
                     borderRadius: 1,
                     transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                     background: s < step
-                      ? "linear-gradient(90deg, rgba(249,115,22,0.6), rgba(167,139,250,0.6))"
+                      ? "linear-gradient(90deg, rgba(34, 197, 94,0.6), rgba(250,204,21,0.6))"
                       : "var(--c-border)",
                   }}
                 />
@@ -246,7 +246,7 @@ export default function SignupPage() {
               >
                 <p className="text-xs text-[var(--c-text-muted)] mb-1">Code parrainage</p>
                 <p className="text-sm font-bold" style={{
-                  background: "linear-gradient(135deg, #a78bfa, #f97316)",
+                  background: "linear-gradient(135deg, #FACC15, #22C55E)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -263,16 +263,16 @@ export default function SignupPage() {
                 id="acceptTerms"
                 checked={acceptedTerms}
                 onChange={(e) => setAcceptedTerms(e.target.checked)}
-                className="mt-1 accent-orange-500"
+                className="mt-1 accent-green-500"
                 style={{ width: 16, height: 16, flexShrink: 0 }}
               />
               <label htmlFor="acceptTerms" className="text-xs text-[var(--c-text-muted)] leading-relaxed cursor-pointer">
                 J&apos;accepte les{" "}
-                <a href="/legal/cgu" target="_blank" className="underline text-orange-400 hover:text-orange-300">
+                <a href="/legal/cgu" target="_blank" className="underline text-green-400 hover:text-green-300">
                   Conditions Generales d&apos;Utilisation
                 </a>{" "}
                 et la{" "}
-                <a href="/legal/privacy" target="_blank" className="underline text-orange-400 hover:text-orange-300">
+                <a href="/legal/privacy" target="_blank" className="underline text-green-400 hover:text-green-300">
                   Politique de Confidentialite
                 </a>
                 . Je confirme avoir au moins 18 ans.
@@ -282,11 +282,11 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={loading || !acceptedTerms}
-              className="btn-futuristic neon-orange w-full py-3 font-semibold rounded-xl disabled:opacity-50 animate-slide-up"
+              className="btn-futuristic neon-green w-full py-3 font-semibold rounded-xl disabled:opacity-50 animate-slide-up"
               style={{
-                background: "linear-gradient(135deg, rgba(249,115,22,0.85), rgba(234,88,12,0.95))",
+                background: "linear-gradient(135deg, rgba(34, 197, 94,0.85), rgba(22,163,74,0.95))",
                 color: "#fff",
-                boxShadow: "0 0 24px rgba(249,115,22,0.25)",
+                boxShadow: "0 0 24px rgba(34, 197, 94,0.25)",
                 transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                 animationDelay: "0.35s",
               }}

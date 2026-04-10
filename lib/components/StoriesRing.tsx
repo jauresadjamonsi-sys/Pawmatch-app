@@ -257,7 +257,7 @@ export default function StoriesRing() {
                 style={{
                   background: seen
                     ? "var(--c-border)"
-                    : "linear-gradient(135deg, #f97316, #ec4899, #f97316)",
+                    : "linear-gradient(135deg, #22C55E, #ec4899, #22C55E)",
                 }}
               >
                 <div

@@ -12,12 +12,12 @@ import PawCoinsBadge from "@/lib/components/PawCoinsBadge";
 
 const NAV_CSS = `
 @keyframes navPulse {
-  0%,100% { box-shadow: 0 0 0 0 rgba(249,115,22,0.45); }
-  50%     { box-shadow: 0 0 0 10px rgba(249,115,22,0); }
+  0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.45); }
+  50%     { box-shadow: 0 0 0 10px rgba(34,197,94,0); }
 }
 @keyframes bellPulse {
-  0%,100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(249,115,22,0)); }
-  50%     { transform: scale(1.12); filter: drop-shadow(0 0 6px rgba(249,115,22,0.6)); }
+  0%,100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(34,197,94,0)); }
+  50%     { transform: scale(1.12); filter: drop-shadow(0 0 6px rgba(34,197,94,0.6)); }
 }
 @keyframes badgePulse {
   0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239,68,68,0.7); }
@@ -48,49 +48,49 @@ const NAV_CSS = `
 }
 .nav-link-f::after {
   content: ''; position: absolute; bottom: 2px; left: 12px; right: 12px;
-  height: 2px; background: linear-gradient(90deg, #f97316, #a78bfa);
+  height: 2px; background: linear-gradient(90deg, #22C55E, #FACC15);
   border-radius: 1px; transform: scaleX(0); transform-origin: left;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 8px rgba(249,115,22,0.4);
+  box-shadow: 0 0 8px rgba(34,197,94,0.4);
 }
 .nav-link-f:hover::after, .nav-link-f.active::after { transform: scaleX(1); }
 
 .nav-pill-active {
-  background: rgba(249,115,22,0.08);
-  border: 1px solid rgba(249,115,22,0.25);
+  background: rgba(34,197,94,0.08);
+  border: 1px solid rgba(34,197,94,0.25);
 }
 [data-theme="clair"] .nav-pill-active {
-  background: rgba(249,115,22,0.1);
-  border: 1px solid rgba(249,115,22,0.2);
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.2);
 }
 
 .logo-gradient {
-  background: linear-gradient(135deg, #f97316 0%, #fb923c 40%, #a78bfa 100%);
+  background: linear-gradient(135deg, #22C55E 0%, #16A34A 40%, #FACC15 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .btn-neon { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-.btn-neon:hover { box-shadow: 0 0 20px rgba(249,115,22,0.4); transform: translateY(-1px); }
+.btn-neon:hover { box-shadow: 0 0 20px rgba(34,197,94,0.4); transform: translateY(-1px); }
 
 .bottom-nav-accent-line {
   position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(249,115,22,0.4), rgba(167,139,250,0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(34,197,94,0.4), rgba(250,204,21,0.3), transparent);
 }
 
 .featured-btn-ring {
-  background: linear-gradient(135deg, #f97316, #a78bfa, #38bdf8, #f97316);
+  background: linear-gradient(135deg, #22C55E, #FACC15, #8B5CF6, #22C55E);
   background-size: 300% 300%;
   animation: gradientSpin 3s ease infinite;
   padding: 2px; border-radius: 9999px;
-  box-shadow: 0 0 15px rgba(249,115,22,0.35), 0 4px 15px rgba(0,0,0,0.2);
+  box-shadow: 0 0 15px rgba(34,197,94,0.35), 0 4px 15px rgba(0,0,0,0.2);
 }
 
 .bottom-tab-active-glow {
   position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%);
   width: 24px; height: 3px; border-radius: 2px;
-  background: linear-gradient(90deg, #f97316, #a78bfa);
-  box-shadow: 0 0 10px rgba(249,115,22,0.5);
+  background: linear-gradient(90deg, #22C55E, #FACC15);
+  box-shadow: 0 0 10px rgba(34,197,94,0.5);
 }
 `;
 
@@ -174,7 +174,7 @@ export default function Navbar() {
         background: isLight ? "rgba(255,255,255,0.78)" : "rgba(15,12,26,0.7)",
         backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
         borderBottom: "1px solid transparent",
-        borderImage: "linear-gradient(90deg, transparent, rgba(249,115,22,0.3), rgba(167,139,250,0.3), transparent) 1",
+        borderImage: "linear-gradient(90deg, transparent, rgba(34,197,94,0.2), rgba(250,204,21,0.15), transparent) 1",
       }}>
         <div className="max-w-6xl mx-auto px-4 md:px-6">
           <div className="flex items-center justify-between h-12">
@@ -207,7 +207,7 @@ export default function Navbar() {
                     { href: "/balade", label: "Balade live", active: isActive("/balade") },
                     { href: "/marketplace", label: "Marketplace", active: isActive("/marketplace") },
                   ]} />
-                  <a href="https://pawdirectory.ch" target="_blank" rel="noopener noreferrer" className={"px-3 py-1.5 rounded-full text-sm font-medium transition-all " + (isLight ? "text-gray-600 hover:text-orange-600 hover:bg-orange-50" : "text-gray-400 hover:text-orange-400 hover:bg-orange-500/10")}>
+                  <a href="https://pawdirectory.ch" target="_blank" rel="noopener noreferrer" className={"px-3 py-1.5 rounded-full text-sm font-medium transition-all " + (isLight ? "text-gray-600 hover:text-green-600 hover:bg-green-50" : "text-gray-400 hover:text-green-400 hover:bg-green-500/10")}>
                     PawDirectory ↗
                   </a>
                   <NavDropdown label={t.navProfil} light={isLight} activeInGroup={["/profile","/settings"].some(p => isActive(p))} items={[
@@ -220,10 +220,10 @@ export default function Navbar() {
                   <NL href="/flairer" active={isActive("/flairer")} label={t.navFlairer} light={isLight} />
                   <NL href="/explore" active={isActive("/explore")} label="Explorer" light={isLight} />
                   <NL href="/pricing" active={isActive("/pricing")} label={t.navPricing} light={isLight} />
-                  <a href="https://pawdirectory.ch" target="_blank" rel="noopener noreferrer" className={"px-3 py-1.5 rounded-full text-sm font-medium transition-all " + (isLight ? "text-gray-600 hover:text-orange-600 hover:bg-orange-50" : "text-gray-400 hover:text-orange-400 hover:bg-orange-500/10")}>
+                  <a href="https://pawdirectory.ch" target="_blank" rel="noopener noreferrer" className={"px-3 py-1.5 rounded-full text-sm font-medium transition-all " + (isLight ? "text-gray-600 hover:text-green-600 hover:bg-green-50" : "text-gray-400 hover:text-green-400 hover:bg-green-500/10")}>
                     PawDirectory
                   </a>
-                  <Link href="/signup" className="btn-neon ml-3 px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-bold rounded-full shadow-lg shadow-orange-500/20">
+                  <Link href="/signup" className="btn-neon ml-3 px-6 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-bold rounded-full shadow-lg shadow-green-500/20">
                     {t.navJoin}
                   </Link>
                 </>
@@ -271,7 +271,7 @@ export default function Navbar() {
                   aria-expanded={langDrop.open}
                   aria-haspopup="listbox"
                   className={"p-2 rounded-full transition-all duration-200 text-sm " +
-                    (langDrop.open ? "bg-orange-500/15" : isLight ? "hover:bg-gray-100" : "hover:bg-[var(--c-card)]")}
+                    (langDrop.open ? "bg-green-500/15" : isLight ? "hover:bg-gray-100" : "hover:bg-[var(--c-card)]")}
                 >
                   {currentFlag}
                 </button>
@@ -281,14 +281,14 @@ export default function Navbar() {
                       <button key={l.code} role="option" aria-selected={lang === l.code} onClick={() => { setLang(l.code as any); langDrop.setOpen(false); }}
                         className={"w-full flex items-center gap-3 px-4 py-2.5 transition-all duration-200 " +
                           (lang === l.code
-                            ? "bg-orange-500/10"
+                            ? "bg-green-500/10"
                             : isLight ? "hover:bg-gray-50" : "hover:bg-[var(--c-card)]")}
                       >
                         <span className="text-lg">{l.flag}</span>
-                        <span className={"text-sm font-medium " + (lang === l.code ? "text-orange-400" : "text-[var(--c-text)]")}>
+                        <span className={"text-sm font-medium " + (lang === l.code ? "text-green-400" : "text-[var(--c-text)]")}>
                           {l.code === "fr" ? "Français" : l.code === "de" ? "Deutsch" : l.code === "it" ? "Italiano" : "English"}
                         </span>
-                        {lang === l.code && <span className="ml-auto text-orange-400">✓</span>}
+                        {lang === l.code && <span className="ml-auto text-green-400">✓</span>}
                       </button>
                     ))}
                   </div>
@@ -303,7 +303,7 @@ export default function Navbar() {
                   aria-expanded={themeDrop.open}
                   aria-haspopup="listbox"
                   className={"p-2 rounded-full transition-all duration-200 text-sm " +
-                    (themeDrop.open ? "bg-orange-500/15" : isLight ? "hover:bg-gray-100" : "hover:bg-[var(--c-card)]")}
+                    (themeDrop.open ? "bg-green-500/15" : isLight ? "hover:bg-gray-100" : "hover:bg-[var(--c-card)]")}
                 >
                   {currentThemeLabel}
                 </button>
@@ -314,13 +314,13 @@ export default function Navbar() {
                       return (
                         <button key={th.code} role="option" aria-selected={active} onClick={() => { setTheme(th.code as any); themeDrop.setOpen(false); }}
                           className={"w-full flex items-center gap-3 px-4 py-2.5 transition-all duration-200 " +
-                            (active ? "bg-orange-500/10" : isLight ? "hover:bg-gray-50" : "hover:bg-[var(--c-card)]")}
+                            (active ? "bg-green-500/10" : isLight ? "hover:bg-gray-50" : "hover:bg-[var(--c-card)]")}
                         >
                           <span className="text-base">{th.label}</span>
-                          <span className={"text-sm font-medium " + (active ? "text-orange-400" : "text-[var(--c-text)]")}>
+                          <span className={"text-sm font-medium " + (active ? "text-green-400" : "text-[var(--c-text)]")}>
                             {th.code === "auto" ? (t.themeAuto || "Auto") : th.name}
                           </span>
-                          {active && <span className="ml-auto text-orange-400">✓</span>}
+                          {active && <span className="ml-auto text-green-400">✓</span>}
                         </button>
                       );
                     })}
@@ -329,7 +329,7 @@ export default function Navbar() {
               </div>
 
               {!loading && !user && (
-                <Link href="/signup" className="md:hidden btn-neon px-3 py-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-[10px] font-bold rounded-full">
+                <Link href="/signup" className="md:hidden btn-neon px-3 py-1 bg-gradient-to-r from-green-500 to-green-600 text-white text-[10px] font-bold rounded-full">
                   {t.navJoin}
                 </Link>
               )}
@@ -427,7 +427,7 @@ function NavDropdown({ label, items, light, activeInGroup }: {
         onClick={() => setOpen(!open)}
         className={
           "nav-link-f px-3 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-1 " +
-          (activeInGroup ? "nav-pill-active active text-orange-400 font-semibold"
+          (activeInGroup ? "nav-pill-active active text-green-400 font-semibold"
             : light ? "text-gray-600 hover:text-gray-900 hover:bg-gray-100/50"
             : "text-gray-400 hover:text-white hover:bg-[var(--c-card)]")
         }
@@ -454,9 +454,9 @@ function NavDropdown({ label, items, light, activeInGroup }: {
               className={
                 "block px-4 py-2 text-sm transition-all " +
                 (item.active
-                  ? "text-orange-400 font-semibold bg-orange-500/10"
+                  ? "text-green-400 font-semibold bg-green-500/10"
                   : light
-                  ? "text-gray-600 hover:text-orange-600 hover:bg-orange-50"
+                  ? "text-gray-600 hover:text-green-600 hover:bg-green-50"
                   : "text-gray-400 hover:text-white hover:bg-white/5")
               }
             >
@@ -473,7 +473,7 @@ function NL({ href, active, label, light }: { href: string; active: boolean; lab
   return (
     <Link href={href} aria-current={active ? "page" : undefined} className={
       "nav-link-f px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 " +
-      (active ? "nav-pill-active active text-orange-400 font-semibold"
+      (active ? "nav-pill-active active text-green-400 font-semibold"
         : light ? "text-gray-600 hover:text-gray-900 hover:bg-gray-100/50"
         : "text-gray-400 hover:text-white hover:bg-[var(--c-card)]")
     }>{label}</Link>
@@ -491,26 +491,26 @@ function BT({ href, active, label, featured, pulse, badge, light, children }: {
         <div className={"featured-btn-ring transition-all duration-300 " + (pulse ? "nav-pulse" : "")}>
           <div className={
             "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 " +
-            (active ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white scale-110"
-              : "bg-gradient-to-br from-orange-500/90 to-orange-600/90 text-white hover:scale-105")}
-            style={active ? { boxShadow: "0 0 20px rgba(249,115,22,0.5)" } : undefined}
+            (active ? "bg-gradient-to-br from-green-500 to-green-600 text-white scale-110"
+              : "bg-gradient-to-br from-green-500/90 to-green-600/90 text-white hover:scale-105")}
+            style={active ? { boxShadow: "0 0 20px rgba(34,197,94,0.5)" } : undefined}
           >{children}</div>
         </div>
-        <span aria-hidden="true" className={"text-[9px] mt-1 font-medium " + (active ? "text-orange-400 font-bold" : "text-gray-500")}>{label}</span>
+        <span aria-hidden="true" className={"text-[9px] mt-1 font-medium " + (active ? "text-green-400 font-bold" : "text-gray-500")}>{label}</span>
         {active && <span className="bottom-nav-active-dot" style={{ bottom: "-2px" }} />}
       </Link>
     );
   }
   return (
     <Link href={href} aria-label={label} aria-current={active ? "page" : undefined} className="bottom-nav-item flex flex-col items-center py-1 px-2 relative group bottom-nav-touch">
-      {active && <span className="absolute -top-0 left-1/2 -translate-x-1/2 w-6 h-[3px] rounded-full" style={{ background: "linear-gradient(90deg, #f97316, #a78bfa)", boxShadow: "0 0 8px rgba(249,115,22,0.5)" }} />}
-      <span className={"transition-all duration-300 " + (active ? "text-orange-400 scale-110 glow-float" : light ? "text-gray-500 group-hover:text-gray-700" : "text-gray-500 group-hover:text-gray-300")}
-        style={active ? { filter: "drop-shadow(0 0 6px rgba(249,115,22,0.4))" } : undefined}
+      {active && <span className="absolute -top-0 left-1/2 -translate-x-1/2 w-6 h-[3px] rounded-full" style={{ background: "linear-gradient(90deg, #22C55E, #FACC15)", boxShadow: "0 0 8px rgba(34,197,94,0.5)" }} />}
+      <span className={"transition-all duration-300 " + (active ? "text-green-400 scale-110 glow-float" : light ? "text-gray-500 group-hover:text-gray-700" : "text-gray-500 group-hover:text-gray-300")}
+        style={active ? { filter: "drop-shadow(0 0 6px rgba(34,197,94,0.4))" } : undefined}
       >{children}</span>
       {badge && !active && <span aria-label="Nouvelles notifications" className="badge-pulse absolute top-0 right-1 w-2.5 h-2.5 rounded-full" style={{ background: "linear-gradient(135deg, #ef4444, #f97316)", boxShadow: "0 0 8px rgba(239,68,68,0.6)" }} />}
       {active && <div className="bottom-tab-active-glow" />}
       {active && <span className="bottom-nav-active-dot" />}
-      <span aria-hidden="true" className={"text-[9px] mt-0.5 " + (active ? "text-orange-400 font-bold" : light ? "text-gray-400" : "text-gray-500")}>{label}</span>
+      <span aria-hidden="true" className={"text-[9px] mt-0.5 " + (active ? "text-green-400 font-bold" : light ? "text-gray-400" : "text-gray-500")}>{label}</span>
     </Link>
   );
 }

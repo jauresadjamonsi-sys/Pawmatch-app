@@ -121,8 +121,8 @@ export default function SuperFlairModal({
                   onClick={() => { setSelected(i); setCustom(""); }}
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all"
                   style={{
-                    background: selected === i && !custom ? "rgba(249,115,22,0.1)" : "transparent",
-                    border: selected === i && !custom ? "1px solid rgba(249,115,22,0.3)" : "1px solid transparent",
+                    background: selected === i && !custom ? "rgba(34,197,94,0.1)" : "transparent",
+                    border: selected === i && !custom ? "1px solid rgba(34,197,94,0.3)" : "1px solid transparent",
                   }}
                 >
                   <span className="text-xl">{msg.emoji}</span>
@@ -163,8 +163,8 @@ export default function SuperFlairModal({
                 disabled={sending}
                 className="flex-1 py-2.5 rounded-full text-sm font-bold text-white transition-all"
                 style={{
-                  background: "linear-gradient(135deg, #f97316, #a78bfa)",
-                  boxShadow: "0 4px 15px rgba(249,115,22,0.3)",
+                  background: "linear-gradient(135deg, #22C55E, #a78bfa)",
+                  boxShadow: "0 4px 15px rgba(34,197,94,0.3)",
                   cursor: sending ? "wait" : "pointer",
                   opacity: sending ? 0.7 : 1,
                 }}
