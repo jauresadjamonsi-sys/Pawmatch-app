@@ -11,6 +11,7 @@ import { EMOJI_MAP } from "@/lib/constants";
 const StoriesRing = dynamic(() => import("@/lib/components/StoriesRing"), { ssr: false });
 const PushPrompt = dynamic(() => import("@/lib/components/PushPrompt"), { ssr: false });
 const PromoSection = dynamic(() => import("@/lib/components/PromoSection"), { ssr: false });
+const SmartCompanion = dynamic(() => import("@/lib/components/SmartCompanion"), { ssr: false });
 
 // Tiny 1x1 blurred placeholder for dynamic images
 const BLUR_PLACEHOLDER = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNlMmRkZDUiLz48L3N2Zz4=";
@@ -334,6 +335,11 @@ export default function FeedPage() {
 
           {/* ═══════ STORIES ═══════ */}
           <StoriesRing />
+
+          {/* ═══════ SMART COMPANION — Pet Wellbeing Score ═══════ */}
+          {profile?.id && animals.length > 0 && (
+            <SmartCompanion userId={profile.id} />
+          )}
 
           {/* ═══════ PUSH NOTIFICATION PROMPT ═══════ */}
           <PushPrompt />

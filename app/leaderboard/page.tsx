@@ -82,7 +82,7 @@ export default function LeaderboardPage() {
           supabase.from("matches").select("sender_animal_id, receiver_animal_id").or(
             animalIds.map(id => `sender_animal_id.eq.${id},receiver_animal_id.eq.${id}`).join(",")
           ),
-          supabase.from("reel_likes").select("reel_id, reels!inner(animal_id)").in("reels.animal_id", animalIds).catch(() => ({ data: null })),
+          supabase.from("reel_likes").select("reel_id, reels!inner(animal_id)").in("reel_id", animalIds).catch(() => ({ data: null })),
         ]);
 
         // Count matches per animal
@@ -127,7 +127,8 @@ export default function LeaderboardPage() {
   const rest = entries.slice(3);
 
   return (
-    <main id="main-content" className="max-w-2xl mx-auto px-4 py-6 pb-32">
+    <main id="main-content" className="min-h-screen pb-32" style={{ background: "var(--c-deep)" }}>
+     <div className="max-w-2xl mx-auto px-4 py-6">
       {/* Header */}
       <div className="text-center mb-6">
         <h1 className="text-3xl font-black gradient-text-warm mb-1">Classement</h1>
@@ -272,6 +273,7 @@ export default function LeaderboardPage() {
           ))}
         </div>
       )}
+     </div>
     </main>
   );
 }

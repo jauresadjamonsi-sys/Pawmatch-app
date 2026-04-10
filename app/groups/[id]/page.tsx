@@ -171,7 +171,7 @@ export default function GroupDetailPage() {
   // ---------- Loading state ----------
   if (loading) {
     return (
-      <main className="min-h-screen pb-32">
+      <main className="min-h-screen pb-32" style={{ background: "var(--c-deep)" }}>
         <div className="max-w-3xl mx-auto px-4 py-8">
           <div className="flex flex-col items-center justify-center py-20 gap-3">
             <div className="w-10 h-10 border-3 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
@@ -185,7 +185,7 @@ export default function GroupDetailPage() {
   // ---------- 404 state ----------
   if (notFound || !group) {
     return (
-      <main className="min-h-screen pb-32">
+      <main className="min-h-screen pb-32" style={{ background: "var(--c-deep)" }}>
         <div className="max-w-3xl mx-auto px-4 py-8">
           <div className="glass-strong rounded-2xl p-10 text-center">
             <div className="text-5xl mb-4">🔍</div>
@@ -222,7 +222,7 @@ export default function GroupDetailPage() {
 
   // ---------- Main content ----------
   return (
-    <main className="min-h-screen pb-32">
+    <main className="min-h-screen pb-32" style={{ background: "var(--c-deep)" }}>
       <div className="max-w-3xl mx-auto px-4 py-8">
         {/* Back link */}
         <Link
@@ -347,7 +347,7 @@ export default function GroupDetailPage() {
                 return (
                   <Link
                     key={member.user_id}
-                    href={`/profile?id=${member.user_id}`}
+                    href={`/profile/${member.user_id}`}
                     className="flex flex-col items-center gap-2 group"
                   >
                     <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-[var(--c-border)] group-hover:border-orange-500/50 transition-colors bg-[var(--c-glass)]">

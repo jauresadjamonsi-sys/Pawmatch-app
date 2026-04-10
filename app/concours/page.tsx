@@ -193,7 +193,7 @@ export default function ConcoursPage() {
   const MEDAL = ["🥇", "🥈", "🥉", "4.", "5."];
 
   return (
-    <main className="min-h-screen pb-32">
+    <main className="min-h-screen pb-32" style={{ background: "var(--c-deep)" }}>
       <div className="max-w-5xl mx-auto px-4 py-8">
         {/* ══ Header ══ */}
         <div className="text-center mb-8">

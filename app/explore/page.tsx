@@ -258,7 +258,8 @@ export default function ExplorePage() {
   ];
 
   return (
-    <main id="main-content" className="max-w-4xl mx-auto px-4 py-5 pb-32">
+    <main id="main-content" className="min-h-screen pb-32" style={{ background: "var(--c-deep)" }}>
+     <div className="max-w-4xl mx-auto px-4 py-5">
       {/* Header */}
       <div className="mb-5">
         <h1 className="text-2xl font-black mb-1" style={{ color: "var(--c-text)" }}>Explorer</h1>
@@ -730,6 +731,7 @@ export default function ExplorePage() {
           </div>
         </div>
       )}
+     </div>
     </main>
   );
 }

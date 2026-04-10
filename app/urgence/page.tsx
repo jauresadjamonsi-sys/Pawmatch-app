@@ -185,7 +185,7 @@ export default function UrgencePage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center pb-32">
+      <div className="min-h-screen flex items-center justify-center pb-32" style={{ background: "var(--c-deep)" }}>
         <div className="animate-pulse text-[var(--c-text-muted)]">Chargement...</div>
       </div>
     );
@@ -193,7 +193,7 @@ export default function UrgencePage() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-4 pb-32">
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-4 pb-32" style={{ background: "var(--c-deep)" }}>
         <p className="text-[var(--c-text-muted)] text-center">
           Connecte-toi pour signaler un animal perdu ou voir les alertes.
         </p>
@@ -205,7 +205,8 @@ export default function UrgencePage() {
   }
 
   return (
-    <div className="min-h-screen pb-32 px-4 pt-6 max-w-2xl mx-auto">
+    <div className="min-h-screen pb-32" style={{ background: "var(--c-deep)" }}>
+     <div className="px-4 pt-6 max-w-2xl mx-auto">
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-3xl font-extrabold gradient-text-warm mb-2">
@@ -444,6 +445,7 @@ export default function UrgencePage() {
           </div>
         )}
       </div>
+     </div>
     </div>
   );
 }

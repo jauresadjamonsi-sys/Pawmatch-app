@@ -175,7 +175,7 @@ export default function BaladePage() {
   };
 
   return (
-    <div className="min-h-screen px-4 py-6 pb-32">
+    <div className="min-h-screen px-4 py-6 pb-32" style={{ background: "var(--c-deep)" }}>
       <div className="max-w-lg mx-auto">
         {/* Header */}
         <div className="mb-6">
