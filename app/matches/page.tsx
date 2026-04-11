@@ -402,7 +402,7 @@ export default function MatchesPage() {
             </h2>
             <div className="space-y-3 stagger-children">
               {current.pendingReceived.map((match) => (
-                <div key={match.id} className="glass-living blob-card gradient-border p-5 animate-card-in">
+                <div key={match.id} className="glass-living blob-card gradient-border p-5">
                   <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-4">
                       <AnimalBadge animal={match.sender_animal} isNew userId={match.sender_user_id} />
@@ -448,7 +448,7 @@ export default function MatchesPage() {
                 const myAnimal = isMe ? match.sender_animal : match.receiver_animal;
                 const theirAnimal = isMe ? match.receiver_animal : match.sender_animal;
                 return (
-                  <div key={match.id} className="glass-living blob-card p-5 animate-card-in"
+                  <div key={match.id} className="glass-living blob-card p-5"
                     style={{ borderColor: "rgba(52,211,153,0.2)" }}>
                     <div className="flex items-center gap-3 mb-3">
                       <AnimalBadge animal={myAnimal} />
