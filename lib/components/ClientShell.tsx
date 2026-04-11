@@ -36,12 +36,17 @@ const NativeInit = dynamic(
   () => import("@/lib/components/NativeInit"),
   { ssr: false }
 );
+const IOSBanner = dynamic(
+  () => import("@/lib/components/IOSBanner"),
+  { ssr: false }
+);
 
 export default function ClientShell({ children }: { children: React.ReactNode }) {
   return (
     <PostHogProvider>
       <AchievementProvider>
         <PresenceHeartbeat />
+        <IOSBanner />
         <Navbar />
         <VerificationBanner />
         <UpdateBanner />
