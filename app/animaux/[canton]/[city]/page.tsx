@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { CANTONS_SEO, getCantonBySlug, getCitySlug, findCityInCanton } from "@/lib/data/cantons";
 import Link from "next/link";
 import Image from "next/image";
+import BackButton from "@/lib/components/BackButton";
 
 const BASE_URL = "https://pawlyapp.ch";
 
@@ -159,9 +160,12 @@ export default async function CityPage({ params }: Props) {
       {/* Hero */}
       <section className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-12 px-4 mt-2">
         <div className="max-w-5xl mx-auto">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
-            Animaux a {cityName}, {canton.name}
-          </h1>
+          <div className="flex items-center gap-3 mb-4">
+            <BackButton fallback={`/animaux/${canton.slug}`} />
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
+              Animaux a {cityName}, {canton.name}
+            </h1>
+          </div>
           <p className="mt-3 text-lg text-gray-600">
             {animals.length > 0
               ? `${animals.length} ${animals.length === 1 ? "animal inscrit" : "animaux inscrits"} a ${cityName}.`

@@ -1,89 +1,96 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
-// GET /api/live - List active live streams
+export const dynamic = "force-dynamic";
+
+// GET — list active live streams
 export async function GET() {
-  const supabase = await createClient();
+  try {
+    const supabase = await createClient();
 
-  // user_id FK may point to auth.users, not profiles — fetch without join
-  const { data, error } = await supabase
-    .from("live_streams")
-    .select("*")
-    .eq("is_live", true)
-    .order("viewer_count", { ascending: false })
-    .limit(50);
+    const { data, error } = await supabase
+      .from("live_streams")
+      .select("*")
+      .eq("is_live", true)
+      .order("started_at", { ascending: false });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ streams: data || [] });
+    if (error) {
+      console.error("[api/live] GET error:", error.message);
+      return NextResponse.json({ streams: [] });
+    }
+
+    // Enrich with profile data
+    const userIds = [...new Set((data || []).map((s: any) => s.user_id).filter(Boolean))];
+    let profilesMap: Record<string, any> = {};
+    if (userIds.length > 0) {
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url")
+        .in("id", userIds);
+      for (const p of (profiles || [])) {
+        profilesMap[p.id] = p;
+      }
+    }
+
+    const streams = (data || []).map((s: any) => ({
+      ...s,
+      profiles: profilesMap[s.user_id] || null,
+    }));
+
+    return NextResponse.json({ streams });
+  } catch (err: any) {
+    console.error("[api/live] GET crash:", err?.message);
+    return NextResponse.json({ streams: [] });
+  }
 }
 
-// POST /api/live - Create a new stream
+// POST — create a new live stream
 export async function POST(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
 
-  const body = await request.json();
-  const title = (body.title || "").trim();
-  if (!title) return NextResponse.json({ error: "Titre requis" }, { status: 400 });
+    const { title, species_filter } = await request.json();
+    if (!title?.trim()) return NextResponse.json({ error: "Titre requis" }, { status: 400 });
 
-  // Check if user already has an active stream
-  const { data: existing } = await supabase
-    .from("live_streams")
-    .select("id")
-    .eq("user_id", user.id)
-    .eq("is_live", true)
-    .single();
-
-  if (existing) {
-    return NextResponse.json({ error: "Vous avez deja un live actif", stream_id: existing.id }, { status: 409 });
-  }
-
-  const { data, error } = await supabase
-    .from("live_streams")
-    .insert({
+    const { data, error } = await supabase.from("live_streams").insert({
       user_id: user.id,
-      title,
-      species_filter: body.species_filter || null,
-    })
-    .select()
-    .single();
+      title: title.trim(),
+      species_filter: species_filter || null,
+      is_live: true,
+    }).select().single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ stream: data });
+    if (error) {
+      console.error("[api/live] POST error:", error.message);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ stream: data });
+  } catch (err: any) {
+    return NextResponse.json({ error: err?.message || "Erreur serveur" }, { status: 500 });
+  }
 }
 
-// PATCH /api/live - Update stream (end, viewer count)
+// PATCH — update stream (end it)
 export async function PATCH(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
 
-  const body = await request.json();
-  const { stream_id, action, viewer_count } = body;
+    const { stream_id, action } = await request.json();
+    if (!stream_id) return NextResponse.json({ error: "stream_id requis" }, { status: 400 });
 
-  if (!stream_id) return NextResponse.json({ error: "stream_id requis" }, { status: 400 });
+    if (action === "end") {
+      await supabase.from("live_streams").update({
+        is_live: false,
+        ended_at: new Date().toISOString(),
+      }).eq("id", stream_id).eq("user_id", user.id);
+    }
 
-  if (action === "end") {
-    const { error } = await supabase
-      .from("live_streams")
-      .update({ is_live: false, ended_at: new Date().toISOString() })
-      .eq("id", stream_id)
-      .eq("user_id", user.id);
-
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ success: true });
+  } catch (err: any) {
+    return NextResponse.json({ error: err?.message || "Erreur serveur" }, { status: 500 });
   }
-
-  if (typeof viewer_count === "number") {
-    const { error } = await supabase
-      .from("live_streams")
-      .update({ viewer_count })
-      .eq("id", stream_id);
-
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json({ success: true });
-  }
-
-  return NextResponse.json({ error: "Action non reconnue" }, { status: 400 });
 }

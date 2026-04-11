@@ -93,6 +93,9 @@ export default function CartePage() {
   return (
     <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
       <div style={{ padding: "10px 16px", background: "var(--c-nav)", borderBottom: "1px solid var(--c-border)", display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+        <button onClick={() => window.history.length > 1 ? window.history.back() : (window.location.href = "/feed")} aria-label="Retour" className="inline-flex items-center justify-center w-9 h-9 rounded-full transition-all active:scale-90 flex-shrink-0" style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.1)", color: "var(--c-text)" }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+        </button>
         <span style={{ fontSize: 13, fontWeight: 800, color: "var(--c-text)" }}>🗺️ {t.mapTitle}</span>
         <div style={{ display: "flex", gap: 4, marginLeft: "auto" }}>
           {[{ v: "", l: t.mapAll, e: "🐾" }, { v: "chien", l: t.mapDogs, e: "🐕" }, { v: "chat", l: t.mapCats, e: "🐱" }, { v: "lapin", l: t.mapRabbits, e: "🐰" }].map(s => (

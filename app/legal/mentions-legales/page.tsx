@@ -1,8 +1,13 @@
+import BackButton from "@/lib/components/BackButton";
+
 export default function MentionsLegalesPage() {
   return (
     <div className="min-h-screen px-4 md:px-6 py-8 pb-28" style={{ background: "var(--c-bg)", color: "var(--c-text)" }}>
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2" style={{ color: "var(--c-text)" }}>Mentions Legales / Impressum</h1>
+        <div className="flex items-center gap-3 mb-4">
+          <BackButton fallback="/feed" />
+          <h1 className="text-3xl font-bold" style={{ color: "var(--c-text)" }}>Mentions Legales / Impressum</h1>
+        </div>
         <p style={{ color: "var(--c-text-muted)" }} className="text-sm mb-8">Derniere mise a jour : 7 avril 2026</p>
         <div className="space-y-6 text-sm leading-relaxed" style={{ color: "var(--c-text-muted)" }}>
 

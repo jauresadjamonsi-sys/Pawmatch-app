@@ -76,15 +76,15 @@ export default function SearchPage() {
       if (activeTab === "all" || activeTab === "animals") {
         const { data: animals } = await supabase
           .from("animals")
-          .select("id, name, species, breed, canton, photos")
+          .select("id, name, species, breed, canton, photo_url")
           .or(`name.ilike.${searchTerm},breed.ilike.${searchTerm},species.ilike.${searchTerm}`)
           .limit(activeTab === "animals" ? 30 : 8);
-        (animals || []).forEach(a => allResults.push({
+        (animals || []).forEach((a: any) => allResults.push({
           type: "animal",
           id: a.id,
           title: a.name,
           subtitle: [a.species, a.breed, a.canton].filter(Boolean).join(" · "),
-          image: a.photos?.[0] || null,
+          image: a.photo_url || null,
           link: `/animals/${a.id}`,
         }));
       }
@@ -93,14 +93,14 @@ export default function SearchPage() {
       if (activeTab === "all" || activeTab === "users") {
         const { data: users } = await supabase
           .from("profiles")
-          .select("id, full_name, avatar_url, canton, bio")
+          .select("id, full_name, avatar_url, city")
           .ilike("full_name", searchTerm)
           .limit(activeTab === "users" ? 30 : 6);
         (users || []).forEach(u => allResults.push({
           type: "user",
           id: u.id,
           title: u.full_name || "Utilisateur",
-          subtitle: [u.canton, u.bio?.slice(0, 50)].filter(Boolean).join(" · "),
+          subtitle: u.city || "",
           image: u.avatar_url || null,
           link: `/profile/${u.id}`,
         }));
@@ -140,23 +140,31 @@ export default function SearchPage() {
         }));
       }
 
-      // Search hashtags
+      // Search hashtags (from reels.hashtags array column)
       if (activeTab === "all" || activeTab === "hashtags") {
-        const { data: tags } = await supabase
-          .from("reel_hashtags")
-          .select("tag, reel_id")
-          .ilike("tag", searchTerm)
-          .limit(activeTab === "hashtags" ? 50 : 10);
-        // Deduplicate tags and count
-        const tagMap = new Map<string, number>();
-        (tags || []).forEach(t => tagMap.set(t.tag, (tagMap.get(t.tag) || 0) + 1));
-        tagMap.forEach((count, tag) => allResults.push({
-          type: "hashtag",
-          id: tag,
-          title: `#${tag}`,
-          subtitle: `${count} publication${count > 1 ? "s" : ""}`,
-          link: `/explore?hashtag=${tag}`,
-        }));
+        try {
+          const { data: reelsWithTags } = await supabase
+            .from("reels")
+            .select("id, hashtags")
+            .not("hashtags", "eq", "{}")
+            .limit(100);
+          const tagMap = new Map<string, number>();
+          const searchLower = q.trim().toLowerCase();
+          (reelsWithTags || []).forEach((r: any) => {
+            (r.hashtags || []).forEach((tag: string) => {
+              if (tag.toLowerCase().includes(searchLower)) {
+                tagMap.set(tag, (tagMap.get(tag) || 0) + 1);
+              }
+            });
+          });
+          tagMap.forEach((count, tag) => allResults.push({
+            type: "hashtag",
+            id: tag,
+            title: `#${tag}`,
+            subtitle: `${count} publication${count > 1 ? "s" : ""}`,
+            link: `/explore?hashtag=${tag}`,
+          }));
+        } catch { /* hashtag search failed */ }
       }
 
       setResults(allResults);
@@ -213,6 +221,12 @@ export default function SearchPage() {
 
   return (
     <div className="min-h-screen pb-32" style={{ background: "var(--c-deep)" }}>
+      {/* Back button */}
+      <div className="px-4 pt-4 max-w-2xl mx-auto">
+        <button onClick={() => window.history.length > 1 ? window.history.back() : (window.location.href = "/feed")} aria-label="Retour" className="inline-flex items-center justify-center w-9 h-9 rounded-full transition-all active:scale-90 flex-shrink-0" style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.1)", color: "var(--c-text)" }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+        </button>
+      </div>
       {/* Header */}
       <div className="sticky top-12 z-40" style={{
         background: "var(--c-deep)",

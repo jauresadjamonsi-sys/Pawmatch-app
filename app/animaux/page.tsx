@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { createClient } from "@supabase/supabase-js";
 import { CANTONS_SEO, getCitySlug } from "@/lib/data/cantons";
 import Link from "next/link";
+import BackButton from "@/lib/components/BackButton";
 
 const BASE_URL = "https://pawlyapp.ch";
 
@@ -68,6 +69,9 @@ export default async function AnimauxIndexPage() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-16 px-4">
         <div className="max-w-5xl mx-auto text-center">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <BackButton fallback="/feed" />
+          </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
             Trouvez des compagnons de balade pour votre animal en Suisse
           </h1>

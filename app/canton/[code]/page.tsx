@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { CANTONS } from "@/lib/cantons";
+import BackButton from "@/lib/components/BackButton";
 
 type Props = {
   params: Promise<{ code: string }>;
@@ -77,12 +78,15 @@ export default async function CantonPage({ params }: Props) {
       </nav>
 
       {/* H1 */}
-      <h1
-        className="text-2xl font-black mb-2"
-        style={{ color: "var(--c-text)" }}
-      >
-        Animaux a {cantonName}
-      </h1>
+      <div className="flex items-center gap-3 mb-4">
+        <BackButton fallback="/explore" />
+        <h1
+          className="text-2xl font-black"
+          style={{ color: "var(--c-text)" }}
+        >
+          Animaux a {cantonName}
+        </h1>
+      </div>
       <p className="text-sm mb-6" style={{ color: "var(--c-text-muted)" }}>
         Decouvre les compagnons inscrits dans le canton de {cantonName} et
         rejoins la communaute Pawly.

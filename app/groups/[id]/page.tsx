@@ -225,25 +225,17 @@ export default function GroupDetailPage() {
     <main className="min-h-screen pb-32" style={{ background: "var(--c-deep)" }}>
       <div className="max-w-3xl mx-auto px-4 py-8">
         {/* Back link */}
-        <Link
-          href="/groups"
-          className="inline-flex items-center gap-1.5 text-sm text-[var(--c-text-muted)] hover:text-[var(--c-text)] transition-colors mb-6"
-        >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
+        <div className="flex items-center gap-3 mb-6">
+          <button onClick={() => window.history.length > 1 ? window.history.back() : (window.location.href = "/feed")} aria-label="Retour" className="inline-flex items-center justify-center w-9 h-9 rounded-full transition-all active:scale-90 flex-shrink-0" style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.1)", color: "var(--c-text)" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+          </button>
+          <Link
+            href="/groups"
+            className="text-sm text-[var(--c-text-muted)] hover:text-[var(--c-text)] transition-colors"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-            />
-          </svg>
-          Retour aux groupes
-        </Link>
+            Retour aux groupes
+          </Link>
+        </div>
 
         {/* ══ Header card ══ */}
         <div className="glass-strong rounded-2xl p-6 border border-[var(--c-border)] mb-6">

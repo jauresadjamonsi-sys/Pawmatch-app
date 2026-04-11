@@ -118,13 +118,12 @@ export async function POST(request: NextRequest) {
     }),
   ]);
 
-  // Extract and store hashtags
+  // Merge caption hashtags into the reels.hashtags array column
   const extractedHashtags = (caption || "").match(/#(\w+)/g);
   if (extractedHashtags && extractedHashtags.length > 0) {
-    const uniqueTags = [...new Set(extractedHashtags.map((h: string) => h.slice(1).toLowerCase()))].slice(0, 10);
-    await supabase.from("reel_hashtags").insert(
-      uniqueTags.map(tag => ({ reel_id: data.id, hashtag: tag }))
-    ).catch(() => {});
+    const captionTags = extractedHashtags.map((h: string) => h.slice(1).toLowerCase());
+    const allTags = [...new Set([...(hashtags || []), ...captionTags])].slice(0, 15);
+    await supabase.from("reels").update({ hashtags: allTags }).eq("id", data.id).catch(() => {});
   }
 
   return NextResponse.json({ reel: data, coins_earned: 10 });

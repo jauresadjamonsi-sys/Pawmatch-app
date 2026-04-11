@@ -69,6 +69,10 @@ export default function LivePage() {
       <div className="max-w-4xl mx-auto px-4 pt-6 pb-4">
         <div className="flex items-center justify-between mb-1">
           <div>
+            <div className="flex items-center gap-3">
+              <button onClick={() => window.history.length > 1 ? window.history.back() : (window.location.href = "/feed")} aria-label="Retour" className="inline-flex items-center justify-center w-9 h-9 rounded-full transition-all active:scale-90 flex-shrink-0" style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.1)", color: "var(--c-text)" }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+              </button>
             <h1 className="text-2xl font-extrabold gradient-text-warm flex items-center gap-2">
               <span className="relative flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
@@ -79,6 +83,7 @@ export default function LivePage() {
             <p className="text-xs text-[var(--c-text-muted)] mt-0.5">
               {streams.length} live{streams.length > 1 ? "s" : ""} en cours
             </p>
+          </div>
           </div>
           {profile && (
             <Link

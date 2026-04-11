@@ -1,8 +1,13 @@
+import BackButton from "@/lib/components/BackButton";
+
 export default function CGUPage() {
   return (
     <div className="min-h-screen px-4 md:px-6 py-8 pb-28">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold text-[var(--c-text)] mb-2">Conditions Générales d'Utilisation</h1>
+        <div className="flex items-center gap-3 mb-4">
+          <BackButton fallback="/feed" />
+          <h1 className="text-3xl font-bold text-[var(--c-text)]">Conditions Générales d'Utilisation</h1>
+        </div>
         <p className="text-[var(--c-text-muted)] text-sm mb-8">Dernière mise à jour : 1er avril 2026</p>
         <div className="space-y-6 text-[var(--c-text-muted)] text-sm leading-relaxed">
           <section>

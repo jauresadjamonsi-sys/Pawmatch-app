@@ -56,37 +56,41 @@ export default function SettingsPage() {
   }, [profile]);
 
   async function loadSettings() {
-    // Load matching preferences
-    const { data: prefs } = await supabase
-      .from("matching_preferences")
-      .select("*")
-      .eq("user_id", profile!.id)
-      .single();
+    // Load matching preferences (table may not exist yet)
+    try {
+      const { data: prefs, error } = await supabase
+        .from("matching_preferences")
+        .select("*")
+        .eq("user_id", profile!.id)
+        .single();
 
-    if (prefs) {
-      setMatchPrefs({
-        preferredSpecies: prefs.preferred_species || [],
-        preferredCantons: prefs.preferred_cantons || [],
-        ageMin: prefs.age_min || 0,
-        ageMax: prefs.age_max || 20,
-        activityLevel: prefs.activity_level || "moderate",
-        smartMatchEnabled: true,
-      });
-    }
+      if (!error && prefs) {
+        setMatchPrefs({
+          preferredSpecies: prefs.preferred_species || [],
+          preferredCantons: prefs.preferred_cantons || [],
+          ageMin: prefs.age_min || 0,
+          ageMax: prefs.age_max || 20,
+          activityLevel: prefs.activity_level || "moderate",
+          smartMatchEnabled: true,
+        });
+      }
+    } catch { /* table may not exist */ }
   }
 
   async function saveMatchPrefs() {
     if (!profile) return;
     setSaving(true);
-    await supabase.from("matching_preferences").upsert({
-      user_id: profile.id,
-      preferred_species: matchPrefs.preferredSpecies,
-      preferred_cantons: matchPrefs.preferredCantons,
-      age_min: matchPrefs.ageMin,
-      age_max: matchPrefs.ageMax,
-      activity_level: matchPrefs.activityLevel,
-      updated_at: new Date().toISOString(),
-    });
+    try {
+      await supabase.from("matching_preferences").upsert({
+        user_id: profile.id,
+        preferred_species: matchPrefs.preferredSpecies,
+        preferred_cantons: matchPrefs.preferredCantons,
+        age_min: matchPrefs.ageMin,
+        age_max: matchPrefs.ageMax,
+        activity_level: matchPrefs.activityLevel,
+        updated_at: new Date().toISOString(),
+      });
+    } catch { /* table may not exist yet */ }
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
