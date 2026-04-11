@@ -13,11 +13,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { code } = await params;
   const cantonName = CANTONS.find((c) => c.code === code)?.name || code;
   return {
-    title: `Rencontres animaux ${cantonName} | Pawband`,
+    title: `Rencontres animaux ${cantonName} | PawBand`,
     description: `Trouve des compagnons de balade pour ton animal dans le canton de ${cantonName}. Matching IA, evenements, communaute — 100% gratuit.`,
     openGraph: {
-      title: `Animaux a ${cantonName} | Pawband`,
-      description: `Decouvre les animaux inscrits dans le canton de ${cantonName} sur Pawband.`,
+      title: `Animaux a ${cantonName} | PawBand`,
+      description: `Decouvre les animaux inscrits dans le canton de ${cantonName} sur PawBand.`,
       url: `https://pawband.ch/canton/${code}`,
     },
   };
@@ -89,7 +89,7 @@ export default async function CantonPage({ params }: Props) {
       </div>
       <p className="text-sm mb-6" style={{ color: "var(--c-text-muted)" }}>
         Decouvre les compagnons inscrits dans le canton de {cantonName} et
-        rejoins la communaute Pawband.
+        rejoins la communaute PawBand.
       </p>
 
       {/* Stats */}
@@ -285,7 +285,7 @@ export default async function CantonPage({ params }: Props) {
           className="text-lg font-bold mb-2"
           style={{ color: "var(--c-text)" }}
         >
-          Rejoins la communaute Pawband a {cantonName}
+          Rejoins la communaute PawBand a {cantonName}
         </h2>
         <p
           className="text-sm mb-4"

@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
             currency: "chf",
             product_data: {
               name: pack.label,
-              description: `${pack.coins} PawCoins pour ton compte Pawband`,
+              description: `${pack.coins} PawCoins pour ton compte PawBand`,
               images: ["https://www.pawband.ch/icon-512x512.png"],
             },
             unit_amount: pack.price,

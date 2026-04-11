@@ -1,5 +1,5 @@
 // =============================================================================
-// PAWLY / PawMatch — Centralized TypeScript types
+// PAWBAND / PawMatch — Centralized TypeScript types
 // =============================================================================
 // Single source of truth for domain types used across the app.
 // Import from "@/lib/types" instead of re-declaring inline.

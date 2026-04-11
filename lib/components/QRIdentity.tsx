@@ -41,8 +41,8 @@ export function QRIdentity({ animalId, animalName, species, breed, canton, owner
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `${animalName} — Pawband`,
-          text: `Fiche de ${animalName} sur Pawband`,
+          title: `${animalName} — PawBand`,
+          text: `Fiche de ${animalName} sur PawBand`,
           url: profileUrl,
         });
       } catch {}
@@ -56,7 +56,7 @@ export function QRIdentity({ animalId, animalName, species, breed, canton, owner
     if (!qrDataUrl) return;
     const a = document.createElement("a");
     a.href = qrDataUrl;
-    a.download = `${animalName}-pawly-qr.png`;
+    a.download = `${animalName}-pawband-qr.png`;
     a.click();
   };
 

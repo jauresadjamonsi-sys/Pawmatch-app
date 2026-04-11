@@ -2,7 +2,7 @@ import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
   appId: "ch.pawlyapp",
-  appName: "Pawband",
+  appName: "PawBand",
   webDir: "out",
   server: {
     url: "https://pawband.ch",
@@ -25,7 +25,7 @@ const config: CapacitorConfig = {
     },
   },
   ios: {
-    scheme: "Pawband",
+    scheme: "PawBand",
     contentInset: "automatic",
   },
   android: {

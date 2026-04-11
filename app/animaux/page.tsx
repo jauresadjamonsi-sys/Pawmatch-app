@@ -7,7 +7,7 @@ import BackButton from "@/lib/components/BackButton";
 const BASE_URL = "https://pawband.ch";
 
 export const metadata: Metadata = {
-  title: "Animaux en Suisse - Trouvez des compagnons de balade | Pawband",
+  title: "Animaux en Suisse - Trouvez des compagnons de balade | PawBand",
   description:
     "Trouvez des compagnons de balade pour votre animal en Suisse. Parcourez les animaux par canton et ville : Geneve, Vaud, Zurich, Berne et plus encore.",
   keywords: [
@@ -16,14 +16,14 @@ export const metadata: Metadata = {
     "chat compagnon suisse",
     "animaux geneve",
     "animaux lausanne",
-    "pawly",
+    "pawband",
   ],
   openGraph: {
-    title: "Animaux en Suisse - Trouvez des compagnons de balade | Pawband",
+    title: "Animaux en Suisse - Trouvez des compagnons de balade | PawBand",
     description:
-      "Parcourez les animaux inscrits sur Pawband par canton et ville en Suisse.",
+      "Parcourez les animaux inscrits sur PawBand par canton et ville en Suisse.",
     url: `${BASE_URL}/animaux`,
-    siteName: "Pawband",
+    siteName: "PawBand",
     locale: "fr_CH",
     type: "website",
   },
@@ -76,7 +76,7 @@ export default async function AnimauxIndexPage() {
             Trouvez des compagnons de balade pour votre animal en Suisse
           </h1>
           <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-            Pawband connecte les proprietaires d&apos;animaux dans toute la Suisse.
+            PawBand connecte les proprietaires d&apos;animaux dans toute la Suisse.
             Parcourez {totalAnimals > 0 ? `les ${totalAnimals} animaux inscrits` : "les animaux inscrits"} par
             canton et ville pour trouver le compagnon ideal.
           </p>
@@ -135,7 +135,7 @@ export default async function AnimauxIndexPage() {
             Votre animal cherche un compagnon de balade ?
           </h2>
           <p className="text-white/90 mb-8 text-lg">
-            Inscrivez-le gratuitement sur Pawband et trouvez des copains pres de chez vous.
+            Inscrivez-le gratuitement sur PawBand et trouvez des copains pres de chez vous.
           </p>
           <Link
             href="/signup"
@@ -153,13 +153,13 @@ export default async function AnimauxIndexPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "CollectionPage",
-            name: "Animaux en Suisse - Pawband",
+            name: "Animaux en Suisse - PawBand",
             description:
               "Trouvez des compagnons de balade pour votre animal en Suisse.",
             url: `${BASE_URL}/animaux`,
             isPartOf: {
               "@type": "WebSite",
-              name: "Pawband",
+              name: "PawBand",
               url: BASE_URL,
             },
             about: {

@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const canton = getCantonBySlug(cantonSlug);
   if (!canton) return {};
 
-  const title = `Animaux a ${canton.name} - Compagnons de balade | Pawband`;
+  const title = `Animaux a ${canton.name} - Compagnons de balade | PawBand`;
   const description = `Trouvez des compagnons de balade pour votre animal dans le canton de ${canton.name}. Chiens, chats et autres animaux a ${canton.cities.slice(0, 3).join(", ")} et plus.`;
 
   return {
@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       url: `${BASE_URL}/animaux/${canton.slug}`,
-      siteName: "Pawband",
+      siteName: "PawBand",
       locale: "fr_CH",
       type: "website",
     },
@@ -92,17 +92,17 @@ export default async function CantonPage({ params }: Props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: `Animaux a ${canton.name} - Pawband`,
+    name: `Animaux a ${canton.name} - PawBand`,
     description: `Trouvez des compagnons de balade pour votre animal dans le canton de ${canton.name}.`,
     url: `${BASE_URL}/animaux/${canton.slug}`,
     isPartOf: {
       "@type": "WebSite",
-      name: "Pawband",
+      name: "PawBand",
       url: BASE_URL,
     },
     about: {
       "@type": "Organization",
-      name: "Pawband",
+      name: "PawBand",
       description: "Plateforme de rencontre pour animaux de compagnie en Suisse",
       areaServed: {
         "@type": "AdministrativeArea",

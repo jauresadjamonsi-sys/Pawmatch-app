@@ -266,8 +266,8 @@ self.addEventListener('push', function (event) {
 
   // FCM sends data in a "notification" wrapper or a "data" wrapper.
   // Normalize FCM format to our standard format.
-  var title = 'Pawly';
-  var body = 'Nouvelle notification Pawly';
+  var title = 'PawBand';
+  var body = 'Nouvelle notification PawBand';
   var url = '/notifications';
   var tag = 'pawly-notification';
   var imageUrl = null;

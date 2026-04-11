@@ -8,7 +8,7 @@ export interface Badge {
 }
 
 export const ALL_BADGES: Badge[] = [
-  { id: "first_step", name: "Premier pas", emoji: "\uD83D\uDC3E", description: "Premi\u00e8re visite sur Pawband", tier: "bronze", color: "#CD7F32" },
+  { id: "first_step", name: "Premier pas", emoji: "\uD83D\uDC3E", description: "Premi\u00e8re visite sur PawBand", tier: "bronze", color: "#CD7F32" },
   { id: "pet_parent", name: "Pet parent", emoji: "\uD83C\uDF7C", description: "A ajout\u00e9 son premier compagnon", tier: "bronze", color: "#CD7F32" },
   { id: "first_flair", name: "Premier flair", emoji: "\uD83D\uDC43", description: "A envoy\u00e9 sa premi\u00e8re demande", tier: "bronze", color: "#CD7F32" },
   { id: "messenger", name: "Bavard", emoji: "\uD83D\uDCAC", description: "A envoy\u00e9 son premier message", tier: "bronze", color: "#CD7F32" },

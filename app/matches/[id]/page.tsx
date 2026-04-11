@@ -552,7 +552,7 @@ export default function ConversationPage() {
         <div className="max-w-3xl mx-auto space-y-2">
           {/* Code de conduite — toujours visible en haut */}
           <div className="glass rounded-2xl p-4 mb-4 text-center" style={{ borderLeft: "3px solid var(--c-accent, #FBBF24)" }}>
-            <p className="text-sm font-semibold text-[var(--c-text)] mb-2">{"🐾"} Charte de bienveillance Pawband</p>
+            <p className="text-sm font-semibold text-[var(--c-text)] mb-2">{"🐾"} Charte de bienveillance PawBand</p>
             <div className="grid grid-cols-2 gap-1.5 text-[11px] text-[var(--c-text-muted)]">
               <span>{"🤝"} Respect mutuel</span>
               <span>{"🐶"} Bien-etre animal prioritaire</span>

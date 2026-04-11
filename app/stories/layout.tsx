@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Stories",
-  description: "Découvre les stories des animaux de la communauté Pawband",
+  description: "Découvre les stories des animaux de la communauté PawBand",
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

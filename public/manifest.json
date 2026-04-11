@@ -1,6 +1,6 @@
 {
-  "name": "Pawband - Reseau social pour animaux",
-  "short_name": "Pawband",
+  "name": "PawBand - Reseau social pour animaux",
+  "short_name": "PawBand",
   "description": "Trouve des compagnons pour ton animal en Suisse",
   "start_url": "/feed",
   "scope": "/",
@@ -32,7 +32,7 @@
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Page d'accueil Pawband"
+      "label": "Page d'accueil PawBand"
     },
     {
       "src": "/screenshots/screenshot-2.png",

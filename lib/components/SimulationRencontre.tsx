@@ -238,7 +238,7 @@ export function SimulationRencontre({ myAnimal, otherAnimal, compatibilityScore,
   };
 
   const handleShare = async () => {
-    const text = `${myAnimal.name} ${l.step3Title.toLowerCase()} ${otherAnimal.name} — ${compatibilityScore}% ${l.verdict85.includes("!") ? "🐾" : ""}\n\npawly.ch`;
+    const text = `${myAnimal.name} ${l.step3Title.toLowerCase()} ${otherAnimal.name} — ${compatibilityScore}% ${l.verdict85.includes("!") ? "🐾" : ""}\n\npawband.ch`;
     if (navigator.share) {
       try {
         await navigator.share({ title: l.title, text, url: window.location.href });

@@ -1,5 +1,5 @@
 // ============================================================
-// PAWLY — Algorithme de compatibilité IA
+// PAWBAND — Algorithme de compatibilité IA
 // Score 0-100 basé sur espèce, traits, localisation, âge, genre
 // ============================================================
 

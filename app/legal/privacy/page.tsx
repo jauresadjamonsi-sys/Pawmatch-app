@@ -14,7 +14,7 @@ export default function PrivacyPage() {
           {/* 1. Responsable */}
           <section>
             <h2 className="text-lg font-semibold text-[var(--c-text)] mb-2">1. Responsable du traitement</h2>
-            <p><strong>Pawband</strong></p>
+            <p><strong>PawBand</strong></p>
             <p>Canton de Vaud, Suisse</p>
             <p>Email : <a href="mailto:contact@pawband.ch" className="underline text-[var(--c-accent,#FBBF24)]">contact@pawband.ch</a></p>
             <p>Site web : <a href="https://pawband.ch" className="underline text-[var(--c-accent,#FBBF24)]">https://pawband.ch</a></p>
@@ -166,7 +166,7 @@ export default function PrivacyPage() {
           {/* 10. Cookies */}
           <section>
             <h2 className="text-lg font-semibold text-[var(--c-text)] mb-2">10. Cookies et technologies similaires</h2>
-            <p>Pawband utilise uniquement des cookies strictement n&eacute;cessaires au fonctionnement du service :</p>
+            <p>PawBand utilise uniquement des cookies strictement n&eacute;cessaires au fonctionnement du service :</p>
             <ul className="list-disc ml-5 mt-2 space-y-1">
               <li><strong>Cookies de session :</strong> maintien de votre connexion</li>
               <li><strong>Cookies de pr&eacute;f&eacute;rences :</strong> langue, th&egrave;me</li>
@@ -190,7 +190,7 @@ export default function PrivacyPage() {
           {/* 12. Enfants */}
           <section>
             <h2 className="text-lg font-semibold text-[var(--c-text)] mb-2">12. Protection des mineurs</h2>
-            <p>Pawband est destin&eacute; aux personnes &acirc;g&eacute;es de 18 ans ou plus. Nous ne collectons pas sciemment de donn&eacute;es de mineurs. Si nous d&eacute;couvrons qu&apos;un mineur a cr&eacute;&eacute; un compte, celui-ci sera supprim&eacute; imm&eacute;diatement. Si vous &ecirc;tes parent et pensez que votre enfant utilise Pawband, contactez-nous &agrave; <a href="mailto:contact@pawband.ch" className="underline text-[var(--c-accent,#FBBF24)]">contact@pawband.ch</a>.</p>
+            <p>PawBand est destin&eacute; aux personnes &acirc;g&eacute;es de 18 ans ou plus. Nous ne collectons pas sciemment de donn&eacute;es de mineurs. Si nous d&eacute;couvrons qu&apos;un mineur a cr&eacute;&eacute; un compte, celui-ci sera supprim&eacute; imm&eacute;diatement. Si vous &ecirc;tes parent et pensez que votre enfant utilise PawBand, contactez-nous &agrave; <a href="mailto:contact@pawband.ch" className="underline text-[var(--c-accent,#FBBF24)]">contact@pawband.ch</a>.</p>
           </section>
 
           {/* 13. Notifications push */}
@@ -209,7 +209,7 @@ export default function PrivacyPage() {
           {/* 14. Achats integres */}
           <section>
             <h2 className="text-lg font-semibold text-[var(--c-text)] mb-2">14. Achats int&eacute;gr&eacute;s</h2>
-            <p>Pawband propose des abonnements premium (PawPlus, PawPro) et des achats de PawCoins. Les paiements sont trait&eacute;s par Stripe (web) ou via les syst&egrave;mes d&apos;achat int&eacute;gr&eacute; d&apos;Apple et Google (mobile). Nous ne stockons aucune donn&eacute;e de carte bancaire.</p>
+            <p>PawBand propose des abonnements premium (PawPlus, PawPro) et des achats de PawCoins. Les paiements sont trait&eacute;s par Stripe (web) ou via les syst&egrave;mes d&apos;achat int&eacute;gr&eacute; d&apos;Apple et Google (mobile). Nous ne stockons aucune donn&eacute;e de carte bancaire.</p>
           </section>
 
           {/* 15. Modifications */}
@@ -231,7 +231,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-lg font-semibold text-[var(--c-text)] mb-2">17. Contact</h2>
             <p>Pour toute question concernant cette politique de confidentialit&eacute; ou le traitement de vos donn&eacute;es :</p>
-            <p className="mt-2"><strong>Pawband</strong></p>
+            <p className="mt-2"><strong>PawBand</strong></p>
             <p>Email : <a href="mailto:contact@pawband.ch" className="underline text-[var(--c-accent,#FBBF24)]">contact@pawband.ch</a></p>
             <p>Site web : <a href="https://pawband.ch" className="underline text-[var(--c-accent,#FBBF24)]">https://pawband.ch</a></p>
           </section>

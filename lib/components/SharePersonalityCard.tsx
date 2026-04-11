@@ -52,7 +52,7 @@ export function SharePersonalityCard({ animalName, personality, photoUrl, specie
     const desc = personality.description.slice(0, 60) + "...";
     ctx.fillText(desc, 300, 265);
 
-    // Pawband branding
+    // PawBand branding
     ctx.font = "bold 16px -apple-system, sans-serif";
     ctx.fillStyle = "#FBBF24";
     ctx.fillText("pawband.ch", 300, 340);
@@ -66,21 +66,21 @@ export function SharePersonalityCard({ animalName, personality, photoUrl, specie
 
       if (typeof navigator.share === "function" && typeof navigator.canShare === "function") {
         try {
-          const file = new File([blob], `${animalName}-pawly.png`, { type: "image/png" });
+          const file = new File([blob], `${animalName}-pawband.png`, { type: "image/png" });
           await navigator.share({
             title: `${animalName} est ${personality.name} !`,
-            text: `Mon animal ${animalName} est "${personality.name}" ${personality.emoji} sur Pawband ! Et le tien ? 👉 pawband.ch`,
+            text: `Mon animal ${animalName} est "${personality.name}" ${personality.emoji} sur PawBand ! Et le tien ? 👉 pawband.ch`,
             files: [file],
           });
         } catch {
           // Fallback: download
           const url = URL.createObjectURL(blob);
           const a = document.createElement("a");
-          a.href = url; a.download = `${animalName}-pawly.png`; a.click();
+          a.href = url; a.download = `${animalName}-pawband.png`; a.click();
         }
       } else {
         // Fallback: WhatsApp
-        const text = encodeURIComponent(`Mon animal ${animalName} est "${personality.name}" ${personality.emoji} sur Pawband ! Et le tien ? 👉 https://pawband.ch`);
+        const text = encodeURIComponent(`Mon animal ${animalName} est "${personality.name}" ${personality.emoji} sur PawBand ! Et le tien ? 👉 https://pawband.ch`);
         window.open(`https://wa.me/?text=${text}`);
       }
     }, "image/png");

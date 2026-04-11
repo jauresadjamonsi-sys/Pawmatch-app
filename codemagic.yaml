@@ -1,17 +1,17 @@
 workflows:
   ios-build:
-    name: Pawly iOS Build
+    name: PawBand iOS Build
     max_build_duration: 90
     instance_type: mac_mini_m2
     integrations:
-      app_store_connect: Pawly ASC
+      app_store_connect: PawBand ASC
     environment:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: ch.pawlyapp
       vars:
         BUNDLE_ID: "ch.pawlyapp"
-        APP_NAME: "Pawly"
+        APP_NAME: "PawBand"
         XCODE_WORKSPACE: "ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
       node: 20
@@ -72,7 +72,7 @@ workflows:
         expire_build_submitted_for_review: true
 
   android-build:
-    name: Pawly Android Build
+    name: PawBand Android Build
     max_build_duration: 60
     instance_type: linux_x2
     environment:

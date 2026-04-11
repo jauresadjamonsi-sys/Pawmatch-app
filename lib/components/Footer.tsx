@@ -212,7 +212,7 @@ export default function Footer() {
             letterSpacing: "0.02em",
           }}
         >
-          &copy; {new Date().getFullYear()} Pawband &mdash; pawband.ch
+          &copy; {new Date().getFullYear()} PawBand &mdash; pawband.ch
         </p>
       </div>
 

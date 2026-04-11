@@ -19,7 +19,7 @@ const PET_FILTERS: PetFilter[] = [
     apply: () => {},
   },
   {
-    id: "warm", name: "Pawband Warm", icon: "🧡", category: "cute",
+    id: "warm", name: "PawBand Warm", icon: "🧡", category: "cute",
     apply: (ctx, w, h) => {
       ctx.fillStyle = "rgba(255,165,0,0.12)";
       ctx.fillRect(0, 0, w, h);
@@ -162,7 +162,7 @@ const PET_FILTERS: PetFilter[] = [
     },
   },
   {
-    id: "love", name: "Pawband Love", icon: "❤️", category: "cute",
+    id: "love", name: "PawBand Love", icon: "❤️", category: "cute",
     apply: (ctx, w, h) => {
       ctx.fillStyle = "rgba(255,50,100,0.08)";
       ctx.fillRect(0, 0, w, h);
@@ -354,7 +354,7 @@ export default function FiltersPage() {
     try {
       // Download locally
       const link = document.createElement("a");
-      link.download = `pawly-${selectedFilter}-${Date.now()}.jpg`;
+      link.download = `pawband-${selectedFilter}-${Date.now()}.jpg`;
       link.href = canvas.toDataURL("image/jpeg", 0.92);
       link.click();
       setSaved(true);

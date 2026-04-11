@@ -171,7 +171,7 @@ function PromoContent() {
 
       // Share or download
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file], title: "Pawband Story" });
+        await navigator.share({ files: [file], title: "PawBand Story" });
         toast.success("Story partagée !");
       } else {
         const url = URL.createObjectURL(blob);
@@ -194,19 +194,19 @@ function PromoContent() {
   }, [saving]);
 
   return (
-    <div className="promo-wrapper" role="main" aria-label="Promotion Pawband">
+    <div className="promo-wrapper" role="main" aria-label="Promotion PawBand">
       {/* ---- Story frame (9:16) ---- */}
-      <div className="story-frame" ref={storyRef} aria-label="Story promotionnelle Pawband">
+      <div className="story-frame" ref={storyRef} aria-label="Story promotionnelle PawBand">
         {/* Gradient background */}
         <div className="story-bg" />
 
         {/* Floating emoji particles */}
         <FloatingParticles />
 
-        {/* Pawband logo */}
+        {/* PawBand logo */}
         <div className="story-logo">
           <span className="logo-paw">🐾</span>
-          <span className="logo-text">Pawband</span>
+          <span className="logo-text">PawBand</span>
         </div>
 
         {/* ---- Frames ---- */}
@@ -214,7 +214,7 @@ function PromoContent() {
           {/* Frame 1: Ruby photo + question */}
           <div className={`frame frame-1 ${frame === 0 ? "frame-active" : ""}`}>
             <div className="ruby-photo-ring">
-              <img src="/ruby-hero.jpg" alt="Ruby, mascotte Pawband" className="ruby-photo" />
+              <img src="/ruby-hero.jpg" alt="Ruby, mascotte PawBand" className="ruby-photo" />
             </div>
             <h1 className="frame-title">Offre des aventures à ton compagnon&nbsp;!</h1>
             <p className="frame-subtitle">Rejoins Ruby et des milliers d&apos;animaux</p>
@@ -238,7 +238,7 @@ function PromoContent() {
 
           {/* Frame 4: CTA */}
           <div className={`frame frame-4 ${frame === 3 ? "frame-active" : ""}`}>
-            <h1 className="frame-title cta-title">Télécharge Pawband</h1>
+            <h1 className="frame-title cta-title">Télécharge PawBand</h1>
             <a href="https://pawband.ch" target="_blank" rel="noopener noreferrer" className="cta-domain">pawband.ch</a>
             {ref && <div className="ref-code">Code : {ref.slice(0, 8)}</div>}
             <div className="gratuit-badge">Gratuit</div>

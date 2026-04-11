@@ -25,7 +25,7 @@ export default function SharePage() {
 
   const referralCode = profile?.referral_code || "";
   const shareUrl = `https://pawband.ch/signup?ref=${referralCode}`;
-  const shareText = `🐾 Mon animal a trouvé des copains de balade sur Pawband ! Rejoins la communauté suisse des propriétaires d'animaux → ${shareUrl}`;
+  const shareText = `🐾 Mon animal a trouvé des copains de balade sur PawBand ! Rejoins la communauté suisse des propriétaires d'animaux → ${shareUrl}`;
   const [storyCardUrl, setStoryCardUrl] = useState<string>("");
 
   /** Convert canvas to Blob (iOS-safe, avoids data URL fetch issues) */
@@ -301,25 +301,25 @@ export default function SharePage() {
               toast.loading("Creation de la story...", { id: "story" });
               try {
                 const { blob, dataUrl } = await generateStoryCard();
-                const file = new File([blob], "pawly-story.jpg", { type: "image/jpeg" });
+                const file = new File([blob], "pawband-story.jpg", { type: "image/jpeg" });
                 // Try native share with file (works on iOS/Android — opens share sheet with "Save Image")
                 if (typeof navigator.share === "function") {
                   try {
                     if (navigator.canShare?.({ files: [file] })) {
                       toast.dismiss("story");
-                      await navigator.share({ title: "Pawband", text: shareText, files: [file] });
+                      await navigator.share({ title: "PawBand", text: shareText, files: [file] });
                       return;
                     }
                   } catch { /* canShare might throw on some browsers */ }
                   // Try sharing without files
                   toast.dismiss("story");
-                  try { await navigator.share({ title: "Pawband", text: shareText, url: shareUrl }); return; } catch {}
+                  try { await navigator.share({ title: "PawBand", text: shareText, url: shareUrl }); return; } catch {}
                 }
                 // Fallback: download via blob URL (not data URL)
                 const blobUrl = URL.createObjectURL(blob);
                 const link = document.createElement("a");
                 link.href = blobUrl;
-                link.download = "pawly-story.jpg";
+                link.download = "pawband-story.jpg";
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
@@ -340,7 +340,7 @@ export default function SharePage() {
               toast.loading("Creation de l'image...", { id: "save" });
               try {
                 const { blob } = await generateStoryCard();
-                const file = new File([blob], "pawly-story.jpg", { type: "image/jpeg" });
+                const file = new File([blob], "pawband-story.jpg", { type: "image/jpeg" });
                 // iOS: Use native share API → shows "Save Image" in share sheet
                 if (typeof navigator.share === "function") {
                   try {
@@ -356,7 +356,7 @@ export default function SharePage() {
                 const blobUrl = URL.createObjectURL(blob);
                 const link = document.createElement("a");
                 link.href = blobUrl;
-                link.download = "pawly-story.jpg";
+                link.download = "pawband-story.jpg";
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
@@ -400,7 +400,7 @@ export default function SharePage() {
             <button
               className="glass card-futuristic rounded-xl p-4 text-center transition-all duration-300"
               onClick={async () => {
-                try { await navigator.share({ title: "Pawband", text: shareText, url: shareUrl }); }
+                try { await navigator.share({ title: "PawBand", text: shareText, url: shareUrl }); }
                 catch { /* cancelled */ }
               }}
             >
@@ -414,7 +414,7 @@ export default function SharePage() {
         <div className="glass rounded-2xl p-6 mb-6 text-center animate-slide-up" style={{ animationDelay: "0.25s" }}>
           <p className="text-sm font-bold text-[var(--c-text)] mb-4">{t.shareQR}</p>
           {qrDataUrl && <Image src={qrDataUrl} alt="QR Code" width={200} height={200} className="mx-auto rounded-xl" unoptimized />}
-          <p className="text-[10px] text-[var(--c-text-muted)] mt-3">Scanne ce code pour rejoindre Pawband</p>
+          <p className="text-[10px] text-[var(--c-text-muted)] mt-3">Scanne ce code pour rejoindre PawBand</p>
         </div>
 
         {/* Rewards tiers */}

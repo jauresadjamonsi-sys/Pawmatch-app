@@ -180,7 +180,7 @@ export default function LeaderboardPage() {
           </button>
           <h1 className="text-3xl font-black gradient-text-warm">Classement</h1>
         </div>
-        <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Les animaux les plus populaires sur Pawband</p>
+        <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Les animaux les plus populaires sur PawBand</p>
       </div>
 
       {/* Tabs */}

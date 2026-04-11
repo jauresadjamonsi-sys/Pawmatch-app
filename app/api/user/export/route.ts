@@ -22,7 +22,7 @@ export async function GET() {
   const exportData = {
     export_date: new Date().toISOString(),
     format_version: "1.0",
-    platform: "Pawband (pawband.ch)",
+    platform: "PawBand (pawband.ch)",
     user: {
       auth_email: user.email,
       auth_created_at: user.created_at,
@@ -39,7 +39,7 @@ export async function GET() {
     status: 200,
     headers: {
       "Content-Type": "application/json",
-      "Content-Disposition": `attachment; filename="pawly-export-${user.id.slice(0, 8)}-${new Date().toISOString().slice(0, 10)}.json"`,
+      "Content-Disposition": `attachment; filename="pawband-export-${user.id.slice(0, 8)}-${new Date().toISOString().slice(0, 10)}.json"`,
     },
   });
 }

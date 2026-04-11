@@ -2,7 +2,7 @@
 
 **Conforme a l'art. 12 nLPD (Suisse) et art. 30 RGPD (UE)**
 
-**Responsable du traitement :** Pawly / PawDirectory
+**Responsable du traitement :** PawBand / PawDirectory
 **Represente par :** Jaures Adjamonsi
 **Siege :** Canton de Vaud, Suisse
 **Contact :** contact@pawband.ch
@@ -67,7 +67,7 @@
 | **Destinataires** | Stripe (paiement), Supabase (statut de l'abonnement) |
 | **Transfert hors Suisse** | Stripe : Irlande (UE). Donnees bancaires traitees exclusivement par Stripe |
 | **Duree de conservation** | 10 ans apres la derniere transaction (obligation legale suisse) |
-| **Mesures de securite** | PCI-DSS Level 1 (Stripe), aucune donnee bancaire stockee par Pawly |
+| **Mesures de securite** | PCI-DSS Level 1 (Stripe), aucune donnee bancaire stockee par PawBand |
 
 ### 1.5 Geolocalisation
 

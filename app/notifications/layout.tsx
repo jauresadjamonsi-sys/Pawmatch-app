@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Notifications",
-  description: "Tes notifications Pawband",
+  description: "Tes notifications PawBand",
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

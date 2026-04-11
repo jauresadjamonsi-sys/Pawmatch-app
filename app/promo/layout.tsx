@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Promos Pawband — Videos partageables",
+  title: "Promos PawBand — Videos partageables",
   description:
-    "Cree et partage des promos Pawband sur WhatsApp, Instagram et TikTok. Fais decouvrir la communaute d'animaux suisse a tes amis !",
+    "Cree et partage des promos PawBand sur WhatsApp, Instagram et TikTok. Fais decouvrir la communaute d'animaux suisse a tes amis !",
   robots: { index: false, follow: false },
 };
 

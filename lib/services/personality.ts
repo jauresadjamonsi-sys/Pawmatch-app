@@ -1,5 +1,5 @@
 // ============================================================
-// PAWLY — Système de personnalité animale
+// PAWBAND — Système de personnalité animale
 // Génère un "type" de personnalité basé sur les traits
 // ============================================================
 

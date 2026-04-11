@@ -67,7 +67,7 @@ export default function AnimalDetailPage() {
   const { onlineMap: ownerOnlineMap } = useOnlineStatus(ownerPresenceIds);
 
   useEffect(() => {
-    if (animal) document.title = animal.name + " — Pawband";
+    if (animal) document.title = animal.name + " — PawBand";
   }, [animal]);
 
   useEffect(() => {
@@ -574,9 +574,9 @@ export default function AnimalDetailPage() {
             <button
               onClick={() => {
                 const url = `https://pawband.ch/animals/${animal.id}`;
-                const text = `Decouvre ${animal.name} sur Pawband ! ${url}`;
+                const text = `Decouvre ${animal.name} sur PawBand ! ${url}`;
                 if (navigator.share) {
-                  navigator.share({ title: animal.name + " | Pawband", text, url }).catch(() => {});
+                  navigator.share({ title: animal.name + " | PawBand", text, url }).catch(() => {});
                 } else {
                   navigator.clipboard.writeText(url);
                 }

@@ -254,7 +254,7 @@ function ReelCard({ reel, index, isActive }: { reel: ReelWithAuthor; index: numb
 
   async function handleShare() {
     const shareUrl = `https://pawband.ch/reels/${reel.id}`;
-    const shareData = { title: "Pawband", text: "Regarde ce reel sur Pawband !", url: shareUrl };
+    const shareData = { title: "PawBand", text: "Regarde ce reel sur PawBand !", url: shareUrl };
     try {
       if (navigator.share) {
         await navigator.share(shareData);

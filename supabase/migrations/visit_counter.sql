@@ -1,5 +1,5 @@
 -- ═══════ VISIT COUNTER ═══════
--- Track site visits for Pawly ecosystem apps
+-- Track site visits for PawBand ecosystem apps
 
 -- Table
 CREATE TABLE IF NOT EXISTS site_stats (

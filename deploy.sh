@@ -1,6 +1,6 @@
 #!/bin/bash
 # ═══════════════════════════════════════════════════
-# PawMatch (Pawly) — Deploy + auto-alias bare domain
+# PawBand — Deploy + auto-alias bare domain
 # ═══════════════════════════════════════════════════
 set -e
 

@@ -51,7 +51,7 @@ export function WelcomeModal() {
           onClick={(e) => e.stopPropagation()}>
 
           <div className="text-5xl mb-4">🐾</div>
-          <h2 className="text-xl font-extrabold text-[var(--c-text)] mb-3">Bienvenue sur Pawband !</h2>
+          <h2 className="text-xl font-extrabold text-[var(--c-text)] mb-3">Bienvenue sur PawBand !</h2>
 
           <div className="flex flex-col gap-3 mb-6 text-left">
             <div className="flex items-start gap-3">

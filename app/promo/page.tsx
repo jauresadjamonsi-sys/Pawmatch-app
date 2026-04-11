@@ -38,7 +38,7 @@ const TEMPLATES: PromoTemplate[] = [
     id: "match",
     title: "Le Match Parfait",
     whatsappText:
-      "Et si ton chien trouvait son meilleur ami ? Pawband connecte les animaux et leurs proprios en Suisse. Inscris-toi gratuitement !",
+      "Et si ton chien trouvait son meilleur ami ? PawBand connecte les animaux et leurs proprios en Suisse. Inscris-toi gratuitement !",
     gradient: "linear-gradient(135deg, #FBBF24 0%, #FACC15 50%, #F43F5E 100%)",
     emoji: "💕",
   },
@@ -46,7 +46,7 @@ const TEMPLATES: PromoTemplate[] = [
     id: "community",
     title: "Communaute Suisse",
     whatsappText:
-      "La plus grande communaute d'animaux de compagnie en Suisse est sur Pawband ! Rejoins-nous, c'est gratuit.",
+      "La plus grande communaute d'animaux de compagnie en Suisse est sur PawBand ! Rejoins-nous, c'est gratuit.",
     gradient: "linear-gradient(135deg, #DC2626 0%, #FCD34D 50%, #DC2626 100%)",
     emoji: "🇨🇭",
   },
@@ -54,7 +54,7 @@ const TEMPLATES: PromoTemplate[] = [
     id: "balade",
     title: "Fini les balades seul",
     whatsappText:
-      "Fini les balades seul avec ton chien ! Sur Pawband, trouve des compagnons de promenade pres de chez toi. Gratuit !",
+      "Fini les balades seul avec ton chien ! Sur PawBand, trouve des compagnons de promenade pres de chez toi. Gratuit !",
     gradient: "linear-gradient(135deg, #059669 0%, #38BDF8 50%, #06B6D4 100%)",
     emoji: "🌿",
   },
@@ -62,7 +62,7 @@ const TEMPLATES: PromoTemplate[] = [
     id: "tinder",
     title: "Le Tinder des Animaux",
     whatsappText:
-      "Le Tinder des animaux existe et c'est suisse ! Ton compagnon merite de trouver son match. Essaie Pawband maintenant !",
+      "Le Tinder des animaux existe et c'est suisse ! Ton compagnon merite de trouver son match. Essaie PawBand maintenant !",
     gradient: "linear-gradient(135deg, #F43F5E 0%, #4ADE80 50%, #FCD34D 100%)",
     emoji: "🔥",
   },
@@ -70,7 +70,7 @@ const TEMPLATES: PromoTemplate[] = [
     id: "gratuit",
     title: "100% Gratuit",
     whatsappText:
-      "Pawband, l'app gratuite qui connecte les proprietaires d'animaux en Suisse. Inscris-toi en 30 secondes !",
+      "PawBand, l'app gratuite qui connecte les proprietaires d'animaux en Suisse. Inscris-toi en 30 secondes !",
     gradient: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 50%, #FBBF24 100%)",
     emoji: "🎉",
   },
@@ -173,7 +173,7 @@ export default function PromoPage() {
               WebkitTextFillColor: "transparent",
             }}
           >
-            Promos Pawband
+            Promos PawBand
           </span>{" "}
           🎬
         </h1>
@@ -225,7 +225,7 @@ export default function PromoPage() {
               <div className="absolute inset-0 flex flex-col items-center justify-center p-3 text-white text-center">
                 <span className="text-3xl mb-2">{tpl.emoji}</span>
                 <span className="text-xs font-bold uppercase tracking-wider opacity-80">
-                  Pawband
+                  PawBand
                 </span>
                 <span className="text-sm font-black mt-1 leading-tight">
                   {tpl.title}
@@ -304,7 +304,7 @@ export default function PromoPage() {
           }}
         >
           <p className="text-sm font-medium" style={{ color: "var(--c-text-muted)" }}>
-            Actuellement sur Pawband
+            Actuellement sur PawBand
           </p>
           <div className="flex justify-center gap-8 mt-3">
             <div>
@@ -580,7 +580,7 @@ function MatchTemplate({
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-sm">
-        {/* Pawband badge */}
+        {/* PawBand badge */}
         <div
           className="promo-fade-up mb-6 px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase text-white"
           style={{
@@ -588,7 +588,7 @@ function MatchTemplate({
             animationDelay: "0.2s",
           }}
         >
-          🐾 Pawband
+          🐾 PawBand
         </div>
 
         {/* Question text */}

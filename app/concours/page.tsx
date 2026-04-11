@@ -38,7 +38,7 @@ const ACTIVE_CONTEST = {
   rules: [
     "1 photo par animal",
     "Votes illimites",
-    "Ouvert a tous les animaux inscrits sur Pawband",
+    "Ouvert a tous les animaux inscrits sur PawBand",
   ],
 };
 
@@ -202,7 +202,7 @@ export default function ConcoursPage() {
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
             </button>
             <h1 className="text-3xl md:text-4xl font-extrabold gradient-text-warm">
-              Concours Pawband
+              Concours PawBand
             </h1>
           </div>
           <p className="text-[var(--c-text-muted)] text-sm md:text-base">

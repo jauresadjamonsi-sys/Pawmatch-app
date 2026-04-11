@@ -49,7 +49,7 @@ export default function AnimalCardPage() {
 
   useEffect(() => {
     if (animal) {
-      document.title = `${animal.name} - ${t.cardDigitalPassport || "Digital Passport"} | Pawband`;
+      document.title = `${animal.name} - ${t.cardDigitalPassport || "Digital Passport"} | PawBand`;
     }
   }, [animal, t]);
 
@@ -68,7 +68,7 @@ export default function AnimalCardPage() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `${animal.name} - Pawband`,
+          title: `${animal.name} - PawBand`,
           text: `${t.cardDigitalPassport || "Digital Passport"}: ${animal.name}`,
           url: cardUrl,
         });
@@ -99,14 +99,14 @@ export default function AnimalCardPage() {
         logging: false,
       });
       const link = document.createElement("a");
-      link.download = `${animal.name}-pawly-card.png`;
+      link.download = `${animal.name}-pawband-card.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
     } catch {
       // Fallback: download QR code only
       if (qrDataUrl) {
         const link = document.createElement("a");
-        link.download = `${animal.name}-pawly-qr.png`;
+        link.download = `${animal.name}-pawband-qr.png`;
         link.href = qrDataUrl;
         link.click();
       }
@@ -348,7 +348,7 @@ export default function AnimalCardPage() {
             </div>
           </div>
 
-          {/* Pawband branding */}
+          {/* PawBand branding */}
           <div className="flex items-center justify-center gap-2" style={{ marginTop: 18 }}>
             <span style={{ fontSize: 16 }}>{"\u{1F43E}"}</span>
             <span
@@ -361,7 +361,7 @@ export default function AnimalCardPage() {
                 backgroundClip: "text",
               }}
             >
-              Pawband
+              PawBand
             </span>
             <span style={{ fontSize: 10, color: "rgba(255,255,255,0.25)", fontWeight: 500 }}>
               {t.cardDigitalPassport || "Digital Passport"}

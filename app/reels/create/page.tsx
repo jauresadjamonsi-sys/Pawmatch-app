@@ -554,7 +554,7 @@ export default function CreateReelPage() {
             type="text"
             value={hashtags}
             onChange={(e) => setHashtags(e.target.value)}
-            placeholder="#pawly #monchien #cute"
+            placeholder="#pawband #monchien #cute"
             className="w-full px-4 py-3 rounded-2xl text-sm outline-none"
             style={{ background: "var(--c-glass, rgba(255,255,255,0.05))", border: "1px solid var(--c-border)", color: "var(--c-text)" }}
           />

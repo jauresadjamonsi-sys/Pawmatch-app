@@ -4,7 +4,7 @@ import PawCoinsWallet from "@/lib/components/PawCoinsWallet";
 import BackButton from "@/lib/components/BackButton";
 
 export const metadata: Metadata = {
-  title: "PawCoins Wallet | Pawband",
+  title: "PawCoins Wallet | PawBand",
   description: "Gere tes PawCoins, reclame ton bonus quotidien et decouvre la boutique.",
 };
 

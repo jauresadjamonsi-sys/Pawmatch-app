@@ -1,5 +1,5 @@
 -- ============================================================
--- Notification Triggers for Pawly
+-- Notification Triggers for PawBand
 -- Automatic notifications via PostgreSQL triggers
 -- ============================================================
 
@@ -138,7 +138,7 @@ BEGIN
   VALUES (
     NEW.id,
     'system',
-    'Bienvenue sur Pawly!',
+    'Bienvenue sur PawBand!',
     'Ajoute ton premier animal et commence à flairer!',
     '/profile/animals/new'
   );

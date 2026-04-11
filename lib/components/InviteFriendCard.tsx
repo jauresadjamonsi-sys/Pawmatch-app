@@ -3,10 +3,10 @@
 import { useAppContext } from "@/lib/contexts/AppContext";
 
 const LABELS: Record<string, { title: string; desc: string; button: string; message: string }> = {
-  fr: { title: "Invite un ami", desc: "Plus on est de compagnons, plus on s'amuse !", button: "Inviter via WhatsApp", message: "Hey ! Je viens de découvrir Pawband — une app pour trouver des copains de balade pour son animal en Suisse 🐾 Fais le test de personnalité, c'est marrant ! 👉 https://pawband.ch" },
-  de: { title: "Freund einladen", desc: "Je mehr Begleiter, desto mehr Spass!", button: "Über WhatsApp einladen", message: "Hey! Ich habe gerade Pawband entdeckt — eine App um Spaziergang-Freunde für dein Tier in der Schweiz zu finden 🐾 Mach den Persönlichkeitstest, macht Spass! 👉 https://pawband.ch" },
-  it: { title: "Invita un amico", desc: "Più compagni ci sono, più ci si diverte!", button: "Invita via WhatsApp", message: "Hey! Ho appena scoperto Pawband — un'app per trovare amici di passeggiata per il tuo animale in Svizzera 🐾 Fai il test di personalità, è divertente! 👉 https://pawband.ch" },
-  en: { title: "Invite a friend", desc: "The more companions, the more fun!", button: "Invite via WhatsApp", message: "Hey! I just discovered Pawband — an app to find walk buddies for your pet in Switzerland 🐾 Take the personality test, it's fun! 👉 https://pawband.ch" },
+  fr: { title: "Invite un ami", desc: "Plus on est de compagnons, plus on s'amuse !", button: "Inviter via WhatsApp", message: "Hey ! Je viens de découvrir PawBand — une app pour trouver des copains de balade pour son animal en Suisse 🐾 Fais le test de personnalité, c'est marrant ! 👉 https://pawband.ch" },
+  de: { title: "Freund einladen", desc: "Je mehr Begleiter, desto mehr Spass!", button: "Über WhatsApp einladen", message: "Hey! Ich habe gerade PawBand entdeckt — eine App um Spaziergang-Freunde für dein Tier in der Schweiz zu finden 🐾 Mach den Persönlichkeitstest, macht Spass! 👉 https://pawband.ch" },
+  it: { title: "Invita un amico", desc: "Più compagni ci sono, più ci si diverte!", button: "Invita via WhatsApp", message: "Hey! Ho appena scoperto PawBand — un'app per trovare amici di passeggiata per il tuo animale in Svizzera 🐾 Fai il test di personalità, è divertente! 👉 https://pawband.ch" },
+  en: { title: "Invite a friend", desc: "The more companions, the more fun!", button: "Invite via WhatsApp", message: "Hey! I just discovered PawBand — an app to find walk buddies for your pet in Switzerland 🐾 Take the personality test, it's fun! 👉 https://pawband.ch" },
 };
 
 export function InviteFriendCard() {
