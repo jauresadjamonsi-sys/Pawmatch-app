@@ -430,7 +430,7 @@ export default function ConversationPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--c-deep)] flex flex-col">
+    <div className="h-[100dvh] bg-[var(--c-deep)] flex flex-col">
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes suggestionIn {
           from { opacity: 0; transform: translateY(8px) scale(0.95); }
@@ -886,7 +886,7 @@ export default function ConversationPage() {
 
       {/* Voice coming-soon toast */}
       {voiceToast && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 toast-enter">
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 toast-enter">
           <div className="flex items-center gap-2 px-4 py-2.5 bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl shadow-xl">
             <svg className="w-4 h-4 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />

@@ -358,6 +358,7 @@ export default function Navbar() {
         hasPendingSwipes={hasPendingSwipes}
         hasNewMatches={hasNewMatches}
         t={t}
+        pathname={pathname}
       />
     </>
   );
@@ -374,11 +375,11 @@ function getServicesItems(t: Record<string, string>) {
   ];
 }
 
-function MobileBottomNav({ user, loading, isActive, isLight, hasPendingSwipes, hasNewMatches, t }: {
+function MobileBottomNav({ user, loading, isActive, isLight, hasPendingSwipes, hasNewMatches, t, pathname }: {
   user: any; loading: boolean;
   isActive: (p: string) => boolean;
   isLight: boolean; hasPendingSwipes: boolean; hasNewMatches: boolean;
-  t: any;
+  t: any; pathname: string;
 }) {
   const [servicesOpen, setServicesOpen] = useState(false);
   const servicesRef = useRef<HTMLDivElement>(null);
@@ -394,6 +395,10 @@ function MobileBottomNav({ user, loading, isActive, isLight, hasPendingSwipes, h
   }, [servicesOpen]);
 
   const isServicesActive = ["/carte", "/wallet", "/marketplace", "/urgence", "/balade"].some(p => isActive(p));
+
+  // Hide bottom nav on conversation pages (chat) so the input bar isn't obscured
+  const isChatPage = /^\/matches\/[^/]+$/.test(pathname);
+  if (isChatPage) return null;
 
   return (
     <>
