@@ -60,8 +60,9 @@ export const THEME_VARS: Record<Theme, Record<string, string>> = {
 };
 
 function getSystemTheme(): Theme {
-  if (typeof window === "undefined") return "nuit";
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "nuit" : "clair";
+  if (typeof window === "undefined") return "aurore";
+  // Default to aurore (premium dark) — Living Pet Interface
+  return window.matchMedia("(prefers-color-scheme: light)").matches ? "clair" : "aurore";
 }
 
 function resolveTheme(preference: ThemePreference): Theme {
@@ -69,7 +70,7 @@ function resolveTheme(preference: ThemePreference): Theme {
 }
 
 const AppContext = createContext<AppContextType>({
-  lang: "fr", setLang: () => {}, theme: "nuit", themePreference: "auto", setTheme: () => {}, t: TRANSLATIONS.fr,
+  lang: "fr", setLang: () => {}, theme: "aurore", themePreference: "auto", setTheme: () => {}, t: TRANSLATIONS.fr,
 });
 
 export function AppProvider({ children }: { children: React.ReactNode }) {

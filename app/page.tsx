@@ -26,6 +26,11 @@ export default function HomePage() {
       <div
         className="pawly-ssr-content"
         aria-hidden="false"
+        style={{
+          background: "radial-gradient(ellipse at top, rgba(251,191,36,0.08), #0A0806)",
+          color: "#F5ECD8",
+          minHeight: "100vh",
+        }}
       >
         <div className="max-w-4xl mx-auto px-6 py-16">
           {/* Hero */}

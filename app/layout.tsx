@@ -83,8 +83,8 @@ export const viewport = {
   maximumScale: 1,
   viewportFit: "cover" as const,
   themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#2a2248" },
-    { media: "(prefers-color-scheme: light)", color: "#FAF8F4" },
+    { media: "(prefers-color-scheme: dark)", color: "#0A0806" },
+    { media: "(prefers-color-scheme: light)", color: "#0A0806" },
   ],
 };
 
@@ -174,7 +174,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           })();
         `}} />
       </head>
-      <body className={inter.className + " min-h-screen"} style={{ background: "var(--c-deep, #F0ECE4)", color: "var(--c-text, #1A1714)" }}>
+      <body className={inter.className + " min-h-screen"} style={{ background: "var(--c-deep, #0A0806)", color: "var(--c-text, #F5ECD8)" }}>
         <AppProvider>
           <ClientShell>
             {children}
