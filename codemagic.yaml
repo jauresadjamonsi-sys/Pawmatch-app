@@ -1,8 +1,10 @@
 workflows:
   ios-build:
     name: Pawly iOS Build
-    max_build_duration: 60
+    max_build_duration: 90
     instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: Pawly ASC
     environment:
       ios_signing:
         distribution_type: app_store
@@ -10,18 +12,36 @@ workflows:
       vars:
         BUNDLE_ID: "ch.pawlyapp"
         APP_NAME: "Pawly"
+        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
+        XCODE_SCHEME: "App"
       node: 20
+      xcode: latest
+      cocoapods: default
     scripts:
       - name: Install dependencies
         script: |
           npm ci
-      - name: Add iOS platform
+
+      - name: Add iOS platform and sync
         script: |
           npx cap add ios || true
+          mkdir -p ios/App/App/public
           npx cap sync ios
+
+      - name: Install CocoaPods
+        script: |
+          cd ios/App && pod install
+
       - name: Set up code signing
         script: |
           xcode-project use-profiles
+
+      - name: Set bundle version
+        script: |
+          cd ios/App
+          agvtool new-version -all $(($(app-store-connect get-latest-testflight-build-number "$BUNDLE_ID" || echo 0) + 1))
+          agvtool new-marketing-version "1.0.0"
+
       - name: Build iOS
         script: |
           cd ios/App
@@ -30,20 +50,26 @@ workflows:
             -sdk iphoneos \
             -configuration Release \
             -archivePath build/App.xcarchive \
+            CODE_SIGN_IDENTITY="iPhone Distribution" \
             archive
+
       - name: Export IPA
         script: |
           cd ios/App
-          xcodebuild -exportArchive \
-            -archivePath build/App.xcarchive \
-            -exportOptionsPlist exportOptions.plist \
-            -exportPath build/ipa
+          xcode-project build-ipa \
+            --workspace App.xcworkspace \
+            --scheme App \
+            --archive-path build/App.xcarchive
+
     artifacts:
       - ios/App/build/ipa/*.ipa
+      - ios/App/build/*.xcarchive
+
     publishing:
       app_store_connect:
         auth: integration
         submit_to_testflight: true
+        expire_build_submitted_for_review: true
 
   android-build:
     name: Pawly Android Build
@@ -58,17 +84,22 @@ workflows:
       - name: Install dependencies
         script: |
           npm ci
-      - name: Add Android platform
+
+      - name: Add Android platform and sync
         script: |
           npx cap add android || true
+          mkdir -p android/app/src/main/assets/public
           npx cap sync android
+
       - name: Build Android
         script: |
           cd android
-          ./gradlew assembleRelease
+          ./gradlew bundleRelease assembleRelease
+
     artifacts:
       - android/app/build/outputs/**/*.apk
       - android/app/build/outputs/**/*.aab
+
     publishing:
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
