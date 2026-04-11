@@ -70,7 +70,7 @@ export default function ResetPasswordPage() {
     <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "var(--c-deep)" }}>
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold" style={{ color: "var(--c-accent)" }}>PawlyApp</h1>
+          <h1 className="text-4xl font-bold" style={{ color: "var(--c-accent)" }}>Pawband</h1>
           <p style={{ color: "var(--c-text-muted)" }} className="mt-2">Nouveau mot de passe</p>
         </div>
 

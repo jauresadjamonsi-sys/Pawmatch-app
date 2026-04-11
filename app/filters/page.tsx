@@ -19,7 +19,7 @@ const PET_FILTERS: PetFilter[] = [
     apply: () => {},
   },
   {
-    id: "warm", name: "PawlyApp Warm", icon: "🧡", category: "cute",
+    id: "warm", name: "Pawband Warm", icon: "🧡", category: "cute",
     apply: (ctx, w, h) => {
       ctx.fillStyle = "rgba(255,165,0,0.12)";
       ctx.fillRect(0, 0, w, h);
@@ -162,7 +162,7 @@ const PET_FILTERS: PetFilter[] = [
     },
   },
   {
-    id: "love", name: "PawlyApp Love", icon: "❤️", category: "cute",
+    id: "love", name: "Pawband Love", icon: "❤️", category: "cute",
     apply: (ctx, w, h) => {
       ctx.fillStyle = "rgba(255,50,100,0.08)";
       ctx.fillRect(0, 0, w, h);

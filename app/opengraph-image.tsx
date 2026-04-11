@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "PawlyApp — Le reseau social des animaux en Suisse";
+export const alt = "Pawband — Le reseau social des animaux en Suisse";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -127,7 +127,7 @@ export default async function Image() {
             🐾
           </div>
 
-          {/* PAWLY title */}
+          {/* PAWBAND title */}
           <div
             style={{
               fontSize: "82px",
@@ -140,7 +140,7 @@ export default async function Image() {
               lineHeight: 1,
             }}
           >
-            PAWLYAPP
+            PAWBAND
           </div>
 
           {/* Main tagline */}

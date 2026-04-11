@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   if (!user) {
     return {
       title: "Mon profil",
-      description: "Connectez-vous pour acceder a votre profil PawlyApp.",
+      description: "Connectez-vous pour acceder a votre profil Pawband.",
     };
   }
 
@@ -32,7 +32,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const name = profile?.full_name || "Mon profil";
   const title = `${name} - Profil`;
-  const description = `Profil de ${name} sur PawlyApp.${animalCount ? ` ${animalCount} ${animalCount === 1 ? "animal enregistre" : "animaux enregistres"}.` : ""} Gerez vos animaux et vos balades.`;
+  const description = `Profil de ${name} sur Pawband.${animalCount ? ` ${animalCount} ${animalCount === 1 ? "animal enregistre" : "animaux enregistres"}.` : ""} Gerez vos animaux et vos balades.`;
 
   return {
     title,
@@ -42,9 +42,9 @@ export async function generateMetadata(): Promise<Metadata> {
       follow: false,
     },
     openGraph: {
-      title: `${name} | PawlyApp`,
+      title: `${name} | Pawband`,
       description,
-      siteName: "PawlyApp",
+      siteName: "Pawband",
       locale: "fr_CH",
       type: "profile",
       ...(profile?.avatar_url
@@ -54,7 +54,7 @@ export async function generateMetadata(): Promise<Metadata> {
                 url: profile.avatar_url,
                 width: 200,
                 height: 200,
-                alt: `${name} sur PawlyApp`,
+                alt: `${name} sur Pawband`,
               },
             ],
           }

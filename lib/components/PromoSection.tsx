@@ -176,9 +176,9 @@ export default function PromoSection() {
     if (navigator.share) {
       try {
         if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({ files: [file], title: "PawlyApp 🐾", text });
+          await navigator.share({ files: [file], title: "Pawband 🐾", text });
         } else {
-          await navigator.share({ title: "PawlyApp 🐾", text, url: "https://pawlyapp.ch" });
+          await navigator.share({ title: "Pawband 🐾", text, url: "https://pawlyapp.ch" });
         }
         return;
       } catch { /* user cancelled */ return; }
@@ -329,8 +329,8 @@ export default function PromoSection() {
           try {
             await navigator.share({
               files: [file],
-              title: "PawlyApp — Vidéo Promo 🐾",
-              text: "Regarde la promo PawlyApp → https://pawlyapp.ch/promo",
+              title: "Pawband — Vidéo Promo 🐾",
+              text: "Regarde la promo Pawband → https://pawlyapp.ch/promo",
             });
             setRecording(false);
             return;
@@ -473,7 +473,7 @@ export default function PromoSection() {
               ctx.fillText(hb, 24, 32);
 
               ctx.font = "bold 20px -apple-system, sans-serif";
-              const cta = "🐾 Rejoins PawlyApp — pawlyapp.ch";
+              const cta = "🐾 Rejoins Pawband — pawlyapp.ch";
               const ctaW = ctx.measureText(cta).width;
               const ctaX = (w - ctaW - 32) / 2;
               const ctaY = h - 90;
@@ -508,7 +508,7 @@ export default function PromoSection() {
         const file = new File([blob], `pawly-promo.${isMP4 ? "mp4" : "webm"}`, { type: blob.type });
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           try {
-            await navigator.share({ files: [file], title: "PawlyApp — Vidéo Promo 🐾", text: "Regarde la promo PawlyApp → https://pawlyapp.ch" });
+            await navigator.share({ files: [file], title: "Pawband — Vidéo Promo 🐾", text: "Regarde la promo Pawband → https://pawlyapp.ch" });
             setRecording(false);
             setVideoProgress("");
             return;
@@ -776,7 +776,7 @@ export default function PromoSection() {
                 🐶 Ruby &amp; Merlin
               </span>
               <button
-                onClick={() => shareWithImage("🐾 PawlyApp — Le Tinder des Animaux 🇨🇭\nRegarde la vidéo promo → https://pawlyapp.ch/promo\n\nConnecte ton compagnon avec d'autres animaux en Suisse ! Gratuit")}
+                onClick={() => shareWithImage("🐾 Pawband — Le Tinder des Animaux 🇨🇭\nRegarde la vidéo promo → https://pawlyapp.ch/promo\n\nConnecte ton compagnon avec d'autres animaux en Suisse ! Gratuit")}
                 className="px-3 py-1.5 rounded-full text-xs font-bold text-white backdrop-blur-md flex items-center gap-1 active:scale-95 transition-transform"
                 style={{ background: "rgba(244,63,94,0.8)" }}>
                 📤 Partager
@@ -794,7 +794,7 @@ export default function PromoSection() {
                 animation: "ctaPulse 2s ease-in-out infinite",
               }}
             >
-              🐾 Rejoins PawlyApp — C&apos;est gratuit !
+              🐾 Rejoins Pawband — C&apos;est gratuit !
             </a>
             {/* Replay button */}
             <button
@@ -851,7 +851,7 @@ export default function PromoSection() {
       {/* Content */}
       <div className="p-4">
         <h3 className="text-base font-extrabold mb-1" style={{ color: "var(--c-text)" }}>
-          🎬 Partage PawlyApp autour de toi !
+          🎬 Partage Pawband autour de toi !
         </h3>
         <p className="text-xs mb-3" style={{ color: "var(--c-text-muted)" }}>
           Connecte ton compagnon avec d&apos;autres animaux en Suisse 🇨🇭
@@ -889,7 +889,7 @@ export default function PromoSection() {
             {recording && !videoProgress ? "⏳ ..." : "📥 GIF"}
           </button>
           <button
-            onClick={() => shareWithImage("🐾 PawlyApp — Le Tinder des Animaux 🇨🇭\nRegarde la vidéo promo → https://pawlyapp.ch/promo\n\nConnecte ton compagnon avec d'autres animaux en Suisse ! Gratuit")}
+            onClick={() => shareWithImage("🐾 Pawband — Le Tinder des Animaux 🇨🇭\nRegarde la vidéo promo → https://pawlyapp.ch/promo\n\nConnecte ton compagnon avec d'autres animaux en Suisse ! Gratuit")}
             className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-xs font-bold text-white transition-transform active:scale-95"
             style={{ background: "linear-gradient(135deg, #FBBF24, #F43F5E)" }}
           >
@@ -899,7 +899,7 @@ export default function PromoSection() {
 
         <div className="grid grid-cols-3 gap-2 mb-2">
           <button
-            onClick={() => shareWithImage("🐾 PawlyApp — Le Tinder des Animaux 🇨🇭\nRegarde la vidéo promo → https://pawlyapp.ch/promo\n\nConnecte ton compagnon avec d'autres animaux en Suisse ! Gratuit")}
+            onClick={() => shareWithImage("🐾 Pawband — Le Tinder des Animaux 🇨🇭\nRegarde la vidéo promo → https://pawlyapp.ch/promo\n\nConnecte ton compagnon avec d'autres animaux en Suisse ! Gratuit")}
             className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[11px] font-bold text-white transition-transform active:scale-95"
             style={{ background: "#25D366" }}>
             💬 WhatsApp
@@ -907,7 +907,7 @@ export default function PromoSection() {
           <button
             onClick={async () => {
               await downloadPromoImage();
-              alert("📸 Image téléchargée !\nOuvre Instagram → Story → choisis l'image PawlyApp depuis ta galerie.");
+              alert("📸 Image téléchargée !\nOuvre Instagram → Story → choisis l'image Pawband depuis ta galerie.");
             }}
             className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[11px] font-bold text-white transition-transform active:scale-95"
             style={{ background: "linear-gradient(135deg, #833AB4, #FD1D1D, #F77737)" }}>
@@ -916,21 +916,21 @@ export default function PromoSection() {
           <button
             onClick={async () => {
               await downloadPromoImage();
-              alert("🎵 Image téléchargée !\nOuvre TikTok → + → choisis l'image PawlyApp depuis ta galerie.");
+              alert("🎵 Image téléchargée !\nOuvre TikTok → + → choisis l'image Pawband depuis ta galerie.");
             }}
             className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[11px] font-bold text-white transition-transform active:scale-95"
             style={{ background: "#000" }}>
             🎵 TikTok
           </button>
           <a
-            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent("https://pawlyapp.ch")}&quote=${encodeURIComponent("PawlyApp connecte les animaux en Suisse ! 🐾")}`}
+            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent("https://pawlyapp.ch")}&quote=${encodeURIComponent("Pawband connecte les animaux en Suisse ! 🐾")}`}
             target="_blank" rel="noopener noreferrer"
             className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[11px] font-bold text-white transition-transform active:scale-95"
             style={{ background: "#1877F2" }}>
             👍 Facebook
           </a>
           <a
-            href={`https://x.com/intent/tweet?text=${encodeURIComponent("PawlyApp — Le Tinder des Animaux 🐾🇨🇭 Connecte ton compagnon →")}&url=${encodeURIComponent("https://pawlyapp.ch")}`}
+            href={`https://x.com/intent/tweet?text=${encodeURIComponent("Pawband — Le Tinder des Animaux 🐾🇨🇭 Connecte ton compagnon →")}&url=${encodeURIComponent("https://pawlyapp.ch")}`}
             target="_blank" rel="noopener noreferrer"
             className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[11px] font-bold text-white transition-transform active:scale-95"
             style={{ background: "#000" }}>
@@ -938,7 +938,7 @@ export default function PromoSection() {
           </a>
           <button
             onClick={() => {
-              navigator.clipboard.writeText("🐾 PawlyApp — Le Tinder des Animaux 🇨🇭\nGratuit → https://pawlyapp.ch").then(() => {
+              navigator.clipboard.writeText("🐾 Pawband — Le Tinder des Animaux 🇨🇭\nGratuit → https://pawlyapp.ch").then(() => {
                 setCopied(true);
                 setTimeout(() => setCopied(false), 2000);
               }).catch(() => {});

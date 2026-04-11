@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const canton = getCantonBySlug(cantonSlug);
   if (!canton) return {};
 
-  const title = `Animaux a ${canton.name} - Compagnons de balade | PawlyApp`;
+  const title = `Animaux a ${canton.name} - Compagnons de balade | Pawband`;
   const description = `Trouvez des compagnons de balade pour votre animal dans le canton de ${canton.name}. Chiens, chats et autres animaux a ${canton.cities.slice(0, 3).join(", ")} et plus.`;
 
   return {
@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       url: `${BASE_URL}/animaux/${canton.slug}`,
-      siteName: "PawlyApp",
+      siteName: "Pawband",
       locale: "fr_CH",
       type: "website",
     },
@@ -92,17 +92,17 @@ export default async function CantonPage({ params }: Props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: `Animaux a ${canton.name} - PawlyApp`,
+    name: `Animaux a ${canton.name} - Pawband`,
     description: `Trouvez des compagnons de balade pour votre animal dans le canton de ${canton.name}.`,
     url: `${BASE_URL}/animaux/${canton.slug}`,
     isPartOf: {
       "@type": "WebSite",
-      name: "PawlyApp",
+      name: "Pawband",
       url: BASE_URL,
     },
     about: {
       "@type": "Organization",
-      name: "PawlyApp",
+      name: "Pawband",
       description: "Plateforme de rencontre pour animaux de compagnie en Suisse",
       areaServed: {
         "@type": "AdministrativeArea",

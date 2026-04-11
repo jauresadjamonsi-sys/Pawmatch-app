@@ -5,22 +5,22 @@ const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://pawlyapp.ch";
 export const metadata: Metadata = {
   title: "Mes matchs",
   description:
-    "Retrouve tous tes matchs sur PawlyApp. Accepte ou refuse les demandes de rencontre et commence a discuter avec d'autres proprietaires d'animaux en Suisse.",
+    "Retrouve tous tes matchs sur Pawband. Accepte ou refuse les demandes de rencontre et commence a discuter avec d'autres proprietaires d'animaux en Suisse.",
   openGraph: {
-    title: "Mes matchs | PawlyApp",
+    title: "Mes matchs | Pawband",
     description:
-      "Retrouve tous tes matchs et demandes de rencontre entre animaux sur PawlyApp.",
+      "Retrouve tous tes matchs et demandes de rencontre entre animaux sur Pawband.",
     url: `${BASE_URL}/matches`,
-    siteName: "PawlyApp",
+    siteName: "Pawband",
     locale: "fr_CH",
     type: "website",
     // OG image inherited from root opengraph-image.tsx (1200x630)
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mes matchs | PawlyApp",
+    title: "Mes matchs | Pawband",
     description:
-      "Retrouve tous tes matchs et demandes de rencontre entre animaux sur PawlyApp.",
+      "Retrouve tous tes matchs et demandes de rencontre entre animaux sur Pawband.",
     // Twitter image inherited from root twitter-image.tsx
   },
   alternates: {
@@ -31,11 +31,11 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
-  "name": "Mes matchs sur PawlyApp",
+  "name": "Mes matchs sur Pawband",
   "description":
-    "Retrouve tous tes matchs et demandes de rencontre entre animaux sur PawlyApp.",
+    "Retrouve tous tes matchs et demandes de rencontre entre animaux sur Pawband.",
   "url": `${BASE_URL}/matches`,
-  "isPartOf": { "@type": "WebSite", "name": "PawlyApp", "url": BASE_URL },
+  "isPartOf": { "@type": "WebSite", "name": "Pawband", "url": BASE_URL },
 };
 
 export default function MatchesLayout({

@@ -399,7 +399,7 @@ export default function OnboardingPage() {
                     <div className="text-center p-6">
                       <span className="text-5xl block mb-3">🤳</span>
                       <p className="text-sm font-semibold text-[var(--c-text)]">Toi + ton animal</p>
-                      <p className="text-xs text-[var(--c-text-muted)] mt-1">Visible par l'equipe PawlyApp uniquement</p>
+                      <p className="text-xs text-[var(--c-text-muted)] mt-1">Visible par l'equipe Pawband uniquement</p>
                     </div>
                   )}
                 </div>
@@ -421,7 +421,7 @@ export default function OnboardingPage() {
                   border: "1px solid rgba(34, 197, 94,0.15)",
                   color: "var(--c-text-muted)",
                 }}>
-                  <strong style={{ color: "var(--c-accent)" }}>Pourquoi ?</strong> Cette photo nous permet de verifier que tu es bien le proprietaire. Elle ne sera <strong>jamais publiee</strong> — seule l'equipe PawlyApp y a acces.
+                  <strong style={{ color: "var(--c-accent)" }}>Pourquoi ?</strong> Cette photo nous permet de verifier que tu es bien le proprietaire. Elle ne sera <strong>jamais publiee</strong> — seule l'equipe Pawband y a acces.
                 </div>
               </div>
             </div>
@@ -528,7 +528,7 @@ export default function OnboardingPage() {
             <style dangerouslySetInnerHTML={{ __html: `@keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}.fade-in-up{animation:fadeInUp .6s ease-out forwards}@keyframes featureSlideIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}` }} />
             <div className="text-center mb-8">
               <span className="text-5xl block mb-2">🚀</span>
-              <h1 className="text-2xl font-extrabold text-[var(--c-text)] mb-2">Decouvre PawlyApp</h1>
+              <h1 className="text-2xl font-extrabold text-[var(--c-text)] mb-2">Decouvre Pawband</h1>
               <p className="text-sm text-[var(--c-text-muted)]">
                 Tout ce dont tu as besoin pour ton compagnon
               </p>

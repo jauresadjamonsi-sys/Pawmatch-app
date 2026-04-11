@@ -212,7 +212,7 @@ export default function Footer() {
             letterSpacing: "0.02em",
           }}
         >
-          &copy; {new Date().getFullYear()} PawlyApp &mdash; pawlyapp.ch
+          &copy; {new Date().getFullYear()} Pawband &mdash; pawlyapp.ch
         </p>
       </div>
 

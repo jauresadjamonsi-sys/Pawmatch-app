@@ -52,7 +52,7 @@ export function SharePersonalityCard({ animalName, personality, photoUrl, specie
     const desc = personality.description.slice(0, 60) + "...";
     ctx.fillText(desc, 300, 265);
 
-    // PawlyApp branding
+    // Pawband branding
     ctx.font = "bold 16px -apple-system, sans-serif";
     ctx.fillStyle = "#FBBF24";
     ctx.fillText("pawlyapp.ch", 300, 340);
@@ -69,7 +69,7 @@ export function SharePersonalityCard({ animalName, personality, photoUrl, specie
           const file = new File([blob], `${animalName}-pawly.png`, { type: "image/png" });
           await navigator.share({
             title: `${animalName} est ${personality.name} !`,
-            text: `Mon animal ${animalName} est "${personality.name}" ${personality.emoji} sur PawlyApp ! Et le tien ? 👉 pawlyapp.ch`,
+            text: `Mon animal ${animalName} est "${personality.name}" ${personality.emoji} sur Pawband ! Et le tien ? 👉 pawlyapp.ch`,
             files: [file],
           });
         } catch {
@@ -80,7 +80,7 @@ export function SharePersonalityCard({ animalName, personality, photoUrl, specie
         }
       } else {
         // Fallback: WhatsApp
-        const text = encodeURIComponent(`Mon animal ${animalName} est "${personality.name}" ${personality.emoji} sur PawlyApp ! Et le tien ? 👉 https://pawlyapp.ch`);
+        const text = encodeURIComponent(`Mon animal ${animalName} est "${personality.name}" ${personality.emoji} sur Pawband ! Et le tien ? 👉 https://pawlyapp.ch`);
         window.open(`https://wa.me/?text=${text}`);
       }
     }, "image/png");

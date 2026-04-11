@@ -285,7 +285,7 @@ export default function LandingClient() {
                   boxShadow: "0 0 30px rgba(251,191,36,0.4), 0 0 60px rgba(251,191,36,0.15)",
                   border: "3px solid rgba(251,191,36,0.5)",
                 }}>
-                  <Image src="/ruby-hero.jpg" alt="Ruby — Mascotte PawlyApp" fill className="object-cover" priority />
+                  <Image src="/ruby-hero.jpg" alt="Ruby — Mascotte Pawband" fill className="object-cover" priority />
                 </div>
                 <p className="text-xs mt-2 font-medium" style={{ color: "var(--c-text-muted)" }}>
                   Ruby 🐾 {t.spotlightDefault}
@@ -522,7 +522,7 @@ export default function LandingClient() {
       </section>
 
       {/* ═══════════════════════════════════════
-          SECTION 5b: WHY PAWLY (compact)
+          SECTION 5b: WHY PAWBAND (compact)
           ═══════════════════════════════════════ */}
       <section className="relative z-10 max-w-4xl mx-auto px-6 mb-24">
         <h2 className="text-center text-xs font-bold uppercase tracking-[0.2em] mb-2" style={{ color: "var(--c-text-muted)" }}>
@@ -543,10 +543,10 @@ export default function LandingClient() {
             <h3 className="font-bold text-sm mb-1" style={{ color: "var(--c-text)" }}>ChatGPT</h3>
             <p className="text-xs leading-relaxed" style={{ color: "var(--c-text-muted)" }}>{t.whyChatGPT}</p>
           </div>
-          {/* PawlyApp */}
+          {/* Pawband */}
           <div className="glass gradient-border p-5 text-center">
             <span className="text-2xl block mb-2">🐾</span>
-            <h3 className="font-bold text-sm mb-1" style={{ color: "var(--c-accent, #FBBF24)" }}>PawlyApp</h3>
+            <h3 className="font-bold text-sm mb-1" style={{ color: "var(--c-accent, #FBBF24)" }}>Pawband</h3>
             <p className="text-xs leading-relaxed font-medium" style={{ color: "var(--c-text)" }}>{t.whySwiss}</p>
           </div>
         </div>
@@ -637,7 +637,7 @@ export default function LandingClient() {
           <a href="https://pawdirectory.ch" target="_blank" rel="noopener" className="text-[11px] hover:underline" style={{ color: "var(--c-text-muted)" }}>PawDirectory</a>
         </div>
         <p className="text-[10px]" style={{ color: "var(--c-text-muted)", opacity: 0.6 }}>
-          © {new Date().getFullYear()} PawlyApp · Canton de Vaud, Suisse
+          © {new Date().getFullYear()} Pawband · Canton de Vaud, Suisse
         </p>
       </footer>
     </div>

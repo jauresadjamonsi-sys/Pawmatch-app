@@ -152,7 +152,7 @@ export default function GroupDetailPage() {
       try {
         await navigator.share({
           title: group.name,
-          text: group.description || `Rejoins le groupe ${group.name} sur PawlyApp !`,
+          text: group.description || `Rejoins le groupe ${group.name} sur Pawband !`,
           url,
         });
       } catch {

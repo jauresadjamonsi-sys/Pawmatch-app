@@ -67,7 +67,7 @@ export default function AnimalDetailPage() {
   const { onlineMap: ownerOnlineMap } = useOnlineStatus(ownerPresenceIds);
 
   useEffect(() => {
-    if (animal) document.title = animal.name + " — PawlyApp";
+    if (animal) document.title = animal.name + " — Pawband";
   }, [animal]);
 
   useEffect(() => {
@@ -574,9 +574,9 @@ export default function AnimalDetailPage() {
             <button
               onClick={() => {
                 const url = `https://pawlyapp.ch/animals/${animal.id}`;
-                const text = `Decouvre ${animal.name} sur PawlyApp ! ${url}`;
+                const text = `Decouvre ${animal.name} sur Pawband ! ${url}`;
                 if (navigator.share) {
-                  navigator.share({ title: animal.name + " | PawlyApp", text, url }).catch(() => {});
+                  navigator.share({ title: animal.name + " | Pawband", text, url }).catch(() => {});
                 } else {
                   navigator.clipboard.writeText(url);
                 }

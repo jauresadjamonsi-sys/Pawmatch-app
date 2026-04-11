@@ -379,7 +379,7 @@ export default function FeedPage() {
       <main id="main-content" className="min-h-screen flex items-center justify-center px-4" style={{ background: "var(--c-deep)" }}>
         <div className="glass-living blob-card p-8 text-center max-w-sm animate-scale-in">
           <div className="text-5xl mb-4">{"\uD83D\uDC3E"}</div>
-          <h1 className="text-2xl font-extrabold mb-2" style={{ color: "var(--c-text)" }}>Bienvenue sur PawlyApp</h1>
+          <h1 className="text-2xl font-extrabold mb-2" style={{ color: "var(--c-text)" }}>Bienvenue sur Pawband</h1>
           <p className="text-sm mb-6" style={{ color: "var(--c-text-muted)" }}>Connecte-toi pour d&eacute;couvrir ton feed personnalis&eacute;.</p>
           <Link href="/login" className="btn-futuristic inline-block w-full text-center">Se connecter</Link>
         </div>
@@ -808,7 +808,7 @@ export default function FeedPage() {
                   <span className="text-3xl font-black gradient-text-warm">{streak.count}</span>
                   <span className="text-sm font-bold" style={{ color: "var(--c-text)" }}>{streak.count === 1 ? "jour" : "jours"}</span>
                 </div>
-                <p className="text-xs" style={{ color: "var(--c-text-muted)" }}>de suite sur PawlyApp</p>
+                <p className="text-xs" style={{ color: "var(--c-text-muted)" }}>de suite sur Pawband</p>
                 {/* Progress bar to next milestone */}
                 {next && (
                   <div className="mt-2">

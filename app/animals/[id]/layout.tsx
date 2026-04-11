@@ -49,16 +49,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const desc = animal.description || "";
   const description = desc
     ? `${animal.name}, ${speciesLabel.toLowerCase()}${breedStr}${locationStr}. ${desc.slice(0, 120)}${desc.length > 120 ? "..." : ""}`
-    : `Decouvrez le profil de ${animal.name}, ${speciesLabel.toLowerCase()}${breedStr}${locationStr} sur PawlyApp. Trouvez des compagnons de balade compatibles.`;
+    : `Decouvrez le profil de ${animal.name}, ${speciesLabel.toLowerCase()}${breedStr}${locationStr} sur Pawband. Trouvez des compagnons de balade compatibles.`;
 
   return {
     title,
     description,
     openGraph: {
-      title: `${animal.name} | PawlyApp`,
+      title: `${animal.name} | Pawband`,
       description,
       url: `${BASE_URL}/animals/${animal.id}`,
-      siteName: "PawlyApp",
+      siteName: "Pawband",
       locale: "fr_CH",
       type: "profile",
       ...(animal.photo_url
@@ -68,7 +68,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
                 url: animal.photo_url,
                 width: 600,
                 height: 600,
-                alt: `${animal.name} - ${speciesLabel} sur PawlyApp`,
+                alt: `${animal.name} - ${speciesLabel} sur Pawband`,
               },
             ],
           }
@@ -76,7 +76,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: animal.photo_url ? "summary_large_image" : "summary",
-      title: `${animal.name} | PawlyApp`,
+      title: `${animal.name} | Pawband`,
       description,
       ...(animal.photo_url ? { images: [animal.photo_url] } : {}),
     },

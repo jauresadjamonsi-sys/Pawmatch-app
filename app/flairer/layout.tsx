@@ -7,18 +7,18 @@ export const metadata: Metadata = {
   description:
     "Parcours les profils d'animaux en Suisse et trouve des compagnons compatibles pour ton animal. Matching IA, filtres par espece et canton.",
   openGraph: {
-    title: "Flairer | PawlyApp",
+    title: "Flairer | Pawband",
     description:
       "Parcours les profils d'animaux en Suisse et trouve des compagnons compatibles pour ton animal.",
     url: `${BASE_URL}/flairer`,
-    siteName: "PawlyApp",
+    siteName: "Pawband",
     locale: "fr_CH",
     type: "website",
     // OG image inherited from root opengraph-image.tsx (1200x630)
   },
   twitter: {
     card: "summary_large_image",
-    title: "Flairer | PawlyApp",
+    title: "Flairer | Pawband",
     description:
       "Parcours les profils d'animaux en Suisse et trouve des compagnons compatibles.",
     // Twitter image inherited from root twitter-image.tsx
@@ -35,7 +35,7 @@ const jsonLd = {
   "description":
     "Parcours les profils d'animaux en Suisse et trouve des compagnons compatibles pour ton animal.",
   "url": `${BASE_URL}/flairer`,
-  "isPartOf": { "@type": "WebSite", "name": "PawlyApp", "url": BASE_URL },
+  "isPartOf": { "@type": "WebSite", "name": "Pawband", "url": BASE_URL },
 };
 
 export default function FlairerLayout({

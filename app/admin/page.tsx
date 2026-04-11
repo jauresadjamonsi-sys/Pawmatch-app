@@ -191,7 +191,7 @@ function OverviewTab({ stats, onTabSwitch }: { stats: AdminStats; onTabSwitch: (
         <div style={{ background: "var(--c-card)", borderRadius: 14, border: "1px solid var(--c-border)", padding: "14px 20px", display: "inline-flex", alignItems: "center", gap: 10 }}>
           <span style={{ fontSize: 20 }}>📊</span>
           <div>
-            <div style={{ fontSize: 10, fontWeight: 700, color: "var(--c-text-muted)", textTransform: "uppercase", letterSpacing: 1 }}>Visites PawlyApp</div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "var(--c-text-muted)", textTransform: "uppercase", letterSpacing: 1 }}>Visites Pawband</div>
             <VisitCounter />
           </div>
         </div>
@@ -1318,7 +1318,7 @@ function FeedbackTab() {
         <select value={filterApp} onChange={(e) => setFilterApp(e.target.value)}
           style={{ padding: "8px 12px", borderRadius: 10, background: "var(--c-card)", border: "1px solid var(--c-border)", color: "var(--c-text)", fontSize: 13 }}>
           <option value="all">Toutes apps</option>
-          <option value="pawly">🐾 PawlyApp</option>
+          <option value="pawly">🐾 Pawband</option>
           <option value="pawdirectory">📂 PawDirectory</option>
         </select>
       </div>
@@ -1353,7 +1353,7 @@ function FeedbackTab() {
                     color: fb.app_source === "pawly" ? "#A78BFA" : "#0D9488",
                     border: `1px solid ${fb.app_source === "pawly" ? "#A78BFA" : "#0D9488"}30`,
                   }}>
-                    {fb.app_source === "pawly" ? "PawlyApp" : "PawDirectory"}
+                    {fb.app_source === "pawly" ? "Pawband" : "PawDirectory"}
                   </span>
                   <span style={{
                     padding: "3px 8px", borderRadius: 20, fontSize: 10, fontWeight: 700,

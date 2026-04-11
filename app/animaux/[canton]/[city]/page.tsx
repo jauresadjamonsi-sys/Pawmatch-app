@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cityName = findCityInCanton(canton, citySlug);
   if (!cityName) return {};
 
-  const title = `Animaux a ${cityName}, ${canton.name} - Compagnons de balade | PawlyApp`;
+  const title = `Animaux a ${cityName}, ${canton.name} - Compagnons de balade | Pawband`;
   const description = `Trouvez des compagnons de balade pour votre animal a ${cityName} dans le canton de ${canton.name}. Chiens, chats et autres animaux pres de chez vous.`;
 
   return {
@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       url: `${BASE_URL}/animaux/${canton.slug}/${citySlug}`,
-      siteName: "PawlyApp",
+      siteName: "Pawband",
       locale: "fr_CH",
       type: "website",
     },
@@ -106,17 +106,17 @@ export default async function CityPage({ params }: Props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: `Animaux a ${cityName}, ${canton.name} - PawlyApp`,
+    name: `Animaux a ${cityName}, ${canton.name} - Pawband`,
     description: `Trouvez des compagnons de balade pour votre animal a ${cityName}.`,
     url: `${BASE_URL}/animaux/${canton.slug}/${citySlug}`,
     isPartOf: {
       "@type": "WebSite",
-      name: "PawlyApp",
+      name: "Pawband",
       url: BASE_URL,
     },
     about: {
       "@type": "Organization",
-      name: "PawlyApp",
+      name: "Pawband",
       description: "Plateforme de rencontre pour animaux de compagnie en Suisse",
       areaServed: {
         "@type": "City",
@@ -264,14 +264,14 @@ export default async function CityPage({ params }: Props) {
         </h2>
         <div className="prose prose-gray max-w-none text-gray-600">
           <p>
-            PawlyApp est la premiere application en Suisse qui permet aux proprietaires d&apos;animaux
+            Pawband est la premiere application en Suisse qui permet aux proprietaires d&apos;animaux
             de se connecter pour organiser des balades et des rencontres entre compagnons.
             A {cityName}, dans le canton de {canton.name}, de nombreux proprietaires cherchent
             des copains pour leurs animaux.
           </p>
           <p>
             Que vous ayez un chien, un chat, un lapin ou tout autre animal de compagnie,
-            PawlyApp vous aide a trouver des compagnons compatibles grace a notre algorithme
+            Pawband vous aide a trouver des compagnons compatibles grace a notre algorithme
             de matching par personnalite. Inscrivez votre animal gratuitement et commencez
             a organiser des sorties.
           </p>

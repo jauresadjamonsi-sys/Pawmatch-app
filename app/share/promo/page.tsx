@@ -167,17 +167,17 @@ function PromoContent() {
 
       const gifData = gif.bytes();
       const blob = new Blob([new Uint8Array(gifData)], { type: "image/gif" });
-      const file = new File([blob], "pawlyapp-story.gif", { type: "image/gif" });
+      const file = new File([blob], "pawband-story.gif", { type: "image/gif" });
 
       // Share or download
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file], title: "PawlyApp Story" });
+        await navigator.share({ files: [file], title: "Pawband Story" });
         toast.success("Story partagée !");
       } else {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "pawlyapp-story.gif";
+        a.download = "pawband-story.gif";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -194,19 +194,19 @@ function PromoContent() {
   }, [saving]);
 
   return (
-    <div className="promo-wrapper" role="main" aria-label="Promotion PawlyApp">
+    <div className="promo-wrapper" role="main" aria-label="Promotion Pawband">
       {/* ---- Story frame (9:16) ---- */}
-      <div className="story-frame" ref={storyRef} aria-label="Story promotionnelle PawlyApp">
+      <div className="story-frame" ref={storyRef} aria-label="Story promotionnelle Pawband">
         {/* Gradient background */}
         <div className="story-bg" />
 
         {/* Floating emoji particles */}
         <FloatingParticles />
 
-        {/* PawlyApp logo */}
+        {/* Pawband logo */}
         <div className="story-logo">
           <span className="logo-paw">🐾</span>
-          <span className="logo-text">PawlyApp</span>
+          <span className="logo-text">Pawband</span>
         </div>
 
         {/* ---- Frames ---- */}
@@ -214,7 +214,7 @@ function PromoContent() {
           {/* Frame 1: Ruby photo + question */}
           <div className={`frame frame-1 ${frame === 0 ? "frame-active" : ""}`}>
             <div className="ruby-photo-ring">
-              <img src="/ruby-hero.jpg" alt="Ruby, mascotte PawlyApp" className="ruby-photo" />
+              <img src="/ruby-hero.jpg" alt="Ruby, mascotte Pawband" className="ruby-photo" />
             </div>
             <h1 className="frame-title">Offre des aventures à ton compagnon&nbsp;!</h1>
             <p className="frame-subtitle">Rejoins Ruby et des milliers d&apos;animaux</p>
@@ -238,7 +238,7 @@ function PromoContent() {
 
           {/* Frame 4: CTA */}
           <div className={`frame frame-4 ${frame === 3 ? "frame-active" : ""}`}>
-            <h1 className="frame-title cta-title">Télécharge PawlyApp</h1>
+            <h1 className="frame-title cta-title">Télécharge Pawband</h1>
             <a href="https://pawlyapp.ch" target="_blank" rel="noopener noreferrer" className="cta-domain">pawlyapp.ch</a>
             {ref && <div className="ref-code">Code : {ref.slice(0, 8)}</div>}
             <div className="gratuit-badge">Gratuit</div>

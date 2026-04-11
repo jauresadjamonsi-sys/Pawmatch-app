@@ -95,7 +95,7 @@ export default function SignupPage() {
             backgroundClip: "text",
             filter: "drop-shadow(0 0 20px rgba(34, 197, 94,0.2))",
           }}>
-            PawlyApp
+            Pawband
           </h1>
           <p className="text-[var(--c-text)] mt-2 font-semibold">{t.signupTitle}</p>
           <p className="text-[var(--c-text-muted)] text-sm mt-1">{t.signupSub}</p>

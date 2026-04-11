@@ -322,7 +322,7 @@ export const CHALLENGES: string[] = [
   "Envoie un flair \u00e0 un nouveau compagnon",
   "Consulte le profil de 3 animaux diff\u00e9rents",
   "Prends une photo de ton animal en pleine action",
-  "Partage ton profil PawlyApp avec un ami",
+  "Partage ton profil Pawband avec un ami",
   "D\u00e9couvre un nouvel animal sur la carte",
   "Essaie un nouveau jeu avec ton compagnon",
   "Lis un conseil sur la page de ton animal",
@@ -333,7 +333,7 @@ export const CHALLENGES: string[] = [
   "D\u00e9couvre un fun fact sur une autre esp\u00e8ce",
   "Visite PawDirectory pour trouver un service",
   "Envoie un message \u00e0 un de tes matchs",
-  "Fais d\u00e9couvrir PawlyApp \u00e0 un ami propri\u00e9taire",
+  "Fais d\u00e9couvrir Pawband \u00e0 un ami propri\u00e9taire",
   "Consulte les stories de la communaut\u00e9",
   "V\u00e9rifie que le profil de ton animal est complet",
   "Teste le mode carte pour voir les animaux autour de toi",
@@ -344,7 +344,7 @@ export const CHALLENGES: string[] = [
   "Consulte ton score PawScore",
   "Fais une mini session d\u2019\u00e9ducation positive",
   "V\u00e9rifie si ton animal a besoin d\u2019un toilettage",
-  "D\u00e9couvre les \u00e9v\u00e9nements PawlyApp pr\u00e8s de chez toi",
+  "D\u00e9couvre les \u00e9v\u00e9nements Pawband pr\u00e8s de chez toi",
   "Donne un snack sain \u00e0 ton compagnon",
   "Lis les avis sur PawDirectory",
   "D\u00e9tends-toi avec ton animal devant la fen\u00eatre",
@@ -372,9 +372,9 @@ export function milestoneMessage(count: number): string | null {
   if (count === 3) return "3 jours d\u2019affil\u00e9e\u202F! Ton animal est fier de toi \uD83D\uDC95";
   if (count === 7) return "1 semaine compl\u00e8te\u202F! Tu es un super ma\u00eetre \uD83C\uDF1F";
   if (count === 14) return "2 semaines\u202F! Rien ne t\u2019arr\u00eate \uD83D\uDE80";
-  if (count === 30) return "30 jours\u202F! L\u00e9gende vivante de PawlyApp \uD83D\uDC51";
+  if (count === 30) return "30 jours\u202F! L\u00e9gende vivante de Pawband \uD83D\uDC51";
   if (count === 60) return "60 jours\u202F! Engagement exemplaire \uD83C\uDFC6";
-  if (count === 100) return "100 jours\u202F! Centurion PawlyApp \u2728";
+  if (count === 100) return "100 jours\u202F! Centurion Pawband \u2728";
   return null;
 }
 

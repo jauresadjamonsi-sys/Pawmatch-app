@@ -75,7 +75,7 @@ export default function PricingPage() {
     },
     {
       key: "gold",
-      name: "PawlyApp Gold",
+      name: "Pawband Gold",
       emoji: "👑",
       price: "CHF 19.90",
       period: t.pricingMonth,
@@ -309,7 +309,7 @@ export default function PricingPage() {
         </div>
 
         {/* ═══════════════════════════════════════
-            WHY PAWLY VS GOOGLE / CHATGPT
+            WHY PAWBAND VS GOOGLE / CHATGPT
             ═══════════════════════════════════════ */}
         <div className="mt-20 mb-8">
           <h2 className="text-2xl sm:text-3xl font-black text-center mb-3" style={{ color: "var(--c-text, #111827)" }}>
@@ -355,14 +355,14 @@ export default function PricingPage() {
               </ul>
             </div>
 
-            {/* PawlyApp */}
+            {/* Pawband */}
             <div className="rounded-2xl border-2 p-6 relative" style={{ background: "rgba(251,191,36,0.04)", borderColor: "rgba(251,191,36,0.4)" }}>
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-amber-400 text-white text-xs font-bold rounded-full uppercase tracking-wide">
-                PawlyApp
+                Pawband
               </div>
               <div className="text-center mb-5">
                 <span className="text-3xl block mb-2">🐾</span>
-                <h3 className="font-bold text-lg" style={{ color: "var(--c-text, #111827)" }}>PawlyApp</h3>
+                <h3 className="font-bold text-lg" style={{ color: "var(--c-text, #111827)" }}>Pawband</h3>
                 <p className="text-xs mt-1 font-semibold" style={{ color: "var(--c-accent, #FBBF24)" }}>{t.whySwiss}</p>
               </div>
               <ul className="space-y-2.5 text-sm" style={{ color: "var(--c-text, #374151)" }}>

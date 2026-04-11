@@ -26,17 +26,17 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const title = "Evenements et balades";
   const description = eventCount > 0
-    ? `${eventCount} ${eventCount === 1 ? "evenement a venir" : "evenements a venir"} sur PawlyApp. Rejoignez des balades et rencontres entre animaux pres de chez vous en Suisse.`
-    : "Decouvrez les prochaines balades et rencontres entre animaux en Suisse sur PawlyApp. Organisez ou rejoignez un evenement.";
+    ? `${eventCount} ${eventCount === 1 ? "evenement a venir" : "evenements a venir"} sur Pawband. Rejoignez des balades et rencontres entre animaux pres de chez vous en Suisse.`
+    : "Decouvrez les prochaines balades et rencontres entre animaux en Suisse sur Pawband. Organisez ou rejoignez un evenement.";
 
   return {
     title,
     description,
     openGraph: {
-      title: `Evenements | PawlyApp`,
+      title: `Evenements | Pawband`,
       description,
       url: `${BASE_URL}/events`,
-      siteName: "PawlyApp",
+      siteName: "Pawband",
       locale: "fr_CH",
       type: "website",
     },
@@ -52,7 +52,7 @@ const jsonLd = {
   "name": "Evenements pour animaux en Suisse",
   "description": "Balades, rencontres et evenements pour animaux de compagnie dans les 26 cantons suisses",
   "url": `${BASE_URL}/events`,
-  "isPartOf": { "@type": "WebSite", "name": "PawlyApp", "url": BASE_URL },
+  "isPartOf": { "@type": "WebSite", "name": "Pawband", "url": BASE_URL },
 };
 
 export default function EventsLayout({

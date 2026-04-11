@@ -38,7 +38,7 @@ export default function HomePage() {
             <div className="mb-6">
               <Image
                 src="/ruby-hero.jpg"
-                alt="Ruby — Mascotte PawlyApp, application de rencontres pour animaux en Suisse"
+                alt="Ruby — Mascotte Pawband, application de rencontres pour animaux en Suisse"
                 width={160}
                 height={160}
                 className="mx-auto rounded-full"
@@ -46,7 +46,7 @@ export default function HomePage() {
                 priority
               />
               <p className="text-xs mt-2" style={{ color: "var(--c-text-muted)" }}>
-                Ruby — Mascotte PawlyApp
+                Ruby — Mascotte Pawband
               </p>
             </div>
 
@@ -59,7 +59,7 @@ export default function HomePage() {
             </h2>
 
             <p className="text-base sm:text-lg max-w-lg mx-auto mb-4 leading-relaxed" style={{ color: "var(--c-text-muted)" }}>
-              PawlyApp connecte les propriétaires d'animaux près de chez toi pour des balades, jeux et rencontres entre compagnons.
+              Pawband connecte les propriétaires d'animaux près de chez toi pour des balades, jeux et rencontres entre compagnons.
             </p>
 
             <p className="text-sm font-semibold mb-8 max-w-md mx-auto" style={{ color: "var(--c-text)" }}>
@@ -88,7 +88,7 @@ export default function HomePage() {
           </header>
 
           {/* Stats */}
-          <section className="mb-16" aria-label="Statistiques PawlyApp">
+          <section className="mb-16" aria-label="Statistiques Pawband">
             <div className="flex justify-around items-center gap-4 p-6 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
               <div className="text-center">
                 <p className="text-3xl font-black" style={{ color: "var(--c-accent, #FBBF24)" }}>150+</p>
@@ -193,7 +193,7 @@ export default function HomePage() {
                   <span style={{ color: "#FBBF24" }}>★★★★★</span>
                 </div>
                 <p className="text-sm italic mb-3">
-                  &ldquo;Depuis PawlyApp, mon chien a 3 copains de balade réguliers. Il est tellement plus épanoui !&rdquo;
+                  &ldquo;Depuis Pawband, mon chien a 3 copains de balade réguliers. Il est tellement plus épanoui !&rdquo;
                 </p>
                 <p className="text-xs font-bold" style={{ color: "var(--c-accent, #FBBF24)" }}>Sophie, Lausanne</p>
                 <p className="text-[10px]" style={{ color: "var(--c-text-muted)" }}>Avec Kiko, Border Collie</p>
@@ -203,7 +203,7 @@ export default function HomePage() {
                   <span style={{ color: "#FBBF24" }}>★★★★★</span>
                 </div>
                 <p className="text-sm italic mb-3">
-                  &ldquo;J'ai déménagé à Genève et grâce à PawlyApp, j'ai trouvé des balades pour mon chat en 2 jours.&rdquo;
+                  &ldquo;J'ai déménagé à Genève et grâce à Pawband, j'ai trouvé des balades pour mon chat en 2 jours.&rdquo;
                 </p>
                 <p className="text-xs font-bold" style={{ color: "var(--c-accent, #FBBF24)" }}>Marc, Genève</p>
                 <p className="text-[10px]" style={{ color: "var(--c-text-muted)" }}>Avec Simba, Chat Européen</p>
@@ -221,25 +221,25 @@ export default function HomePage() {
             </div>
           </section>
 
-          {/* Why PawlyApp */}
-          <section className="mb-16" aria-label="Pourquoi PawlyApp">
+          {/* Why Pawband */}
+          <section className="mb-16" aria-label="Pourquoi Pawband">
             <h2 className="text-center text-xs font-bold uppercase tracking-[0.2em] mb-8" style={{ color: "var(--c-text-muted)" }}>
-              Pourquoi PawlyApp ?
+              Pourquoi Pawband ?
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-5 text-center rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <span className="text-2xl block mb-2">🔍</span>
                 <h3 className="font-bold text-sm mb-1">Google</h3>
-                <p className="text-xs" style={{ color: "var(--c-text-muted)" }}>Google vous donne des liens. PawlyApp vous donne des copains.</p>
+                <p className="text-xs" style={{ color: "var(--c-text-muted)" }}>Google vous donne des liens. Pawband vous donne des copains.</p>
               </div>
               <div className="p-5 text-center rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <span className="text-2xl block mb-2">🤖</span>
                 <h3 className="font-bold text-sm mb-1">ChatGPT</h3>
-                <p className="text-xs" style={{ color: "var(--c-text-muted)" }}>ChatGPT ne connaît pas votre animal. PawlyApp, si.</p>
+                <p className="text-xs" style={{ color: "var(--c-text-muted)" }}>ChatGPT ne connaît pas votre animal. Pawband, si.</p>
               </div>
               <div className="p-5 text-center rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <span className="text-2xl block mb-2">🐾</span>
-                <h3 className="font-bold text-sm mb-1" style={{ color: "var(--c-accent, #FBBF24)" }}>PawlyApp</h3>
+                <h3 className="font-bold text-sm mb-1" style={{ color: "var(--c-accent, #FBBF24)" }}>Pawband</h3>
                 <p className="text-xs font-medium">La seule app suisse dédiée aux rencontres entre animaux</p>
               </div>
             </div>
@@ -284,7 +284,7 @@ export default function HomePage() {
               <a href="https://pawdirectory.ch" target="_blank" rel="noopener noreferrer" className="text-[11px]" style={{ color: "var(--c-text-muted)" }}>PawDirectory</a>
             </nav>
             <p className="text-[10px]" style={{ color: "var(--c-text-muted)", opacity: 0.6 }}>
-              © 2026 PawlyApp · Canton de Vaud, Suisse
+              © 2026 Pawband · Canton de Vaud, Suisse
             </p>
           </footer>
         </div>

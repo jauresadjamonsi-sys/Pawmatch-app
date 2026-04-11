@@ -101,12 +101,12 @@ export async function GET(request: Request) {
           </p>
         </div>
         <div style="padding:16px;text-align:center;border-top:1px solid rgba(255,255,255,0.05)">
-          <p style="margin:0;font-size:11px;color:#6b7280">PawlyApp — Ton compagnon de sortie en Suisse</p>
+          <p style="margin:0;font-size:11px;color:#6b7280">Pawband — Ton compagnon de sortie en Suisse</p>
         </div>
       </div>`;
 
       const { error: sendError } = await resend.emails.send({
-        from: "PawlyApp <contact@pawlyapp.ch>",
+        from: "Pawband <contact@pawlyapp.ch>",
         to: user.email,
         subject: `${firstName}, ${potentialMatches} compagnons t'attendent !`,
         html,
