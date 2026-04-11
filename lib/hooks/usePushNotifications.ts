@@ -1,14 +1,17 @@
 "use client";
 import { useState, useEffect } from 'react';
+import { getVapidPublicKey, isFirebaseConfigured } from '@/lib/firebase/config';
 
 export function usePushNotifications() {
   const [permission, setPermission] = useState<NotificationPermission>('default');
   const [subscribed, setSubscribed] = useState(false);
+  const [usingFCM, setUsingFCM] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && 'Notification' in window) {
       setPermission(Notification.permission);
     }
+    setUsingFCM(isFirebaseConfigured());
   }, []);
 
   async function subscribe() {
@@ -22,11 +25,24 @@ export function usePushNotifications() {
       setPermission(perm);
       if (perm !== 'granted') return false;
 
+      // Use FCM VAPID key if Firebase is configured, otherwise fall back
+      // to the self-generated VAPID key. Both produce a standard
+      // PushSubscription that the web-push library can send to.
+      const vapidKey = getVapidPublicKey();
+      if (!vapidKey) {
+        console.error('No VAPID key configured');
+        return false;
+      }
+
       const sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!),
+        applicationServerKey: urlBase64ToUint8Array(vapidKey),
       });
 
+      // Send the subscription to our server.
+      // The endpoint will be an FCM URL when using Firebase VAPID key,
+      // or a browser vendor URL when using self-generated VAPID.
+      // Either way, the web-push library handles both transparently.
       await fetch('/api/push/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -41,7 +57,7 @@ export function usePushNotifications() {
     }
   }
 
-  return { permission, subscribed, subscribe };
+  return { permission, subscribed, subscribe, usingFCM };
 }
 
 function urlBase64ToUint8Array(base64String: string) {

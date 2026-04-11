@@ -1979,3 +1979,50 @@ html {
   background: #22C55E;
   box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
 }
+
+/* ============================================
+   38. EMOTIONAL DESIGN — MICRO-ANIMATIONS
+   ============================================ */
+
+/* Smooth page entrance (alternative class name) */
+.animate-page-in {
+  animation: pageIn 0.35s ease-out;
+}
+
+/* Card entrance with scale */
+@keyframes cardIn {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.animate-card-in {
+  animation: cardIn 0.4s ease-out;
+}
+
+/* Heart beat for likes */
+@keyframes heartBeat {
+  0%, 100% { transform: scale(1); }
+  25% { transform: scale(1.3); }
+  50% { transform: scale(0.95); }
+  75% { transform: scale(1.15); }
+}
+.animate-heart {
+  animation: heartBeat 0.6s ease-in-out;
+}
+
+/* Slide up for modals/sheets */
+@keyframes modalSlideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.animate-modal-slide-up {
+  animation: modalSlideUp 0.3s ease-out;
+}
+
+/* Glow pulse for important elements (amber palette) */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(251,191,36,0.3); }
+  50% { box-shadow: 0 0 20px rgba(251,191,36,0.6); }
+}
+.animate-glow {
+  animation: glowPulse 2s ease-in-out infinite;
+}

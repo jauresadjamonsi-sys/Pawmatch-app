@@ -255,25 +255,66 @@ function removeSyncRequest(id) {
 }
 
 // Push notification handling
+// Supports both:
+//   1. Standard web-push payloads (current VAPID setup)
+//   2. Firebase Cloud Messaging (FCM) payloads
 self.addEventListener('push', function (event) {
   var data = {};
   if (event.data) {
     try { data = event.data.json(); } catch (e) { data = {}; }
   }
+
+  // FCM sends data in a "notification" wrapper or a "data" wrapper.
+  // Normalize FCM format to our standard format.
+  var title = 'Pawly';
+  var body = 'Nouvelle notification Pawly';
+  var url = '/notifications';
+  var tag = 'pawly-notification';
+  var imageUrl = null;
+
+  if (data.notification) {
+    // FCM "notification" message format
+    title = data.notification.title || title;
+    body = data.notification.body || body;
+    url = data.notification.click_action || data.data?.url || url;
+    tag = data.notification.tag || data.data?.tag || tag;
+    imageUrl = data.notification.image || null;
+  } else if (data.data && data.data.title) {
+    // FCM "data-only" message format (sent when app is in background)
+    title = data.data.title || title;
+    body = data.data.body || body;
+    url = data.data.url || url;
+    tag = data.data.tag || tag;
+    imageUrl = data.data.image || null;
+  } else {
+    // Standard web-push format (current VAPID setup)
+    title = data.title || title;
+    body = data.body || body;
+    url = data.url || url;
+    tag = data.tag || tag;
+    imageUrl = data.image || null;
+  }
+
   var options = {
-    body: data.body || 'Nouvelle notification Pawly',
+    body: body,
     icon: '/icon-192.png',
     badge: '/icon-192.png',
-    tag: data.tag || 'pawly-notification',
-    data: { url: data.url || '/notifications' },
+    tag: tag,
+    data: { url: url },
     vibrate: [100, 50, 100],
     actions: [
       { action: 'open', title: 'Voir' },
       { action: 'close', title: 'Fermer' },
     ],
   };
+
+  // Add large image if provided (FCM supports this)
+  if (imageUrl) {
+    options.image = imageUrl;
+  }
+
   event.waitUntil(
-    self.registration.showNotification(data.title || 'Pawly', options)
+    self.registration.showNotification(title, options)
   );
 });
 

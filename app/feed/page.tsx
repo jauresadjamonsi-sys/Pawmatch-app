@@ -401,7 +401,7 @@ export default function FeedPage() {
         />
       )}
 
-      <main id="main-content" className="min-h-screen px-4 pt-6 pb-32 page-enter" style={{ background: "var(--c-deep)" }}>
+      <main id="main-content" className="min-h-screen px-4 pt-6 pb-32 page-enter animate-page-in" style={{ background: "var(--c-deep)" }}>
         <div className="mx-auto max-w-lg space-y-5 stagger-children">
 
           {/* ═══════ STORIES ═══════ */}

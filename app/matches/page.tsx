@@ -37,15 +37,15 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
   const [confetti, setConfetti] = useState<Array<{id:number;x:number;color:string;size:number;delay:number;duration:number;shape:string;rotation:number}>>([]);
 
   useEffect(() => {
-    const items = Array.from({ length: 30 }, (_, i) => ({
+    const items = Array.from({ length: 50 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
       color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
-      size: Math.random() * 10 + 5,
-      delay: Math.random() * 2,
-      duration: Math.random() * 2.5 + 2,
+      size: Math.random() * 12 + 5,
+      delay: Math.random() * 2.5,
+      duration: Math.random() * 3 + 2,
       shape: CONFETTI_SHAPES[Math.floor(Math.random() * CONFETTI_SHAPES.length)],
-      rotation: Math.random() * 360,
+      rotation: Math.random() * 720,
     }));
     setConfetti(items);
 
@@ -326,7 +326,7 @@ export default function MatchesPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[var(--c-deep,#1a1225)] p-6 page-transition">
+    <div className="min-h-screen bg-[var(--c-deep,#1a1225)] p-6 page-transition animate-page-in">
       <div className="aurora-bg" />
 
       {coupDeTruffe && (
@@ -399,7 +399,7 @@ export default function MatchesPage() {
             </h2>
             <div className="space-y-3 stagger-children">
               {current.pendingReceived.map((match) => (
-                <div key={match.id} className="glass card-futuristic gradient-border p-5">
+                <div key={match.id} className="glass card-futuristic gradient-border p-5 animate-card-in">
                   <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-4">
                       <AnimalBadge animal={match.sender_animal} isNew userId={match.sender_user_id} />
@@ -412,7 +412,7 @@ export default function MatchesPage() {
                     <div className="flex gap-3">
                       <button onClick={() => handleRespond(match.id, "accepted")}
                         className="flex-1 py-2.5 font-semibold rounded-xl transition-all duration-300 text-sm text-white
-                          bg-gradient-to-r from-amber-400 to-amber-500
+                          bg-gradient-to-r from-amber-400 to-amber-500 animate-glow
                           hover:shadow-[0_0_20px_rgba(52,211,153,0.4)] hover:scale-[1.02] active:scale-[0.98]">
                         {t.matchesAccept}
                       </button>
@@ -445,7 +445,7 @@ export default function MatchesPage() {
                 const myAnimal = isMe ? match.sender_animal : match.receiver_animal;
                 const theirAnimal = isMe ? match.receiver_animal : match.sender_animal;
                 return (
-                  <div key={match.id} className="glass card-futuristic p-5"
+                  <div key={match.id} className="glass card-futuristic p-5 animate-card-in"
                     style={{ borderColor: "rgba(52,211,153,0.2)" }}>
                     <div className="flex items-center gap-3 mb-3">
                       <AnimalBadge animal={myAnimal} />

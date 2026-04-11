@@ -3,12 +3,15 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
 import { useAppContext } from "@/lib/contexts/AppContext";
 import { LANGS, THEMES } from "@/lib/i18n";
-import NotificationBell from "@/lib/components/NotificationBell";
-import PawScoreBadge from "@/lib/components/PawScoreBadge";
-import PawCoinsBadge from "@/lib/components/PawCoinsBadge";
+
+// Lazy-load non-critical navbar widgets
+const NotificationBell = dynamic(() => import("@/lib/components/NotificationBell"), { ssr: false });
+const PawScoreBadge = dynamic(() => import("@/lib/components/PawScoreBadge"), { ssr: false });
+const PawCoinsBadge = dynamic(() => import("@/lib/components/PawCoinsBadge"), { ssr: false });
 
 const NAV_CSS = `
 @keyframes navPulse {
@@ -91,6 +94,11 @@ const NAV_CSS = `
   width: 24px; height: 3px; border-radius: 2px;
   background: linear-gradient(90deg, #FBBF24, #FACC15);
   box-shadow: 0 0 10px rgba(251,191,36,0.5);
+  animation: tabIndicatorIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes tabIndicatorIn {
+  0% { transform: translateX(-50%) scaleX(0); opacity: 0; }
+  100% { transform: translateX(-50%) scaleX(1); opacity: 1; }
 }
 `;
 
@@ -184,41 +192,41 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-1">
               {!loading && (user ? (
                 <>
-                  <NavDropdown label="Decouvrir" light={isLight} activeInGroup={["/feed","/explore","/reels","/leaderboard","/live","/search"].some(p => isActive(p))} items={[
-                    { href: "/feed", label: "Feed", active: isActive("/feed") },
-                    { href: "/explore", label: "Explorer", active: isActive("/explore") },
-                    { href: "/reels", label: "Reels", active: isActive("/reels") },
-                    { href: "/live", label: "Live", active: isActive("/live") },
-                    { href: "/leaderboard", label: "Classement", active: isActive("/leaderboard") },
-                    { href: "/concours", label: "Concours", active: isActive("/concours") },
-                    { href: "/search", label: "Recherche", active: isActive("/search") },
+                  <NavDropdown label={t.navDiscover} light={isLight} activeInGroup={["/feed","/explore","/reels","/leaderboard","/live","/search"].some(p => isActive(p))} items={[
+                    { href: "/feed", label: t.navFeed, active: isActive("/feed") },
+                    { href: "/explore", label: t.navExplorer, active: isActive("/explore") },
+                    { href: "/reels", label: t.navReels, active: isActive("/reels") },
+                    { href: "/live", label: t.navLive, active: isActive("/live") },
+                    { href: "/leaderboard", label: t.navRanking, active: isActive("/leaderboard") },
+                    { href: "/concours", label: t.navContest, active: isActive("/concours") },
+                    { href: "/search", label: t.navSearch, active: isActive("/search") },
                   ]} />
-                  <NavDropdown label="Social" light={isLight} activeInGroup={["/flairer","/matches","/groups"].some(p => isActive(p))} items={[
+                  <NavDropdown label={t.navSocial} light={isLight} activeInGroup={["/flairer","/matches","/groups"].some(p => isActive(p))} items={[
                     { href: "/flairer", label: t.navFlairer, active: isActive("/flairer") },
                     { href: "/matches", label: t.navMatches, active: isActive("/matches") },
-                    { href: "/groups", label: "Groupes", active: isActive("/groups") },
-                    { href: "/stories", label: "Stories", active: isActive("/stories") },
+                    { href: "/groups", label: t.navGroups, active: isActive("/groups") },
+                    { href: "/stories", label: t.navStories, active: isActive("/stories") },
                   ]} />
-                  <NavDropdown label="Outils" light={isLight} activeInGroup={["/carte","/wallet","/urgence","/balade","/marketplace","/filters"].some(p => isActive(p))} items={[
-                    { href: "/carte", label: "Carte", active: isActive("/carte") },
-                    { href: "/wallet", label: "PawCoins", active: isActive("/wallet") },
-                    { href: "/filters", label: "Filtres AR", active: isActive("/filters") },
-                    { href: "/urgence", label: "SOS Animal", active: isActive("/urgence") },
-                    { href: "/balade", label: "Balade live", active: isActive("/balade") },
-                    { href: "/marketplace", label: "Marketplace", active: isActive("/marketplace") },
+                  <NavDropdown label={t.navTools} light={isLight} activeInGroup={["/carte","/wallet","/urgence","/balade","/marketplace","/filters"].some(p => isActive(p))} items={[
+                    { href: "/carte", label: t.navMap, active: isActive("/carte") },
+                    { href: "/wallet", label: t.navPawCoins, active: isActive("/wallet") },
+                    { href: "/filters", label: t.navARFilters, active: isActive("/filters") },
+                    { href: "/urgence", label: t.navSOS, active: isActive("/urgence") },
+                    { href: "/balade", label: t.navWalkLive, active: isActive("/balade") },
+                    { href: "/marketplace", label: t.navMarketplace, active: isActive("/marketplace") },
                   ]} />
                   <a href="https://pawdirectory.ch" target="_blank" rel="noopener noreferrer" className={"px-3 py-1.5 rounded-full text-sm font-medium transition-all " + (isLight ? "text-gray-600 hover:text-amber-500 hover:bg-amber-50" : "text-gray-400 hover:text-amber-300 hover:bg-amber-400/10")}>
                     PawDirectory ↗
                   </a>
                   <NavDropdown label={t.navProfil} light={isLight} activeInGroup={["/profile","/settings"].some(p => isActive(p))} items={[
-                    { href: "/profile", label: "Mon profil", active: isActive("/profile") },
-                    { href: "/settings", label: "Parametres", active: isActive("/settings") },
+                    { href: "/profile", label: t.navMyProfile, active: isActive("/profile") },
+                    { href: "/settings", label: t.navSettings, active: isActive("/settings") },
                   ]} />
                 </>
               ) : (
                 <>
                   <NL href="/flairer" active={isActive("/flairer")} label={t.navFlairer} light={isLight} />
-                  <NL href="/explore" active={isActive("/explore")} label="Explorer" light={isLight} />
+                  <NL href="/explore" active={isActive("/explore")} label={t.navExplorer} light={isLight} />
                   <NL href="/pricing" active={isActive("/pricing")} label={t.navPricing} light={isLight} />
                   <a href="https://pawdirectory.ch" target="_blank" rel="noopener noreferrer" className={"px-3 py-1.5 rounded-full text-sm font-medium transition-all " + (isLight ? "text-gray-600 hover:text-amber-500 hover:bg-amber-50" : "text-gray-400 hover:text-amber-300 hover:bg-amber-400/10")}>
                     PawDirectory
@@ -318,7 +326,7 @@ export default function Navbar() {
                         >
                           <span className="text-base">{th.label}</span>
                           <span className={"text-sm font-medium " + (active ? "text-amber-300" : "text-[var(--c-text)]")}>
-                            {th.code === "auto" ? (t.themeAuto || "Auto") : th.name}
+                            {th.code === "auto" ? (t.themeAuto || "Auto") : (t[`theme${th.code.charAt(0).toUpperCase() + th.code.slice(1)}`] || th.name)}
                           </span>
                           {active && <span className="ml-auto text-amber-300">✓</span>}
                         </button>
@@ -352,13 +360,15 @@ export default function Navbar() {
 }
 
 /* ═══ SERVICES MENU ITEMS ═══ */
-const SERVICES_ITEMS = [
-  { href: "/carte", label: "Carte", emoji: "🗺️" },
-  { href: "/wallet", label: "PawCoins", emoji: "🪙" },
-  { href: "/marketplace", label: "Marketplace", emoji: "🛒" },
-  { href: "/urgence", label: "SOS Animal", emoji: "🚨" },
-  { href: "/balade", label: "Balade", emoji: "🐕" },
-];
+function getServicesItems(t: Record<string, string>) {
+  return [
+    { href: "/carte", label: t.navMap, emoji: "🗺️" },
+    { href: "/wallet", label: t.navPawCoins, emoji: "🪙" },
+    { href: "/marketplace", label: t.navMarketplace, emoji: "🛒" },
+    { href: "/urgence", label: t.navSOS, emoji: "🚨" },
+    { href: "/balade", label: t.navWalkLive, emoji: "🐕" },
+  ];
+}
 
 function MobileBottomNav({ user, loading, isActive, isLight, hasPendingSwipes, t }: {
   user: any; loading: boolean;
@@ -403,10 +413,10 @@ function MobileBottomNav({ user, loading, isActive, isLight, hasPendingSwipes, t
           }}
         >
           <div className="text-center mb-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--c-text-muted)" }}>Services</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--c-text-muted)" }}>{t.navServices}</span>
           </div>
           <div className="grid grid-cols-3 gap-2">
-            {SERVICES_ITEMS.map((item) => (
+            {getServicesItems(t).map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -466,7 +476,7 @@ function MobileBottomNav({ user, loading, isActive, isLight, hasPendingSwipes, t
             </span>
             {(isServicesActive || servicesOpen) && <div className="bottom-tab-active-glow" />}
             {(isServicesActive || servicesOpen) && <span className="bottom-nav-active-dot" />}
-            <span aria-hidden="true" className={"text-[9px] mt-0.5 " + ((isServicesActive || servicesOpen) ? "text-amber-300 font-bold" : isLight ? "text-gray-400" : "text-gray-500")}>Services</span>
+            <span aria-hidden="true" className={"text-[9px] mt-0.5 " + ((isServicesActive || servicesOpen) ? "text-amber-300 font-bold" : isLight ? "text-gray-400" : "text-gray-500")}>{t.navServices}</span>
           </button>
 
           {/* 4. Profil */}
