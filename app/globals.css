@@ -2026,3 +2026,182 @@ html {
 .animate-glow {
   animation: glowPulse 2s ease-in-out infinite;
 }
+
+/* ============================================
+   LIVING PET DESIGN SYSTEM
+   "The UI reacts to the pet's state"
+   Premium immersive experience
+   ============================================ */
+
+/* === 1. Dynamic Background States === */
+/* Background reacts to pet state */
+.bg-pet-good { background: radial-gradient(ellipse at top, rgba(34,197,94,0.25), var(--c-deep)); }
+.bg-pet-medium { background: radial-gradient(ellipse at top, rgba(250,204,21,0.2), var(--c-deep)); }
+.bg-pet-alert { background: radial-gradient(ellipse at top, rgba(248,113,113,0.2), var(--c-deep)); }
+
+/* === 2. Pet Avatar Animations === */
+.pet-happy { animation: pet-bounce 2s ease-in-out infinite; }
+.pet-tired { opacity: 0.75; transform: scale(0.95); transition: all 0.4s ease; }
+.pet-stress { animation: pet-shake 0.5s ease-in-out infinite; }
+.pet-idle { animation: pet-breathe 3s ease-in-out infinite; }
+
+@keyframes pet-bounce {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes pet-shake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+@keyframes pet-breathe {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+/* === 3. Organic Blob Shapes (not square cards) === */
+.blob-card {
+  border-radius: 28px 36px 32px 24px;
+  /* organic, not perfectly rounded */
+}
+.blob-card-alt {
+  border-radius: 36px 24px 28px 32px;
+}
+
+/* === 4. Glass Morphism v2 (deeper, more premium) === */
+.glass-living {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+/* === 5. Grain Texture Overlay === */
+.grain-overlay::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* === 6. Emotional Color Accents === */
+.text-emotion-good { color: #4ade80; }
+.text-emotion-warn { color: #fbbf24; }
+.text-emotion-alert { color: #f87171; }
+.text-emotion-love { color: #f472b6; }
+.text-emotion-calm { color: #67e8f9; }
+
+.glow-good { text-shadow: 0 0 20px rgba(74,222,128,0.4); }
+.glow-warn { text-shadow: 0 0 20px rgba(251,191,36,0.4); }
+.glow-alert { text-shadow: 0 0 20px rgba(248,113,113,0.4); }
+
+/* === 7. Immersive Full-Screen Cards (TikTok-style) === */
+.card-immersive {
+  min-height: 75vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* === 8. Emotional Navigation Bar === */
+.nav-living {
+  background: rgba(11,15,12,0.85);
+  backdrop-filter: blur(30px) saturate(1.5);
+  -webkit-backdrop-filter: blur(30px) saturate(1.5);
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.nav-living-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 12px;
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-living-item.active {
+  color: #FBBF24;
+}
+
+.nav-living-item.active::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 3px;
+  border-radius: 0 0 4px 4px;
+  background: #FBBF24;
+}
+
+/* === 9. Pulse Ring (for active pet) === */
+.pulse-ring {
+  position: relative;
+}
+.pulse-ring::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid rgba(251,191,36,0.3);
+  animation: pulse-ring-anim 2s ease-out infinite;
+}
+@keyframes pulse-ring-anim {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+/* === 10. Score Circle Animation === */
+.score-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 900;
+  position: relative;
+  background: conic-gradient(var(--score-color, #FBBF24) calc(var(--score-pct, 0) * 1%), rgba(255,255,255,0.05) 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #fff calc(100% - 5px));
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #fff calc(100% - 5px));
+}
+.score-value {
+  position: absolute;
+  font-size: 2.5rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+/* === 11. Smooth Page Transitions === */
+.page-living-enter {
+  animation: page-fade-up 0.4s ease-out;
+}
+@keyframes page-fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === 12. Swipe Hint Animation === */
+.swipe-hint {
+  animation: swipe-hint-anim 2s ease-in-out infinite;
+}
+@keyframes swipe-hint-anim {
+  0%,100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(-6px); opacity: 1; }
+}

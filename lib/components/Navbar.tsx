@@ -178,9 +178,11 @@ export default function Navbar() {
       </a>
 
       {/* ═══ TOP NAVBAR ═══ */}
-      <nav className="sticky top-0 z-50" role="navigation" aria-label="Navigation principale" style={{
-        background: isLight ? "rgba(255,255,255,0.78)" : "rgba(15,12,26,0.7)",
-        backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
+      <nav className={"sticky top-0 z-50 " + (isLight ? "" : "glass-living")} role="navigation" aria-label="Navigation principale" style={{
+        ...(isLight ? {
+          background: "rgba(255,255,255,0.78)",
+          backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
+        } : {}),
         borderBottom: "1px solid transparent",
         borderImage: "linear-gradient(90deg, transparent, rgba(251,191,36,0.2), rgba(250,204,21,0.15), transparent) 1",
       }}>
@@ -346,13 +348,14 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* ═══ MOBILE BOTTOM NAV — 4 tabs ═══ */}
+      {/* ═══ MOBILE BOTTOM NAV — 5 tabs ═══ */}
       <MobileBottomNav
         user={user}
         loading={loading}
         isActive={isActive}
         isLight={isLight}
         hasPendingSwipes={hasPendingSwipes}
+        hasNewMatches={hasNewMatches}
         t={t}
       />
     </>
@@ -370,10 +373,10 @@ function getServicesItems(t: Record<string, string>) {
   ];
 }
 
-function MobileBottomNav({ user, loading, isActive, isLight, hasPendingSwipes, t }: {
+function MobileBottomNav({ user, loading, isActive, isLight, hasPendingSwipes, hasNewMatches, t }: {
   user: any; loading: boolean;
   isActive: (p: string) => boolean;
-  isLight: boolean; hasPendingSwipes: boolean;
+  isLight: boolean; hasPendingSwipes: boolean; hasNewMatches: boolean;
   t: any;
 }) {
   const [servicesOpen, setServicesOpen] = useState(false);
@@ -439,59 +442,82 @@ function MobileBottomNav({ user, loading, isActive, isLight, hasPendingSwipes, t
       )}
 
       {/* Bottom nav bar */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 safe-area-bottom" role="navigation" aria-label="Navigation mobile" style={{
-        background: isLight ? "rgba(255,255,255,0.92)" : "rgba(15,12,26,0.9)",
-        backdropFilter: "blur(20px) saturate(1.2)", WebkitBackdropFilter: "blur(20px) saturate(1.2)",
-      }}>
+      <nav className="nav-living md:hidden fixed bottom-0 left-0 right-0 z-50 safe-area-bottom" role="navigation" aria-label="Navigation mobile">
         <div className="bottom-nav-glow-line" />
-        <div className="flex items-center justify-around h-[58px] px-1 relative">
-          {/* 1. Home */}
-          <BT href={user ? "/feed" : "/"} active={isActive("/feed") || isActive("/")} label={t.navHome} light={isLight}>
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={(isActive("/feed") || isActive("/")) ? 2.5 : 1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-            </svg>
-          </BT>
-
-          {/* 2. Pet (featured heart) */}
-          <BT href="/flairer" active={isActive("/flairer")} label="Pet" featured pulse={hasPendingSwipes && !isActive("/flairer")} light={isLight}>
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-            </svg>
-          </BT>
-
-          {/* 3. Services (popup) */}
-          <button
-            onClick={() => setServicesOpen(o => !o)}
-            aria-label="Services"
-            aria-expanded={servicesOpen}
-            className={"bottom-nav-item flex flex-col items-center py-1 px-2 relative group bottom-nav-touch"}
-          >
-            {(isServicesActive || servicesOpen) && <span className="absolute -top-0 left-1/2 -translate-x-1/2 w-6 h-[3px] rounded-full" style={{ background: "linear-gradient(90deg, #FBBF24, #FACC15)", boxShadow: "0 0 8px rgba(251,191,36,0.5)" }} />}
-            <span className={"transition-all duration-300 " + ((isServicesActive || servicesOpen) ? "text-amber-300 scale-110 glow-float" : isLight ? "text-gray-500 group-hover:text-gray-700" : "text-gray-500 group-hover:text-gray-300")}
-              style={(isServicesActive || servicesOpen) ? { filter: "drop-shadow(0 0 6px rgba(251,191,36,0.4))" } : undefined}
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={(isServicesActive || servicesOpen) ? 2.5 : 1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+        <div className="flex items-center justify-around h-[62px] px-1 relative">
+          {/* 1. Mon ami (Feed) */}
+          <Link href={user ? "/feed" : "/"} aria-label="Mon ami" aria-current={(isActive("/feed") || isActive("/")) ? "page" : undefined}
+            className={"nav-living-item" + ((isActive("/feed") || isActive("/")) ? " active" : "")}>
+            <span className="text-xl">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={(isActive("/feed") || isActive("/")) ? 2.5 : 1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
               </svg>
             </span>
-            {(isServicesActive || servicesOpen) && <div className="bottom-tab-active-glow" />}
-            {(isServicesActive || servicesOpen) && <span className="bottom-nav-active-dot" />}
-            <span aria-hidden="true" className={"text-[9px] mt-0.5 " + ((isServicesActive || servicesOpen) ? "text-amber-300 font-bold" : isLight ? "text-gray-400" : "text-gray-500")}>{t.navServices}</span>
-          </button>
+            <span aria-hidden="true" className="text-[9px] mt-0.5 font-medium">Mon ami</span>
+          </Link>
 
-          {/* 4. Profil */}
+          {/* 2. Flairer (featured heart) */}
+          <Link href="/flairer" aria-label="Flairer" aria-current={isActive("/flairer") ? "page" : undefined}
+            className="nav-living-item flex flex-col items-center -mt-5 relative">
+            <div className={"featured-btn-ring transition-all duration-300 " + ((hasPendingSwipes && !isActive("/flairer")) ? "nav-pulse" : "")}>
+              <div className={
+                "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 " +
+                (isActive("/flairer") ? "bg-gradient-to-br from-amber-400 to-amber-500 text-white scale-110"
+                  : "bg-gradient-to-br from-amber-400/90 to-amber-500/90 text-white hover:scale-105")}
+                style={isActive("/flairer") ? { boxShadow: "0 0 20px rgba(251,191,36,0.5)" } : undefined}
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                </svg>
+              </div>
+            </div>
+            <span aria-hidden="true" className={"text-[9px] mt-1 font-medium " + (isActive("/flairer") ? "text-amber-300 font-bold" : "text-gray-500")}>Flairer</span>
+          </Link>
+
+          {/* 3. Explorer */}
+          <Link href="/explore" aria-label="Explorer" aria-current={isActive("/explore") ? "page" : undefined}
+            className={"nav-living-item" + (isActive("/explore") ? " active" : "")}>
+            <span className="text-xl">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive("/explore") ? 2.5 : 1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+              </svg>
+            </span>
+            <span aria-hidden="true" className="text-[9px] mt-0.5 font-medium">Explorer</span>
+          </Link>
+
+          {/* 4. Messages (Matches) */}
+          <Link href="/matches" aria-label="Messages" aria-current={isActive("/matches") ? "page" : undefined}
+            className={"nav-living-item" + (isActive("/matches") ? " active" : "")}>
+            <span className="text-xl relative">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive("/matches") ? 2.5 : 1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+              </svg>
+              {hasNewMatches && !isActive("/matches") && <span aria-label="Nouveaux messages" className="badge-pulse absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full" style={{ background: "linear-gradient(135deg, #ef4444, #FBBF24)", boxShadow: "0 0 8px rgba(239,68,68,0.6)" }} />}
+            </span>
+            <span aria-hidden="true" className="text-[9px] mt-0.5 font-medium">Messages</span>
+          </Link>
+
+          {/* 5. Profil */}
           {!loading && user ? (
-            <BT href="/profile" active={isActive("/profile")} label={t.navProfil} light={isLight}>
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive("/profile") ? 2.5 : 1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-              </svg>
-            </BT>
+            <Link href="/profile" aria-label="Profil" aria-current={isActive("/profile") ? "page" : undefined}
+              className={"nav-living-item" + (isActive("/profile") ? " active" : "")}>
+              <span className="text-xl">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive("/profile") ? 2.5 : 1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                </svg>
+              </span>
+              <span aria-hidden="true" className="text-[9px] mt-0.5 font-medium">Profil</span>
+            </Link>
           ) : (
-            <BT href="/login" active={isActive("/login")} label={t.navLogin} light={isLight}>
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive("/login") ? 2.5 : 1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
-              </svg>
-            </BT>
+            <Link href="/login" aria-label={t.navLogin} aria-current={isActive("/login") ? "page" : undefined}
+              className={"nav-living-item" + (isActive("/login") ? " active" : "")}>
+              <span className="text-xl">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive("/login") ? 2.5 : 1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                </svg>
+              </span>
+              <span aria-hidden="true" className="text-[9px] mt-0.5 font-medium">{t.navLogin}</span>
+            </Link>
           )}
         </div>
       </nav>
@@ -576,37 +602,3 @@ function NL({ href, active, label, light }: { href: string; active: boolean; lab
   );
 }
 
-function BT({ href, active, label, featured, pulse, badge, light, children }: {
-  href: string; active: boolean; label: string;
-  featured?: boolean; pulse?: boolean; badge?: boolean; light?: boolean;
-  children: React.ReactNode;
-}) {
-  if (featured) {
-    return (
-      <Link href={href} aria-label={label} aria-current={active ? "page" : undefined} className="bottom-nav-item flex flex-col items-center -mt-5 relative bottom-nav-touch">
-        <div className={"featured-btn-ring transition-all duration-300 " + (pulse ? "nav-pulse" : "")}>
-          <div className={
-            "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 " +
-            (active ? "bg-gradient-to-br from-amber-400 to-amber-500 text-white scale-110"
-              : "bg-gradient-to-br from-amber-400/90 to-amber-500/90 text-white hover:scale-105")}
-            style={active ? { boxShadow: "0 0 20px rgba(251,191,36,0.5)" } : undefined}
-          >{children}</div>
-        </div>
-        <span aria-hidden="true" className={"text-[9px] mt-1 font-medium " + (active ? "text-amber-300 font-bold" : "text-gray-500")}>{label}</span>
-        {active && <span className="bottom-nav-active-dot" style={{ bottom: "-2px" }} />}
-      </Link>
-    );
-  }
-  return (
-    <Link href={href} aria-label={label} aria-current={active ? "page" : undefined} className="bottom-nav-item flex flex-col items-center py-1 px-2 relative group bottom-nav-touch">
-      {active && <span className="absolute -top-0 left-1/2 -translate-x-1/2 w-6 h-[3px] rounded-full" style={{ background: "linear-gradient(90deg, #FBBF24, #FACC15)", boxShadow: "0 0 8px rgba(251,191,36,0.5)" }} />}
-      <span className={"transition-all duration-300 " + (active ? "text-amber-300 scale-110 glow-float" : light ? "text-gray-500 group-hover:text-gray-700" : "text-gray-500 group-hover:text-gray-300")}
-        style={active ? { filter: "drop-shadow(0 0 6px rgba(251,191,36,0.4))" } : undefined}
-      >{children}</span>
-      {badge && !active && <span aria-label="Nouvelles notifications" className="badge-pulse absolute top-0 right-1 w-2.5 h-2.5 rounded-full" style={{ background: "linear-gradient(135deg, #ef4444, #FBBF24)", boxShadow: "0 0 8px rgba(239,68,68,0.6)" }} />}
-      {active && <div className="bottom-tab-active-glow" />}
-      {active && <span className="bottom-nav-active-dot" />}
-      <span aria-hidden="true" className={"text-[9px] mt-0.5 " + (active ? "text-amber-300 font-bold" : light ? "text-gray-400" : "text-gray-500")}>{label}</span>
-    </Link>
-  );
-}
