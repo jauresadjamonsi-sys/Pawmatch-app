@@ -25,7 +25,7 @@ export default function SharePage() {
 
   const referralCode = profile?.referral_code || "";
   const shareUrl = `https://pawlyapp.ch/signup?ref=${referralCode}`;
-  const shareText = `🐾 Mon animal a trouvé des copains de balade sur Pawly ! Rejoins la communauté suisse des propriétaires d'animaux → ${shareUrl}`;
+  const shareText = `🐾 Mon animal a trouvé des copains de balade sur PawlyApp ! Rejoins la communauté suisse des propriétaires d'animaux → ${shareUrl}`;
   const [storyCardUrl, setStoryCardUrl] = useState<string>("");
 
   /** Convert canvas to Blob (iOS-safe, avoids data URL fetch issues) */
@@ -307,13 +307,13 @@ export default function SharePage() {
                   try {
                     if (navigator.canShare?.({ files: [file] })) {
                       toast.dismiss("story");
-                      await navigator.share({ title: "Pawly", text: shareText, files: [file] });
+                      await navigator.share({ title: "PawlyApp", text: shareText, files: [file] });
                       return;
                     }
                   } catch { /* canShare might throw on some browsers */ }
                   // Try sharing without files
                   toast.dismiss("story");
-                  try { await navigator.share({ title: "Pawly", text: shareText, url: shareUrl }); return; } catch {}
+                  try { await navigator.share({ title: "PawlyApp", text: shareText, url: shareUrl }); return; } catch {}
                 }
                 // Fallback: download via blob URL (not data URL)
                 const blobUrl = URL.createObjectURL(blob);
@@ -400,7 +400,7 @@ export default function SharePage() {
             <button
               className="glass card-futuristic rounded-xl p-4 text-center transition-all duration-300"
               onClick={async () => {
-                try { await navigator.share({ title: "Pawly", text: shareText, url: shareUrl }); }
+                try { await navigator.share({ title: "PawlyApp", text: shareText, url: shareUrl }); }
                 catch { /* cancelled */ }
               }}
             >
@@ -414,7 +414,7 @@ export default function SharePage() {
         <div className="glass rounded-2xl p-6 mb-6 text-center animate-slide-up" style={{ animationDelay: "0.25s" }}>
           <p className="text-sm font-bold text-[var(--c-text)] mb-4">{t.shareQR}</p>
           {qrDataUrl && <Image src={qrDataUrl} alt="QR Code" width={200} height={200} className="mx-auto rounded-xl" unoptimized />}
-          <p className="text-[10px] text-[var(--c-text-muted)] mt-3">Scanne ce code pour rejoindre Pawly</p>
+          <p className="text-[10px] text-[var(--c-text-muted)] mt-3">Scanne ce code pour rejoindre PawlyApp</p>
         </div>
 
         {/* Rewards tiers */}

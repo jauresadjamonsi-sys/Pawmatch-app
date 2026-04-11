@@ -134,7 +134,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md" style={{ position: "relative", zIndex: 1 }}>
         <div className="text-center mb-8 animate-slide-up">
           <h1 className="text-4xl font-bold" style={{ color: "var(--c-accent)" }}>
-            Pawly
+            PawlyApp
           </h1>
           <p className="mt-2" style={{ color: "var(--c-text-muted)" }}>{t.loginTitle}</p>
         </div>

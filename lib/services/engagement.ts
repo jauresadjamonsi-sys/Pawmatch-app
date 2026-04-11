@@ -38,7 +38,7 @@ export const ENGAGEMENT_TEMPLATES: Record<EngagementTrigger, Template> = {
   },
   match_du_jour: {
     title: "⭐ Ton Match du Jour est pret !",
-    body: "Decouvre quel compagnon Pawly t'a trouve aujourd'hui.",
+    body: "Decouvre quel compagnon PawlyApp t'a trouve aujourd'hui.",
     link: "/flairer",
   },
   inactive_3d: {

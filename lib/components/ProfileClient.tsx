@@ -42,7 +42,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
     totalReels: number;
     totalLikes: number;
     favoriteSpecies: string;
-    daysOnPawly: number;
+    daysOnPawlyApp: number;
     totalCoins: number;
   } | null>(null);
   const [profileTab, setProfileTab] = useState<"posts" | "reels" | "animals">("posts");
@@ -87,7 +87,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
           .then(d => { setFollowersCount(d.followers_count || 0); setFollowingCount(d.following_count || 0); })
           .catch(() => {});
 
-        // Fetch Pawly Wrapped stats
+        // Fetch PawlyApp Wrapped stats
         try {
           const [matchCountRes, reelsRes, profileCoins] = await Promise.all([
             supabase.from("matches").select("*", { count: "exact", head: true }).or(`sender_user_id.eq.${authUser.id},receiver_user_id.eq.${authUser.id}`),
@@ -132,7 +132,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
             }
           }
 
-          const daysOnPawly = profileRes.data?.created_at
+          const daysOnPawlyApp = profileRes.data?.created_at
             ? Math.floor((Date.now() - new Date(profileRes.data.created_at).getTime()) / 86400000)
             : 0;
 
@@ -141,7 +141,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
             totalReels: reelsRes.count || 0,
             totalLikes,
             favoriteSpecies,
-            daysOnPawly,
+            daysOnPawlyApp,
             totalCoins: profileCoins.data?.pawcoins || 0,
           });
         } catch (err) {
@@ -722,7 +722,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
           )}
         </div>
 
-        {/* Pawly Wrapped */}
+        {/* PawlyApp Wrapped */}
         {wrappedStats && (
           <div className="mb-6 animate-slide-up" style={{ animationDelay: "0.25s" }}>
             <div
@@ -747,7 +747,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
                   backgroundClip: "text",
                 }}
               >
-                {"\uD83C\uDF81"} Ton Pawly Wrapped
+                {"\uD83C\uDF81"} Ton PawlyApp Wrapped
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5">
                 <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(251,191,36,0.15)" }}>
@@ -776,9 +776,9 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
                 </div>
                 <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(59,130,246,0.15)" }}>
                   <p className="text-2xl font-black" style={{ color: "#3b82f6", textShadow: "0 0 12px rgba(59,130,246,0.4)" }}>
-                    {wrappedStats.daysOnPawly}
+                    {wrappedStats.daysOnPawlyApp}
                   </p>
-                  <p className="text-[10px] font-bold uppercase" style={{ color: "var(--c-text-muted)" }}>Jours sur Pawly</p>
+                  <p className="text-[10px] font-bold uppercase" style={{ color: "var(--c-text-muted)" }}>Jours sur PawlyApp</p>
                 </div>
                 <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(252,211,77,0.15)" }}>
                   <p className="text-2xl font-black" style={{ color: "#FCD34D", textShadow: "0 0 12px rgba(252,211,77,0.4)" }}>
@@ -791,8 +791,8 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
                 onClick={() => {
                   if (navigator.share) {
                     navigator.share({
-                      title: "Mon Pawly Wrapped",
-                      text: `Sur Pawly : ${wrappedStats.totalMatches} matchs, ${wrappedStats.totalReels} reels, ${wrappedStats.totalLikes} likes ! Mon espece preferee : ${wrappedStats.favoriteSpecies}. ${wrappedStats.daysOnPawly} jours sur Pawly !`,
+                      title: "Mon PawlyApp Wrapped",
+                      text: `Sur PawlyApp : ${wrappedStats.totalMatches} matchs, ${wrappedStats.totalReels} reels, ${wrappedStats.totalLikes} likes ! Mon espece preferee : ${wrappedStats.favoriteSpecies}. ${wrappedStats.daysOnPawlyApp} jours sur PawlyApp !`,
                       url: window.location.origin,
                     }).catch(() => {});
                   }

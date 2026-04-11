@@ -13,7 +13,7 @@ export default function MentionsLegalesPage() {
 
           <section>
             <h2 className="text-lg font-semibold mb-2" style={{ color: "var(--c-text)" }}>1. Editeur du site</h2>
-            <p><strong>Raison sociale :</strong> Pawly</p>
+            <p><strong>Raison sociale :</strong> PawlyApp</p>
             <p><strong>Forme juridique :</strong> Entreprise individuelle</p>
             <p><strong>Siege social :</strong> Canton de Vaud, Suisse</p>
             <p><strong>Email :</strong> contact@pawlyapp.ch</p>
@@ -57,13 +57,13 @@ export default function MentionsLegalesPage() {
 
           <section>
             <h2 className="text-lg font-semibold mb-2" style={{ color: "var(--c-text)" }}>6. Propriete intellectuelle</h2>
-            <p>L&apos;ensemble du contenu du site Pawly (textes, images, logos, code source, design) est protege par le droit d&apos;auteur suisse (LDA). Toute reproduction, meme partielle, sans autorisation ecrite prealable est interdite.</p>
-            <p className="mt-2">Les marques Pawly et PawDirectory sont la propriete de leur editeur.</p>
+            <p>L&apos;ensemble du contenu du site PawlyApp (textes, images, logos, code source, design) est protege par le droit d&apos;auteur suisse (LDA). Toute reproduction, meme partielle, sans autorisation ecrite prealable est interdite.</p>
+            <p className="mt-2">Les marques PawlyApp et PawDirectory sont la propriete de leur editeur.</p>
           </section>
 
           <section>
             <h2 className="text-lg font-semibold mb-2" style={{ color: "var(--c-text)" }}>7. Responsabilite</h2>
-            <p>Pawly s&apos;efforce de fournir des informations exactes et a jour. Toutefois, aucune garantie n&apos;est donnee quant a l&apos;exactitude ou l&apos;exhaustivite des informations. Pawly ne peut etre tenu responsable des dommages directs ou indirects resultant de l&apos;utilisation du site.</p>
+            <p>PawlyApp s&apos;efforce de fournir des informations exactes et a jour. Toutefois, aucune garantie n&apos;est donnee quant a l&apos;exactitude ou l&apos;exhaustivite des informations. PawlyApp ne peut etre tenu responsable des dommages directs ou indirects resultant de l&apos;utilisation du site.</p>
           </section>
 
           <section>

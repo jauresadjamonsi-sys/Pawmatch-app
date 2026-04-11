@@ -623,7 +623,7 @@ export default function FlairerPage() {
               {activeMyAnimal?.name || "Ton compagnon"} et {animal?.name} se sont mutuellement flair&eacute;s !
             </p>
             <div className="text-left text-xs text-[var(--c-text-muted)] bg-[var(--c-bg)]/40 rounded-xl p-3 mb-5 space-y-1.5">
-              <p className="font-semibold text-[var(--c-text)] text-sm mb-1">{"🤝"} Charte Pawly</p>
+              <p className="font-semibold text-[var(--c-text)] text-sm mb-1">{"🤝"} Charte PawlyApp</p>
               <p>{"🐶"} Respecte les animaux et leurs humains</p>
               <p>{"💬"} Sois bienveillant(e) dans tes messages</p>
               <p>{"📍"} Organise vos rencontres dans des lieux publics</p>

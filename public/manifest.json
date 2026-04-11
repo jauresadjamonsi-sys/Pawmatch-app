@@ -1,6 +1,6 @@
 {
-  "name": "Pawly - Reseau social pour animaux",
-  "short_name": "Pawly",
+  "name": "PawlyApp - Reseau social pour animaux",
+  "short_name": "PawlyApp",
   "description": "Trouve des compagnons pour ton animal en Suisse",
   "start_url": "/feed",
   "scope": "/",
@@ -32,7 +32,7 @@
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Page d'accueil Pawly"
+      "label": "Page d'accueil PawlyApp"
     },
     {
       "src": "/screenshots/screenshot-2.png",

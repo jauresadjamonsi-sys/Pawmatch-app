@@ -41,8 +41,8 @@ export function QRIdentity({ animalId, animalName, species, breed, canton, owner
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `${animalName} — Pawly`,
-          text: `Fiche de ${animalName} sur Pawly`,
+          title: `${animalName} — PawlyApp`,
+          text: `Fiche de ${animalName} sur PawlyApp`,
           url: profileUrl,
         });
       } catch {}

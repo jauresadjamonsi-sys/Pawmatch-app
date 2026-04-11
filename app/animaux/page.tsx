@@ -7,7 +7,7 @@ import BackButton from "@/lib/components/BackButton";
 const BASE_URL = "https://pawlyapp.ch";
 
 export const metadata: Metadata = {
-  title: "Animaux en Suisse - Trouvez des compagnons de balade | Pawly",
+  title: "Animaux en Suisse - Trouvez des compagnons de balade | PawlyApp",
   description:
     "Trouvez des compagnons de balade pour votre animal en Suisse. Parcourez les animaux par canton et ville : Geneve, Vaud, Zurich, Berne et plus encore.",
   keywords: [
@@ -19,11 +19,11 @@ export const metadata: Metadata = {
     "pawly",
   ],
   openGraph: {
-    title: "Animaux en Suisse - Trouvez des compagnons de balade | Pawly",
+    title: "Animaux en Suisse - Trouvez des compagnons de balade | PawlyApp",
     description:
-      "Parcourez les animaux inscrits sur Pawly par canton et ville en Suisse.",
+      "Parcourez les animaux inscrits sur PawlyApp par canton et ville en Suisse.",
     url: `${BASE_URL}/animaux`,
-    siteName: "Pawly",
+    siteName: "PawlyApp",
     locale: "fr_CH",
     type: "website",
   },
@@ -76,7 +76,7 @@ export default async function AnimauxIndexPage() {
             Trouvez des compagnons de balade pour votre animal en Suisse
           </h1>
           <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-            Pawly connecte les proprietaires d&apos;animaux dans toute la Suisse.
+            PawlyApp connecte les proprietaires d&apos;animaux dans toute la Suisse.
             Parcourez {totalAnimals > 0 ? `les ${totalAnimals} animaux inscrits` : "les animaux inscrits"} par
             canton et ville pour trouver le compagnon ideal.
           </p>
@@ -135,7 +135,7 @@ export default async function AnimauxIndexPage() {
             Votre animal cherche un compagnon de balade ?
           </h2>
           <p className="text-white/90 mb-8 text-lg">
-            Inscrivez-le gratuitement sur Pawly et trouvez des copains pres de chez vous.
+            Inscrivez-le gratuitement sur PawlyApp et trouvez des copains pres de chez vous.
           </p>
           <Link
             href="/signup"
@@ -153,13 +153,13 @@ export default async function AnimauxIndexPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "CollectionPage",
-            name: "Animaux en Suisse - Pawly",
+            name: "Animaux en Suisse - PawlyApp",
             description:
               "Trouvez des compagnons de balade pour votre animal en Suisse.",
             url: `${BASE_URL}/animaux`,
             isPartOf: {
               "@type": "WebSite",
-              name: "Pawly",
+              name: "PawlyApp",
               url: BASE_URL,
             },
             about: {

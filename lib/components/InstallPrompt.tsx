@@ -91,7 +91,7 @@ export default function InstallPrompt() {
                 🐾
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-[var(--c-text)] leading-tight">Installe Pawly</p>
+                <p className="text-sm font-bold text-[var(--c-text)] leading-tight">Installe PawlyApp</p>
                 <p className="text-[11px] text-[var(--c-text-muted)] leading-tight mt-0.5">Acc&egrave;s rapide depuis ton &eacute;cran d&apos;accueil</p>
               </div>
               <button
@@ -118,7 +118,7 @@ export default function InstallPrompt() {
               style={{ background: "var(--c-card)", borderColor: "var(--c-border)" }}>
               <div className="p-6 text-center">
                 <div className="text-4xl mb-3">🐾</div>
-                <h3 className="text-lg font-bold text-[var(--c-text)] mb-1">Installer Pawly</h3>
+                <h3 className="text-lg font-bold text-[var(--c-text)] mb-1">Installer PawlyApp</h3>
                 <p className="text-sm text-[var(--c-text-muted)] mb-5">3 &eacute;tapes simples</p>
 
                 <div className="space-y-4 text-left">
@@ -140,7 +140,7 @@ export default function InstallPrompt() {
                     <span className="flex-shrink-0 w-7 h-7 rounded-full bg-amber-400/20 text-amber-300 flex items-center justify-center text-xs font-bold">3</span>
                     <div>
                       <p className="text-sm font-medium text-[var(--c-text)]">Appuie sur &laquo;&nbsp;Ajouter&nbsp;&raquo;</p>
-                      <p className="text-xs text-[var(--c-text-muted)] mt-0.5">Pawly appara&icirc;t comme une vraie app !</p>
+                      <p className="text-xs text-[var(--c-text-muted)] mt-0.5">PawlyApp appara&icirc;t comme une vraie app !</p>
                     </div>
                   </div>
                 </div>
@@ -179,7 +179,7 @@ export default function InstallPrompt() {
           🐾
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-bold text-[var(--c-text)] leading-tight">Installe Pawly</p>
+          <p className="text-sm font-bold text-[var(--c-text)] leading-tight">Installe PawlyApp</p>
           <p className="text-[11px] text-[var(--c-text-muted)] leading-tight mt-0.5">Comme une vraie app, sans App Store</p>
         </div>
         <button

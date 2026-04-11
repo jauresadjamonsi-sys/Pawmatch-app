@@ -406,10 +406,10 @@ export default function SettingsPage() {
               {/* About */}
               {section === "about" && (
                 <div className="space-y-4">
-                  <h2 className="text-lg font-bold text-[var(--c-text)] mb-4">A propos de Pawly</h2>
+                  <h2 className="text-lg font-bold text-[var(--c-text)] mb-4">A propos de PawlyApp</h2>
                   <div className="text-center py-6">
                     <p className="text-4xl mb-2">🐾</p>
-                    <p className="text-xl font-extrabold gradient-text-warm">Pawly</p>
+                    <p className="text-xl font-extrabold gradient-text-warm">PawlyApp</p>
                     <p className="text-sm text-[var(--c-text-muted)] mt-1">v2.0.0</p>
                     <p className="text-xs text-[var(--c-text-muted)] mt-2">Le reseau social #1 pour les animaux en Suisse</p>
                   </div>

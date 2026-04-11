@@ -1,5 +1,5 @@
 /**
- * Firebase Cloud Messaging (FCM) configuration for Pawly.
+ * Firebase Cloud Messaging (FCM) configuration for PawlyApp.
  *
  * This module provides a lightweight FCM integration using the browser's
  * native Push API -- no firebase npm package required. It works alongside

@@ -76,8 +76,8 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Rejoins Pawly !",
-          text: "Rejoins Pawly, l'app qui connecte les proprios d'animaux en Suisse !",
+          title: "Rejoins PawlyApp !",
+          text: "Rejoins PawlyApp, l'app qui connecte les proprios d'animaux en Suisse !",
           url: shareLink,
         });
       } catch {
@@ -116,11 +116,11 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
   }
 
   const shareText = encodeURIComponent(
-    "Rejoins Pawly, l'app qui connecte les proprios d'animaux en Suisse ! Inscris-toi avec mon lien : " + shareLink
+    "Rejoins PawlyApp, l'app qui connecte les proprios d'animaux en Suisse ! Inscris-toi avec mon lien : " + shareLink
   );
   const whatsappUrl = `https://wa.me/?text=${shareText}`;
   const instagramUrl = `/share/promo?ref=${userId}`;
-  const emailUrl = `mailto:?subject=${encodeURIComponent("Rejoins Pawly !")}&body=${shareText}`;
+  const emailUrl = `mailto:?subject=${encodeURIComponent("Rejoins PawlyApp !")}&body=${shareText}`;
 
   return (
     <div className="glass rounded-2xl p-6 mb-6" style={{ border: "1px solid rgba(251,191,36,0.2)", boxShadow: "0 0 20px rgba(251,191,36,0.05)" }}>

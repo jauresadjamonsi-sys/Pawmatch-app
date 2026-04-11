@@ -229,7 +229,7 @@ function buildPatterns(animal: Animal): PatternRule[] {
     {
       keywords: ["socialisation", "sociabiliser", "autres animaux", "rencontre", "congener", "parc a chien"],
       handler: () =>
-        `La socialisation de ${name} est essentielle ${age && age < 1 ? "surtout a son jeune age (periode critique avant 4 mois pour les chiots et 7 semaines pour les chatons)" : "meme a l'age adulte"}. ${sp === "chien" ? "Propose des rencontres progressives et positives avec d'autres chiens. Pawly est parfait pour trouver des compagnons de balade compatibles !" : sp === "chat" ? "Les chats sont plus territoriaux. Introduis tout nouvel animal progressivement (piece separee, echange d'odeurs)." : "Procede toujours progressivement et dans un environnement securise."}`,
+        `La socialisation de ${name} est essentielle ${age && age < 1 ? "surtout a son jeune age (periode critique avant 4 mois pour les chiots et 7 semaines pour les chatons)" : "meme a l'age adulte"}. ${sp === "chien" ? "Propose des rencontres progressives et positives avec d'autres chiens. PawlyApp est parfait pour trouver des compagnons de balade compatibles !" : sp === "chat" ? "Les chats sont plus territoriaux. Introduis tout nouvel animal progressivement (piece separee, echange d'odeurs)." : "Procede toujours progressivement et dans un environnement securise."}`,
     },
     {
       keywords: ["detruit", "destruction", "gratte", "ronge", "mache", "canape", "meuble", "chaussure"],

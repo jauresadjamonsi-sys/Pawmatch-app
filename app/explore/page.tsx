@@ -274,12 +274,12 @@ export default function ExplorePage() {
         <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>D&eacute;couvre animaux, profils et &eacute;v&eacute;nements</p>
       </div>
 
-      {/* Top Pawly leaderboard mini-widget */}
+      {/* Top PawlyApp leaderboard mini-widget */}
       {topAnimals.length > 0 && (
         <div className="rounded-2xl p-4 mb-4" style={{ background: "var(--c-glass, rgba(255,255,255,0.05))", border: "1px solid var(--c-border)" }}>
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-bold flex items-center gap-1.5" style={{ color: "var(--c-text)" }}>
-              🏆 <span className="gradient-text-warm">Top Pawly</span>
+              🏆 <span className="gradient-text-warm">Top PawlyApp</span>
             </span>
             <Link href="/leaderboard" className="text-[11px] font-semibold" style={{ color: "var(--c-text-muted)" }}>
               Voir le classement &rarr;

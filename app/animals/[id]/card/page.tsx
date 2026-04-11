@@ -49,7 +49,7 @@ export default function AnimalCardPage() {
 
   useEffect(() => {
     if (animal) {
-      document.title = `${animal.name} - ${t.cardDigitalPassport || "Digital Passport"} | Pawly`;
+      document.title = `${animal.name} - ${t.cardDigitalPassport || "Digital Passport"} | PawlyApp`;
     }
   }, [animal, t]);
 
@@ -68,7 +68,7 @@ export default function AnimalCardPage() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `${animal.name} - Pawly`,
+          title: `${animal.name} - PawlyApp`,
           text: `${t.cardDigitalPassport || "Digital Passport"}: ${animal.name}`,
           url: cardUrl,
         });
@@ -348,7 +348,7 @@ export default function AnimalCardPage() {
             </div>
           </div>
 
-          {/* Pawly branding */}
+          {/* PawlyApp branding */}
           <div className="flex items-center justify-center gap-2" style={{ marginTop: 18 }}>
             <span style={{ fontSize: 16 }}>{"\u{1F43E}"}</span>
             <span
@@ -361,7 +361,7 @@ export default function AnimalCardPage() {
                 backgroundClip: "text",
               }}
             >
-              Pawly
+              PawlyApp
             </span>
             <span style={{ fontSize: 10, color: "rgba(255,255,255,0.25)", fontWeight: 500 }}>
               {t.cardDigitalPassport || "Digital Passport"}

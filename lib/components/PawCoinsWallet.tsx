@@ -119,7 +119,7 @@ const WEEKLY_CHALLENGES = [
   { id: "post_reel", icon: "\uD83C\uDFAC", title: "Poste un Reel", desc: "Publie une video de ton animal", reward: 10, target: 1 },
   { id: "send_flair", icon: "\u26A1", title: "Envoie un Super Flair", desc: "Montre ton interet a un animal", reward: 5, target: 1 },
   { id: "make_match", icon: "\uD83D\uDC3E", title: "3 Coups de Truffe", desc: "Envoie 3 demandes de match", reward: 15, target: 3 },
-  { id: "share_profile", icon: "\uD83D\uDCE4", title: "Partage un profil", desc: "Fais decouvrir Pawly a tes amis", reward: 5, target: 1 },
+  { id: "share_profile", icon: "\uD83D\uDCE4", title: "Partage un profil", desc: "Fais decouvrir PawlyApp a tes amis", reward: 5, target: 1 },
   { id: "daily_streak", icon: "\uD83D\uDD25", title: "5 jours de suite", desc: "Connecte-toi 5 jours consecutifs", reward: 25, target: 5 },
 ];
 

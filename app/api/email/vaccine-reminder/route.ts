@@ -82,12 +82,12 @@ export async function GET(request: Request) {
           <a href="https://pawlyapp.ch/profile" style="display:block;padding:14px;background:rgba(255,255,255,0.05);color:#d1d5db;text-align:center;border-radius:12px;font-weight:600;font-size:14px;text-decoration:none;border:1px solid rgba(255,255,255,0.1)">Voir mon profil</a>
         </div>
         <div style="padding:16px;text-align:center;border-top:1px solid rgba(255,255,255,0.05)">
-          <p style="margin:0;font-size:11px;color:#6b7280">Pawly — Ton compagnon de sortie en Suisse</p>
+          <p style="margin:0;font-size:11px;color:#6b7280">PawlyApp — Ton compagnon de sortie en Suisse</p>
         </div>
       </div>`;
 
       const { error: sendError } = await resend.emails.send({
-        from: "Pawly <contact@pawlyapp.ch>",
+        from: "PawlyApp <contact@pawlyapp.ch>",
         to: owner.email,
         subject: `Rappel : vaccin de ${animal.name} dans ${daysUntil} jour${daysUntil > 1 ? "s" : ""}`,
         html,

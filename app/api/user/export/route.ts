@@ -22,7 +22,7 @@ export async function GET() {
   const exportData = {
     export_date: new Date().toISOString(),
     format_version: "1.0",
-    platform: "Pawly (pawlyapp.ch)",
+    platform: "PawlyApp (pawlyapp.ch)",
     user: {
       auth_email: user.email,
       auth_created_at: user.created_at,

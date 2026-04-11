@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const receiverName = receiverAnimal?.name || "Animal";
 
   const title = `${senderName} & ${receiverName} - Conversation`;
-  const description = `Conversation entre ${senderName} et ${receiverName} sur Pawly. Organisez des balades et rencontres entre vos animaux.`;
+  const description = `Conversation entre ${senderName} et ${receiverName} sur PawlyApp. Organisez des balades et rencontres entre vos animaux.`;
 
   const ogImage = senderAnimal?.photo_url || receiverAnimal?.photo_url;
 
@@ -62,10 +62,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       follow: false,
     },
     openGraph: {
-      title: `${senderName} & ${receiverName} | Pawly`,
+      title: `${senderName} & ${receiverName} | PawlyApp`,
       description,
       url: `${BASE_URL}/matches/${id}`,
-      siteName: "Pawly",
+      siteName: "PawlyApp",
       locale: "fr_CH",
       type: "website",
       ...(ogImage

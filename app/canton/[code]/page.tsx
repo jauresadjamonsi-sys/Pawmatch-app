@@ -13,11 +13,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { code } = await params;
   const cantonName = CANTONS.find((c) => c.code === code)?.name || code;
   return {
-    title: `Rencontres animaux ${cantonName} | Pawly`,
+    title: `Rencontres animaux ${cantonName} | PawlyApp`,
     description: `Trouve des compagnons de balade pour ton animal dans le canton de ${cantonName}. Matching IA, evenements, communaute — 100% gratuit.`,
     openGraph: {
-      title: `Animaux a ${cantonName} | Pawly`,
-      description: `Decouvre les animaux inscrits dans le canton de ${cantonName} sur Pawly.`,
+      title: `Animaux a ${cantonName} | PawlyApp`,
+      description: `Decouvre les animaux inscrits dans le canton de ${cantonName} sur PawlyApp.`,
       url: `https://pawlyapp.ch/canton/${code}`,
     },
   };
@@ -89,7 +89,7 @@ export default async function CantonPage({ params }: Props) {
       </div>
       <p className="text-sm mb-6" style={{ color: "var(--c-text-muted)" }}>
         Decouvre les compagnons inscrits dans le canton de {cantonName} et
-        rejoins la communaute Pawly.
+        rejoins la communaute PawlyApp.
       </p>
 
       {/* Stats */}
@@ -285,7 +285,7 @@ export default async function CantonPage({ params }: Props) {
           className="text-lg font-bold mb-2"
           style={{ color: "var(--c-text)" }}
         >
-          Rejoins la communaute Pawly a {cantonName}
+          Rejoins la communaute PawlyApp a {cantonName}
         </h2>
         <p
           className="text-sm mb-4"

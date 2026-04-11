@@ -84,7 +84,7 @@ export default function IOSBanner() {
   }
 
   function handleNotify() {
-    window.location.href = "mailto:hello@pawly.ch?subject=Notify%20me%20for%20iOS%20app&body=I%20want%20to%20be%20notified%20when%20Pawly%20is%20available%20on%20iOS!";
+    window.location.href = "mailto:hello@pawly.ch?subject=Notify%20me%20for%20iOS%20app&body=I%20want%20to%20be%20notified%20when%20PawlyApp%20is%20available%20on%20iOS!";
   }
 
   if (!visible) return null;

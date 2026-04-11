@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
             currency: "chf",
             product_data: {
               name: pack.label,
-              description: `${pack.coins} PawCoins pour ton compte Pawly`,
+              description: `${pack.coins} PawCoins pour ton compte PawlyApp`,
               images: ["https://www.pawlyapp.ch/icon-512x512.png"],
             },
             unit_amount: pack.price,
