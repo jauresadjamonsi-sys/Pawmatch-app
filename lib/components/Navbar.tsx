@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
@@ -188,7 +189,10 @@ export default function Navbar() {
       }}>
         <div className="max-w-6xl mx-auto px-4 md:px-6">
           <div className="flex items-center justify-between h-12">
-            <Link href="/" className="logo-gradient font-extrabold text-xl tracking-tight select-none" aria-label="PawBand - Accueil">PawBand</Link>
+            <Link href="/" className="flex items-center gap-2 select-none" aria-label="PawBand - Accueil">
+              <Image src="/logo-pawband.png" alt="PawBand" width={28} height={28} className="rounded-md" style={{ filter: "drop-shadow(0 0 6px rgba(13,148,136,0.4))" }} />
+              <span className="logo-gradient font-extrabold text-xl tracking-tight">PawBand</span>
+            </Link>
 
             {/* Desktop links — grouped dropdowns */}
             <div className="hidden md:flex items-center gap-1">
