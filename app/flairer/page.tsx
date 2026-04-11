@@ -1146,7 +1146,7 @@ export default function FlairerPage() {
                   </div>
                 </div>
                 {compat && (
-                  <div className="mb-4 p-3 glass rounded-2xl flex items-center gap-3"
+                  <div className="mb-4 p-3 glass-living blob-card flex items-center gap-3"
                     style={{ borderColor: compat.color + "40", boxShadow: `0 0 15px ${compat.color}15` }}>
                     <span className="text-2xl">{"🤝"}</span>
                     <div>
@@ -1161,7 +1161,7 @@ export default function FlairerPage() {
                     const c = computeCompatibility(myAnimal, animal);
                     return (
                       <button key={myAnimal.id} onClick={() => handleMatch(myAnimal.id)}
-                        className="w-full flex items-center gap-3 p-3 glass card-futuristic rounded-2xl text-left">
+                        className="w-full flex items-center gap-3 p-3 glass-living blob-card rounded-2xl text-left">
                         <div className="w-12 h-12 rounded-full bg-[var(--c-deep,#1a1225)] ring-2 ring-amber-300/50 flex items-center justify-center overflow-hidden flex-shrink-0 relative
                           shadow-[0_0_10px_rgba(251,191,36,0.2)]">
                           {myAnimal.photo_url

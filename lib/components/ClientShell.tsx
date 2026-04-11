@@ -61,6 +61,8 @@ export default function ClientShell({ children }: { children: React.ReactNode })
   return (
     <PostHogProvider>
       <AchievementProvider>
+        {/* Grain texture overlay — premium cinematic feel */}
+        <div className="grain-overlay" />
         <PresenceHeartbeat />
         <IOSBanner />
         <Navbar />

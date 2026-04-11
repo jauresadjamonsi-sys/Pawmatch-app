@@ -372,7 +372,7 @@ export default function LandingClient() {
         ref={statsReveal.ref}
         className={`relative z-10 max-w-4xl mx-auto px-6 -mt-8 mb-20 transition-all duration-700 ${statsReveal.visible ? "section-visible" : "section-hidden"}`}
       >
-        <div className="glass-strong gradient-border p-6 sm:p-8">
+        <div className="glass-living blob-card-alt p-6 sm:p-8">
           <div className="flex justify-around items-center gap-4">
             {[
               { value: animalsCount, suffix: "+", label: t.animals },
@@ -411,7 +411,7 @@ export default function LandingClient() {
           <div className="hidden md:block absolute top-1/2 right-[16.5%] h-[2px]" style={{ width: "34%", background: "linear-gradient(90deg, #A78BFA, #38BDF8)" }} />
 
           {HOW_STEPS.map((step, i) => (
-            <div key={i} className="glass card-futuristic p-6 sm:p-8 text-center relative">
+            <div key={i} className="glass-living blob-card p-6 sm:p-8 text-center relative">
               {/* Step number */}
               <div className="inline-block mb-4">
                 <span className="text-xs font-black gradient-text tracking-widest">{step.num}</span>
@@ -459,7 +459,7 @@ export default function LandingClient() {
                 </div>
 
                 {/* Text */}
-                <div className={`glass card-futuristic p-6 flex-1 ${isRight ? "md:text-right" : ""}`}>
+                <div className={`glass-living blob-card p-6 flex-1 ${isRight ? "md:text-right" : ""}`}>
                   <h3 className="font-bold text-xl mb-2" style={{ color: "var(--c-accent, #FBBF24)" }}>
                     {t[feat.titleKey]}
                   </h3>
@@ -490,7 +490,7 @@ export default function LandingClient() {
           {TESTIMONIALS.map((testi, i) => (
             <div
               key={i}
-              className="glass card-futuristic p-6 min-w-[280px] md:min-w-0 flex-shrink-0"
+              className="glass-living blob-card p-6 min-w-[280px] md:min-w-0 flex-shrink-0"
             >
               {/* Stars */}
               <div className="flex gap-1 mb-4">
@@ -565,7 +565,7 @@ export default function LandingClient() {
         ref={ctaReveal.ref}
         className={`relative z-10 max-w-3xl mx-auto px-6 mb-20 transition-all duration-700 ${ctaReveal.visible ? "section-visible" : "section-hidden"}`}
       >
-        <div className="glass-strong gradient-border p-10 sm:p-14 text-center relative overflow-hidden">
+        <div className="glass-living blob-card-alt p-10 sm:p-14 text-center relative overflow-hidden">
           {/* CTA particles (CSS only) */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             {[
@@ -614,7 +614,7 @@ export default function LandingClient() {
           ═══════════════════════════════════════ */}
       <section className="relative z-10 max-w-3xl mx-auto px-6 mb-16">
         <a href="https://pawdirectory.ch" target="_blank" rel="noopener" className="block">
-          <div className="glass card-futuristic p-5 flex items-center gap-4 hover:scale-[1.02] transition-transform">
+          <div className="glass-living blob-card p-5 flex items-center gap-4 hover:scale-[1.02] transition-transform">
             <div className="text-3xl flex-shrink-0">🏥</div>
             <div className="flex-1">
               <div className="font-extrabold text-sm" style={{ color: "var(--c-text)" }}>PawDirectory</div>

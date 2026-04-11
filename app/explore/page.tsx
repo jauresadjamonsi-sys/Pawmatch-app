@@ -443,7 +443,7 @@ export default function ExplorePage() {
           {eventsLoading ? (
             <div className="space-y-3 stagger-children">
               {[0, 1, 2].map(i => (
-                <div key={i} className="glass rounded-2xl animate-shimmer" style={{ height: 130 }} />
+                <div key={i} className="glass-living blob-card animate-shimmer" style={{ height: 130 }} />
               ))}
             </div>
           ) : events.length === 0 ? (

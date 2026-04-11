@@ -361,11 +361,11 @@ export default function FeedPage() {
     return (
       <main id="main-content" className="min-h-screen px-4 pt-6 pb-32" style={{ background: "var(--c-deep)" }}>
         <div className="mx-auto max-w-lg space-y-5 stagger-children">
-          <div className="glass rounded-2xl p-5 animate-breathe" style={{ height: 80 }} />
-          <div className="glass rounded-2xl animate-breathe" style={{ height: 260, animationDelay: "0.15s" }} />
-          <div className="glass rounded-2xl p-5 animate-breathe" style={{ height: 90, animationDelay: "0.3s" }} />
-          <div className="glass rounded-2xl p-5 animate-breathe" style={{ height: 100, animationDelay: "0.45s" }} />
-          <div className="glass rounded-2xl p-5 animate-breathe" style={{ height: 120, animationDelay: "0.6s" }} />
+          <div className="glass-living blob-card p-5 animate-breathe" style={{ height: 80 }} />
+          <div className="glass-living blob-card animate-breathe" style={{ height: 260, animationDelay: "0.15s" }} />
+          <div className="glass-living blob-card p-5 animate-breathe" style={{ height: 90, animationDelay: "0.3s" }} />
+          <div className="glass-living blob-card p-5 animate-breathe" style={{ height: 100, animationDelay: "0.45s" }} />
+          <div className="glass-living blob-card p-5 animate-breathe" style={{ height: 120, animationDelay: "0.6s" }} />
         </div>
       </main>
     );
@@ -377,7 +377,7 @@ export default function FeedPage() {
   if (!profile) {
     return (
       <main id="main-content" className="min-h-screen flex items-center justify-center px-4" style={{ background: "var(--c-deep)" }}>
-        <div className="glass-strong rounded-3xl p-8 text-center max-w-sm animate-scale-in">
+        <div className="glass-living blob-card p-8 text-center max-w-sm animate-scale-in">
           <div className="text-5xl mb-4">{"\uD83D\uDC3E"}</div>
           <h1 className="text-2xl font-extrabold mb-2" style={{ color: "var(--c-text)" }}>Bienvenue sur Pawly</h1>
           <p className="text-sm mb-6" style={{ color: "var(--c-text-muted)" }}>Connecte-toi pour d&eacute;couvrir ton feed personnalis&eacute;.</p>
@@ -402,7 +402,7 @@ export default function FeedPage() {
         />
       )}
 
-      <main id="main-content" className="min-h-screen px-4 pt-6 pb-32 page-enter animate-page-in" style={{ background: "var(--c-deep)" }}>
+      <main id="main-content" className="min-h-screen px-4 pt-6 pb-32 page-living-enter" style={{ background: "var(--c-deep)" }}>
         <div className="mx-auto max-w-lg space-y-5 stagger-children">
 
           {/* ═══════ STORIES ═══════ */}
@@ -455,7 +455,7 @@ export default function FeedPage() {
           </div>
 
           {/* ═══════ GREETING ═══════ */}
-          <section className="glass rounded-2xl p-5 relative overflow-hidden">
+          <section className="glass-living blob-card p-5 relative overflow-hidden">
             <div className="absolute -top-6 -right-6 text-[80px] opacity-10 pointer-events-none select-none animate-paw-drift">{"\uD83D\uDC3E"}</div>
             <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: "var(--c-text-muted)" }}>{mounted ? formatDate() : "\u00A0"}</p>
             <div className="flex items-center gap-2">
@@ -480,7 +480,7 @@ export default function FeedPage() {
 
           {/* ═══════ MATCH ALERT ═══════ */}
           {newMatches > 0 && (
-            <Link href="/matches" className="block glass rounded-2xl p-4 relative overflow-hidden border border-pink-500/20">
+            <Link href="/matches" className="block glass-living blob-card p-4 relative overflow-hidden border border-pink-500/20">
               <div className="absolute -top-4 -right-4 text-[60px] opacity-10 pointer-events-none select-none">{"\uD83D\uDC95"}</div>
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0" style={{ background: "rgba(244,114,182,0.15)" }}>
@@ -522,7 +522,7 @@ export default function FeedPage() {
                     <Link
                       href={`/animals/${animal.id}`}
                       key={animal.id}
-                      className="glass rounded-2xl overflow-hidden flex-shrink-0 w-[85vw] max-w-[380px] block transition-transform active:scale-[0.98]"
+                      className="glass-living blob-card overflow-hidden flex-shrink-0 w-[85vw] max-w-[380px] block transition-transform active:scale-[0.98]"
                     >
                       {/* Big photo */}
                       <div className="relative aspect-[4/5] w-full">
@@ -568,7 +568,7 @@ export default function FeedPage() {
 
           {/* No animals CTA */}
           {animals.length === 0 && (
-            <section className="glass rounded-2xl p-6 text-center">
+            <section className="glass-living blob-card p-6 text-center">
               <div className="text-5xl mb-3">{"\uD83D\uDC3E"}</div>
               <p className="text-base font-bold mb-1" style={{ color: "var(--c-text)" }}>Ajoute ton premier compagnon !</p>
               <p className="text-xs mb-4" style={{ color: "var(--c-text-muted)" }}>Ton feed personnalis&eacute; t&apos;attend.</p>
@@ -578,7 +578,7 @@ export default function FeedPage() {
 
           {/* ═══════ SOCIAL DISCOVERY ═══════ */}
           {nearbyAnimals.length > 0 && (
-            <Link href="/flairer" className="block glass rounded-2xl p-5 relative overflow-hidden border border-cyan-500/10">
+            <Link href="/flairer" className="block glass-living blob-card p-5 relative overflow-hidden border border-cyan-500/10">
               <div className="absolute -top-4 -right-4 text-[60px] opacity-10 pointer-events-none select-none">{"\uD83D\uDD0D"}</div>
               <h3 className="text-sm font-bold mb-3" style={{ color: "var(--c-text)" }}>
                 {"\uD83D\uDD0D"} {nearbyAnimals.length} compagnon{nearbyAnimals.length > 1 ? "s" : ""} {animals[0]?.canton ? "dans ton canton" : "r\u00e9cents"}
@@ -625,7 +625,7 @@ export default function FeedPage() {
                   return (
                   <div key={`feed-${idx}`} className="card-hover animate-slide-up" style={{ animationDelay: `${idx * 0.08}s` }}>
                     {/* Reel feed card */}
-                    <div className="block glass rounded-2xl overflow-hidden transition-transform active:scale-[0.98]">
+                    <div className="block glass-living blob-card overflow-hidden transition-transform active:scale-[0.98]">
                       <div
                         className="relative aspect-[16/9] w-full cursor-pointer select-none"
                         onClick={() => {
@@ -707,7 +707,7 @@ export default function FeedPage() {
 
                     {/* ═══════ SUGGESTIONS POUR TOI (after 3rd item) ═══════ */}
                     {idx === 2 && suggestions.length > 0 && (
-                      <section className="mt-4 glass rounded-2xl p-4 overflow-hidden animate-fade-in-scale" style={{ border: "1px solid var(--c-border)" }}>
+                      <section className="mt-4 glass-living blob-card p-4 overflow-hidden animate-fade-in-scale" style={{ border: "1px solid var(--c-border)" }}>
                         <h3 className="text-sm font-bold mb-3" style={{ color: "var(--c-text)" }}>
                           {"\u2728"} Suggestions pour toi
                         </h3>
@@ -756,7 +756,7 @@ export default function FeedPage() {
 
           {/* ═══════ SUGGESTIONS (standalone when no feed items or < 3 items) ═══════ */}
           {(sortedFeedItems.length < 3 && suggestions.length > 0) && (
-            <section className="glass rounded-2xl p-4 overflow-hidden animate-fade-in-scale" style={{ border: "1px solid var(--c-border)" }}>
+            <section className="glass-living blob-card p-4 overflow-hidden animate-fade-in-scale" style={{ border: "1px solid var(--c-border)" }}>
               <h3 className="text-sm font-bold mb-3" style={{ color: "var(--c-text)" }}>
                 {"\u2728"} Suggestions pour toi
               </h3>
@@ -798,7 +798,7 @@ export default function FeedPage() {
           )}
 
           {/* ═══════ STREAK (ENHANCED) ═══════ */}
-          <section className="glass rounded-2xl p-5 relative overflow-hidden">
+          <section className="glass-living blob-card p-5 relative overflow-hidden">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl animate-pulse-glow" style={{ background: "linear-gradient(135deg, rgba(34, 197, 94,0.2), rgba(22,163,74,0.1))" }}>
                 {streak.count >= 7 ? "\uD83D\uDD25" : "\u2B50"}
@@ -832,7 +832,7 @@ export default function FeedPage() {
 
           {/* ═══════ BADGE COLLECTION ═══════ */}
           {earnedBadges.length > 0 && (
-            <section className="glass rounded-2xl p-5">
+            <section className="glass-living blob-card p-5">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-sm font-bold" style={{ color: "var(--c-text)" }}>{"\uD83C\uDFC6"} Mes badges</h2>
                 <span className="text-xs font-semibold" style={{ color: "var(--c-text-muted)" }}>{earnedBadges.length}/{ALL_BADGES.length}</span>
@@ -860,7 +860,7 @@ export default function FeedPage() {
           )}
 
           {/* ═══════ DAILY CHALLENGE ═══════ */}
-          <section className={`glass rounded-2xl p-5${!challengeDone ? " animate-wiggle" : ""}`} style={!challengeDone ? { animationIterationCount: 1 } : undefined}>
+          <section className={`glass-living blob-card p-5${!challengeDone ? " animate-wiggle" : ""}`} style={!challengeDone ? { animationIterationCount: 1 } : undefined}>
             <div className="flex items-start gap-3">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0" style={{ background: "rgba(168,85,247,0.1)" }}>
                 {"\uD83C\uDFAF"}
@@ -885,7 +885,7 @@ export default function FeedPage() {
           </section>
 
           {/* ═══════ DAILY TIP ═══════ */}
-          <section className="glass rounded-2xl p-5">
+          <section className="glass-living blob-card p-5">
             <div className="flex items-start gap-3">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0" style={{ background: "rgba(56,189,248,0.1)" }}>
                 {"\uD83D\uDCDD"}
@@ -898,7 +898,7 @@ export default function FeedPage() {
           </section>
 
           {/* ═══════ WEEKLY STATS ═══════ */}
-          <section className="glass rounded-2xl p-5">
+          <section className="glass-living blob-card p-5">
             <h2 className="text-sm font-bold uppercase tracking-wider mb-3" style={{ color: "var(--c-text-muted)" }}>Cette semaine</h2>
             <div className="grid grid-cols-3 gap-3">
               {[
