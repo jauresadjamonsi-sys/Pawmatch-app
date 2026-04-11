@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
@@ -189,9 +188,26 @@ export default function Navbar() {
       }}>
         <div className="max-w-6xl mx-auto px-4 md:px-6">
           <div className="flex items-center justify-between h-12">
-            <Link href="/" className="flex items-center gap-2 select-none" aria-label="PawBand - Accueil">
-              <Image src="/logo-pawband.png" alt="PawBand" width={28} height={28} className="rounded-md" style={{ filter: "drop-shadow(0 0 6px rgba(13,148,136,0.4))" }} />
-              <span className="logo-gradient font-extrabold text-xl tracking-tight">PawBand</span>
+            <Link href="/" className="flex items-center gap-1.5 select-none group" aria-label="PawBand - Accueil">
+              <svg width="26" height="26" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-transform duration-300 group-hover:scale-110" style={{ filter: "drop-shadow(0 0 8px rgba(13,148,136,0.5))" }}>
+                <defs>
+                  <linearGradient id="pawGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#2DD4BF" />
+                    <stop offset="50%" stopColor="#818CF8" />
+                    <stop offset="100%" stopColor="#A78BFA" />
+                  </linearGradient>
+                </defs>
+                {/* Paw pads */}
+                <ellipse cx="30" cy="22" rx="10" ry="12" fill="url(#pawGrad)" opacity="0.9" />
+                <ellipse cx="55" cy="15" rx="9" ry="11" fill="url(#pawGrad)" opacity="0.95" />
+                <ellipse cx="75" cy="28" rx="8" ry="10" fill="url(#pawGrad)" opacity="0.85" />
+                <ellipse cx="18" cy="42" rx="9" ry="10" fill="url(#pawGrad)" opacity="0.85" />
+                {/* Main pad */}
+                <path d="M30 55 C30 42, 45 38, 52 42 C59 38, 74 42, 74 55 C74 70, 60 82, 52 85 C44 82, 30 70, 30 55Z" fill="url(#pawGrad)" />
+              </svg>
+              <span className="font-extrabold text-xl tracking-tight" style={{ letterSpacing: "-0.02em" }}>
+                <span style={{ color: "#FFFFFF" }}>Paw</span><span style={{ background: "linear-gradient(135deg, #2DD4BF, #818CF8, #A78BFA)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Band</span>
+              </span>
             </Link>
 
             {/* Desktop links — grouped dropdowns */}
