@@ -262,14 +262,14 @@ export default function StatsPage() {
             value={stats.matchesTotal}
             label={t.statsMatches || "Matches"}
             sublabel={`${stats.matchesAccepted} ${t.statsAccepted || "acceptés"} · ${stats.matchesPending} ${t.statsPending || "en attente"}`}
-            colorClass="bg-green-500/20 text-green-400"
+            colorClass="bg-amber-500/20 text-amber-400"
             delay={80}
           />
           <StatCard
             icon="💬"
             value={stats.messages}
             label={t.statsMessages || "Messages"}
-            colorClass="bg-green-500/20 text-green-400"
+            colorClass="bg-amber-500/20 text-amber-400"
             delay={160}
           />
           <StatCard
@@ -291,7 +291,7 @@ export default function StatsPage() {
             icon="✅"
             value={`${stats.profileCompletion}%`}
             label={t.statsProfile || "Profil complété"}
-            colorClass="bg-emerald-500/20 text-emerald-400"
+            colorClass="bg-amber-500/20 text-amber-400"
             delay={400}
           />
         </div>

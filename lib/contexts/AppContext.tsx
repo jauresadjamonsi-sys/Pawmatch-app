@@ -17,10 +17,10 @@ interface AppContextType {
 }
 
 export const THEME_VARS: Record<Theme, Record<string, string>> = {
-    nuit:   { "--c-deep": "#0B0F0C", "--c-nav": "#111827", "--c-card": "#111827", "--c-border": "rgba(34,197,94,0.12)", "--c-text": "#FFFFFF", "--c-text-muted": "#9CA3AF", "--c-accent": "#22C55E", "--c-glass": "rgba(34,197,94,0.04)" },
-  aurore: { "--c-deep": "#F5EDE0", "--c-nav": "#EDE3D4", "--c-card": "#FBF7F0", "--c-border": "#D9C9B0", "--c-text": "#3D2810", "--c-text-muted": "#7A5C3A", "--c-accent": "#16A34A", "--c-glass": "rgba(22,163,74,0.04)" },
-  ocean:  { "--c-deep": "#E0EBF5", "--c-nav": "#D4E2F0", "--c-card": "#F0F5FB", "--c-border": "#B0C8E0", "--c-text": "#1E3A5F", "--c-text-muted": "#4A7CAA", "--c-accent": "#0284C7", "--c-glass": "rgba(2,132,199,0.04)" },
-  clair:  { "--c-deep": "#F0ECE4", "--c-nav": "#E8E2D8", "--c-card": "#FAF8F4", "--c-border": "#D5CFC5", "--c-text": "#1A1714", "--c-text-muted": "#5a5550", "--c-accent": "#16A34A", "--c-glass": "rgba(22,163,74,0.04)" },
+  nuit:   { "--c-deep": "#0B0F0C", "--c-nav": "#111827", "--c-card": "#111827", "--c-border": "rgba(245,158,11,0.12)", "--c-text": "#FFFFFF", "--c-text-muted": "#9CA3AF", "--c-accent": "#F59E0B", "--c-glass": "rgba(245,158,11,0.04)" },
+  aurore: { "--c-deep": "#F5EDE0", "--c-nav": "#EDE3D4", "--c-card": "#FBF7F0", "--c-border": "#D9C9B0", "--c-text": "#3D2810", "--c-text-muted": "#7A5C3A", "--c-accent": "#D97706", "--c-glass": "rgba(217,119,6,0.04)" },
+  ocean:  { "--c-deep": "#E0EBF5", "--c-nav": "#D4E2F0", "--c-card": "#F0F5FB", "--c-border": "#B0C8E0", "--c-text": "#1E3A5F", "--c-text-muted": "#4A7CAA", "--c-accent": "#0EA5E9", "--c-glass": "rgba(14,165,233,0.04)" },
+  clair:  { "--c-deep": "#F0ECE4", "--c-nav": "#E8E2D8", "--c-card": "#FAF8F4", "--c-border": "#D5CFC5", "--c-text": "#1A1714", "--c-text-muted": "#5a5550", "--c-accent": "#B45309", "--c-glass": "rgba(180,83,9,0.04)" },
 };
 
 function getSystemTheme(): Theme {

@@ -413,10 +413,10 @@ export default function VideoCallPage() {
   function getStatusColor(): string {
     switch (connectionState) {
       case "connected":
-        return "bg-green-500";
+        return "bg-amber-500";
       case "ringing":
       case "connecting":
-        return "bg-green-500";
+        return "bg-amber-500";
       case "disconnected":
       case "error":
         return "bg-red-500";
@@ -492,8 +492,8 @@ export default function VideoCallPage() {
             {/* Ringing animation */}
             {(connectionState === "ringing" || connectionState === "connecting") && (
               <div className="relative w-24 h-24 mx-auto mb-6">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-green-500/20 to-green-600/10 ring-anim" />
-                <div className="absolute inset-2 rounded-full bg-gradient-to-br from-green-500/30 to-green-600/20 flex items-center justify-center ring-anim" style={{ animationDelay: "0.3s" }}>
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 ring-anim" />
+                <div className="absolute inset-2 rounded-full bg-gradient-to-br from-amber-500/30 to-amber-600/20 flex items-center justify-center ring-anim" style={{ animationDelay: "0.3s" }}>
                   <span className="text-4xl">📹</span>
                 </div>
                 <div className="call-pulse absolute inset-0 rounded-full" />
@@ -522,9 +522,9 @@ export default function VideoCallPage() {
 
             {(connectionState === "ringing" || connectionState === "connecting") && (
               <div className="flex items-center justify-center gap-1 mt-2">
-                <span className="w-2 h-2 rounded-full bg-green-500 dot-blink" />
-                <span className="w-2 h-2 rounded-full bg-green-500 dot-blink" />
-                <span className="w-2 h-2 rounded-full bg-green-500 dot-blink" />
+                <span className="w-2 h-2 rounded-full bg-amber-500 dot-blink" />
+                <span className="w-2 h-2 rounded-full bg-amber-500 dot-blink" />
+                <span className="w-2 h-2 rounded-full bg-amber-500 dot-blink" />
               </div>
             )}
 

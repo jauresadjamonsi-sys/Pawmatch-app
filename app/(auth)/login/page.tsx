@@ -41,7 +41,7 @@ function LoginForm() {
     }}>
       {message && (
         <div className="mb-4 p-3 rounded-lg text-sm animate-slide-up"
-          style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)", color: "#22c55e" }}>
+          style={{ background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)", color: "#F59E0B" }}>
           {message}
         </div>
       )}

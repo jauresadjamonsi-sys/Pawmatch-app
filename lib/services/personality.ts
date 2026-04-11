@@ -23,7 +23,7 @@ export const PERSONALITY_TYPES: Record<string, PersonalityType> = {
     name: "L'Énergique Social",
     tagline: "Toujours partant pour l'aventure !",
     description: "Ton animal déborde d'énergie et adore la compagnie. Il est le premier à vouloir jouer et le dernier à rentrer à la maison.",
-    color: "#22c55e",
+    color: "#F59E0B",
     bgColor: "rgba(249,115,22,0.1)",
     idealMatch: "Un compagnon tout aussi enthousiaste qui peut suivre son rythme effréné.",
     tips: [
@@ -55,8 +55,8 @@ export const PERSONALITY_TYPES: Record<string, PersonalityType> = {
     name: "Le Joueur Curieux",
     tagline: "Chaque journée est une nouvelle aventure !",
     description: "Ton animal explore le monde avec ses yeux grands ouverts. Curieux de tout, il transforme chaque balade en expédition.",
-    color: "#22c55e",
-    bgColor: "rgba(34,197,94,0.1)",
+    color: "#F59E0B",
+    bgColor: "rgba(245,158,11,0.1)",
     idealMatch: "Un compagnon aventurier qui aime découvrir de nouveaux endroits.",
     tips: [
       "Varie les itinéraires de promenade",

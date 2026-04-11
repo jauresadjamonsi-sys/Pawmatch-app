@@ -11,13 +11,13 @@ import PromoSection from "@/lib/components/PromoSection";
    FLOATING PARTICLES COMPONENT
    ────────────────────────────────────────── */
 const PARTICLES = [
-  { color: "rgba(34,197,94,0.25)", size: 5, left: "10%", duration: "14s", delay: "0s" },
+  { color: "rgba(245,158,11,0.25)", size: 5, left: "10%", duration: "14s", delay: "0s" },
   { color: "rgba(167,139,250,0.2)", size: 4, left: "25%", duration: "18s", delay: "2s" },
   { color: "rgba(56,189,248,0.2)", size: 6, left: "45%", duration: "16s", delay: "4s" },
-  { color: "rgba(34,197,94,0.18)", size: 3, left: "65%", duration: "20s", delay: "1s" },
+  { color: "rgba(245,158,11,0.18)", size: 3, left: "65%", duration: "20s", delay: "1s" },
   { color: "rgba(167,139,250,0.22)", size: 5, left: "80%", duration: "15s", delay: "3s" },
   { color: "rgba(56,189,248,0.15)", size: 4, left: "90%", duration: "17s", delay: "5s" },
-  { color: "rgba(34,197,94,0.2)", size: 3, left: "35%", duration: "19s", delay: "6s" },
+  { color: "rgba(245,158,11,0.2)", size: 3, left: "35%", duration: "19s", delay: "6s" },
   { color: "rgba(167,139,250,0.18)", size: 5, left: "55%", duration: "13s", delay: "2.5s" },
 ];
 
@@ -254,16 +254,16 @@ export default function LandingClient() {
                   <span style={{
                     display: "inline-flex", alignItems: "center", gap: 6,
                     padding: "4px 14px", borderRadius: 50,
-                    background: "linear-gradient(135deg, rgba(34,197,94,0.2), rgba(168,85,247,0.15))",
-                    border: "1px solid rgba(34,197,94,0.3)",
-                    fontSize: 11, fontWeight: 800, color: "#22C55E",
+                    background: "linear-gradient(135deg, rgba(245,158,11,0.2), rgba(168,85,247,0.15))",
+                    border: "1px solid rgba(245,158,11,0.3)",
+                    fontSize: 11, fontWeight: 800, color: "#F59E0B",
                   }}>
                     👑 {t.spotlightLive} {spotlightCountdown && <span style={{ fontFamily: "monospace" }}>({spotlightCountdown})</span>}
                   </span>
                 </div>
                 {/* Spotlight photo — purple/green glow */}
                 <div className="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto rounded-full overflow-hidden" style={{
-                  boxShadow: "0 0 30px rgba(168,85,247,0.5), 0 0 60px rgba(34,197,94,0.2)",
+                  boxShadow: "0 0 30px rgba(168,85,247,0.5), 0 0 60px rgba(245,158,11,0.2)",
                   border: "3px solid rgba(168,85,247,0.6)",
                 }}>
                   <Image src={spotlight.animal_photo} alt={spotlight.animal_name || "Mascotte"} fill className="object-cover" priority unoptimized />
@@ -281,8 +281,8 @@ export default function LandingClient() {
               <>
                 {/* Default Ruby mascot */}
                 <div className="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto rounded-full overflow-hidden" style={{
-                  boxShadow: "0 0 30px rgba(34,197,94,0.4), 0 0 60px rgba(34,197,94,0.15)",
-                  border: "3px solid rgba(34,197,94,0.5)",
+                  boxShadow: "0 0 30px rgba(245,158,11,0.4), 0 0 60px rgba(245,158,11,0.15)",
+                  border: "3px solid rgba(245,158,11,0.5)",
                 }}>
                   <Image src="/ruby-hero.jpg" alt="Ruby — Mascotte Pawly" fill className="object-cover" priority />
                 </div>
@@ -298,7 +298,7 @@ export default function LandingClient() {
             <span className="gradient-text">{t.heroTitle}</span>
           </h1>
 
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4" style={{ color: "var(--c-accent, #22C55E)" }}>
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4" style={{ color: "var(--c-accent, #F59E0B)" }}>
             {t.heroTitle2}
           </h2>
 
@@ -317,7 +317,7 @@ export default function LandingClient() {
             <div className="glass px-4 py-2 flex items-center gap-2 text-xs font-medium" style={{ borderRadius: 40 }}>
               <span>🇨🇭</span> {t.heroBadgeSwiss}
             </div>
-            <div className="px-4 py-2 flex items-center gap-2 text-xs font-bold rounded-full" style={{ background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.2)", color: "#22c55e" }}>
+            <div className="px-4 py-2 flex items-center gap-2 text-xs font-bold rounded-full" style={{ background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.2)", color: "#F59E0B" }}>
               {t.heroBadgeFree}
             </div>
             <div className="glass px-4 py-2 flex items-center gap-2 text-xs font-medium" style={{ borderRadius: 40 }}>
@@ -342,7 +342,7 @@ export default function LandingClient() {
           {/* Social proof line */}
           <p className="text-xs" style={{ color: "var(--c-text-muted)" }}>
             {t.heroJoinOwners}{" "}
-            <span className="font-bold" style={{ color: "var(--c-accent, #22C55E)" }}>
+            <span className="font-bold" style={{ color: "var(--c-accent, #F59E0B)" }}>
               {totalProfiles > 0 ? totalProfiles + "+" : ""}
             </span>{" "}
             {t.heroOwnersIn}
@@ -402,11 +402,11 @@ export default function LandingClient() {
         <h2 className="text-center text-xs font-bold uppercase tracking-[0.2em] mb-2" style={{ color: "var(--c-text-muted)" }}>
           {t.howItWorks}
         </h2>
-        <div className="h-1 w-16 mx-auto rounded-full mb-12" style={{ background: "linear-gradient(90deg, #22C55E, #A78BFA, #38BDF8)" }} />
+        <div className="h-1 w-16 mx-auto rounded-full mb-12" style={{ background: "linear-gradient(90deg, #F59E0B, #A78BFA, #38BDF8)" }} />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative stagger-children">
           {/* Gradient connector lines (desktop) */}
-          <div className="hidden md:block absolute top-1/2 left-[33%] right-[33%] h-[2px] gradient-line" style={{ width: "34%", left: "16.5%", background: "linear-gradient(90deg, #22C55E, #A78BFA)" }} />
+          <div className="hidden md:block absolute top-1/2 left-[33%] right-[33%] h-[2px] gradient-line" style={{ width: "34%", left: "16.5%", background: "linear-gradient(90deg, #F59E0B, #A78BFA)" }} />
           <div className="hidden md:block absolute top-1/2 right-[16.5%] h-[2px]" style={{ width: "34%", background: "linear-gradient(90deg, #A78BFA, #38BDF8)" }} />
 
           {HOW_STEPS.map((step, i) => (
@@ -459,7 +459,7 @@ export default function LandingClient() {
 
                 {/* Text */}
                 <div className={`glass card-futuristic p-6 flex-1 ${isRight ? "md:text-right" : ""}`}>
-                  <h3 className="font-bold text-xl mb-2" style={{ color: "var(--c-accent, #22C55E)" }}>
+                  <h3 className="font-bold text-xl mb-2" style={{ color: "var(--c-accent, #F59E0B)" }}>
                     {t[feat.titleKey]}
                   </h3>
                   <p className="text-sm leading-relaxed" style={{ color: "var(--c-text-muted)" }}>
@@ -482,7 +482,7 @@ export default function LandingClient() {
         <h2 className="text-center text-xs font-bold uppercase tracking-[0.2em] mb-2" style={{ color: "var(--c-text-muted)" }}>
           {t.testimonialTitle}
         </h2>
-        <div className="h-1 w-16 mx-auto rounded-full mb-12" style={{ background: "linear-gradient(90deg, #22C55E, #A78BFA, #38BDF8)" }} />
+        <div className="h-1 w-16 mx-auto rounded-full mb-12" style={{ background: "linear-gradient(90deg, #F59E0B, #A78BFA, #38BDF8)" }} />
 
         {/* Horizontal scroll on mobile, grid on desktop */}
         <div className="flex md:grid md:grid-cols-3 gap-6 overflow-x-auto scroll-snap-x pb-4 md:pb-0 stagger-children">
@@ -506,7 +506,7 @@ export default function LandingClient() {
               {/* Author */}
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold" style={{ color: "var(--c-accent, #22C55E)" }}>
+                  <p className="text-xs font-bold" style={{ color: "var(--c-accent, #F59E0B)" }}>
                     {t[testi.authorKey]}
                   </p>
                   <p className="text-[10px]" style={{ color: "var(--c-text-muted)" }}>
@@ -527,7 +527,7 @@ export default function LandingClient() {
         <h2 className="text-center text-xs font-bold uppercase tracking-[0.2em] mb-2" style={{ color: "var(--c-text-muted)" }}>
           {t.whyTitle}
         </h2>
-        <div className="h-1 w-16 mx-auto rounded-full mb-8" style={{ background: "linear-gradient(90deg, #22C55E, #A78BFA, #38BDF8)" }} />
+        <div className="h-1 w-16 mx-auto rounded-full mb-8" style={{ background: "linear-gradient(90deg, #F59E0B, #A78BFA, #38BDF8)" }} />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {/* Google */}
@@ -545,13 +545,13 @@ export default function LandingClient() {
           {/* Pawly */}
           <div className="glass gradient-border p-5 text-center">
             <span className="text-2xl block mb-2">🐾</span>
-            <h3 className="font-bold text-sm mb-1" style={{ color: "var(--c-accent, #22C55E)" }}>Pawly</h3>
+            <h3 className="font-bold text-sm mb-1" style={{ color: "var(--c-accent, #F59E0B)" }}>Pawly</h3>
             <p className="text-xs leading-relaxed font-medium" style={{ color: "var(--c-text)" }}>{t.whySwiss}</p>
           </div>
         </div>
 
         <div className="text-center">
-          <Link href="/pricing" className="glass px-6 py-2.5 font-semibold text-xs hover:scale-105 transition-transform inline-block" style={{ borderRadius: 40, color: "var(--c-accent, #22C55E)" }}>
+          <Link href="/pricing" className="glass px-6 py-2.5 font-semibold text-xs hover:scale-105 transition-transform inline-block" style={{ borderRadius: 40, color: "var(--c-accent, #F59E0B)" }}>
             {t.whyTitle} →
           </Link>
         </div>
@@ -568,10 +568,10 @@ export default function LandingClient() {
           {/* CTA particles (CSS only) */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             {[
-              { bg: "rgba(34,197,94,0.15)", w: 8, top: "15%", left: "10%", dur: "8s" },
+              { bg: "rgba(245,158,11,0.15)", w: 8, top: "15%", left: "10%", dur: "8s" },
               { bg: "rgba(167,139,250,0.12)", w: 6, top: "60%", left: "85%", dur: "10s" },
               { bg: "rgba(56,189,248,0.12)", w: 10, top: "80%", left: "20%", dur: "12s" },
-              { bg: "rgba(34,197,94,0.1)", w: 5, top: "30%", left: "75%", dur: "9s" },
+              { bg: "rgba(245,158,11,0.1)", w: 5, top: "30%", left: "75%", dur: "9s" },
               { bg: "rgba(167,139,250,0.15)", w: 7, top: "45%", left: "50%", dur: "11s" },
             ].map((dot, i) => (
               <div

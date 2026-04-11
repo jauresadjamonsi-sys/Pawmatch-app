@@ -360,7 +360,7 @@ export default function PawCoinsWallet() {
           disabled={claiming}
           className="mt-4 px-6 py-2.5 rounded-full font-bold text-sm transition-all"
           style={{
-            background: claimResult?.startsWith("+") ? "rgba(52,211,153,0.15)" : "linear-gradient(135deg, #fbbf24, #22C55E)",
+            background: claimResult?.startsWith("+") ? "rgba(52,211,153,0.15)" : "linear-gradient(135deg, #fbbf24, #F59E0B)",
             color: claimResult?.startsWith("+") ? "#34d399" : "#fff",
             boxShadow: claimResult ? "none" : "0 4px 15px rgba(251,191,36,0.3)",
             cursor: claiming ? "wait" : "pointer",
@@ -507,7 +507,7 @@ export default function PawCoinsWallet() {
                   className="w-8 h-8 rounded-full flex items-center justify-center transition-all"
                   style={{
                     background: isActive
-                      ? "linear-gradient(135deg, #22C55E, #fbbf24)"
+                      ? "linear-gradient(135deg, #F59E0B, #fbbf24)"
                       : "var(--c-card)",
                     border: isToday && !isActive
                       ? "2px solid var(--c-accent)"
@@ -652,8 +652,8 @@ export default function PawCoinsWallet() {
                       style={{
                         width: `${pct}%`,
                         background: completed
-                          ? "linear-gradient(90deg, #34d399, #22c55e)"
-                          : "linear-gradient(90deg, #22C55E, #fbbf24)",
+                          ? "linear-gradient(90deg, #34d399, #F59E0B)"
+                          : "linear-gradient(90deg, #F59E0B, #fbbf24)",
                       }}
                     />
                   </div>
@@ -685,7 +685,7 @@ export default function PawCoinsWallet() {
                 onClick={() => handleShopBuy(item.label, item.cost)}
                 className="text-xs font-bold px-3 py-1.5 rounded-full transition-all"
                 style={{
-                  background: balance >= item.cost ? "linear-gradient(135deg, #fbbf24, #22C55E)" : "var(--c-border)",
+                  background: balance >= item.cost ? "linear-gradient(135deg, #fbbf24, #F59E0B)" : "var(--c-border)",
                   color: balance >= item.cost ? "#fff" : "var(--c-text-muted)",
                   opacity: balance >= item.cost ? 1 : 0.5,
                   cursor: balance >= item.cost ? "pointer" : "not-allowed",
@@ -726,7 +726,7 @@ export default function PawCoinsWallet() {
                     {new Date(tx.created_at).toLocaleDateString("fr-CH", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                   </p>
                 </div>
-                <span className={`text-xs font-bold ${tx.amount > 0 ? "text-green-400" : "text-red-400"}`}>
+                <span className={`text-xs font-bold ${tx.amount > 0 ? "text-amber-400" : "text-red-400"}`}>
                   {tx.amount > 0 ? "+" : ""}{tx.amount}
                 </span>
               </div>

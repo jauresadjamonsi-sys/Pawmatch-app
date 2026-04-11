@@ -23,7 +23,7 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-green-400">Pawly</h1>
+          <h1 className="text-4xl font-bold text-amber-400">Pawly</h1>
           <p className="text-[var(--c-text-muted)] mt-2">Réinitialiser le mot de passe</p>
         </div>
         <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-8">
@@ -32,7 +32,7 @@ export default function ForgotPasswordPage() {
               <p className="text-5xl mb-4">📧</p>
               <h2 className="text-xl font-bold text-[var(--c-text)] mb-2">Email envoyé</h2>
               <p className="text-[var(--c-text-muted)] text-sm mb-6">Si un compte existe avec cette adresse, vous recevrez un lien.</p>
-              <Link href="/login" className="text-green-400 hover:underline font-medium text-sm">Retour à la connexion</Link>
+              <Link href="/login" className="text-amber-400 hover:underline font-medium text-sm">Retour à la connexion</Link>
             </div>
           ) : (
             <>
@@ -40,14 +40,14 @@ export default function ForgotPasswordPage() {
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">Email</label>
-                  <input id="email" name="email" type="email" required className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none" placeholder="toi@exemple.ch"/>
+                  <input id="email" name="email" type="email" required className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none" placeholder="toi@exemple.ch"/>
                 </div>
-                <button type="submit" disabled={loading} className="w-full py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition disabled:opacity-50">
+                <button type="submit" disabled={loading} className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl transition disabled:opacity-50">
                   {loading ? "Envoi..." : "Envoyer le lien"}
                 </button>
               </form>
               <p className="mt-6 text-center text-sm text-[var(--c-text-muted)]">
-                <Link href="/login" className="text-green-400 hover:underline font-medium">Retour à la connexion</Link>
+                <Link href="/login" className="text-amber-400 hover:underline font-medium">Retour à la connexion</Link>
               </p>
             </>
           )}

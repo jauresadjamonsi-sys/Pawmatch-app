@@ -16,7 +16,7 @@ export default async function Image() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #1a1225 0%, #2a2248 40%, #3d3462 70%, #16A34A 100%)",
+          background: "linear-gradient(135deg, #1a1225 0%, #2a2248 40%, #3d3462 70%, #D97706 100%)",
           fontFamily: "Inter, system-ui, sans-serif",
           position: "relative",
           overflow: "hidden",
@@ -65,7 +65,7 @@ export default async function Image() {
             fontSize: "72px",
             fontWeight: 800,
             letterSpacing: "-2px",
-            background: "linear-gradient(90deg, #22C55E, #4ADE80, #fbbf24)",
+            background: "linear-gradient(90deg, #F59E0B, #4ADE80, #fbbf24)",
             backgroundClip: "text",
             color: "transparent",
             display: "flex",
@@ -99,9 +99,9 @@ export default async function Image() {
           }}
         >
           <span style={{ display: "flex" }}>26 cantons</span>
-          <span style={{ display: "flex", color: "#22C55E" }}>&#x2022;</span>
+          <span style={{ display: "flex", color: "#F59E0B" }}>&#x2022;</span>
           <span style={{ display: "flex" }}>Toutes les especes</span>
-          <span style={{ display: "flex", color: "#22C55E" }}>&#x2022;</span>
+          <span style={{ display: "flex", color: "#F59E0B" }}>&#x2022;</span>
           <span style={{ display: "flex" }}>Gratuit</span>
         </div>
 

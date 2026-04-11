@@ -81,21 +81,21 @@ export async function GET(request: Request) {
         : "";
 
       const html = `<div style="max-width:500px;margin:0 auto;font-family:-apple-system,sans-serif;background:#1a1225;color:#fff;border-radius:16px;overflow:hidden">
-        <div style="background:linear-gradient(135deg,#22c55e,#16a34a);padding:32px;text-align:center">
+        <div style="background:linear-gradient(135deg,#F59E0B,#D97706);padding:32px;text-align:center">
           <h1 style="margin:0;font-size:24px">Tu nous manques ${firstName} !</h1>
           <p style="margin:8px 0 0;opacity:0.9;font-size:14px">Voici ce que tu as manque cette semaine</p>
         </div>
         <div style="padding:24px">
           ${newAnimalsCount > 0 ? `<div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:16px;margin-bottom:12px">
-            <p style="margin:0;font-size:14px"><strong style="color:#22c55e">${newAnimalsCount} nouveaux animaux</strong> dans ton canton</p>
+            <p style="margin:0;font-size:14px"><strong style="color:#F59E0B">${newAnimalsCount} nouveaux animaux</strong> dans ton canton</p>
             <p style="margin:4px 0 0;font-size:13px;color:#9ca3af">De nouveaux compagnons t'attendent !</p>
           </div>` : ""}
           <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:16px;margin-bottom:12px">
-            <p style="margin:0;font-size:14px"><strong style="color:#22c55e">${potentialMatches} matchs potentiels</strong> t'attendent</p>
+            <p style="margin:0;font-size:14px"><strong style="color:#F59E0B">${potentialMatches} matchs potentiels</strong> t'attendent</p>
             <p style="margin:4px 0 0;font-size:13px;color:#9ca3af">Reviens flairer pour trouver le copain ideal</p>
           </div>
           ${eventSection}
-          <a href="https://pawlyapp.ch/flairer" style="display:block;margin-top:20px;padding:14px;background:#22c55e;color:#fff;text-align:center;border-radius:12px;font-weight:700;font-size:14px;text-decoration:none">Revenir flairer</a>
+          <a href="https://pawlyapp.ch/flairer" style="display:block;margin-top:20px;padding:14px;background:#F59E0B;color:#fff;text-align:center;border-radius:12px;font-weight:700;font-size:14px;text-decoration:none">Revenir flairer</a>
           <p style="margin-top:16px;text-align:center;font-size:11px;color:#6b7280">
             <a href="https://pawlyapp.ch/profile" style="color:#6b7280;text-decoration:underline">Se desabonner</a>
           </p>

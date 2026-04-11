@@ -143,6 +143,8 @@ export default function FeedPage() {
   const [newBadges, setNewBadges] = useState<Badge[]>([]);
   const [earnedBadges, setEarnedBadges] = useState<Badge[]>([]);
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
   const [showBadgeModal, setShowBadgeModal] = useState(false);
   const [activeBadgeIdx, setActiveBadgeIdx] = useState(0);
   const [challengeDone, setChallengeDone] = useState(false);
@@ -421,7 +423,7 @@ export default function FeedPage() {
               className="px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300"
               style={{
                 background: feedMode === "algo"
-                  ? "linear-gradient(135deg, #22C55E, #16A34A)"
+                  ? "linear-gradient(135deg, #F59E0B, #D97706)"
                   : "transparent",
                 color: feedMode === "algo" ? "#fff" : "var(--c-text-muted)",
                 boxShadow: feedMode === "algo" ? "0 2px 8px rgba(34, 197, 94,0.3)" : "none",
@@ -434,7 +436,7 @@ export default function FeedPage() {
               className="px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300"
               style={{
                 background: feedMode === "chrono"
-                  ? "linear-gradient(135deg, #22C55E, #16A34A)"
+                  ? "linear-gradient(135deg, #F59E0B, #D97706)"
                   : "transparent",
                 color: feedMode === "chrono" ? "#fff" : "var(--c-text-muted)",
                 boxShadow: feedMode === "chrono" ? "0 2px 8px rgba(34, 197, 94,0.3)" : "none",
@@ -447,9 +449,9 @@ export default function FeedPage() {
           {/* ═══════ GREETING ═══════ */}
           <section className="glass rounded-2xl p-5 relative overflow-hidden">
             <div className="absolute -top-6 -right-6 text-[80px] opacity-10 pointer-events-none select-none animate-paw-drift">{"\uD83D\uDC3E"}</div>
-            <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: "var(--c-text-muted)" }} suppressHydrationWarning>{formatDate()}</p>
-            <h1 className="text-2xl font-extrabold gradient-text-animated" suppressHydrationWarning>
-              {greetingWord()} {firstName} {"\uD83D\uDC3E"}
+            <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: "var(--c-text-muted)" }}>{mounted ? formatDate() : "\u00A0"}</p>
+            <h1 className="text-2xl font-extrabold gradient-text-animated">
+              {mounted ? `${greetingWord()} ${firstName}` : "\u00A0"} {"\uD83D\uDC3E"}
             </h1>
             {profile.city && (
               <p className="text-xs mt-1" style={{ color: "var(--c-text-muted)" }}>{"\uD83D\uDCCD"} {profile.city}</p>

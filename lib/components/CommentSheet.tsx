@@ -189,7 +189,7 @@ export default function CommentSheet({ reelId, isOpen, onClose }: Props) {
                 className="w-5 h-5 border-2 rounded-full animate-spin"
                 style={{
                   borderColor: "var(--c-border)",
-                  borderTopColor: "var(--c-accent, #22C55E)",
+                  borderTopColor: "var(--c-accent, #F59E0B)",
                 }}
               />
             </div>
@@ -278,7 +278,7 @@ export default function CommentSheet({ reelId, isOpen, onClose }: Props) {
             className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all btn-press"
             style={{
               background: text.trim()
-                ? "linear-gradient(135deg, #22C55E, #16A34A)"
+                ? "linear-gradient(135deg, #F59E0B, #D97706)"
                 : "var(--c-card)",
               color: text.trim() ? "#fff" : "var(--c-text-muted)",
               opacity: sending ? 0.5 : 1,

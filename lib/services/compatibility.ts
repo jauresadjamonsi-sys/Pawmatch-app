@@ -148,8 +148,8 @@ export function computeCompatibility(a: Animal, b: Animal): {
   // ── Label et couleur ─────────────────────────────────────
   let label: string;
   let color: string;
-  if (normalized >= 85) { label = "Coup de foudre"; color = "#22c55e"; }
-  else if (normalized >= 70) { label = "Très compatible"; color = "#22c55e"; }
+  if (normalized >= 85) { label = "Coup de foudre"; color = "#F59E0B"; }
+  else if (normalized >= 70) { label = "Très compatible"; color = "#F59E0B"; }
   else if (normalized >= 55) { label = "Compatible"; color = "#60a5fa"; }
   else if (normalized >= 35) { label = "Possible"; color = "#a78bfa"; }
   else { label = "Prudence"; color = "#6b7280"; }

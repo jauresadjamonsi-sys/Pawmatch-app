@@ -194,7 +194,7 @@ export default function LeaderboardPage() {
             onClick={() => setTab(t.key as "global" | "canton")}
             className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ease-out"
             style={{
-              background: tab === t.key ? "linear-gradient(135deg, #22C55E, #4ADE80)" : "var(--c-glass)",
+              background: tab === t.key ? "linear-gradient(135deg, #F59E0B, #4ADE80)" : "var(--c-glass)",
               color: tab === t.key ? "#fff" : "var(--c-text-muted)",
               border: tab === t.key ? "none" : "1px solid var(--c-border)",
               transform: tab === t.key ? "scale(1.02)" : "scale(1)",
@@ -215,7 +215,7 @@ export default function LeaderboardPage() {
             className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ease-out"
             style={{
               background: speciesFilter === sp.key ? "rgba(34, 197, 94,0.15)" : "var(--c-glass)",
-              color: speciesFilter === sp.key ? "#22C55E" : "var(--c-text-muted)",
+              color: speciesFilter === sp.key ? "#F59E0B" : "var(--c-text-muted)",
               border: speciesFilter === sp.key ? "1.5px solid rgba(34, 197, 94,0.3)" : "1px solid var(--c-border)",
               transform: speciesFilter === sp.key ? "scale(1.08)" : "scale(1)",
             }}

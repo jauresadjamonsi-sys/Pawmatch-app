@@ -99,7 +99,7 @@ export function QRIdentity({ animalId, animalName, species, breed, canton, owner
       {/* Actions */}
       <div style={{ display: "flex", gap: 8 }}>
         <button onClick={handleShare}
-          style={{ flex: 1, padding: "10px", background: "#22C55E", color: "#fff", border: "none", borderRadius: 10, fontWeight: 700, fontSize: 12, cursor: "pointer" }}>
+          style={{ flex: 1, padding: "10px", background: "#F59E0B", color: "#fff", border: "none", borderRadius: 10, fontWeight: 700, fontSize: 12, cursor: "pointer" }}>
           📤 {l.share}
         </button>
         <button onClick={handleDownload}

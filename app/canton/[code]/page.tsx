@@ -104,7 +104,7 @@ export default async function CantonPage({ params }: Props) {
           <p
             className="text-2xl font-black"
             style={{
-              background: "linear-gradient(135deg, #22C55E, #FACC15)",
+              background: "linear-gradient(135deg, #F59E0B, #FACC15)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -128,7 +128,7 @@ export default async function CantonPage({ params }: Props) {
           <p
             className="text-2xl font-black"
             style={{
-              background: "linear-gradient(135deg, #22C55E, #FACC15)",
+              background: "linear-gradient(135deg, #F59E0B, #FACC15)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -297,7 +297,7 @@ export default async function CantonPage({ params }: Props) {
         <Link
           href="/signup"
           className="inline-block px-6 py-3 rounded-xl text-sm font-bold text-white"
-          style={{ background: "linear-gradient(135deg, #22C55E, #4ADE80)" }}
+          style={{ background: "linear-gradient(135deg, #F59E0B, #4ADE80)" }}
         >
           Inscris-toi gratuitement
         </Link>

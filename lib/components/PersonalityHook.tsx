@@ -92,42 +92,42 @@ const PERSONALITIES: Record<string, Record<string, { name: string; emoji: string
   fr: {
     "Sociable": { name: "L'Ambassadeur", emoji: "🌟", color: "#f59e0b", desc: "Votre animal est un vrai social ! Il adore les rencontres et met tout le monde à l'aise." },
     "Energique": { name: "Le Tornado", emoji: "⚡", color: "#ef4444", desc: "Impossible de suivre ! Votre animal déborde d'énergie et a besoin d'action." },
-    "Calme": { name: "Le Zen", emoji: "🧘", color: "#22c55e", desc: "La tranquillité incarnée. Votre animal apporte le calme partout où il va." },
+    "Calme": { name: "Le Zen", emoji: "🧘", color: "#F59E0B", desc: "La tranquillité incarnée. Votre animal apporte le calme partout où il va." },
     "Curieux": { name: "L'Explorateur", emoji: "🔍", color: "#3b82f6", desc: "Chaque jour est une aventure ! Votre animal veut tout découvrir." },
     "Câlin": { name: "Le Coccolone", emoji: "🤗", color: "#ec4899", desc: "Pot de colle adorable ! Votre animal vit pour les câlins et la proximité." },
     "Indépendant": { name: "Le Libre", emoji: "🦁", color: "#8b5cf6", desc: "Un esprit libre qui n'a besoin de personne. Mais quand il vient vers vous, c'est magique." },
     "Craintif": { name: "Le Sensible", emoji: "🌸", color: "#f472b6", desc: "Un cœur d'or derrière la timidité. Avec patience, il s'ouvre et devient le plus fidèle." },
-    "Joueur": { name: "Le Farceur", emoji: "🎪", color: "#22C55E", desc: "La vie est un jeu ! Votre animal transforme tout en moment fun." },
+    "Joueur": { name: "Le Farceur", emoji: "🎪", color: "#F59E0B", desc: "La vie est un jeu ! Votre animal transforme tout en moment fun." },
   },
   de: {
     "Sociable": { name: "Der Botschafter", emoji: "🌟", color: "#f59e0b", desc: "Dein Tier ist super gesellig! Es liebt Begegnungen und bringt alle zusammen." },
     "Energique": { name: "Der Tornado", emoji: "⚡", color: "#ef4444", desc: "Nicht zu bremsen! Dein Tier strotzt vor Energie und braucht Action." },
-    "Calme": { name: "Der Zen-Meister", emoji: "🧘", color: "#22c55e", desc: "Die Ruhe selbst. Dein Tier bringt überall Gelassenheit mit." },
+    "Calme": { name: "Der Zen-Meister", emoji: "🧘", color: "#F59E0B", desc: "Die Ruhe selbst. Dein Tier bringt überall Gelassenheit mit." },
     "Curieux": { name: "Der Entdecker", emoji: "🔍", color: "#3b82f6", desc: "Jeder Tag ist ein Abenteuer! Dein Tier will alles erkunden." },
     "Câlin": { name: "Das Kuschelmonster", emoji: "🤗", color: "#ec4899", desc: "Zum Knuddeln! Dein Tier lebt für Nähe und Streicheleinheiten." },
     "Indépendant": { name: "Der Freigeist", emoji: "🦁", color: "#8b5cf6", desc: "Ein freier Geist. Aber wenn er zu dir kommt, ist es magisch." },
     "Craintif": { name: "Der Sensible", emoji: "🌸", color: "#f472b6", desc: "Ein Herz aus Gold hinter der Schüchternheit. Mit Geduld wird er der treueste." },
-    "Joueur": { name: "Der Spassvogel", emoji: "🎪", color: "#22C55E", desc: "Das Leben ist ein Spiel! Dein Tier macht aus allem einen Spass." },
+    "Joueur": { name: "Der Spassvogel", emoji: "🎪", color: "#F59E0B", desc: "Das Leben ist ein Spiel! Dein Tier macht aus allem einen Spass." },
   },
   it: {
     "Sociable": { name: "L'Ambasciatore", emoji: "🌟", color: "#f59e0b", desc: "Il tuo animale è super socievole! Adora gli incontri e mette tutti a loro agio." },
     "Energique": { name: "Il Tornado", emoji: "⚡", color: "#ef4444", desc: "Impossibile fermarlo! Il tuo animale trabocca di energia." },
-    "Calme": { name: "Lo Zen", emoji: "🧘", color: "#22c55e", desc: "La tranquillità fatta animale. Porta calma ovunque vada." },
+    "Calme": { name: "Lo Zen", emoji: "🧘", color: "#F59E0B", desc: "La tranquillità fatta animale. Porta calma ovunque vada." },
     "Curieux": { name: "L'Esploratore", emoji: "🔍", color: "#3b82f6", desc: "Ogni giorno è un'avventura! Vuole scoprire tutto." },
     "Câlin": { name: "Il Coccolone", emoji: "🤗", color: "#ec4899", desc: "Adorabile! Il tuo animale vive per le coccole e la vicinanza." },
     "Indépendant": { name: "Il Libero", emoji: "🦁", color: "#8b5cf6", desc: "Spirito libero. Ma quando viene da te, è magico." },
     "Craintif": { name: "Il Sensibile", emoji: "🌸", color: "#f472b6", desc: "Un cuore d'oro dietro la timidezza. Con pazienza diventa il più fedele." },
-    "Joueur": { name: "Il Giocherellone", emoji: "🎪", color: "#22C55E", desc: "La vita è un gioco! Trasforma tutto in divertimento." },
+    "Joueur": { name: "Il Giocherellone", emoji: "🎪", color: "#F59E0B", desc: "La vita è un gioco! Trasforma tutto in divertimento." },
   },
   en: {
     "Sociable": { name: "The Ambassador", emoji: "🌟", color: "#f59e0b", desc: "Your pet is a true social butterfly! They love meetups and put everyone at ease." },
     "Energique": { name: "The Tornado", emoji: "⚡", color: "#ef4444", desc: "Can't keep up! Your pet is bursting with energy and needs action." },
-    "Calme": { name: "The Zen Master", emoji: "🧘", color: "#22c55e", desc: "Calm personified. Your pet brings peace wherever they go." },
+    "Calme": { name: "The Zen Master", emoji: "🧘", color: "#F59E0B", desc: "Calm personified. Your pet brings peace wherever they go." },
     "Curieux": { name: "The Explorer", emoji: "🔍", color: "#3b82f6", desc: "Every day is an adventure! Your pet wants to discover everything." },
     "Câlin": { name: "The Cuddle Bug", emoji: "🤗", color: "#ec4899", desc: "Adorable cuddler! Your pet lives for snuggles and closeness." },
     "Indépendant": { name: "The Free Spirit", emoji: "🦁", color: "#8b5cf6", desc: "A free spirit who needs no one. But when they come to you, it's magical." },
     "Craintif": { name: "The Sensitive Soul", emoji: "🌸", color: "#f472b6", desc: "A heart of gold behind the shyness. With patience, they become the most loyal." },
-    "Joueur": { name: "The Jester", emoji: "🎪", color: "#22C55E", desc: "Life is a game! Your pet turns everything into a fun moment." },
+    "Joueur": { name: "The Jester", emoji: "🎪", color: "#F59E0B", desc: "Life is a game! Your pet turns everything into a fun moment." },
   },
 };
 
@@ -171,7 +171,7 @@ export function PersonalityHook({ lang }: { lang: string }) {
         <h3 style={{ fontWeight: 800, fontSize: 16, color: "var(--c-text)", marginBottom: 4 }}>{ui.title}</h3>
         <p style={{ fontSize: 12, color: "var(--c-text-muted)", marginBottom: 16 }}>{ui.subtitle}</p>
         <button onClick={() => setStarted(true)}
-          style={{ padding: "12px 28px", background: "#22C55E", color: "#fff", border: "none", borderRadius: 50, fontWeight: 800, fontSize: 14, cursor: "pointer", boxShadow: "0 0 20px rgba(249,115,22,0.3)" }}>
+          style={{ padding: "12px 28px", background: "#F59E0B", color: "#fff", border: "none", borderRadius: 50, fontWeight: 800, fontSize: 14, cursor: "pointer", boxShadow: "0 0 20px rgba(249,115,22,0.3)" }}>
           {ui.startBtn}
         </button>
       </div>
@@ -201,7 +201,7 @@ export function PersonalityHook({ lang }: { lang: string }) {
     <div style={{ background: "var(--c-card)", border: "2px solid var(--c-border)", borderRadius: 20, padding: 24 }}>
       <div style={{ display: "flex", gap: 4, marginBottom: 16 }}>
         {questions.map((_, i) => (
-          <div key={i} style={{ flex: 1, height: 4, borderRadius: 2, background: i <= step ? "#22C55E" : "var(--c-border)", transition: "background 0.3s" }} />
+          <div key={i} style={{ flex: 1, height: 4, borderRadius: 2, background: i <= step ? "#F59E0B" : "var(--c-border)", transition: "background 0.3s" }} />
         ))}
       </div>
       <h3 style={{ fontWeight: 800, fontSize: 15, color: "var(--c-text)", marginBottom: 14, textAlign: "center" }}>{q.q}</h3>
@@ -209,7 +209,7 @@ export function PersonalityHook({ lang }: { lang: string }) {
         {q.answers.map((a, i) => (
           <button key={i} onClick={() => handleAnswer(a.traits)}
             style={{ padding: "14px 16px", background: "var(--c-deep, rgba(255,255,255,0.03))", border: "1.5px solid var(--c-border)", borderRadius: 14, cursor: "pointer", textAlign: "left", fontSize: 14, fontWeight: 600, color: "var(--c-text)", transition: "all 0.2s" }}
-            onMouseOver={e => { (e.target as HTMLElement).style.borderColor = "#22C55E"; (e.target as HTMLElement).style.background = "rgba(249,115,22,0.05)"; }}
+            onMouseOver={e => { (e.target as HTMLElement).style.borderColor = "#F59E0B"; (e.target as HTMLElement).style.background = "rgba(249,115,22,0.05)"; }}
             onMouseOut={e => { (e.target as HTMLElement).style.borderColor = "var(--c-border)"; (e.target as HTMLElement).style.background = "var(--c-deep, rgba(255,255,255,0.03))"; }}>
             {a.text}
           </button>

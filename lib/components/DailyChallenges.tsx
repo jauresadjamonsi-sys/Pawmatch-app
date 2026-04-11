@@ -71,7 +71,7 @@ export default function DailyChallenges({ userId }: { userId: string }) {
           <span
             className="px-3 py-1 rounded-full text-xs font-bold text-white"
             style={{
-              background: "linear-gradient(135deg, #22C55E, #eab308)",
+              background: "linear-gradient(135deg, #F59E0B, #eab308)",
               boxShadow: "0 2px 12px rgba(249,115,22,0.4)",
             }}
           >
@@ -89,7 +89,7 @@ export default function DailyChallenges({ userId }: { userId: string }) {
           </h3>
         </div>
         {allDailyClaimed && (
-          <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 font-medium animate-badge-bounce">
+          <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 font-medium animate-badge-bounce">
             Tout complete ✓
           </span>
         )}
@@ -153,15 +153,15 @@ function ChallengeRow({
       className="flex items-center gap-3 p-2.5 rounded-xl transition-all animate-slide-up"
       style={{
         background: ch.claimed
-          ? "rgba(34,197,94,0.06)"
+          ? "rgba(245,158,11,0.06)"
           : isWeekly
           ? "rgba(139,92,246,0.06)"
           : "var(--c-card)",
         border: `1px solid ${
           ch.completed && !ch.claimed
-            ? "rgba(34,197,94,0.3)"
+            ? "rgba(245,158,11,0.3)"
             : ch.claimed
-            ? "rgba(34,197,94,0.15)"
+            ? "rgba(245,158,11,0.15)"
             : "var(--c-border)"
         }`,
         animationDelay: `${delay}s`,
@@ -185,10 +185,10 @@ function ChallengeRow({
             style={{
               width: `${pct}%`,
               background: ch.completed
-                ? "linear-gradient(90deg, #22c55e, #16a34a)"
+                ? "linear-gradient(90deg, #F59E0B, #D97706)"
                 : isWeekly
                 ? "linear-gradient(90deg, #8b5cf6, #a78bfa)"
-                : "linear-gradient(90deg, #22C55E, var(--c-accent))",
+                : "linear-gradient(90deg, #F59E0B, var(--c-accent))",
             }}
           />
         </div>
@@ -198,15 +198,15 @@ function ChallengeRow({
       </div>
       {/* Reward / Claim */}
       {ch.claimed ? (
-        <span className="text-sm text-green-400 font-bold flex-shrink-0">✓</span>
+        <span className="text-sm text-amber-400 font-bold flex-shrink-0">✓</span>
       ) : ch.completed ? (
         <button
           onClick={() => onClaim(ch.id, ch.reward)}
           disabled={claimingId === ch.id}
           className="btn-press px-3 py-1.5 rounded-full text-[10px] font-bold text-white flex-shrink-0"
           style={{
-            background: "linear-gradient(135deg, #22C55E, #16A34A)",
-            boxShadow: "0 2px 8px rgba(34,197,94,0.3)",
+            background: "linear-gradient(135deg, #F59E0B, #D97706)",
+            boxShadow: "0 2px 8px rgba(245,158,11,0.3)",
           }}
         >
           {claimingId === ch.id ? "..." : `+${ch.reward} 🪙`}

@@ -479,7 +479,7 @@ function PromoContent() {
           height: 160px;
           border-radius: 50%;
           padding: 4px;
-          background: linear-gradient(135deg, #22C55E, #FACC15, #38bdf8, #22C55E);
+          background: linear-gradient(135deg, #F59E0B, #FACC15, #38bdf8, #F59E0B);
           background-size: 300% 300%;
           animation: gradientShift 4s ease infinite;
           margin-bottom: 24px;
@@ -705,7 +705,7 @@ function PromoContent() {
 
         .copy-btn {
           background: rgba(34, 197, 94, 0.15);
-          color: #22C55E;
+          color: #F59E0B;
           border: 1px solid rgba(34, 197, 94, 0.25);
         }
       `}</style>

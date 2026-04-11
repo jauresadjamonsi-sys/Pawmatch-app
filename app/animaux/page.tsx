@@ -67,7 +67,7 @@ export default async function AnimauxIndexPage() {
   return (
     <div className="min-h-screen bg-white text-gray-900">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-16 px-4">
+      <section className="bg-gradient-to-br from-amber-50 via-amber-50 to-teal-50 py-16 px-4">
         <div className="max-w-5xl mx-auto text-center">
           <div className="flex items-center justify-center gap-3 mb-4">
             <BackButton fallback="/feed" />
@@ -96,13 +96,13 @@ export default async function AnimauxIndexPage() {
               <Link
                 key={canton.slug}
                 href={`/animaux/${canton.slug}`}
-                className="group block bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg hover:border-green-300 transition-all duration-200"
+                className="group block bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg hover:border-amber-300 transition-all duration-200"
               >
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-xl font-semibold text-gray-900 group-hover:text-green-600 transition-colors">
+                  <h3 className="text-xl font-semibold text-gray-900 group-hover:text-amber-600 transition-colors">
                     {canton.name}
                   </h3>
-                  <span className="text-sm font-medium text-green-600 bg-green-50 px-3 py-1 rounded-full">
+                  <span className="text-sm font-medium text-amber-600 bg-amber-50 px-3 py-1 rounded-full">
                     {cantonCount} {cantonCount === 1 ? "animal" : "animaux"}
                   </span>
                 </div>
@@ -129,7 +129,7 @@ export default async function AnimauxIndexPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-gradient-to-r from-green-500 to-emerald-600 py-16 px-4">
+      <section className="bg-gradient-to-r from-amber-500 to-amber-600 py-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
             Votre animal cherche un compagnon de balade ?
@@ -139,7 +139,7 @@ export default async function AnimauxIndexPage() {
           </p>
           <Link
             href="/signup"
-            className="inline-block bg-white text-green-600 font-semibold px-8 py-3 rounded-full hover:bg-green-50 transition-colors text-lg"
+            className="inline-block bg-white text-amber-600 font-semibold px-8 py-3 rounded-full hover:bg-amber-50 transition-colors text-lg"
           >
             Creer un compte gratuit
           </Link>

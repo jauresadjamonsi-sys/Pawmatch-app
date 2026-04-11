@@ -175,7 +175,7 @@ export default function AssistantPage() {
           className="w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-200 hover:scale-105"
           style={{
             background: "rgba(34, 197, 94, 0.1)",
-            color: "var(--c-accent, #22C55E)",
+            color: "var(--c-accent, #F59E0B)",
           }}
         >
           <svg
@@ -196,7 +196,7 @@ export default function AssistantPage() {
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center text-lg shrink-0"
             style={{
-              background: "linear-gradient(135deg, #22C55E, #16A34A)",
+              background: "linear-gradient(135deg, #F59E0B, #D97706)",
             }}
           >
             <span role="img" aria-label="robot">
@@ -225,12 +225,12 @@ export default function AssistantPage() {
         <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold"
           style={{
             background: "rgba(34, 197, 94, 0.1)",
-            color: "#22c55e",
+            color: "#F59E0B",
           }}
         >
           <span
             className="w-1.5 h-1.5 rounded-full"
-            style={{ background: "#22c55e" }}
+            style={{ background: "#F59E0B" }}
           />
           En ligne
         </div>
@@ -258,7 +258,7 @@ export default function AssistantPage() {
                 <div
                   className="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0 mr-2 mt-1"
                   style={{
-                    background: "linear-gradient(135deg, #22C55E, #16A34A)",
+                    background: "linear-gradient(135deg, #F59E0B, #D97706)",
                   }}
                 >
                   🐾
@@ -273,7 +273,7 @@ export default function AssistantPage() {
                   msg.role === "user"
                     ? {
                         background:
-                          "linear-gradient(135deg, #22C55E, #16A34A)",
+                          "linear-gradient(135deg, #F59E0B, #D97706)",
                         color: "#fff",
                       }
                     : {
@@ -308,7 +308,7 @@ export default function AssistantPage() {
               <div
                 className="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0 mr-2 mt-1"
                 style={{
-                  background: "linear-gradient(135deg, #22C55E, #16A34A)",
+                  background: "linear-gradient(135deg, #F59E0B, #D97706)",
                 }}
               >
                 🐾
@@ -378,7 +378,7 @@ export default function AssistantPage() {
                     className="px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
                     style={{
                       background: "rgba(34, 197, 94, 0.1)",
-                      color: "var(--c-accent, #22C55E)",
+                      color: "var(--c-accent, #F59E0B)",
                       border: "1px solid rgba(249, 115, 22, 0.2)",
                     }}
                   >
@@ -423,7 +423,7 @@ export default function AssistantPage() {
                 style={{
                   background:
                     input.trim() && !loading
-                      ? "linear-gradient(135deg, #22C55E, #16A34A)"
+                      ? "linear-gradient(135deg, #F59E0B, #D97706)"
                       : "rgba(34, 197, 94, 0.15)",
                   color: input.trim() && !loading ? "#fff" : "var(--c-text-muted)",
                 }}

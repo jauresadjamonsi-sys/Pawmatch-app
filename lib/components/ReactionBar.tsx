@@ -75,12 +75,12 @@ export default function ReactionBar({ reelId, initialCounts = {}, initialUserRea
             aria-label={`${key} ${isActive ? "retirer" : "ajouter"}`}
             className={`btn-press flex items-center gap-0.5 px-2 py-1 rounded-full text-xs transition-all duration-200 ${
               isActive
-                ? "border border-green-500/30"
-                : "border border-[var(--c-border)] hover:border-green-500/20"
+                ? "border border-amber-500/30"
+                : "border border-[var(--c-border)] hover:border-amber-500/20"
             } ${animating === key ? "animate-heart-burst" : ""}`}
             style={{
               background: isActive
-                ? "rgba(34,197,94,0.15)"
+                ? "rgba(245,158,11,0.15)"
                 : "var(--c-card)",
             }}
           >
@@ -94,7 +94,7 @@ export default function ReactionBar({ reelId, initialCounts = {}, initialUserRea
               <span
                 className="text-[10px] font-medium"
                 style={{
-                  color: isActive ? "var(--c-accent, #22C55E)" : "var(--c-text-muted)",
+                  color: isActive ? "var(--c-accent, #F59E0B)" : "var(--c-text-muted)",
                 }}
               >
                 {count}

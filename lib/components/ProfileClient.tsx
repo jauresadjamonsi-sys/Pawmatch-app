@@ -274,7 +274,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
   const subColor = profile?.subscription === "pro"
     ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
     : profile?.subscription === "premium"
-    ? "bg-green-500/20 text-green-300 border border-green-500/30"
+    ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
     : "bg-[var(--c-border)] text-[var(--c-text-muted)]";
 
   return (
@@ -318,20 +318,20 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
             >
               {profile?.avatar_url ? (
                 <div className="w-20 h-20 rounded-full overflow-hidden relative"
-                  style={{ boxShadow: isPremium ? "0 0 20px rgba(34,197,94,0.3), 0 0 40px rgba(167,139,250,0.15)" : "none" }}>
+                  style={{ boxShadow: isPremium ? "0 0 20px rgba(245,158,11,0.3), 0 0 40px rgba(167,139,250,0.15)" : "none" }}>
                   <Image src={profile.avatar_url} alt="Avatar" fill className="object-cover" sizes="80px" />
                 </div>
               ) : (
                 <div
                   className="w-20 h-20 rounded-full flex items-center justify-center"
                   style={{
-                    background: "rgba(34,197,94,0.15)",
+                    background: "rgba(245,158,11,0.15)",
                     boxShadow: isPremium
-                      ? "0 0 20px rgba(34,197,94,0.3), 0 0 40px rgba(167,139,250,0.15)"
+                      ? "0 0 20px rgba(245,158,11,0.3), 0 0 40px rgba(167,139,250,0.15)"
                       : "none",
                   }}
                 >
-                  <span className="text-xl font-bold text-green-400">{initials}</span>
+                  <span className="text-xl font-bold text-amber-400">{initials}</span>
                 </div>
               )}
               {/* Camera overlay */}
@@ -346,13 +346,13 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
               >
                 {profile?.full_name || "Utilisateur"}
                 {profile?.verification_status === "approved" && (
-                  <span className="inline-flex items-center justify-center ml-1.5 w-5 h-5 rounded-full text-[11px] align-middle" style={{ background: "linear-gradient(135deg, #22c55e, #16a34a)", color: "#fff", boxShadow: "0 0 8px rgba(34,197,94,0.4)" }} title="Profil verifie">✓</span>
+                  <span className="inline-flex items-center justify-center ml-1.5 w-5 h-5 rounded-full text-[11px] align-middle" style={{ background: "linear-gradient(135deg, #F59E0B, #D97706)", color: "#fff", boxShadow: "0 0 8px rgba(245,158,11,0.4)" }} title="Profil verifie">✓</span>
                 )}
               </h1>
               <p className="text-sm text-[var(--c-text-muted)] truncate">{user.email}</p>
               <span
                 className={"inline-block mt-1 text-xs px-3 py-1 rounded-full font-semibold " + subColor}
-                style={isPremium ? { boxShadow: "0 0 12px rgba(34,197,94,0.2)" } : {}}
+                style={isPremium ? { boxShadow: "0 0 12px rgba(245,158,11,0.2)" } : {}}
               >
                 {subLabel}
               </span>
@@ -373,8 +373,8 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
               onClick={() => document.getElementById("compagnons")?.scrollIntoView({ behavior: "smooth" })}
               className="glass rounded-xl p-3 text-center transition cursor-pointer profile-stat-card"
               style={{
-                border: "1px solid rgba(34,197,94,0.15)",
-                boxShadow: "0 0 12px rgba(34,197,94,0.05)",
+                border: "1px solid rgba(245,158,11,0.15)",
+                boxShadow: "0 0 12px rgba(245,158,11,0.05)",
                 transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
               }}
             >
@@ -385,12 +385,12 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
               href="/matches"
               className="glass rounded-xl p-3 text-center transition cursor-pointer block profile-stat-card"
               style={{
-                border: "1px solid rgba(34,197,94,0.15)",
-                boxShadow: "0 0 12px rgba(34,197,94,0.05)",
+                border: "1px solid rgba(245,158,11,0.15)",
+                boxShadow: "0 0 12px rgba(245,158,11,0.05)",
                 transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
               }}
             >
-              <p className="text-lg font-black" style={{ color: "#22c55e", textShadow: "0 0 8px rgba(34,197,94,0.3)" }}>{stats.matches}</p>
+              <p className="text-lg font-black" style={{ color: "#F59E0B", textShadow: "0 0 8px rgba(245,158,11,0.3)" }}>{stats.matches}</p>
               <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase">Matchs</p>
             </Link>
             <Link
@@ -425,12 +425,12 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
           <div className="flex items-center justify-center gap-6 mb-5">
             <button onClick={() => setShowFollowersList("followers")} className="text-center group">
               <p className="text-lg font-black" style={{ color: "var(--c-text)" }}>{followersCount}</p>
-              <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase group-hover:text-green-400 transition-colors">Abonnes</p>
+              <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase group-hover:text-amber-400 transition-colors">Abonnes</p>
             </button>
             <div className="w-px h-8" style={{ background: "var(--c-border)" }} />
             <button onClick={() => setShowFollowersList("following")} className="text-center group">
               <p className="text-lg font-black" style={{ color: "var(--c-text)" }}>{followingCount}</p>
-              <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase group-hover:text-green-400 transition-colors">Abonnements</p>
+              <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase group-hover:text-amber-400 transition-colors">Abonnements</p>
             </button>
           </div>
 
@@ -527,7 +527,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
               <span className="text-[10px] font-bold">{userPhotos.length}</span>
               {profileTab === "posts" && (
-                <span className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "#22C55E" }} />
+                <span className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "#F59E0B" }} />
               )}
             </button>
             <button
@@ -538,7 +538,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="8" y1="2" x2="8" y2="8"/><line x1="16" y1="2" x2="16" y2="8"/><polygon points="10,12 10,18 16,15"/></svg>
               <span className="text-[10px] font-bold">{userReels.length}</span>
               {profileTab === "reels" && (
-                <span className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "#22C55E" }} />
+                <span className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "#F59E0B" }} />
               )}
             </button>
             <button
@@ -549,7 +549,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21c-1.5 0-6-3.5-6-8.5C6 9 8.5 7 10 6c.7-.5 1.3-1.5 2-3 .7 1.5 1.3 2.5 2 3 1.5 1 4 3 4 6.5 0 5-4.5 8.5-6 8.5z"/><circle cx="8" cy="5" r="2"/><circle cx="16" cy="5" r="2"/><circle cx="5" cy="10" r="1.5"/><circle cx="19" cy="10" r="1.5"/></svg>
               <span className="text-[10px] font-bold">{animals.length}</span>
               {profileTab === "animals" && (
-                <span className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "#22C55E" }} />
+                <span className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "#F59E0B" }} />
               )}
             </button>
           </div>
@@ -677,8 +677,8 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
                           <span
                             className="inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full neon-green"
                             style={{
-                              background: "rgba(34,197,94,0.12)",
-                              border: "1px solid rgba(34,197,94,0.2)",
+                              background: "rgba(245,158,11,0.12)",
+                              border: "1px solid rgba(245,158,11,0.2)",
                             }}
                           >
                             {animal.canton}
@@ -724,9 +724,9 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
             <div
               className="rounded-2xl p-6 relative overflow-hidden"
               style={{
-                background: "linear-gradient(135deg, rgba(34,197,94,0.2), rgba(168,85,247,0.2))",
-                border: "1px solid rgba(34,197,94,0.25)",
-                boxShadow: "0 0 30px rgba(34,197,94,0.1), 0 0 60px rgba(168,85,247,0.05)",
+                background: "linear-gradient(135deg, rgba(245,158,11,0.2), rgba(168,85,247,0.2))",
+                border: "1px solid rgba(245,158,11,0.25)",
+                boxShadow: "0 0 30px rgba(245,158,11,0.1), 0 0 60px rgba(168,85,247,0.05)",
               }}
             >
               <div
@@ -737,7 +737,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
               <h3
                 className="text-lg font-black mb-4"
                 style={{
-                  background: "linear-gradient(135deg, #22C55E, #a78bfa)",
+                  background: "linear-gradient(135deg, #F59E0B, #a78bfa)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -746,8 +746,8 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
                 {"\uD83C\uDF81"} Ton Pawly Wrapped
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5">
-                <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(34,197,94,0.15)" }}>
-                  <p className="text-2xl font-black" style={{ color: "#22C55E", textShadow: "0 0 12px rgba(34,197,94,0.4)" }}>
+                <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(245,158,11,0.15)" }}>
+                  <p className="text-2xl font-black" style={{ color: "#F59E0B", textShadow: "0 0 12px rgba(245,158,11,0.4)" }}>
                     {wrappedStats.totalMatches}
                   </p>
                   <p className="text-[10px] font-bold uppercase" style={{ color: "var(--c-text-muted)" }}>Matchs</p>
@@ -764,8 +764,8 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
                   </p>
                   <p className="text-[10px] font-bold uppercase" style={{ color: "var(--c-text-muted)" }}>Likes recus</p>
                 </div>
-                <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(34,197,94,0.15)" }}>
-                  <p className="text-2xl font-black" style={{ color: "#22c55e", textShadow: "0 0 12px rgba(34,197,94,0.4)" }}>
+                <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(245,158,11,0.15)" }}>
+                  <p className="text-2xl font-black" style={{ color: "#F59E0B", textShadow: "0 0 12px rgba(245,158,11,0.4)" }}>
                     {wrappedStats.favoriteSpecies}
                   </p>
                   <p className="text-[10px] font-bold uppercase" style={{ color: "var(--c-text-muted)" }}>Espece preferee</p>
@@ -795,9 +795,9 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
                 }}
                 className="w-full py-2.5 rounded-xl font-bold text-sm transition-all hover:scale-[1.02]"
                 style={{
-                  background: "linear-gradient(135deg, #22C55E, #a78bfa)",
+                  background: "linear-gradient(135deg, #F59E0B, #a78bfa)",
                   color: "#fff",
-                  boxShadow: "0 4px 20px rgba(34,197,94,0.25), 0 4px 20px rgba(168,85,247,0.15)",
+                  boxShadow: "0 4px 20px rgba(245,158,11,0.25), 0 4px 20px rgba(168,85,247,0.15)",
                 }}
               >
                 {"\uD83D\uDCE4"} Partage tes stats
@@ -857,8 +857,8 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
                     onClick={() => unblockUser(u.user_id)}
                     className="btn-futuristic px-3 py-1.5 text-xs font-bold rounded-lg"
                     style={{
-                      color: "#22c55e",
-                      borderColor: "rgba(34,197,94,0.25)",
+                      color: "#F59E0B",
+                      borderColor: "rgba(245,158,11,0.25)",
                     }}
                   >
                     Debloquer
@@ -1013,7 +1013,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
 
       <style>{`
         .profile-name-hover:hover {
-          background: linear-gradient(135deg, #22C55E, #a78bfa);
+          background: linear-gradient(135deg, #F59E0B, #a78bfa);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;

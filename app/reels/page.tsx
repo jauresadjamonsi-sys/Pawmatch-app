@@ -99,7 +99,7 @@ export default function ReelsPage() {
           <Link
             href="/reels/create"
             className="inline-block px-6 py-3 rounded-full text-sm font-bold text-white"
-            style={{ background: "linear-gradient(135deg, #22C55E, #FACC15)" }}
+            style={{ background: "linear-gradient(135deg, #F59E0B, #FACC15)" }}
           >
             Poster un Reel
           </Link>
@@ -281,7 +281,7 @@ function ReelCard({ reel, index, isActive }: { reel: ReelWithAuthor; index: numb
           className="h-full transition-[width] duration-200 ease-linear"
           style={{
             width: `${videoProgress}%`,
-            background: "linear-gradient(90deg, #22C55E, var(--c-accent, #FACC15))",
+            background: "linear-gradient(90deg, #F59E0B, var(--c-accent, #FACC15))",
           }}
         />
       </div>
@@ -519,7 +519,7 @@ function CommentsDrawer({ reelId, onClose }: { reelId: string; onClose: () => vo
             disabled={!text.trim() || sending}
             className="px-4 py-2.5 rounded-full text-sm font-bold text-white transition-all"
             style={{
-              background: text.trim() ? "linear-gradient(135deg, #22C55E, #FACC15)" : "var(--c-border)",
+              background: text.trim() ? "linear-gradient(135deg, #F59E0B, #FACC15)" : "var(--c-border)",
               opacity: text.trim() ? 1 : 0.5,
             }}
           >

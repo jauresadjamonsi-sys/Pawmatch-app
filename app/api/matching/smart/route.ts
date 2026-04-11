@@ -149,8 +149,8 @@ function computeSmartScore(
 }
 
 function getScoreLabel(score: number): { label: string; color: string } {
-  if (score >= 85) return { label: "Coup de foudre", color: "#22C55E" };
-  if (score >= 70) return { label: "Tres compatible", color: "#22c55e" };
+  if (score >= 85) return { label: "Coup de foudre", color: "#F59E0B" };
+  if (score >= 70) return { label: "Tres compatible", color: "#F59E0B" };
   if (score >= 55) return { label: "Compatible", color: "#60a5fa" };
   if (score >= 35) return { label: "Possible", color: "#a78bfa" };
   return { label: "Prudence", color: "#6b7280" };

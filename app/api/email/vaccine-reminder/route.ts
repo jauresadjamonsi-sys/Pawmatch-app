@@ -70,7 +70,7 @@ export async function GET(request: Request) {
             <p style="margin:0;font-size:16px;text-align:center">
               <strong style="color:#0D9488">Vaccin de ${animal.name}</strong>
             </p>
-            <p style="margin:8px 0 0;font-size:24px;text-align:center;font-weight:900;color:#22c55e">
+            <p style="margin:8px 0 0;font-size:24px;text-align:center;font-weight:900;color:#F59E0B">
               dans ${daysUntil} jour${daysUntil > 1 ? "s" : ""}
             </p>
             <p style="margin:8px 0 0;font-size:13px;text-align:center;color:#9ca3af">${dateStr}</p>

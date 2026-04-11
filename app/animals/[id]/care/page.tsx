@@ -31,10 +31,10 @@ type AnimalWithHealth = AnimalRow & {
 // --- Constants ---
 
 const MOODS = [
-  { value: "excellent", emoji: "🤩", label: "Super", color: "#22c55e", score: 5 },
+  { value: "excellent", emoji: "🤩", label: "Super", color: "#F59E0B", score: 5 },
   { value: "happy", emoji: "😊", label: "Content", color: "#84cc16", score: 4 },
   { value: "neutral", emoji: "😐", label: "Normal", color: "#f59e0b", score: 3 },
-  { value: "tired", emoji: "😴", label: "Fatigué", color: "#22C55E", score: 2 },
+  { value: "tired", emoji: "😴", label: "Fatigué", color: "#F59E0B", score: 2 },
   { value: "sick", emoji: "🤒", label: "Malade", color: "#ef4444", score: 1 },
 ];
 
@@ -102,7 +102,7 @@ function computePawCareScore(animal: AnimalWithHealth, moodEntries: MoodEntry[])
 }
 
 function getScoreColor(score: number): string {
-  if (score >= 75) return "#22c55e";
+  if (score >= 75) return "#F59E0B";
   if (score >= 50) return "#f59e0b";
   return "#ef4444";
 }
@@ -531,7 +531,7 @@ export default function PawCareHubPage() {
             </h2>
             <span style={{
               fontSize: 18,
-              color: moodTrend === "up" ? "#22c55e" : moodTrend === "down" ? "#ef4444" : "#f59e0b",
+              color: moodTrend === "up" ? "#F59E0B" : moodTrend === "down" ? "#ef4444" : "#f59e0b",
             }}>
               {moodTrend === "up" ? "↗️" : moodTrend === "down" ? "↘️" : "➡️"}
             </span>
@@ -577,7 +577,7 @@ export default function PawCareHubPage() {
           {!showMoodForm ? (
             <button onClick={() => setShowMoodForm(true)} style={{
               width: "100%", padding: 12, borderRadius: 12, border: "none", cursor: "pointer",
-              background: "linear-gradient(135deg, #22C55E, #16a34a)", color: "#fff",
+              background: "linear-gradient(135deg, #F59E0B, #D97706)", color: "#fff",
               fontWeight: 700, fontSize: 13,
             }}>
               Enregistrer l'humeur
@@ -615,7 +615,7 @@ export default function PawCareHubPage() {
                 </div>
                 <input type="range" min="1" max="5" value={moodEnergy}
                   onChange={e => setMoodEnergy(Number(e.target.value))}
-                  style={{ width: "100%", accentColor: "#22C55E" }} />
+                  style={{ width: "100%", accentColor: "#F59E0B" }} />
               </div>
               <textarea value={moodNote} onChange={e => setMoodNote(e.target.value)}
                 placeholder="Note optionnelle..."
@@ -626,7 +626,7 @@ export default function PawCareHubPage() {
                 }} />
               <div style={{ display: "flex", gap: 8 }}>
                 <button onClick={handleMoodSubmit} disabled={!moodValue || moodSending} style={{
-                  flex: 1, padding: 10, background: "#22C55E", color: "#fff", border: "none",
+                  flex: 1, padding: 10, background: "#F59E0B", color: "#fff", border: "none",
                   borderRadius: 10, fontWeight: 700, fontSize: 13, cursor: "pointer",
                   opacity: (!moodValue || moodSending) ? 0.5 : 1,
                 }}>
@@ -727,7 +727,7 @@ export default function PawCareHubPage() {
           <div style={{ marginBottom: 10 }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
               <span style={{ fontSize: 12, color: "var(--c-text-muted)" }}>Complétude</span>
-              <span style={{ fontSize: 12, fontWeight: 800, color: profileCompletion.percent >= 80 ? "#22c55e" : profileCompletion.percent >= 50 ? "#f59e0b" : "#ef4444" }}>
+              <span style={{ fontSize: 12, fontWeight: 800, color: profileCompletion.percent >= 80 ? "#F59E0B" : profileCompletion.percent >= 50 ? "#f59e0b" : "#ef4444" }}>
                 {profileCompletion.percent}%
               </span>
             </div>
@@ -735,7 +735,7 @@ export default function PawCareHubPage() {
               <div style={{
                 height: "100%", borderRadius: 4, transition: "width 0.8s ease",
                 width: profileCompletion.percent + "%",
-                background: profileCompletion.percent >= 80 ? "#22c55e" : profileCompletion.percent >= 50 ? "#f59e0b" : "#ef4444",
+                background: profileCompletion.percent >= 80 ? "#F59E0B" : profileCompletion.percent >= 50 ? "#f59e0b" : "#ef4444",
               }} />
             </div>
           </div>

@@ -39,7 +39,7 @@ const TEMPLATES: PromoTemplate[] = [
     title: "Le Match Parfait",
     whatsappText:
       "Et si ton chien trouvait son meilleur ami ? Pawly connecte les animaux et leurs proprios en Suisse. Inscris-toi gratuitement !",
-    gradient: "linear-gradient(135deg, #22C55E 0%, #FACC15 50%, #F43F5E 100%)",
+    gradient: "linear-gradient(135deg, #F59E0B 0%, #FACC15 50%, #F43F5E 100%)",
     emoji: "💕",
   },
   {
@@ -71,7 +71,7 @@ const TEMPLATES: PromoTemplate[] = [
     title: "100% Gratuit",
     whatsappText:
       "Pawly, l'app gratuite qui connecte les proprietaires d'animaux en Suisse. Inscris-toi en 30 secondes !",
-    gradient: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 50%, #22C55E 100%)",
+    gradient: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 50%, #F59E0B 100%)",
     emoji: "🎉",
   },
 ];
@@ -168,7 +168,7 @@ export default function PromoPage() {
         <h1 className="text-3xl md:text-4xl font-black mb-2">
           <span
             style={{
-              background: "linear-gradient(135deg, #22C55E, #FACC15)",
+              background: "linear-gradient(135deg, #F59E0B, #FACC15)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -308,7 +308,7 @@ export default function PromoPage() {
           </p>
           <div className="flex justify-center gap-8 mt-3">
             <div>
-              <p className="text-2xl font-black" style={{ color: "#22C55E" }}>
+              <p className="text-2xl font-black" style={{ color: "#F59E0B" }}>
                 {stats.animals}+
               </p>
               <p className="text-xs" style={{ color: "var(--c-text-muted)" }}>
@@ -584,7 +584,7 @@ function MatchTemplate({
         <div
           className="promo-fade-up mb-6 px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase text-white"
           style={{
-            background: "linear-gradient(135deg, #22C55E, #FACC15)",
+            background: "linear-gradient(135deg, #F59E0B, #FACC15)",
             animationDelay: "0.2s",
           }}
         >
@@ -599,7 +599,7 @@ function MatchTemplate({
           Et si ton chien trouvait son{" "}
           <span
             style={{
-              background: "linear-gradient(90deg, #22C55E, #4ADE80)",
+              background: "linear-gradient(90deg, #F59E0B, #4ADE80)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -615,7 +615,7 @@ function MatchTemplate({
           style={{ animationDelay: "1s" }}
         >
           {/* Left pet */}
-          <div className="promo-glow rounded-full overflow-hidden w-28 h-28 border-4 border-green-400">
+          <div className="promo-glow rounded-full overflow-hidden w-28 h-28 border-4 border-amber-400">
             {hero?.photo_url ? (
               <img
                 src={hero.photo_url}
@@ -664,7 +664,7 @@ function MatchTemplate({
         >
           <p className="text-white text-lg font-bold">
             {hero?.name || "Ruby"} & {friend?.name || "Max"}{" "}
-            <span className="text-green-400">98% compatibles !</span>
+            <span className="text-amber-400">98% compatibles !</span>
           </p>
         </div>
 
@@ -674,7 +674,7 @@ function MatchTemplate({
           style={{ animationDelay: "2.3s" }}
         >
           <div className="text-center">
-            <p className="text-2xl font-black text-green-400">
+            <p className="text-2xl font-black text-amber-400">
               {stats.animals || 150}+
             </p>
             <p className="text-xs opacity-70">animaux</p>
@@ -693,14 +693,14 @@ function MatchTemplate({
           <div
             className="py-4 px-6 rounded-2xl text-center"
             style={{
-              background: "linear-gradient(135deg, #22C55E, #16A34A)",
+              background: "linear-gradient(135deg, #F59E0B, #D97706)",
               boxShadow: "0 8px 32px rgba(34, 197, 94,0.4)",
             }}
           >
             <p className="text-white font-black text-lg">
               Inscris-toi gratuitement
             </p>
-            <p className="text-green-100 text-sm font-bold mt-1">
+            <p className="text-amber-100 text-sm font-bold mt-1">
               👉 {SITE}
             </p>
           </div>
@@ -897,7 +897,7 @@ function BaladeTemplate({
           style={{ animationDelay: "0.8s" }}
         >
           Trouve un{" "}
-          <span className="text-emerald-300">compagnon</span>
+          <span className="text-amber-300">compagnon</span>
           <br />
           de balade ! 🌿
         </h1>
@@ -909,7 +909,7 @@ function BaladeTemplate({
         >
           {/* Main photo */}
           <div
-            className="w-40 h-40 rounded-full overflow-hidden border-4 border-emerald-300 mx-auto"
+            className="w-40 h-40 rounded-full overflow-hidden border-4 border-amber-300 mx-auto"
             style={{
               boxShadow: "0 0 40px rgba(16,185,129,0.4)",
             }}
@@ -956,7 +956,7 @@ function BaladeTemplate({
             {animals.slice(1, 6).map((a, i) => (
               <div
                 key={a.id}
-                className="w-12 h-12 rounded-full overflow-hidden border-3 border-emerald-800"
+                className="w-12 h-12 rounded-full overflow-hidden border-3 border-amber-800"
                 style={{
                   animation: `promo-bounce-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards`,
                   animationDelay: `${2 + i * 0.2}s`,
@@ -973,7 +973,7 @@ function BaladeTemplate({
               </div>
             ))}
             <div
-              className="w-12 h-12 rounded-full flex items-center justify-center text-xs font-bold text-emerald-100 border-3 border-emerald-800"
+              className="w-12 h-12 rounded-full flex items-center justify-center text-xs font-bold text-amber-100 border-3 border-amber-800"
               style={{
                 background: "rgba(16,185,129,0.3)",
                 animation: `promo-bounce-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards`,
@@ -988,7 +988,7 @@ function BaladeTemplate({
 
         {/* Text */}
         <p
-          className="promo-fade-up text-emerald-200 text-base mb-8"
+          className="promo-fade-up text-amber-200 text-base mb-8"
           style={{ animationDelay: "2.5s" }}
         >
           Des centaines de proprios t&apos;attendent
@@ -1011,7 +1011,7 @@ function BaladeTemplate({
             <p className="text-white font-black text-lg">
               C&apos;est gratuit !
             </p>
-            <p className="text-emerald-100 text-sm font-bold mt-1">
+            <p className="text-amber-100 text-sm font-bold mt-1">
               👉 {SITE}
             </p>
           </div>
@@ -1241,7 +1241,7 @@ function GratuitTemplate({
               width: 8 + Math.random() * 12,
               height: 8 + Math.random() * 12,
               background: [
-                "#22C55E",
+                "#F59E0B",
                 "#FACC15",
                 "#F43F5E",
                 "#FBBF24",
@@ -1275,7 +1275,7 @@ function GratuitTemplate({
         >
           <span
             style={{
-              background: "linear-gradient(90deg, #FBBF24, #22C55E, #F43F5E, #FACC15)",
+              background: "linear-gradient(90deg, #FBBF24, #F59E0B, #F43F5E, #FACC15)",
               backgroundSize: "300% 100%",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
@@ -1316,7 +1316,7 @@ function GratuitTemplate({
               <span className="text-white font-semibold text-sm">
                 {f.text}
               </span>
-              <span className="ml-auto text-green-400 text-xs font-bold">
+              <span className="ml-auto text-amber-400 text-xs font-bold">
                 GRATUIT
               </span>
             </div>

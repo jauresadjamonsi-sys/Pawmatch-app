@@ -126,7 +126,7 @@ export default function ResetPasswordPage() {
                       value={password}
                       onChange={e => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                       style={{
                         background: "var(--c-deep)",
                         color: "var(--c-text)",
@@ -146,7 +146,7 @@ export default function ResetPasswordPage() {
                       value={confirm}
                       onChange={e => setConfirm(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                       style={{
                         background: "var(--c-deep)",
                         color: "var(--c-text)",

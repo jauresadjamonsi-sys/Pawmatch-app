@@ -16,9 +16,9 @@ const SPECIES_EMOJI: Record<string, string> = {
 };
 
 const CANTON_COLORS = [
-  "from-green-500/20 to-green-600/10",
+  "from-amber-500/20 to-amber-600/10",
   "from-blue-500/20 to-blue-600/10",
-  "from-green-500/20 to-green-600/10",
+  "from-amber-500/20 to-amber-600/10",
   "from-purple-500/20 to-purple-600/10",
   "from-pink-500/20 to-pink-600/10",
 ];
@@ -322,7 +322,7 @@ export default function ExplorePage() {
                   border: "1px solid var(--c-border)",
                 }}
               >
-                <span style={{ background: "linear-gradient(135deg, #22C55E, #FACC15)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                <span style={{ background: "linear-gradient(135deg, #F59E0B, #FACC15)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                   #{t.hashtag}
                 </span>
                 <span className="text-[10px] opacity-60" style={{ color: "var(--c-text-muted)" }}>
@@ -345,7 +345,7 @@ export default function ExplorePage() {
             placeholder="Rechercher par nom, race, canton..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-2xl text-sm outline-none transition-all duration-300 focus:ring-2 focus:ring-green-500/30 focus:border-green-500/50"
+            className="w-full pl-10 pr-4 py-3 rounded-2xl text-sm outline-none transition-all duration-300 focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500/50"
             style={{ background: "var(--c-glass, rgba(255,255,255,0.05))", border: "1px solid var(--c-border)", color: "var(--c-text)" }}
           />
         </div>
@@ -359,7 +359,7 @@ export default function ExplorePage() {
             onClick={() => setTab(t.key)}
             className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-300 ease-out"
             style={{
-              background: tab === t.key ? "linear-gradient(135deg, #22C55E, #FACC15)" : "var(--c-glass, rgba(255,255,255,0.05))",
+              background: tab === t.key ? "linear-gradient(135deg, #F59E0B, #FACC15)" : "var(--c-glass, rgba(255,255,255,0.05))",
               color: tab === t.key ? "#fff" : "var(--c-text-muted)",
               border: tab === t.key ? "none" : "1px solid var(--c-border)",
               transform: tab === t.key ? "scale(1.05)" : "scale(1)",
@@ -382,7 +382,7 @@ export default function ExplorePage() {
               className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-300 ease-out"
               style={{
                 background: speciesFilter === sp ? "rgba(34, 197, 94,0.15)" : "var(--c-glass, rgba(255,255,255,0.05))",
-                color: speciesFilter === sp ? "#22C55E" : "var(--c-text-muted)",
+                color: speciesFilter === sp ? "#F59E0B" : "var(--c-text-muted)",
                 border: `1px solid ${speciesFilter === sp ? "rgba(34, 197, 94,0.3)" : "var(--c-border)"}`,
                 transform: speciesFilter === sp ? "scale(1.08)" : "scale(1)",
               }}
@@ -414,7 +414,7 @@ export default function ExplorePage() {
               <button
                 onClick={() => setShowCreate(true)}
                 className="px-4 py-2.5 rounded-xl text-sm font-bold text-white flex-shrink-0"
-                style={{ background: "linear-gradient(135deg, #22C55E, #4ADE80)" }}
+                style={{ background: "linear-gradient(135deg, #F59E0B, #4ADE80)" }}
               >
                 + Creer
               </button>
@@ -446,7 +446,7 @@ export default function ExplorePage() {
           ) : events.length === 0 ? (
             <div className="text-center py-16">
               <div className="inline-flex flex-col items-center justify-center w-16 h-16 rounded-2xl border-2 mb-4" style={{ borderColor: "rgba(34, 197, 94,0.3)", background: "var(--c-card)" }}>
-                <span className="text-[10px] font-bold uppercase leading-none mt-1" style={{ color: "#22C55E" }}>
+                <span className="text-[10px] font-bold uppercase leading-none mt-1" style={{ color: "#F59E0B" }}>
                   {new Date().toLocaleDateString("fr-CH", { month: "short" })}
                 </span>
                 <span className="text-2xl font-extrabold leading-none" style={{ color: "var(--c-text)" }}>
@@ -461,7 +461,7 @@ export default function ExplorePage() {
                 <button
                   onClick={() => setShowCreate(true)}
                   className="px-6 py-3 text-white font-bold rounded-xl text-sm"
-                  style={{ background: "linear-gradient(135deg, #22C55E, #4ADE80)" }}
+                  style={{ background: "linear-gradient(135deg, #F59E0B, #4ADE80)" }}
                 >
                   Creer un evenement
                 </button>
@@ -513,9 +513,9 @@ export default function ExplorePage() {
                         disabled={joining === event.id || (isFull && !event.is_joined)}
                         className="flex-shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
                         style={{
-                          background: event.is_joined ? "rgba(34,197,94,0.15)" : isFull ? "var(--c-glass)" : "linear-gradient(135deg, #22C55E, #4ADE80)",
-                          color: event.is_joined ? "#22c55e" : isFull ? "var(--c-text-muted)" : "#fff",
-                          border: event.is_joined ? "1px solid rgba(34,197,94,0.3)" : "none",
+                          background: event.is_joined ? "rgba(245,158,11,0.15)" : isFull ? "var(--c-glass)" : "linear-gradient(135deg, #F59E0B, #4ADE80)",
+                          color: event.is_joined ? "#F59E0B" : isFull ? "var(--c-text-muted)" : "#fff",
+                          border: event.is_joined ? "1px solid rgba(245,158,11,0.3)" : "none",
                           cursor: isFull && !event.is_joined ? "not-allowed" : "pointer",
                           opacity: isFull && !event.is_joined ? 0.5 : 1,
                         }}
@@ -543,7 +543,7 @@ export default function ExplorePage() {
 
                     {/* Capacity bar */}
                     <div className="w-full h-1 rounded-full overflow-hidden mt-2" style={{ background: "var(--c-glass)" }}>
-                      <div className={`h-full rounded-full transition-all ${isFull ? "bg-red-500" : spotsLeft <= 3 ? "bg-green-500" : "bg-green-500"}`}
+                      <div className={`h-full rounded-full transition-all ${isFull ? "bg-red-500" : spotsLeft <= 3 ? "bg-amber-500" : "bg-amber-500"}`}
                         style={{ width: `${((event.participant_count || 0) / (event.max_participants || 1)) * 100}%` }} />
                     </div>
                   </div>
@@ -618,12 +618,12 @@ export default function ExplorePage() {
                     className="px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-105"
                     style={{
                       background: `linear-gradient(135deg, ${
-                        ["rgba(34,197,94,0.1)", "rgba(167,139,250,0.1)", "rgba(59,130,246,0.1)", "rgba(34,197,94,0.1)", "rgba(236,72,153,0.1)"][i % 5]
+                        ["rgba(245,158,11,0.1)", "rgba(167,139,250,0.1)", "rgba(59,130,246,0.1)", "rgba(245,158,11,0.1)", "rgba(236,72,153,0.1)"][i % 5]
                       }, ${
-                        ["rgba(34,197,94,0.05)", "rgba(167,139,250,0.05)", "rgba(59,130,246,0.05)", "rgba(34,197,94,0.05)", "rgba(236,72,153,0.05)"][i % 5]
+                        ["rgba(245,158,11,0.05)", "rgba(167,139,250,0.05)", "rgba(59,130,246,0.05)", "rgba(245,158,11,0.05)", "rgba(236,72,153,0.05)"][i % 5]
                       })`,
                       border: `1px solid ${
-                        ["rgba(34,197,94,0.2)", "rgba(167,139,250,0.2)", "rgba(59,130,246,0.2)", "rgba(34,197,94,0.2)", "rgba(236,72,153,0.2)"][i % 5]
+                        ["rgba(245,158,11,0.2)", "rgba(167,139,250,0.2)", "rgba(59,130,246,0.2)", "rgba(245,158,11,0.2)", "rgba(236,72,153,0.2)"][i % 5]
                       }`,
                       color: "var(--c-text-muted)",
                     }}
@@ -699,7 +699,7 @@ export default function ExplorePage() {
                       className="px-3 py-1.5 rounded-full text-xs transition-all"
                       style={{
                         background: form.species.includes(s) ? "rgba(34, 197, 94,0.15)" : "var(--c-glass)",
-                        color: form.species.includes(s) ? "#22C55E" : "var(--c-text-muted)",
+                        color: form.species.includes(s) ? "#F59E0B" : "var(--c-text-muted)",
                         border: `1px solid ${form.species.includes(s) ? "rgba(34, 197, 94,0.3)" : "var(--c-border)"}`,
                       }}>
                       {emoji} {s.charAt(0).toUpperCase() + s.slice(1)}
@@ -733,7 +733,7 @@ export default function ExplorePage() {
                 </button>
                 <button type="submit" disabled={creating}
                   className="flex-1 py-2.5 rounded-2xl text-sm font-bold text-white disabled:opacity-50"
-                  style={{ background: "linear-gradient(135deg, #22C55E, #4ADE80)" }}>
+                  style={{ background: "linear-gradient(135deg, #F59E0B, #4ADE80)" }}>
                   {creating ? "..." : "Publier"}
                 </button>
               </div>

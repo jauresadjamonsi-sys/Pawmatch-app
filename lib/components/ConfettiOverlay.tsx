@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 
-const CONFETTI_COLORS = ["#22c55e", "#ec4899", "#22c55e", "#3b82f6", "#eab308", "#8b5cf6"];
+const CONFETTI_COLORS = ["#F59E0B", "#ec4899", "#F59E0B", "#3b82f6", "#eab308", "#8b5cf6"];
 const CONFETTI_SHAPES = ["\u25CF", "\u25A0", "\u25B2", "\u2605", "\u2665"];
 
 export default function ConfettiOverlay({ active }: { active: boolean }) {

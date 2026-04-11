@@ -168,7 +168,7 @@ export default function AnimalCardPage() {
           className="absolute inset-0 rounded-3xl pointer-events-none"
           style={{
             padding: "1.5px",
-            background: "linear-gradient(135deg, #22C55E, #A78BFA, #38BDF8, #22C55E)",
+            background: "linear-gradient(135deg, #F59E0B, #A78BFA, #38BDF8, #F59E0B)",
             backgroundSize: "300% 300%",
             animation: "aurora 6s ease infinite",
             WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
@@ -308,7 +308,7 @@ export default function AnimalCardPage() {
                     height: "100%",
                     borderRadius: 3,
                     width: `${(energyLevel / 5) * 100}%`,
-                    background: "linear-gradient(90deg, #22C55E, #FBBF24)",
+                    background: "linear-gradient(90deg, #F59E0B, #FBBF24)",
                     transition: "width 0.6s ease",
                   }}
                 />
@@ -355,7 +355,7 @@ export default function AnimalCardPage() {
               style={{
                 fontSize: 13,
                 fontWeight: 800,
-                background: "linear-gradient(135deg, #22C55E, #A78BFA)",
+                background: "linear-gradient(135deg, #F59E0B, #A78BFA)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -378,7 +378,7 @@ export default function AnimalCardPage() {
             onClick={handleShare}
             className="w-full py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition"
             style={{
-              background: "linear-gradient(135deg, #22C55E, #EA580C)",
+              background: "linear-gradient(135deg, #F59E0B, #EA580C)",
               color: "#fff",
               boxShadow: "0 4px 24px rgba(249,115,22,0.3)",
             }}

@@ -206,7 +206,7 @@ export default function LivePage() {
               </Link>
             )}
             {!profile && (
-              <Link href="/login" className="inline-block mt-6 text-sm text-green-400 hover:text-green-300">
+              <Link href="/login" className="inline-block mt-6 text-sm text-amber-400 hover:text-amber-300">
                 Connectez-vous pour lancer un live
               </Link>
             )}

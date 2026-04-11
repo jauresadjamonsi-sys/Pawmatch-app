@@ -111,14 +111,14 @@ export default function SharePage() {
       // If Ruby fails to load, draw paw emoji
       ctx.font = "180px serif";
       ctx.textAlign = "center";
-      ctx.fillStyle = "#22C55E";
+      ctx.fillStyle = "#F59E0B";
       ctx.fillText("🐾", 540, 560);
     }
 
     // "PAWLY" title
     ctx.font = "bold 72px -apple-system, BlinkMacSystemFont, sans-serif";
     ctx.textAlign = "center";
-    ctx.fillStyle = "#22C55E";
+    ctx.fillStyle = "#F59E0B";
     ctx.fillText("PAWLY", 540, 820);
 
     // Tagline
@@ -177,7 +177,7 @@ export default function SharePage() {
 
     // CTA
     ctx.font = "bold 30px -apple-system, BlinkMacSystemFont, sans-serif";
-    ctx.fillStyle = "#22C55E";
+    ctx.fillStyle = "#F59E0B";
     ctx.fillText("Scanne pour rejoindre", 540, 1680);
 
     // Footer
@@ -256,7 +256,7 @@ export default function SharePage() {
           <p className="text-5xl font-black gradient-text-warm mb-1">{referralCount}</p>
           <p className="text-sm text-[var(--c-text-muted)]">{t.shareFriends}</p>
           {currentTier && (
-            <p className="mt-2 text-sm font-bold text-green-400">{currentTier.badge}</p>
+            <p className="mt-2 text-sm font-bold text-amber-400">{currentTier.badge}</p>
           )}
           {nextTier && (
             <p className="mt-1 text-xs text-[var(--c-text-muted)]">
@@ -436,7 +436,7 @@ export default function SharePage() {
                     </p>
                     <p className="text-xs text-[var(--c-text-muted)]">{r.reward}</p>
                   </div>
-                  {unlocked && <span className="text-green-400 text-lg">✅</span>}
+                  {unlocked && <span className="text-amber-400 text-lg">✅</span>}
                 </div>
               );
             })}
@@ -445,7 +445,7 @@ export default function SharePage() {
 
         {/* Back */}
         <div className="text-center mt-6">
-          <Link href="/profile" className="text-sm text-[var(--c-text-muted)] hover:text-green-400 transition">
+          <Link href="/profile" className="text-sm text-[var(--c-text-muted)] hover:text-amber-400 transition">
             ← Retour au profil
           </Link>
         </div>
