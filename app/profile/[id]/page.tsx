@@ -31,7 +31,7 @@ type Reel = {
   id: string;
   thumbnail_url: string | null;
   caption: string | null;
-  like_count: number;
+  likes_count: number;
 };
 
 export default function PublicProfilePage() {
@@ -77,7 +77,7 @@ export default function PublicProfilePage() {
       // Fetch animals, reels, followers in parallel
       const [animalsRes, reelsRes, followersRes, followingRes, isFollowingRes] = await Promise.all([
         supabase.from("animals").select("id, name, species, breed, photos, canton").eq("created_by", userId).order("created_at", { ascending: false }),
-        supabase.from("reels").select("id, thumbnail_url, caption, like_count").eq("user_id", userId).order("created_at", { ascending: false }).limit(30),
+        supabase.from("reels").select("id, thumbnail_url, caption, likes_count").eq("user_id", userId).order("created_at", { ascending: false }).limit(30),
         supabase.from("followers").select("*", { count: "exact", head: true }).eq("followed_id", userId),
         supabase.from("followers").select("*", { count: "exact", head: true }).eq("follower_id", userId),
         myProfile ? supabase.from("followers").select("id").eq("follower_id", myProfile.id).eq("followed_id", userId).single() : Promise.resolve({ data: null }),
@@ -351,7 +351,7 @@ export default function PublicProfilePage() {
                   </div>
                 )}
                 <div className="absolute bottom-1.5 left-1.5 flex items-center gap-1 bg-black/50 backdrop-blur rounded-full px-2 py-0.5">
-                  <span className="text-white text-[10px]">❤️ {r.like_count || 0}</span>
+                  <span className="text-white text-[10px]">❤️ {r.likes_count || 0}</span>
                 </div>
               </Link>
             ))}

@@ -10,66 +10,71 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ daily: [], weekly: null });
 
-  const today = new Date();
-  const todayStr = today.toISOString().split("T")[0];
-  const startOfDay = `${todayStr}T00:00:00Z`;
-  const startOfWeek = new Date(today.getTime() - today.getDay() * 86400000).toISOString().split("T")[0] + "T00:00:00Z";
+  try {
+    const today = new Date();
+    const todayStr = today.toISOString().split("T")[0];
+    const startOfDay = `${todayStr}T00:00:00Z`;
+    const startOfWeek = new Date(today.getTime() - today.getDay() * 86400000).toISOString().split("T")[0] + "T00:00:00Z";
 
-  const daily = getDailyChallenges(today);
-  const weekly = getWeeklyChallenge(today);
+    const daily = getDailyChallenges(today);
+    const weekly = getWeeklyChallenge(today);
 
-  // Fetch actual progress from various tables in parallel
-  const [reelsToday, storiesToday, swipesToday, matchesToday, commentsToday, likesToday, claimedRes] = await Promise.all([
-    supabase.from("reels").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", startOfDay).then(r => r.count || 0).catch(() => 0),
-    supabase.from("stories").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", startOfDay).then(r => r.count || 0).catch(() => 0),
-    supabase.from("swipe_history").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", startOfDay).then(r => r.count || 0).catch(() => 0),
-    supabase.from("matches").select("id", { count: "exact", head: true }).or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`).gte("created_at", startOfDay).then(r => r.count || 0).catch(() => 0),
-    supabase.from("reel_comments").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", startOfDay).then(r => r.count || 0).catch(() => 0),
-    supabase.from("reel_likes").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", startOfDay).then(r => r.count || 0).catch(() => 0),
-    supabase.from("user_challenges").select("challenge_id, claimed_at").eq("user_id", user.id).gte("challenge_date", todayStr).catch(() => ({ data: [] })),
-  ]);
+    // Safe count helper — handles missing tables gracefully
+    async function safeCount(table: string, filters: (q: any) => any): Promise<number> {
+      try {
+        const q = supabase.from(table).select("id", { count: "exact", head: true });
+        const { count, error } = await filters(q);
+        if (error) return 0;
+        return count || 0;
+      } catch { return 0; }
+    }
 
-  const claimed = new Set((claimedRes.data || []).filter((c: any) => c.claimed_at).map((c: any) => c.challenge_id));
+    // Fetch progress — each query safely catches missing tables
+    const [reelsToday, storiesToday, swipesToday, matchesToday, commentsToday, likesToday] = await Promise.all([
+      safeCount("reels", q => q.eq("user_id", user.id).gte("created_at", startOfDay)),
+      safeCount("stories", q => q.eq("user_id", user.id).gte("created_at", startOfDay)),
+      safeCount("swipe_history", q => q.eq("user_id", user.id).gte("created_at", startOfDay)),
+      safeCount("matches", q => q.or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`).gte("created_at", startOfDay)),
+      safeCount("reel_comments", q => q.eq("user_id", user.id).gte("created_at", startOfDay)),
+      safeCount("reel_likes", q => q.eq("user_id", user.id).gte("created_at", startOfDay)),
+    ]);
 
-  // Map challenge type to actual progress
-  const progressMap: Record<string, number> = {
-    post_reel: reelsToday as number,
-    post_story: storiesToday as number,
-    send_flair: swipesToday as number,
-    make_match: matchesToday as number,
-    comment_reel: commentsToday as number,
-    like_reels: likesToday as number,
-    visit_feed: 1, // If they're calling this API, they're on the app
-    explore_page: 0,
-    share_profile: 0,
-    join_group: 0,
-    add_animal_photo: 0,
-  };
+    // Claimed challenges
+    let claimed = new Set<string>();
+    try {
+      const { data } = await supabase.from("user_challenges").select("challenge_id, claimed_at").eq("user_id", user.id).gte("challenge_date", todayStr);
+      claimed = new Set((data || []).filter((c: any) => c.claimed_at).map((c: any) => c.challenge_id));
+    } catch { /* table may not exist yet */ }
 
-  const enrichedDaily = daily.map(ch => {
-    const progress = progressMap[ch.type] || 0;
-    return {
-      ...ch,
-      progress: Math.min(progress, ch.target),
-      completed: progress >= ch.target,
-      claimed: claimed.has(ch.id),
+    const progressMap: Record<string, number> = {
+      post_reel: reelsToday,
+      post_story: storiesToday,
+      send_flair: swipesToday,
+      make_match: matchesToday,
+      comment_reel: commentsToday,
+      like_reels: likesToday,
+      visit_feed: 1,
+      explore_page: 0,
+      share_profile: 0,
+      join_group: 0,
+      add_animal_photo: 0,
     };
-  });
 
-  // Weekly progress (reels this week for the weekly challenge)
-  const [reelsWeek] = await Promise.all([
-    supabase.from("reels").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", startOfWeek).then(r => r.count || 0).catch(() => 0),
-  ]);
+    const enrichedDaily = daily.map(ch => {
+      const progress = progressMap[ch.type] || 0;
+      return { ...ch, progress: Math.min(progress, ch.target), completed: progress >= ch.target, claimed: claimed.has(ch.id) };
+    });
 
-  const weeklyProgress = progressMap[weekly.type] !== undefined ? (reelsWeek as number) : 0;
-  const enrichedWeekly = {
-    ...weekly,
-    progress: Math.min(weeklyProgress, weekly.target),
-    completed: weeklyProgress >= weekly.target,
-    claimed: claimed.has(weekly.id),
-  };
+    // Weekly progress
+    const reelsWeek = await safeCount("reels", q => q.eq("user_id", user.id).gte("created_at", startOfWeek));
+    const weeklyProgress = progressMap[weekly.type] !== undefined ? reelsWeek : 0;
+    const enrichedWeekly = { ...weekly, progress: Math.min(weeklyProgress, weekly.target), completed: weeklyProgress >= weekly.target, claimed: claimed.has(weekly.id) };
 
-  return NextResponse.json({ daily: enrichedDaily, weekly: enrichedWeekly });
+    return NextResponse.json({ daily: enrichedDaily, weekly: enrichedWeekly });
+  } catch (err: any) {
+    console.error("[challenges] Error:", err?.message || err);
+    return NextResponse.json({ daily: [], weekly: null, error: err?.message }, { status: 200 });
+  }
 }
 
 // POST — claim a completed challenge reward

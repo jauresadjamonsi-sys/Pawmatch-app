@@ -173,7 +173,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
         try {
           const { data: reelsData } = await supabase
             .from("reels")
-            .select("id, video_url, caption, views")
+            .select("id, video_url, caption, views_count")
             .eq("user_id", authUser.id)
             .order("created_at", { ascending: false });
           if (reelsData) {
@@ -181,7 +181,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
               id: r.id,
               video_url: r.video_url || "",
               caption: r.caption || "",
-              views: r.views || 0,
+              views: r.views_count || 0,
             })));
           }
         } catch (err) {

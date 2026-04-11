@@ -447,8 +447,8 @@ export default function FeedPage() {
           {/* ═══════ GREETING ═══════ */}
           <section className="glass rounded-2xl p-5 relative overflow-hidden">
             <div className="absolute -top-6 -right-6 text-[80px] opacity-10 pointer-events-none select-none animate-paw-drift">{"\uD83D\uDC3E"}</div>
-            <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: "var(--c-text-muted)" }}>{formatDate()}</p>
-            <h1 className="text-2xl font-extrabold gradient-text-animated">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: "var(--c-text-muted)" }} suppressHydrationWarning>{formatDate()}</p>
+            <h1 className="text-2xl font-extrabold gradient-text-animated" suppressHydrationWarning>
               {greetingWord()} {firstName} {"\uD83D\uDC3E"}
             </h1>
             {profile.city && (
