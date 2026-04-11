@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAppContext } from "@/lib/contexts/AppContext";
 import PromoSection from "@/lib/components/PromoSection";
+import VisitCounter from "@/lib/components/VisitCounter";
 
 /* ──────────────────────────────────────────
    FLOATING PARTICLES COMPONENT
@@ -387,6 +388,10 @@ export default function LandingClient() {
                 </p>
               </div>
             ))}
+          </div>
+          {/* Visit counter */}
+          <div className="flex justify-center mt-4">
+            <VisitCounter />
           </div>
         </div>
       </section>
