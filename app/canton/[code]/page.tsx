@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `Animaux a ${cantonName} | Pawband`,
       description: `Decouvre les animaux inscrits dans le canton de ${cantonName} sur Pawband.`,
-      url: `https://pawlyapp.ch/canton/${code}`,
+      url: `https://pawband.ch/canton/${code}`,
     },
   };
 }

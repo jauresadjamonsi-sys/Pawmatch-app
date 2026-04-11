@@ -9,7 +9,7 @@ import ClientShell from "@/lib/components/ClientShell";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://pawlyapp.ch";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://pawband.ch";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -102,7 +102,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               "@context": "https://schema.org",
               "@type": "WebApplication",
               "name": "Pawband",
-              "url": "https://pawlyapp.ch",
+              "url": "https://pawband.ch",
               "description": "Reseau social pour animaux de compagnie en Suisse. Matching IA, evenements, communaute.",
               "applicationCategory": "SocialNetworkingApplication",
               "operatingSystem": "Web",

@@ -32,11 +32,11 @@ export default function AnimalCardPage() {
 
   const profileUrl = typeof window !== "undefined"
     ? `${window.location.origin}/animals/${params.id}`
-    : `https://pawlyapp.ch/animals/${params.id}`;
+    : `https://pawband.ch/animals/${params.id}`;
 
   const cardUrl = typeof window !== "undefined"
     ? `${window.location.origin}/animals/${params.id}/card`
-    : `https://pawlyapp.ch/animals/${params.id}/card`;
+    : `https://pawband.ch/animals/${params.id}/card`;
 
   useEffect(() => {
     async function load() {
@@ -343,7 +343,7 @@ export default function AnimalCardPage() {
                 {t.cardScanProfile || "Scan to view profile"}
               </p>
               <p style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", wordBreak: "break-all" }}>
-                pawlyapp.ch/animals/{(params.id as string).slice(0, 8)}...
+                pawband.ch/animals/{(params.id as string).slice(0, 8)}...
               </p>
             </div>
           </div>

@@ -66,8 +66,8 @@ export async function POST(request: Request) {
     }
 
     const origin = request.headers.get("origin");
-    const allowedOrigins = ["https://pawlyapp.ch", "https://www.pawlyapp.ch", "http://localhost:3000"];
-    const baseUrl = allowedOrigins.includes(origin || "") ? origin : "https://pawlyapp.ch";
+    const allowedOrigins = ["https://pawband.ch", "https://www.pawband.ch", "https://pawlyapp.ch", "https://www.pawlyapp.ch", "http://localhost:3000"];
+    const baseUrl = allowedOrigins.includes(origin || "") ? origin : "https://pawband.ch";
 
     const session = await getStripe().checkout.sessions.create({
       customer: customerId,

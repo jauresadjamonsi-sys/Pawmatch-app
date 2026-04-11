@@ -573,7 +573,7 @@ export default function AnimalDetailPage() {
             {/* Partager */}
             <button
               onClick={() => {
-                const url = `https://pawlyapp.ch/animals/${animal.id}`;
+                const url = `https://pawband.ch/animals/${animal.id}`;
                 const text = `Decouvre ${animal.name} sur Pawband ! ${url}`;
                 if (navigator.share) {
                   navigator.share({ title: animal.name + " | Pawband", text, url }).catch(() => {});

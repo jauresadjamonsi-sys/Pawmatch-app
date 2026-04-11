@@ -73,7 +73,7 @@ function getSmartRecommendations(animal: SmartProps["animal"]): ServiceRec[] {
   }
 
   // Copain de balade toujours
-  recs.push({ emoji: "🦮", reason: `Trouvez un copain de balade pour ${animal.name}`, category: "Pawband", urgency: "low", cta: "https://pawlyapp.ch/flairer" });
+  recs.push({ emoji: "🦮", reason: `Trouvez un copain de balade pour ${animal.name}`, category: "Pawband", urgency: "low", cta: "https://pawband.ch/flairer" });
 
   const urgencyOrder = { high: 0, medium: 1, low: 2 };
   return recs.sort((a, b) => urgencyOrder[a.urgency] - urgencyOrder[b.urgency]).slice(0, 4);

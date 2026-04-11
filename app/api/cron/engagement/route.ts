@@ -52,7 +52,7 @@ async function sendNotification(
 
     if (sub?.subscription) {
       // Fire and forget push — don't block the cron
-      fetch(`${process.env.NEXT_PUBLIC_SITE_URL || "https://www.pawlyapp.ch"}/api/push/send`, {
+      fetch(`${process.env.NEXT_PUBLIC_SITE_URL || "https://www.pawband.ch"}/api/push/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

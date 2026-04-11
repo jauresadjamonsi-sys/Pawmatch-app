@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import BackButton from "@/lib/components/BackButton";
 
-const BASE_URL = "https://pawlyapp.ch";
+const BASE_URL = "https://pawband.ch";
 
 type Props = {
   params: Promise<{ canton: string }>;

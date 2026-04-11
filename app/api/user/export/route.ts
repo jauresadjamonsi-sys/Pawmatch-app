@@ -22,7 +22,7 @@ export async function GET() {
   const exportData = {
     export_date: new Date().toISOString(),
     format_version: "1.0",
-    platform: "Pawband (pawlyapp.ch)",
+    platform: "Pawband (pawband.ch)",
     user: {
       auth_email: user.email,
       auth_created_at: user.created_at,
@@ -32,7 +32,7 @@ export async function GET() {
     matches_sent: matchesSentRes.data || [],
     matches_received: matchesReceivedRes.data || [],
     messages_sent: messagesRes.data || [],
-    legal_notice: "Export genere conformement a l'art. 20 RGPD et a la nLPD suisse. Pour toute question : contact@pawlyapp.ch",
+    legal_notice: "Export genere conformement a l'art. 20 RGPD et a la nLPD suisse. Pour toute question : contact@pawband.ch",
   };
 
   return new NextResponse(JSON.stringify(exportData, null, 2), {

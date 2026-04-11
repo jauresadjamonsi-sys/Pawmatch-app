@@ -95,9 +95,9 @@ export async function GET(request: Request) {
             <p style="margin:4px 0 0;font-size:13px;color:#9ca3af">Reviens flairer pour trouver le copain ideal</p>
           </div>
           ${eventSection}
-          <a href="https://pawlyapp.ch/flairer" style="display:block;margin-top:20px;padding:14px;background:#FBBF24;color:#fff;text-align:center;border-radius:12px;font-weight:700;font-size:14px;text-decoration:none">Revenir flairer</a>
+          <a href="https://pawband.ch/flairer" style="display:block;margin-top:20px;padding:14px;background:#FBBF24;color:#fff;text-align:center;border-radius:12px;font-weight:700;font-size:14px;text-decoration:none">Revenir flairer</a>
           <p style="margin-top:16px;text-align:center;font-size:11px;color:#6b7280">
-            <a href="https://pawlyapp.ch/profile" style="color:#6b7280;text-decoration:underline">Se desabonner</a>
+            <a href="https://pawband.ch/profile" style="color:#6b7280;text-decoration:underline">Se desabonner</a>
           </p>
         </div>
         <div style="padding:16px;text-align:center;border-top:1px solid rgba(255,255,255,0.05)">
@@ -106,7 +106,7 @@ export async function GET(request: Request) {
       </div>`;
 
       const { error: sendError } = await resend.emails.send({
-        from: "Pawband <contact@pawlyapp.ch>",
+        from: "Pawband <contact@pawband.ch>",
         to: user.email,
         subject: `${firstName}, ${potentialMatches} compagnons t'attendent !`,
         html,

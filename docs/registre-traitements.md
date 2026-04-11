@@ -5,13 +5,13 @@
 **Responsable du traitement :** Pawly / PawDirectory
 **Represente par :** Jaures Adjamonsi
 **Siege :** Canton de Vaud, Suisse
-**Contact :** contact@pawlyapp.ch
+**Contact :** contact@pawband.ch
 **Date de creation :** 7 avril 2026
 **Derniere mise a jour :** 7 avril 2026
 
 ---
 
-## 1. PAWLY (pawlyapp.ch)
+## 1. PAWLY (pawband.ch)
 
 ### 1.1 Inscription et gestion des comptes
 
@@ -205,8 +205,8 @@
 | **Rectification (art. 16 RGPD / art. 32 nLPD)** | Interface de profil — modification directe | Immediat |
 | **Effacement (art. 17 RGPD / art. 32 nLPD)** | Bouton "Supprimer mon compte" dans le profil + API `/api/user/delete` | Immediat (donnees), 30 jours (backups) |
 | **Portabilite (art. 20 RGPD / art. 28 nLPD)** | API `/api/user/export` — format JSON lisible par machine | Immediat (automatise) |
-| **Opposition (art. 21 RGPD / art. 32 nLPD)** | Email a contact@pawlyapp.ch | 30 jours |
-| **Limitation (art. 18 RGPD)** | Email a contact@pawlyapp.ch | 30 jours |
+| **Opposition (art. 21 RGPD / art. 32 nLPD)** | Email a contact@pawband.ch | 30 jours |
+| **Limitation (art. 18 RGPD)** | Email a contact@pawband.ch | 30 jours |
 
 ---
 

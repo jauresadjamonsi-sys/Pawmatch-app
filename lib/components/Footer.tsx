@@ -171,7 +171,7 @@ export default function Footer() {
             Mentions legales
           </Link>
           <a
-            href="mailto:contact@pawlyapp.ch"
+            href="mailto:contact@pawband.ch"
             className="footer-link"
             style={{
               fontSize: 12,
@@ -212,7 +212,7 @@ export default function Footer() {
             letterSpacing: "0.02em",
           }}
         >
-          &copy; {new Date().getFullYear()} Pawband &mdash; pawlyapp.ch
+          &copy; {new Date().getFullYear()} Pawband &mdash; pawband.ch
         </p>
       </div>
 

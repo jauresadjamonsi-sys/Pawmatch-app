@@ -56,7 +56,7 @@ export async function POST(request: Request) {
           const { Resend } = await import("resend");
           const resend = new Resend(apiKey);
           await resend.emails.send({
-            from: "Pawband <contact@pawlyapp.ch>",
+            from: "Pawband <contact@pawband.ch>",
             to: email,
             subject: "🐾 Ton compagnon t'attend sur Pawband !",
             html: `<div style="max-width:500px;margin:0 auto;font-family:-apple-system,sans-serif;background:#1a1225;color:#fff;border-radius:16px;overflow:hidden">
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
                   <p style="margin:8px 0 0;font-size:14px;color:#9ca3af">📍 <strong style="color:#fff">14 cantons</strong> couverts</p>
                   <p style="margin:8px 0 0;font-size:14px;color:#9ca3af">💬 <strong style="color:#fff">Matchs gratuits</strong> pour commencer</p>
                 </div>
-                <a href="https://pawlyapp.ch/profile/animals/new" style="display:block;padding:14px;background:#FBBF24;color:#fff;text-align:center;border-radius:12px;font-weight:700;font-size:15px;text-decoration:none">Ajouter mon animal →</a>
+                <a href="https://pawband.ch/profile/animals/new" style="display:block;padding:14px;background:#FBBF24;color:#fff;text-align:center;border-radius:12px;font-weight:700;font-size:15px;text-decoration:none">Ajouter mon animal →</a>
                 <p style="margin-top:16px;font-size:12px;color:#6b7280;text-align:center">Ça prend moins de 2 minutes, promis 🐾</p>
               </div>
               <div style="padding:16px;text-align:center;border-top:1px solid rgba(255,255,255,0.05)">

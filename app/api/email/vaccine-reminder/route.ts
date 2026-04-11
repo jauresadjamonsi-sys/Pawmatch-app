@@ -79,7 +79,7 @@ export async function GET(request: Request) {
             N'oublie pas de prendre rendez-vous chez ton vétérinaire. Tu peux trouver un vétérinaire proche de chez toi sur PawDirectory.
           </p>
           <a href="https://pawdirectory.ch" style="display:block;margin-bottom:12px;padding:14px;background:#0D9488;color:#fff;text-align:center;border-radius:12px;font-weight:700;font-size:14px;text-decoration:none">Trouver un vétérinaire</a>
-          <a href="https://pawlyapp.ch/profile" style="display:block;padding:14px;background:rgba(255,255,255,0.05);color:#d1d5db;text-align:center;border-radius:12px;font-weight:600;font-size:14px;text-decoration:none;border:1px solid rgba(255,255,255,0.1)">Voir mon profil</a>
+          <a href="https://pawband.ch/profile" style="display:block;padding:14px;background:rgba(255,255,255,0.05);color:#d1d5db;text-align:center;border-radius:12px;font-weight:600;font-size:14px;text-decoration:none;border:1px solid rgba(255,255,255,0.1)">Voir mon profil</a>
         </div>
         <div style="padding:16px;text-align:center;border-top:1px solid rgba(255,255,255,0.05)">
           <p style="margin:0;font-size:11px;color:#6b7280">Pawband — Ton compagnon de sortie en Suisse</p>
@@ -87,7 +87,7 @@ export async function GET(request: Request) {
       </div>`;
 
       const { error: sendError } = await resend.emails.send({
-        from: "Pawband <contact@pawlyapp.ch>",
+        from: "Pawband <contact@pawband.ch>",
         to: owner.email,
         subject: `Rappel : vaccin de ${animal.name} dans ${daysUntil} jour${daysUntil > 1 ? "s" : ""}`,
         html,

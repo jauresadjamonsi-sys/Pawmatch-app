@@ -24,7 +24,7 @@ export default function SharePage() {
   const supabase = createClient();
 
   const referralCode = profile?.referral_code || "";
-  const shareUrl = `https://pawlyapp.ch/signup?ref=${referralCode}`;
+  const shareUrl = `https://pawband.ch/signup?ref=${referralCode}`;
   const shareText = `🐾 Mon animal a trouvé des copains de balade sur Pawband ! Rejoins la communauté suisse des propriétaires d'animaux → ${shareUrl}`;
   const [storyCardUrl, setStoryCardUrl] = useState<string>("");
 
@@ -183,7 +183,7 @@ export default function SharePage() {
     // Footer
     ctx.font = "22px -apple-system, BlinkMacSystemFont, sans-serif";
     ctx.fillStyle = "rgba(255,255,255,0.4)";
-    ctx.fillText("pawlyapp.ch", 540, 1780);
+    ctx.fillText("pawband.ch", 540, 1780);
 
     // Use canvas.toBlob for iOS compatibility (avoids data URL size limits)
     const blob = await canvasToBlob(canvas);

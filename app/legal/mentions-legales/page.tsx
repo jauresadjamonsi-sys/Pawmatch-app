@@ -16,8 +16,8 @@ export default function MentionsLegalesPage() {
             <p><strong>Raison sociale :</strong> Pawband</p>
             <p><strong>Forme juridique :</strong> Entreprise individuelle</p>
             <p><strong>Siege social :</strong> Canton de Vaud, Suisse</p>
-            <p><strong>Email :</strong> contact@pawlyapp.ch</p>
-            <p><strong>Site web :</strong> https://pawlyapp.ch</p>
+            <p><strong>Email :</strong> contact@pawband.ch</p>
+            <p><strong>Site web :</strong> https://pawband.ch</p>
             <p><strong>Responsable de la publication :</strong> Jaures Adjamonsi</p>
           </section>
 
@@ -73,7 +73,7 @@ export default function MentionsLegalesPage() {
 
           <section>
             <h2 className="text-lg font-semibold mb-2" style={{ color: "var(--c-text)" }}>9. Contact</h2>
-            <p>Pour toute question : <a href="mailto:contact@pawlyapp.ch" className="underline" style={{ color: "var(--c-accent, #FBBF24)" }}>contact@pawlyapp.ch</a></p>
+            <p>Pour toute question : <a href="mailto:contact@pawband.ch" className="underline" style={{ color: "var(--c-accent, #FBBF24)" }}>contact@pawband.ch</a></p>
           </section>
         </div>
       </div>

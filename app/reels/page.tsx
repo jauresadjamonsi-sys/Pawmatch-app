@@ -253,7 +253,7 @@ function ReelCard({ reel, index, isActive }: { reel: ReelWithAuthor; index: numb
   }
 
   async function handleShare() {
-    const shareUrl = `https://pawlyapp.ch/reels/${reel.id}`;
+    const shareUrl = `https://pawband.ch/reels/${reel.id}`;
     const shareData = { title: "Pawband", text: "Regarde ce reel sur Pawband !", url: shareUrl };
     try {
       if (navigator.share) {

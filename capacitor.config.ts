@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: "Pawband",
   webDir: "out",
   server: {
-    url: "https://pawlyapp.ch",
+    url: "https://pawband.ch",
     cleartext: false,
   },
   plugins: {

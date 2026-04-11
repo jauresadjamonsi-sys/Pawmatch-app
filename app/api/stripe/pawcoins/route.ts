@@ -69,8 +69,8 @@ export async function POST(request: NextRequest) {
     }
 
     const origin = request.headers.get("origin");
-    const allowedOrigins = ["https://pawlyapp.ch", "https://www.pawlyapp.ch", "http://localhost:3000"];
-    const baseUrl = allowedOrigins.includes(origin || "") ? origin : "https://www.pawlyapp.ch";
+    const allowedOrigins = ["https://pawband.ch", "https://www.pawband.ch", "https://pawlyapp.ch", "https://www.pawlyapp.ch", "http://localhost:3000"];
+    const baseUrl = allowedOrigins.includes(origin || "") ? origin : "https://www.pawband.ch";
 
     const session = await getStripe().checkout.sessions.create({
       customer: customerId,
@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
             product_data: {
               name: pack.label,
               description: `${pack.coins} PawCoins pour ton compte Pawband`,
-              images: ["https://www.pawlyapp.ch/icon-512x512.png"],
+              images: ["https://www.pawband.ch/icon-512x512.png"],
             },
             unit_amount: pack.price,
           },

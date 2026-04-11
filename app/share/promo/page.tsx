@@ -55,7 +55,7 @@ function FloatingParticles() {
 function PromoContent() {
   const searchParams = useSearchParams();
   const ref = searchParams.get("ref") || "";
-  const referralLink = `https://pawlyapp.ch/signup?ref=${ref}`;
+  const referralLink = `https://pawband.ch/signup?ref=${ref}`;
 
   const [frame, setFrame] = useState(0);
   const [emojiIdx, setEmojiIdx] = useState(0);
@@ -239,7 +239,7 @@ function PromoContent() {
           {/* Frame 4: CTA */}
           <div className={`frame frame-4 ${frame === 3 ? "frame-active" : ""}`}>
             <h1 className="frame-title cta-title">Télécharge Pawband</h1>
-            <a href="https://pawlyapp.ch" target="_blank" rel="noopener noreferrer" className="cta-domain">pawlyapp.ch</a>
+            <a href="https://pawband.ch" target="_blank" rel="noopener noreferrer" className="cta-domain">pawband.ch</a>
             {ref && <div className="ref-code">Code : {ref.slice(0, 8)}</div>}
             <div className="gratuit-badge">Gratuit</div>
           </div>
@@ -256,7 +256,7 @@ function PromoContent() {
         <div className="swiss-badge">Conçu en Suisse 🇨🇭</div>
 
         {/* Watermark */}
-        <a href="https://pawlyapp.ch" target="_blank" rel="noopener noreferrer" className="watermark">pawlyapp.ch</a>
+        <a href="https://pawband.ch" target="_blank" rel="noopener noreferrer" className="watermark">pawband.ch</a>
       </div>
 
       {/* ---- Action buttons (outside story) ---- */}

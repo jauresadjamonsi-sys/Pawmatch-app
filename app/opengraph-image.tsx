@@ -297,7 +297,7 @@ export default async function Image() {
               letterSpacing: "-0.5px",
             }}
           >
-            pawlyapp.ch
+            pawband.ch
           </div>
         </div>
 

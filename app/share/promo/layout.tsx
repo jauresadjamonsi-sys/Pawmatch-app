@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://pawlyapp.ch";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://pawband.ch";
 
 export const metadata: Metadata = {
   title: "Rejoins Pawband — L'app des animaux en Suisse",

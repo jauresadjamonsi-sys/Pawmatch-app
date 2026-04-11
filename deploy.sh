@@ -19,12 +19,12 @@ fi
 if [ -n "$DEPLOY_URL" ]; then
   echo ""
   echo "🔗 Updating bare domain alias..."
-  npx vercel alias set "$DEPLOY_URL" pawlyapp.ch
+  npx vercel alias set "$DEPLOY_URL" pawband.ch
   echo ""
   echo "✅ Done! Both domains now point to latest deployment:"
-  echo "   www.pawlyapp.ch → $DEPLOY_URL"
-  echo "   pawlyapp.ch     → $DEPLOY_URL"
+  echo "   www.pawband.ch → $DEPLOY_URL"
+  echo "   pawband.ch     → $DEPLOY_URL"
 else
   echo "❌ Could not extract deployment URL. Run manually:"
-  echo "   npx vercel alias set <deployment-url> pawlyapp.ch"
+  echo "   npx vercel alias set <deployment-url> pawband.ch"
 fi

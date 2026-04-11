@@ -28,7 +28,7 @@ export function QRIdentity({ animalId, animalName, species, breed, canton, owner
   const l = LABELS[lang] || LABELS.fr;
   const profileUrl = typeof window !== "undefined"
     ? `${window.location.origin}/animals/${animalId}`
-    : `https://pawlyapp.ch/animals/${animalId}`;
+    : `https://pawband.ch/animals/${animalId}`;
 
   useEffect(() => {
     if (showQR && profileUrl) {

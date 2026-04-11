@@ -62,7 +62,7 @@ Everyone / 4+
 Free (with in-app purchases)
 
 ## Support URL
-https://pawlyapp.ch/legal/cgu
+https://pawband.ch/legal/cgu
 
 ## Privacy Policy URL
-https://pawlyapp.ch/legal/privacy
+https://pawband.ch/legal/privacy

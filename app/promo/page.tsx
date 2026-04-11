@@ -9,8 +9,8 @@ import PromoSection from "@/lib/components/PromoSection";
    Animated shareable promo cards for WhatsApp / Instagram / TikTok
    ══════════════════════════════════════════════════════════════ */
 
-const SITE = "pawlyapp.ch";
-const SITE_URL = "https://pawlyapp.ch";
+const SITE = "pawband.ch";
+const SITE_URL = "https://pawband.ch";
 
 /* ── Types ─────────────────────────────────────── */
 interface Animal {

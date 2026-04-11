@@ -3,7 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { CANTONS_SEO, getCitySlug } from "@/lib/data/cantons";
 import { CANTONS } from "@/lib/cantons";
 
-const BASE_URL = "https://pawlyapp.ch";
+const BASE_URL = "https://pawband.ch";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [

@@ -232,7 +232,7 @@ export default async function Image() {
             </span>
           </div>
           <div style={{ fontSize: "18px", fontWeight: 700, color: "#FBBF24", display: "flex", letterSpacing: "-0.5px" }}>
-            pawlyapp.ch
+            pawband.ch
           </div>
         </div>
       </div>

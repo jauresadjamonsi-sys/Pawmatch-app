@@ -35,8 +35,8 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
   }, [userId]);
 
   const shareLink = referralCode
-    ? `https://pawlyapp.ch/signup?ref=${referralCode}`
-    : `https://pawlyapp.ch/signup?ref=${userId}`;
+    ? `https://pawband.ch/signup?ref=${referralCode}`
+    : `https://pawband.ch/signup?ref=${userId}`;
 
   async function copyCode() {
     try {

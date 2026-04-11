@@ -4,7 +4,7 @@ import { CANTONS_SEO, getCitySlug } from "@/lib/data/cantons";
 import Link from "next/link";
 import BackButton from "@/lib/components/BackButton";
 
-const BASE_URL = "https://pawlyapp.ch";
+const BASE_URL = "https://pawband.ch";
 
 export const metadata: Metadata = {
   title: "Animaux en Suisse - Trouvez des compagnons de balade | Pawband",

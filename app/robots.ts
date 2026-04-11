@@ -14,6 +14,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/api/", "/profile/", "/admin/", "/matches/"],
       },
     ],
-    sitemap: "https://pawlyapp.ch/sitemap.xml",
+    sitemap: "https://pawband.ch/sitemap.xml",
   };
 }

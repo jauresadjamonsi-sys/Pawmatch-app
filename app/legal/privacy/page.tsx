@@ -16,8 +16,8 @@ export default function PrivacyPage() {
             <h2 className="text-lg font-semibold text-[var(--c-text)] mb-2">1. Responsable du traitement</h2>
             <p><strong>Pawband</strong></p>
             <p>Canton de Vaud, Suisse</p>
-            <p>Email : <a href="mailto:contact@pawlyapp.ch" className="underline text-[var(--c-accent,#FBBF24)]">contact@pawlyapp.ch</a></p>
-            <p>Site web : <a href="https://pawlyapp.ch" className="underline text-[var(--c-accent,#FBBF24)]">https://pawlyapp.ch</a></p>
+            <p>Email : <a href="mailto:contact@pawband.ch" className="underline text-[var(--c-accent,#FBBF24)]">contact@pawband.ch</a></p>
+            <p>Site web : <a href="https://pawband.ch" className="underline text-[var(--c-accent,#FBBF24)]">https://pawband.ch</a></p>
             <p className="mt-2">La pr&eacute;sente politique est conforme &agrave; la Loi f&eacute;d&eacute;rale sur la protection des donn&eacute;es (nLPD), &agrave; l&apos;Ordonnance sur la protection des donn&eacute;es (OPDo) et au R&egrave;glement g&eacute;n&eacute;ral sur la protection des donn&eacute;es (RGPD) de l&apos;UE.</p>
           </section>
 
@@ -146,7 +146,7 @@ export default function PrivacyPage() {
               <li><strong>Droit &agrave; la limitation :</strong> restreindre le traitement dans certains cas</li>
               <li><strong>Retrait du consentement :</strong> retirer votre consentement &agrave; tout moment pour les traitements bas&eacute;s sur le consentement</li>
             </ul>
-            <p className="mt-2">Pour exercer vos droits, contactez-nous &agrave; <a href="mailto:contact@pawlyapp.ch" className="underline text-[var(--c-accent,#FBBF24)]">contact@pawlyapp.ch</a>. Nous r&eacute;pondons sous 30 jours.</p>
+            <p className="mt-2">Pour exercer vos droits, contactez-nous &agrave; <a href="mailto:contact@pawband.ch" className="underline text-[var(--c-accent,#FBBF24)]">contact@pawband.ch</a>. Nous r&eacute;pondons sous 30 jours.</p>
             <p className="mt-1">Vous pouvez &eacute;galement supprimer votre compte directement depuis les param&egrave;tres de l&apos;application.</p>
           </section>
 
@@ -190,7 +190,7 @@ export default function PrivacyPage() {
           {/* 12. Enfants */}
           <section>
             <h2 className="text-lg font-semibold text-[var(--c-text)] mb-2">12. Protection des mineurs</h2>
-            <p>Pawband est destin&eacute; aux personnes &acirc;g&eacute;es de 18 ans ou plus. Nous ne collectons pas sciemment de donn&eacute;es de mineurs. Si nous d&eacute;couvrons qu&apos;un mineur a cr&eacute;&eacute; un compte, celui-ci sera supprim&eacute; imm&eacute;diatement. Si vous &ecirc;tes parent et pensez que votre enfant utilise Pawband, contactez-nous &agrave; <a href="mailto:contact@pawlyapp.ch" className="underline text-[var(--c-accent,#FBBF24)]">contact@pawlyapp.ch</a>.</p>
+            <p>Pawband est destin&eacute; aux personnes &acirc;g&eacute;es de 18 ans ou plus. Nous ne collectons pas sciemment de donn&eacute;es de mineurs. Si nous d&eacute;couvrons qu&apos;un mineur a cr&eacute;&eacute; un compte, celui-ci sera supprim&eacute; imm&eacute;diatement. Si vous &ecirc;tes parent et pensez que votre enfant utilise Pawband, contactez-nous &agrave; <a href="mailto:contact@pawband.ch" className="underline text-[var(--c-accent,#FBBF24)]">contact@pawband.ch</a>.</p>
           </section>
 
           {/* 13. Notifications push */}
@@ -232,8 +232,8 @@ export default function PrivacyPage() {
             <h2 className="text-lg font-semibold text-[var(--c-text)] mb-2">17. Contact</h2>
             <p>Pour toute question concernant cette politique de confidentialit&eacute; ou le traitement de vos donn&eacute;es :</p>
             <p className="mt-2"><strong>Pawband</strong></p>
-            <p>Email : <a href="mailto:contact@pawlyapp.ch" className="underline text-[var(--c-accent,#FBBF24)]">contact@pawlyapp.ch</a></p>
-            <p>Site web : <a href="https://pawlyapp.ch" className="underline text-[var(--c-accent,#FBBF24)]">https://pawlyapp.ch</a></p>
+            <p>Email : <a href="mailto:contact@pawband.ch" className="underline text-[var(--c-accent,#FBBF24)]">contact@pawband.ch</a></p>
+            <p>Site web : <a href="https://pawband.ch" className="underline text-[var(--c-accent,#FBBF24)]">https://pawband.ch</a></p>
           </section>
 
         </div>

@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { createClient } from "@supabase/supabase-js";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://pawlyapp.ch";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://pawband.ch";
 
 async function getUpcomingEventCount(): Promise<number> {
   try {
