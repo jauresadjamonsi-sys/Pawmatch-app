@@ -261,7 +261,7 @@ export default function LandingClient() {
                     👑 {t.spotlightLive} {spotlightCountdown && <span style={{ fontFamily: "monospace" }}>({spotlightCountdown})</span>}
                   </span>
                 </div>
-                {/* Spotlight photo — purple/orange glow */}
+                {/* Spotlight photo — purple/green glow */}
                 <div className="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto rounded-full overflow-hidden" style={{
                   boxShadow: "0 0 30px rgba(168,85,247,0.5), 0 0 60px rgba(34,197,94,0.2)",
                   border: "3px solid rgba(168,85,247,0.6)",

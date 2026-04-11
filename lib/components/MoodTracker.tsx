@@ -152,7 +152,7 @@ export function MoodTracker({ animalId, animalName, userId, isOwner }: MoodProps
         <button onClick={() => setShowForm(true)} disabled={todayDone}
           style={{
             width: "100%", padding: 12, borderRadius: 12, border: "none", cursor: todayDone ? "default" : "pointer",
-            background: todayDone ? "#F3F4F6" : "linear-gradient(135deg, #22C55E, #ea580c)",
+            background: todayDone ? "#F3F4F6" : "linear-gradient(135deg, #22C55E, #16a34a)",
             color: todayDone ? "#9ca3af" : "#fff", fontWeight: 700, fontSize: 13,
             opacity: todayDone ? 0.6 : 1,
           }}>

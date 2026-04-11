@@ -24,6 +24,10 @@ const VerificationBanner = dynamic(
   () => import("@/lib/components/VerificationBanner"),
   { ssr: false }
 );
+const UpdateBanner = dynamic(
+  () => import("@/lib/components/UpdateBanner"),
+  { ssr: false }
+);
 const InstallPrompt = dynamic(
   () => import("@/lib/components/InstallPrompt"),
   { ssr: false }
@@ -36,6 +40,7 @@ export default function ClientShell({ children }: { children: React.ReactNode })
         <PresenceHeartbeat />
         <Navbar />
         <VerificationBanner />
+        <UpdateBanner />
         <PageTransition>{children}</PageTransition>
         {/* Footer hidden on mobile via CSS, visible on desktop */}
         <div className="hidden md:block">

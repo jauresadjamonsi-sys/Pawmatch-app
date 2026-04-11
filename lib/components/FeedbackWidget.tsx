@@ -100,7 +100,19 @@ export default function FeedbackWidget() {
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [hidden, setHidden] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
+
+  // Hide on fullscreen pages (reels, stories, live)
+  useEffect(() => {
+    const check = () => {
+      const p = window.location.pathname;
+      setHidden(p.startsWith("/reels") || p.startsWith("/stories") || p.startsWith("/live"));
+    };
+    check();
+    window.addEventListener("popstate", check);
+    return () => window.removeEventListener("popstate", check);
+  }, []);
 
   useEffect(() => {
     const supabase = createClient();
@@ -181,11 +193,13 @@ export default function FeedbackWidget() {
     }
   }
 
+  if (hidden && !open) return null;
+
   const pillStyle: React.CSSProperties = {
     position: "fixed",
-    bottom: 90,
+    bottom: 100,
     right: 16,
-    zIndex: 80,
+    zIndex: 50,
     display: "flex",
     alignItems: "center",
     gap: 4,

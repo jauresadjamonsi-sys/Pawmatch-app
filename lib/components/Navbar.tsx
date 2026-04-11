@@ -593,7 +593,7 @@ function BT({ href, active, label, featured, pulse, badge, light, children }: {
       <span className={"transition-all duration-300 " + (active ? "text-green-400 scale-110 glow-float" : light ? "text-gray-500 group-hover:text-gray-700" : "text-gray-500 group-hover:text-gray-300")}
         style={active ? { filter: "drop-shadow(0 0 6px rgba(34,197,94,0.4))" } : undefined}
       >{children}</span>
-      {badge && !active && <span aria-label="Nouvelles notifications" className="badge-pulse absolute top-0 right-1 w-2.5 h-2.5 rounded-full" style={{ background: "linear-gradient(135deg, #ef4444, #f97316)", boxShadow: "0 0 8px rgba(239,68,68,0.6)" }} />}
+      {badge && !active && <span aria-label="Nouvelles notifications" className="badge-pulse absolute top-0 right-1 w-2.5 h-2.5 rounded-full" style={{ background: "linear-gradient(135deg, #ef4444, #22c55e)", boxShadow: "0 0 8px rgba(239,68,68,0.6)" }} />}
       {active && <div className="bottom-tab-active-glow" />}
       {active && <span className="bottom-nav-active-dot" />}
       <span aria-hidden="true" className={"text-[9px] mt-0.5 " + (active ? "text-green-400 font-bold" : light ? "text-gray-400" : "text-gray-500")}>{label}</span>

@@ -572,7 +572,7 @@ export default function PawCareHubPage() {
           {!showMoodForm ? (
             <button onClick={() => setShowMoodForm(true)} style={{
               width: "100%", padding: 12, borderRadius: 12, border: "none", cursor: "pointer",
-              background: "linear-gradient(135deg, #22C55E, #ea580c)", color: "#fff",
+              background: "linear-gradient(135deg, #22C55E, #16a34a)", color: "#fff",
               fontWeight: 700, fontSize: 13,
             }}>
               Enregistrer l'humeur

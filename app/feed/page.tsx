@@ -168,11 +168,14 @@ export default function FeedPage() {
       if (!user) { setLoading(false); return; }
 
       // Note: profiles table does NOT have a canton column — canton lives on animals
-      const [profileRes, animalsRes, matchRes, msgRes] = await Promise.all([
+      // Stagger critical queries: profile+animals first, then counts
+      const [profileRes, animalsRes] = await Promise.all([
         supabase.from("profiles").select("id, full_name, email, avatar_url, role, subscription, city, created_at").eq("id", user.id).single(),
         supabase.from("animals").select("id, name, species, breed, photo_url, canton, city, created_by, age_months, gender, traits").eq("created_by", user.id).order("created_at", { ascending: false }),
-        supabase.from("matches").select("*", { count: "exact", head: true }).or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`),
-        supabase.from("messages").select("*", { count: "exact", head: true }).eq("sender_id", user.id),
+      ]);
+      const [matchRes, msgRes] = await Promise.all([
+        supabase.from("matches").select("*", { count: "exact", head: true }).or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`).then(r => r).catch(() => ({ count: 0 })),
+        supabase.from("messages").select("*", { count: "exact", head: true }).eq("sender_id", user.id).then(r => r).catch(() => ({ count: 0 })),
       ]);
 
       const prof = (profileRes.data || null) as ProfileRow | null;
@@ -225,37 +228,22 @@ export default function FeedPage() {
 
       setLoading(false);
 
-      // Secondary queries (all in parallel for speed)
-      // canton lives on animals, not profiles
+      // Secondary queries — staggered in 2 batches to prevent Supabase 503
       const myCanton = anims[0]?.canton;
       const nearbyQuery = myCanton
         ? supabase.from("animals").select("id, name, species, breed, photo_url, canton, city, created_by, age_months, gender, traits").eq("canton", myCanton).neq("created_by", user.id).order("created_at", { ascending: false }).limit(6)
         : supabase.from("animals").select("id, name, species, breed, photo_url, canton, city, created_by, age_months, gender, traits").neq("created_by", user.id).order("created_at", { ascending: false }).limit(6);
 
-      const [nearbyRes, newMatchesRes, reelsRes, matchedAnimalsRes] = await Promise.all([
+      // Batch 1: nearby + reels (most visible)
+      const [nearbyRes, reelsRes] = await Promise.all([
         nearbyQuery.then(({ data }) => data).catch(() => null),
-        supabase
-          .from("matches")
-          .select("*", { count: "exact", head: true })
-          .or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`)
-          .gte("created_at", new Date(Date.now() - 48 * 3600000).toISOString())
-          .then(({ count }) => count)
-          .catch(() => 0),
-        // Note: reels.user_id FK points to auth.users, not profiles — embedded join fails
-        // Fetch reels without joins, then enrich with separate profile queries if needed
-        supabase
-          .from("reels")
-          .select("*")
-          .order("created_at", { ascending: false })
-          .limit(20)
-          .then(({ data }) => data)
-          .catch(() => null),
-        supabase
-          .from("matches")
-          .select("sender_animal_id, receiver_animal_id")
-          .or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`)
-          .then(({ data }) => data)
-          .catch(() => null),
+        supabase.from("reels").select("*").order("created_at", { ascending: false }).limit(20).then(({ data }) => data).catch(() => null),
+      ]);
+
+      // Batch 2: counts (less critical)
+      const [newMatchesRes, matchedAnimalsRes] = await Promise.all([
+        supabase.from("matches").select("*", { count: "exact", head: true }).or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`).gte("created_at", new Date(Date.now() - 48 * 3600000).toISOString()).then(({ count }) => count).catch(() => 0),
+        supabase.from("matches").select("sender_animal_id, receiver_animal_id").or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`).then(({ data }) => data).catch(() => null),
       ]);
 
       if (nearbyRes) setNearbyAnimals(nearbyRes as unknown as AnimalRow[]);

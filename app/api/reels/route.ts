@@ -43,10 +43,37 @@ export async function GET(request: NextRequest) {
     }
   }
 
+  // Enrich with profile + animal data (separate queries since FK points to auth.users)
+  let profilesMap: Record<string, { full_name: string | null; avatar_url: string | null }> = {};
+  let animalsMap: Record<string, { name: string | null; photo_url: string | null }> = {};
+
+  if (reels && reels.length > 0) {
+    const userIds = [...new Set(reels.map((r: any) => r.user_id).filter(Boolean))];
+    const animalIds = [...new Set(reels.map((r: any) => r.animal_id).filter(Boolean))];
+
+    const [profilesRes, animalsRes] = await Promise.all([
+      userIds.length > 0
+        ? supabase.from("profiles").select("id, full_name, avatar_url").in("id", userIds).then(r => r).catch(() => ({ data: [] }))
+        : { data: [] },
+      animalIds.length > 0
+        ? supabase.from("animals").select("id, name, photo_url").in("id", animalIds).then(r => r).catch(() => ({ data: [] }))
+        : { data: [] },
+    ]);
+
+    for (const p of (profilesRes.data || [])) {
+      profilesMap[p.id] = { full_name: p.full_name, avatar_url: p.avatar_url };
+    }
+    for (const a of (animalsRes.data || [])) {
+      animalsMap[a.id] = { name: a.name, photo_url: a.photo_url };
+    }
+  }
+
   const enriched = (reels || []).map((r: any) => ({
     ...r,
     is_liked: likedIds.has(r.id),
     is_following: followingIds.has(r.user_id),
+    profiles: profilesMap[r.user_id] || null,
+    animals: r.animal_id ? animalsMap[r.animal_id] || null : null,
   }));
 
   return NextResponse.json({ reels: enriched, page, hasMore: (reels || []).length === limit });

@@ -23,7 +23,7 @@ export const PERSONALITY_TYPES: Record<string, PersonalityType> = {
     name: "L'Énergique Social",
     tagline: "Toujours partant pour l'aventure !",
     description: "Ton animal déborde d'énergie et adore la compagnie. Il est le premier à vouloir jouer et le dernier à rentrer à la maison.",
-    color: "#f97316",
+    color: "#22c55e",
     bgColor: "rgba(249,115,22,0.1)",
     idealMatch: "Un compagnon tout aussi enthousiaste qui peut suivre son rythme effréné.",
     tips: [

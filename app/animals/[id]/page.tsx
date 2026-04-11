@@ -28,6 +28,7 @@ import { useOnlineStatus } from "@/lib/hooks/useOnlineStatus";
 import PresenceDot from "@/lib/components/PresenceDot";
 import { EMOJI_MAP } from "@/lib/constants";
 import SpotlightButton from "@/lib/components/SpotlightButton";
+import BackButton from "@/lib/components/BackButton";
 import { formatAge } from "@/lib/utils";
 
 export default function AnimalDetailPage() {
@@ -205,6 +206,7 @@ export default function AnimalDetailPage() {
     <div className="min-h-screen px-4 md:px-6 py-6 pb-28">
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-4 mb-6">
+          <BackButton fallback="/animals" />
           <Link href="/animals" className="text-green-400 hover:underline text-sm">{t.animalBackCatalog}</Link>
           <div className="flex-1" />
           {!isOwner && isAuthenticated && animal.created_by && (

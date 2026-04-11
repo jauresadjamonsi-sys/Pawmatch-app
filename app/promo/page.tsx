@@ -609,7 +609,7 @@ function MatchTemplate({
           style={{ animationDelay: "1s" }}
         >
           {/* Left pet */}
-          <div className="promo-glow rounded-full overflow-hidden w-28 h-28 border-4 border-orange-400">
+          <div className="promo-glow rounded-full overflow-hidden w-28 h-28 border-4 border-green-400">
             {hero?.photo_url ? (
               <img
                 src={hero.photo_url}
@@ -658,7 +658,7 @@ function MatchTemplate({
         >
           <p className="text-white text-lg font-bold">
             {hero?.name || "Ruby"} & {friend?.name || "Max"}{" "}
-            <span className="text-orange-400">98% compatibles !</span>
+            <span className="text-green-400">98% compatibles !</span>
           </p>
         </div>
 
@@ -668,7 +668,7 @@ function MatchTemplate({
           style={{ animationDelay: "2.3s" }}
         >
           <div className="text-center">
-            <p className="text-2xl font-black text-orange-400">
+            <p className="text-2xl font-black text-green-400">
               {stats.animals || 150}+
             </p>
             <p className="text-xs opacity-70">animaux</p>
@@ -694,7 +694,7 @@ function MatchTemplate({
             <p className="text-white font-black text-lg">
               Inscris-toi gratuitement
             </p>
-            <p className="text-orange-100 text-sm font-bold mt-1">
+            <p className="text-green-100 text-sm font-bold mt-1">
               👉 {SITE}
             </p>
           </div>

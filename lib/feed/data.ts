@@ -7,7 +7,7 @@ export type AnimalSpecies = "chien" | "chat" | "lapin" | "oiseau" | "rongeur" | 
 export type Mood = { label: string; emoji: string; color: string };
 
 export const MOODS: Mood[] = [
-  { label: "\u00c9nergique", emoji: "\u26A1", color: "text-orange-400" },
+  { label: "\u00c9nergique", emoji: "\u26A1", color: "text-green-400" },
   { label: "Calme", emoji: "\uD83C\uDF3F", color: "text-green-400" },
   { label: "Joueur", emoji: "\uD83C\uDF89", color: "text-pink-400" },
   { label: "Endormi", emoji: "\uD83D\uDE34", color: "text-purple-300" },

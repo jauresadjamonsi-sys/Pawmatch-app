@@ -160,11 +160,9 @@ export default function SettingsPage() {
       <div className="max-w-3xl mx-auto px-4 pt-6">
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">
-          <Link href="/profile" className="p-2 rounded-xl bg-[var(--c-card)] border border-[var(--c-border)] hover:border-green-500/30 transition-all">
-            <svg className="w-5 h-5 text-[var(--c-text)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-            </svg>
-          </Link>
+          <button onClick={() => window.history.length > 1 ? window.history.back() : (window.location.href = "/profile")} aria-label="Retour" className="inline-flex items-center justify-center w-9 h-9 rounded-full transition-all active:scale-90" style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.1)", color: "var(--c-text)" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+          </button>
           <h1 className="text-xl font-extrabold gradient-text-animated">Parametres</h1>
         </div>
 

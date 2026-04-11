@@ -23,11 +23,19 @@ export default function ReelsPage() {
   const fetchReels = useCallback(async (p: number) => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/reels?page=${p}&mode=trending`);
-      const data = await res.json();
-      if (data.reels) {
-        setReels(prev => p === 0 ? data.reels : [...prev, ...data.reels]);
-        setHasMore(data.hasMore ?? false);
+      // Retry on 503 (Supabase overload) with exponential backoff
+      let res: Response | null = null;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        res = await fetch(`/api/reels?page=${p}&mode=trending`);
+        if (res.status !== 503 && res.status !== 429) break;
+        await new Promise(r => setTimeout(r, 500 * Math.pow(2, attempt)));
+      }
+      if (res) {
+        const data = await res.json();
+        if (data.reels) {
+          setReels(prev => p === 0 ? data.reels : [...prev, ...data.reels]);
+          setHasMore(data.hasMore ?? false);
+        }
       }
     } catch {
       // Network error — show empty state
@@ -288,11 +296,13 @@ function ReelCard({ reel, index, isActive }: { reel: ReelWithAuthor; index: numb
         playsInline
         preload={isActive ? "auto" : "metadata"}
         className="absolute inset-0 w-full h-full object-cover"
-        style={{ aspectRatio: "9/16" }}
+        style={{ aspectRatio: "9/16", imageRendering: "auto", WebkitTransform: "translateZ(0)" }}
         onClick={togglePlay}
         onDoubleClick={handleDoubleTap}
         onTouchEnd={handleTouchEnd}
         onTimeUpdate={handleTimeUpdate}
+        disablePictureInPicture
+        controlsList="nodownload"
       />
 
       {/* Pause indicator */}

@@ -57,11 +57,14 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
         const { data: { user: authUser } } = await supabase.auth.getUser();
         if (!authUser) return;
 
-        const [profileRes, animalsRes, matchRes, messageRes] = await Promise.all([
-          supabase.from("profiles").select("id, full_name, email, avatar_url, role, subscription, city, created_at, phone, verified_photo").eq("id", authUser.id).single(),
+        // Stagger: critical data first, counts second (prevents Supabase 503)
+        const [profileRes, animalsRes] = await Promise.all([
+          supabase.from("profiles").select("id, full_name, email, avatar_url, role, subscription, city, created_at, phone, verified_photo, verification_status").eq("id", authUser.id).single(),
           supabase.from("animals").select("id, name, species, breed, photo_url, canton, city, gender, age_months, created_by").eq("created_by", authUser.id).order("created_at", { ascending: false }),
-          Promise.resolve(supabase.from("matches").select("*", { count: "exact", head: true }).or(`sender_user_id.eq.${authUser.id},receiver_user_id.eq.${authUser.id}`)).then(r => r).catch(() => ({ count: 0 })),
-          Promise.resolve(supabase.from("messages").select("*", { count: "exact", head: true }).eq("sender_id", authUser.id)).then(r => r).catch(() => ({ count: 0 })),
+        ]);
+        const [matchRes, messageRes] = await Promise.all([
+          supabase.from("matches").select("*", { count: "exact", head: true }).or(`sender_user_id.eq.${authUser.id},receiver_user_id.eq.${authUser.id}`).then(r => r).catch(() => ({ count: 0 })),
+          supabase.from("messages").select("*", { count: "exact", head: true }).eq("sender_id", authUser.id).then(r => r).catch(() => ({ count: 0 })),
         ]);
 
         if (profileRes.data) setProfile(profileRes.data);
@@ -279,7 +282,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
       <div className="max-w-2xl mx-auto">
 
         {/* Verification prompt banner */}
-        {profile && !profile.verified_photo && (
+        {profile && profile.verification_status !== "approved" && !profile.verified_photo && (
           <div className="glass rounded-2xl p-4 mb-4" style={{ border: "1.5px solid rgba(59,130,246,0.3)" }}>
             <div className="flex items-center gap-3">
               <span className="text-2xl">{"📸"}</span>
@@ -328,7 +331,7 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
                       : "none",
                   }}
                 >
-                  <span className="text-xl font-bold text-orange-400">{initials}</span>
+                  <span className="text-xl font-bold text-green-400">{initials}</span>
                 </div>
               )}
               {/* Camera overlay */}
@@ -342,6 +345,9 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
                 style={{ transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)" }}
               >
                 {profile?.full_name || "Utilisateur"}
+                {profile?.verification_status === "approved" && (
+                  <span className="inline-flex items-center justify-center ml-1.5 w-5 h-5 rounded-full text-[11px] align-middle" style={{ background: "linear-gradient(135deg, #22c55e, #16a34a)", color: "#fff", boxShadow: "0 0 8px rgba(34,197,94,0.4)" }} title="Profil verifie">✓</span>
+                )}
               </h1>
               <p className="text-sm text-[var(--c-text-muted)] truncate">{user.email}</p>
               <span
@@ -419,12 +425,12 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
           <div className="flex items-center justify-center gap-6 mb-5">
             <button onClick={() => setShowFollowersList("followers")} className="text-center group">
               <p className="text-lg font-black" style={{ color: "var(--c-text)" }}>{followersCount}</p>
-              <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase group-hover:text-orange-400 transition-colors">Abonnes</p>
+              <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase group-hover:text-green-400 transition-colors">Abonnes</p>
             </button>
             <div className="w-px h-8" style={{ background: "var(--c-border)" }} />
             <button onClick={() => setShowFollowersList("following")} className="text-center group">
               <p className="text-lg font-black" style={{ color: "var(--c-text)" }}>{followingCount}</p>
-              <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase group-hover:text-orange-400 transition-colors">Abonnements</p>
+              <p className="text-[9px] text-[var(--c-text-muted)] font-bold uppercase group-hover:text-green-400 transition-colors">Abonnements</p>
             </button>
           </div>
 

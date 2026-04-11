@@ -127,7 +127,7 @@ export default function SuperFlairModal({
                 >
                   <span className="text-xl">{msg.emoji}</span>
                   <span className="text-sm font-medium" style={{ color: "var(--c-text)" }}>{msg.text}</span>
-                  {selected === i && !custom && <span className="ml-auto text-orange-400 text-xs">✓</span>}
+                  {selected === i && !custom && <span className="ml-auto text-green-400 text-xs">✓</span>}
                 </button>
               ))}
             </div>

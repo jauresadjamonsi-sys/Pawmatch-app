@@ -538,7 +538,7 @@ export default function ExplorePage() {
 
                     {/* Capacity bar */}
                     <div className="w-full h-1 rounded-full overflow-hidden mt-2" style={{ background: "var(--c-glass)" }}>
-                      <div className={`h-full rounded-full transition-all ${isFull ? "bg-red-500" : spotsLeft <= 3 ? "bg-orange-500" : "bg-green-500"}`}
+                      <div className={`h-full rounded-full transition-all ${isFull ? "bg-red-500" : spotsLeft <= 3 ? "bg-green-500" : "bg-green-500"}`}
                         style={{ width: `${((event.participant_count || 0) / (event.max_participants || 1)) * 100}%` }} />
                     </div>
                   </div>

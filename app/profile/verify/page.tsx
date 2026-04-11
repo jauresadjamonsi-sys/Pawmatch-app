@@ -81,7 +81,7 @@ export default function VerifyProfilePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[var(--c-bg,var(--c-deep))] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-green-400 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }

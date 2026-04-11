@@ -497,7 +497,7 @@ export default function EventsPage() {
                                 </span>
                               )}
                               {date.urgent && (
-                                <span className="px-2 py-0.5 bg-orange-500/20 border border-orange-500/30 text-orange-300 rounded-full text-[10px] font-bold pulse-green">
+                                <span className="px-2 py-0.5 bg-green-500/20 border border-green-500/30 text-green-300 rounded-full text-[10px] font-bold pulse-green">
                                   {date.soon}
                                 </span>
                               )}
@@ -532,7 +532,7 @@ export default function EventsPage() {
                           <span className="px-2.5 py-1 bg-[var(--c-card)] text-[var(--c-text-muted)] rounded-full text-xs">📍 {event.location}</span>
                           <span className="px-2.5 py-1 bg-[var(--c-card)] text-[var(--c-text-muted)] rounded-full text-xs">🗺️ {cantonName}</span>
                           <span className={"px-2.5 py-1 rounded-full text-xs " +
-                            (isFull ? "bg-red-500/15 text-red-400" : spotsLeft <= 3 ? "bg-orange-500/15 text-orange-300" : "bg-[var(--c-card)] text-[var(--c-text-muted)]")}>
+                            (isFull ? "bg-red-500/15 text-red-400" : spotsLeft <= 3 ? "bg-green-500/15 text-green-300" : "bg-[var(--c-card)] text-[var(--c-text-muted)]")}>
                             👥 {event.participant_count}/{event.max_participants}
                             {spotsLeft <= 5 && !isFull && <span className="ml-1 font-semibold">({spotsLeft} {t.eventsSpotsLeft})</span>}
                           </span>
@@ -545,7 +545,7 @@ export default function EventsPage() {
                         {/* Capacity bar */}
                         <div className="w-full h-1 bg-[var(--c-card)] rounded-full overflow-hidden">
                           <div className={"h-full rounded-full transition-all duration-500 " +
-                            (isFull ? "bg-red-500" : spotsLeft <= 3 ? "bg-orange-500" : "bg-green-500")}
+                            (isFull ? "bg-red-500" : spotsLeft <= 3 ? "bg-green-500" : "bg-green-500")}
                             style={{ width: ((event.participant_count || 0) / (event.max_participants || 1) * 100) + "%" }} />
                         </div>
 
