@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
+import VisitCounter from "@/lib/components/VisitCounter";
 import type {
   AdminUserRow as UserRow,
   AnimalRow,
@@ -185,6 +186,17 @@ function OverviewTab({ stats, onTabSwitch }: { stats: AdminStats; onTabSwitch: (
 
   return (
     <>
+      {/* Visit counter — admin only */}
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ background: "var(--c-card)", borderRadius: 14, border: "1px solid var(--c-border)", padding: "14px 20px", display: "inline-flex", alignItems: "center", gap: 10 }}>
+          <span style={{ fontSize: 20 }}>📊</span>
+          <div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "var(--c-text-muted)", textTransform: "uppercase", letterSpacing: 1 }}>Visites Pawly</div>
+            <VisitCounter />
+          </div>
+        </div>
+      </div>
+
       {/* KPI Cards */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12, marginBottom: 24 }}>
         <KPICard
