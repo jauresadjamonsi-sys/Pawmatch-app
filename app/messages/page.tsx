@@ -128,14 +128,17 @@ export default function MessagesPage() {
       })
     );
 
+    // Only keep conversations with at least one message exchanged
+    const withMessages = items.filter((c) => c.lastMessage !== null);
+
     // Sort by last activity (most recent first)
-    items.sort((a, b) => {
+    withMessages.sort((a, b) => {
       const timeA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0;
       const timeB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0;
       return timeB - timeA;
     });
 
-    setConversations(items);
+    setConversations(withMessages);
     setLoading(false);
   }, [profile, supabase]);
 
@@ -361,7 +364,7 @@ export default function MessagesPage() {
 
         {/* Empty state */}
         {conversations.length === 0 && (
-          <div className="text-center py-20">
+          <div className="text-center py-16">
             <div className="relative inline-block mb-6">
               <div className="text-7xl animate-pulse">💬</div>
               <div className="absolute -top-2 -right-3 text-2xl animate-float" style={{ animationDelay: "0.5s" }}>🐾</div>
@@ -370,13 +373,18 @@ export default function MessagesPage() {
             <h2 className="text-xl font-bold text-[var(--c-text)] mb-2">
               {t.msgEmpty || "Pas encore de discussions"}
             </h2>
-            <p className="text-[var(--c-text-muted)] text-sm max-w-xs mx-auto mb-6">
-              {t.msgEmptyDesc || "Matche avec des animaux pour commencer a discuter avec leurs proprietaires !"}
+            <p className="text-[var(--c-text-muted)] text-sm max-w-xs mx-auto mb-4">
+              {t.msgEmptyHint || "Ecris a tes matchs confirmes pour commencer a discuter !"}
             </p>
-            <Link href="/flairer" className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[var(--c-accent)] to-amber-500 text-white font-bold rounded-full shadow-lg transition-all hover:scale-105 active:scale-95">
-              <span>🐾</span>
-              {t.msgStartMatching || "Trouver des copains"}
-            </Link>
+            <div className="flex flex-col items-center gap-3">
+              <Link href="/matches" className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[var(--c-accent)] to-amber-500 text-white font-bold rounded-full shadow-lg transition-all hover:scale-105 active:scale-95">
+                <span>💬</span>
+                {t.msgGoToMatches || "Voir mes matchs"}
+              </Link>
+              <Link href="/flairer" className="text-xs text-[var(--c-text-muted)] hover:text-[var(--c-accent)] transition-colors">
+                {t.msgOrDiscover || "ou decouvrir de nouveaux profils"}
+              </Link>
+            </div>
           </div>
         )}
 
