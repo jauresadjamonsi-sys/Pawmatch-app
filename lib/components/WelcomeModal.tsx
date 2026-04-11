@@ -76,7 +76,7 @@ export function WelcomeModal() {
 
           <button onClick={handleClose}
             className="w-full py-3.5 font-bold rounded-xl text-white text-sm transition"
-            style={{ background: "#f97316", boxShadow: "0 0 20px rgba(249,115,22,0.3)" }}>
+            style={{ background: "#22C55E", boxShadow: "0 0 20px rgba(34,197,94,0.3)" }}>
             C'est parti !
           </button>
 

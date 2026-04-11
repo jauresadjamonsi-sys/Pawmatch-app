@@ -39,7 +39,7 @@ const TEMPLATES: PromoTemplate[] = [
     title: "Le Match Parfait",
     whatsappText:
       "Et si ton chien trouvait son meilleur ami ? Pawly connecte les animaux et leurs proprios en Suisse. Inscris-toi gratuitement !",
-    gradient: "linear-gradient(135deg, #F97316 0%, #A78BFA 50%, #F43F5E 100%)",
+    gradient: "linear-gradient(135deg, #22C55E 0%, #FACC15 50%, #F43F5E 100%)",
     emoji: "💕",
   },
   {
@@ -63,7 +63,7 @@ const TEMPLATES: PromoTemplate[] = [
     title: "Le Tinder des Animaux",
     whatsappText:
       "Le Tinder des animaux existe et c'est suisse ! Ton compagnon merite de trouver son match. Essaie Pawly maintenant !",
-    gradient: "linear-gradient(135deg, #F43F5E 0%, #FB923C 50%, #FBBF24 100%)",
+    gradient: "linear-gradient(135deg, #F43F5E 0%, #4ADE80 50%, #FBBF24 100%)",
     emoji: "🔥",
   },
   {
@@ -71,7 +71,7 @@ const TEMPLATES: PromoTemplate[] = [
     title: "100% Gratuit",
     whatsappText:
       "Pawly, l'app gratuite qui connecte les proprietaires d'animaux en Suisse. Inscris-toi en 30 secondes !",
-    gradient: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 50%, #F97316 100%)",
+    gradient: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 50%, #22C55E 100%)",
     emoji: "🎉",
   },
 ];
@@ -162,7 +162,7 @@ export default function PromoPage() {
         <h1 className="text-3xl md:text-4xl font-black mb-2">
           <span
             style={{
-              background: "linear-gradient(135deg, #F97316, #A78BFA)",
+              background: "linear-gradient(135deg, #22C55E, #FACC15)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -293,7 +293,7 @@ export default function PromoPage() {
           className="mx-4 mt-8 rounded-2xl p-6 text-center"
           style={{
             background:
-              "linear-gradient(135deg, rgba(249,115,22,0.15), rgba(167,139,250,0.15))",
+              "linear-gradient(135deg, rgba(34, 197, 94,0.15), rgba(250,204,21,0.15))",
             border: "1px solid var(--c-border)",
           }}
         >
@@ -302,7 +302,7 @@ export default function PromoPage() {
           </p>
           <div className="flex justify-center gap-8 mt-3">
             <div>
-              <p className="text-2xl font-black" style={{ color: "#F97316" }}>
+              <p className="text-2xl font-black" style={{ color: "#22C55E" }}>
                 {stats.animals}+
               </p>
               <p className="text-xs" style={{ color: "var(--c-text-muted)" }}>
@@ -458,8 +458,8 @@ function PromoStyles() {
         100% { transform: scale(1); }
       }
       @keyframes promo-pulse-glow {
-        0%, 100% { box-shadow: 0 0 20px rgba(249,115,22,0.4); }
-        50% { box-shadow: 0 0 50px rgba(249,115,22,0.8), 0 0 80px rgba(167,139,250,0.3); }
+        0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94,0.4); }
+        50% { box-shadow: 0 0 50px rgba(34, 197, 94,0.8), 0 0 80px rgba(250,204,21,0.3); }
       }
       @keyframes promo-float {
         0%, 100% { transform: translateY(0); }
@@ -578,7 +578,7 @@ function MatchTemplate({
         <div
           className="promo-fade-up mb-6 px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase text-white"
           style={{
-            background: "linear-gradient(135deg, #F97316, #A78BFA)",
+            background: "linear-gradient(135deg, #22C55E, #FACC15)",
             animationDelay: "0.2s",
           }}
         >
@@ -593,7 +593,7 @@ function MatchTemplate({
           Et si ton chien trouvait son{" "}
           <span
             style={{
-              background: "linear-gradient(90deg, #F97316, #FB923C)",
+              background: "linear-gradient(90deg, #22C55E, #4ADE80)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -652,8 +652,8 @@ function MatchTemplate({
           className="promo-bounce mb-6 px-6 py-3 rounded-2xl"
           style={{
             animationDelay: "1.8s",
-            background: "rgba(249,115,22,0.15)",
-            border: "1px solid rgba(249,115,22,0.3)",
+            background: "rgba(34, 197, 94,0.15)",
+            border: "1px solid rgba(34, 197, 94,0.3)",
           }}
         >
           <p className="text-white text-lg font-bold">
@@ -687,8 +687,8 @@ function MatchTemplate({
           <div
             className="py-4 px-6 rounded-2xl text-center"
             style={{
-              background: "linear-gradient(135deg, #F97316, #EA580C)",
-              boxShadow: "0 8px 32px rgba(249,115,22,0.4)",
+              background: "linear-gradient(135deg, #22C55E, #16A34A)",
+              boxShadow: "0 8px 32px rgba(34, 197, 94,0.4)",
             }}
           >
             <p className="text-white font-black text-lg">
@@ -1059,7 +1059,7 @@ function TinderTemplate({
           Le{" "}
           <span
             style={{
-              background: "linear-gradient(90deg, #F43F5E, #FB923C)",
+              background: "linear-gradient(90deg, #F43F5E, #4ADE80)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -1183,7 +1183,7 @@ function TinderTemplate({
           <div
             className="py-4 px-6 rounded-2xl text-center"
             style={{
-              background: "linear-gradient(135deg, #F43F5E, #FB923C)",
+              background: "linear-gradient(135deg, #F43F5E, #4ADE80)",
               boxShadow: "0 8px 32px rgba(244,63,94,0.4)",
             }}
           >
@@ -1235,8 +1235,8 @@ function GratuitTemplate({
               width: 8 + Math.random() * 12,
               height: 8 + Math.random() * 12,
               background: [
-                "#F97316",
-                "#A78BFA",
+                "#22C55E",
+                "#FACC15",
                 "#F43F5E",
                 "#FBBF24",
                 "#38BDF8",
@@ -1269,7 +1269,7 @@ function GratuitTemplate({
         >
           <span
             style={{
-              background: "linear-gradient(90deg, #FBBF24, #F97316, #F43F5E, #A78BFA)",
+              background: "linear-gradient(90deg, #FBBF24, #22C55E, #F43F5E, #FACC15)",
               backgroundSize: "300% 100%",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",

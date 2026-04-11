@@ -304,7 +304,7 @@ export function SimulationRencontre({ myAnimal, otherAnimal, compatibilityScore,
 
           {/* Progress bar */}
           <div className="h-1 bg-[var(--c-border)] rounded-full overflow-hidden">
-            <div className="h-full rounded-full transition-all duration-700" style={{ width: `${progressPercent}%`, background: "linear-gradient(to right, var(--c-accent, #f97316), #22c55e)" }} />
+            <div className="h-full rounded-full transition-all duration-700" style={{ width: `${progressPercent}%`, background: "linear-gradient(to right, var(--c-accent, #22C55E), #22c55e)" }} />
           </div>
         </div>
 
@@ -343,7 +343,7 @@ export function SimulationRencontre({ myAnimal, otherAnimal, compatibilityScore,
               <div className="flex justify-center gap-1.5 mt-4">
                 {steps.map((_, i) => (
                   <div key={i} className="w-2 h-2 rounded-full transition-all" style={{
-                    background: i === currentStep ? "var(--c-accent, #f97316)" : i < currentStep ? "#22c55e" : "var(--c-border)",
+                    background: i === currentStep ? "var(--c-accent, #22C55E)" : i < currentStep ? "#22c55e" : "var(--c-border)",
                     transform: i === currentStep ? "scale(1.3)" : "scale(1)",
                   }} />
                 ))}
@@ -368,7 +368,7 @@ export function SimulationRencontre({ myAnimal, otherAnimal, compatibilityScore,
                 </button>
               )}
             </div>
-            <button onClick={onClose} className="w-full py-3 rounded-xl text-sm font-bold text-white" style={{ background: "var(--c-accent, #f97316)" }}>
+            <button onClick={onClose} className="w-full py-3 rounded-xl text-sm font-bold text-white" style={{ background: "var(--c-accent, #22C55E)" }}>
               {l.matchCta}
             </button>
           </div>

@@ -515,7 +515,7 @@ export default function OnboardingPage() {
             <button
               onClick={() => setStep(5)}
               className="w-full mt-4 py-3.5 font-bold rounded-xl text-white transition"
-              style={{ background: referralApplied ? "#f97316" : "var(--c-text, #111827)" }}
+              style={{ background: referralApplied ? "#22C55E" : "var(--c-text, #111827)" }}
             >
               {referralApplied ? "Continuer" : "Passer"}
             </button>

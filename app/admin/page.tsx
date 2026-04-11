@@ -1035,7 +1035,7 @@ function ReportsTab({ stats, onRefresh }: { stats: AdminStats; onRefresh: () => 
 
   const REASON_COLORS: Record<string, string> = {
     "Maltraitance animale": "#ef4444",
-    "Harcelement": "#f97316",
+    "Harcelement": "#22C55E",
     "Arnaque": "#f59e0b",
     "Contenu inapproprie": "#8b5cf6",
     "Faux profil": "#3b82f6",

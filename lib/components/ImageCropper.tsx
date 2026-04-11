@@ -250,7 +250,7 @@ export default function ImageCropper({
           onClick={handleConfirm}
           disabled={processing}
           className="text-sm font-bold px-4 py-1.5 rounded-lg transition active:scale-95 disabled:opacity-50"
-          style={{ background: "#f97316", color: "#fff" }}
+          style={{ background: "#22C55E", color: "#fff" }}
         >
           {processing ? "..." : "Valider"}
         </button>
@@ -267,7 +267,7 @@ export default function ImageCropper({
             height: aspectRatio < 1 ? "80vh" : "auto",
             maxWidth: "100%",
             maxHeight: "80vh",
-            border: "2px solid rgba(249,115,22,0.4)",
+            border: "2px solid rgba(34,197,94,0.4)",
             touchAction: "none",
             userSelect: "none",
             cursor: "grab",

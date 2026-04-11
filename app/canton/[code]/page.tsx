@@ -273,7 +273,7 @@ export default async function CantonPage({ params }: Props) {
       <div
         className="rounded-2xl p-6 text-center"
         style={{
-          background: "linear-gradient(135deg, rgba(249,115,22,0.1), rgba(167,139,250,0.1))",
+          background: "linear-gradient(135deg, rgba(34, 197, 94,0.1), rgba(250,204,21,0.1))",
           border: "1px solid var(--c-border)",
         }}
       >
@@ -293,7 +293,7 @@ export default async function CantonPage({ params }: Props) {
         <Link
           href="/signup"
           className="inline-block px-6 py-3 rounded-xl text-sm font-bold text-white"
-          style={{ background: "linear-gradient(135deg, #f97316, #fb923c)" }}
+          style={{ background: "linear-gradient(135deg, #22C55E, #4ADE80)" }}
         >
           Inscris-toi gratuitement
         </Link>

@@ -34,7 +34,7 @@ const MOODS = [
   { value: "excellent", emoji: "🤩", label: "Super", color: "#22c55e", score: 5 },
   { value: "happy", emoji: "😊", label: "Content", color: "#84cc16", score: 4 },
   { value: "neutral", emoji: "😐", label: "Normal", color: "#f59e0b", score: 3 },
-  { value: "tired", emoji: "😴", label: "Fatigué", color: "#f97316", score: 2 },
+  { value: "tired", emoji: "😴", label: "Fatigué", color: "#22C55E", score: 2 },
   { value: "sick", emoji: "🤒", label: "Malade", color: "#ef4444", score: 1 },
 ];
 
@@ -572,7 +572,7 @@ export default function PawCareHubPage() {
           {!showMoodForm ? (
             <button onClick={() => setShowMoodForm(true)} style={{
               width: "100%", padding: 12, borderRadius: 12, border: "none", cursor: "pointer",
-              background: "linear-gradient(135deg, #f97316, #ea580c)", color: "#fff",
+              background: "linear-gradient(135deg, #22C55E, #ea580c)", color: "#fff",
               fontWeight: 700, fontSize: 13,
             }}>
               Enregistrer l'humeur
@@ -610,7 +610,7 @@ export default function PawCareHubPage() {
                 </div>
                 <input type="range" min="1" max="5" value={moodEnergy}
                   onChange={e => setMoodEnergy(Number(e.target.value))}
-                  style={{ width: "100%", accentColor: "#f97316" }} />
+                  style={{ width: "100%", accentColor: "#22C55E" }} />
               </div>
               <textarea value={moodNote} onChange={e => setMoodNote(e.target.value)}
                 placeholder="Note optionnelle..."
@@ -621,7 +621,7 @@ export default function PawCareHubPage() {
                 }} />
               <div style={{ display: "flex", gap: 8 }}>
                 <button onClick={handleMoodSubmit} disabled={!moodValue || moodSending} style={{
-                  flex: 1, padding: 10, background: "#f97316", color: "#fff", border: "none",
+                  flex: 1, padding: 10, background: "#22C55E", color: "#fff", border: "none",
                   borderRadius: 10, fontWeight: 700, fontSize: 13, cursor: "pointer",
                   opacity: (!moodValue || moodSending) ? 0.5 : 1,
                 }}>

@@ -130,7 +130,7 @@ export default function VerifyProfilePage() {
                   style={{
                     left: `${Math.random() * 100}%`,
                     animationDelay: `${Math.random() * 0.5}s`,
-                    backgroundColor: ["#f97316", "#3b82f6", "#22c55e", "#a78bfa", "#fbbf24"][i % 5],
+                    backgroundColor: ["#22C55E", "#3b82f6", "#22c55e", "#a78bfa", "#fbbf24"][i % 5],
                   }}
                 />
               ))}

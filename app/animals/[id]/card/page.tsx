@@ -11,7 +11,7 @@ import { EMOJI_MAP } from "@/lib/constants";
 import { useAppContext } from "@/lib/contexts/AppContext";
 
 const TRAIT_COLORS = [
-  { bg: "rgba(249,115,22,0.15)", text: "#fb923c", border: "rgba(249,115,22,0.3)" },
+  { bg: "rgba(249,115,22,0.15)", text: "#4ADE80", border: "rgba(249,115,22,0.3)" },
   { bg: "rgba(168,85,247,0.15)", text: "#a78bfa", border: "rgba(168,85,247,0.3)" },
   { bg: "rgba(56,189,248,0.15)", text: "#38bdf8", border: "rgba(56,189,248,0.3)" },
   { bg: "rgba(52,211,153,0.15)", text: "#34d399", border: "rgba(52,211,153,0.3)" },
@@ -161,7 +161,7 @@ export default function AnimalCardPage() {
           className="absolute inset-0 rounded-3xl pointer-events-none"
           style={{
             padding: "1.5px",
-            background: "linear-gradient(135deg, #F97316, #A78BFA, #38BDF8, #F97316)",
+            background: "linear-gradient(135deg, #22C55E, #A78BFA, #38BDF8, #22C55E)",
             backgroundSize: "300% 300%",
             animation: "aurora 6s ease infinite",
             WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
@@ -286,7 +286,7 @@ export default function AnimalCardPage() {
                 <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
                   {t.cardEnergy || "Energy"}
                 </p>
-                <span style={{ fontSize: 11, fontWeight: 800, color: "#fb923c" }}>{energyLevel}/5</span>
+                <span style={{ fontSize: 11, fontWeight: 800, color: "#4ADE80" }}>{energyLevel}/5</span>
               </div>
               <div
                 style={{
@@ -301,7 +301,7 @@ export default function AnimalCardPage() {
                     height: "100%",
                     borderRadius: 3,
                     width: `${(energyLevel / 5) * 100}%`,
-                    background: "linear-gradient(90deg, #F97316, #FBBF24)",
+                    background: "linear-gradient(90deg, #22C55E, #FBBF24)",
                     transition: "width 0.6s ease",
                   }}
                 />
@@ -348,7 +348,7 @@ export default function AnimalCardPage() {
               style={{
                 fontSize: 13,
                 fontWeight: 800,
-                background: "linear-gradient(135deg, #F97316, #A78BFA)",
+                background: "linear-gradient(135deg, #22C55E, #A78BFA)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -371,7 +371,7 @@ export default function AnimalCardPage() {
             onClick={handleShare}
             className="w-full py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition"
             style={{
-              background: "linear-gradient(135deg, #F97316, #EA580C)",
+              background: "linear-gradient(135deg, #22C55E, #EA580C)",
               color: "#fff",
               boxShadow: "0 4px 24px rgba(249,115,22,0.3)",
             }}

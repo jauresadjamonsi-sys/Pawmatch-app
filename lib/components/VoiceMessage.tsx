@@ -84,7 +84,7 @@ export default function VoiceMessage({ audioUrl, isMine }: VoiceMessageProps) {
     return `${m}:${s.toString().padStart(2, "0")}`;
   }
 
-  const activeColor = isMine ? "rgba(255,255,255,0.9)" : "rgba(249,115,22,0.9)";
+  const activeColor = isMine ? "rgba(255,255,255,0.9)" : "rgba(34,197,94,0.9)";
   const inactiveColor = isMine ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.15)";
   const playBtnBg = isMine ? "rgba(255,255,255,0.2)" : "rgba(249,115,22,0.15)";
   const playIconColor = isMine ? "text-white" : "text-orange-500";

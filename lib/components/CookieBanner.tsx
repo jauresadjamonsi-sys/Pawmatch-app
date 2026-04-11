@@ -38,10 +38,10 @@ export function CookieBanner() {
     }}>
       <p style={{ fontSize: 12, color: "var(--c-text-muted)", margin: 0, maxWidth: 500 }}>
         🍪 Cookies essentiels uniquement (session, preferences). Aucun tracking publicitaire.{" "}
-        <a href="/legal/privacy" style={{ color: "#f97316", textDecoration: "underline" }}>En savoir plus</a>
+        <a href="/legal/privacy" style={{ color: "#22C55E", textDecoration: "underline" }}>En savoir plus</a>
       </p>
       <button onClick={accept} style={{
-        padding: "10px 28px", background: "#f97316", color: "#fff",
+        padding: "10px 28px", background: "#22C55E", color: "#fff",
         border: "none", borderRadius: 50, fontWeight: 700, fontSize: 13,
         cursor: "pointer", whiteSpace: "nowrap",
         minHeight: 44, /* iOS minimum tap target */

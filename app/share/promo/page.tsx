@@ -352,7 +352,7 @@ function PromoContent() {
           border-radius: 24px;
           overflow: hidden;
           box-shadow:
-            0 0 60px rgba(249, 115, 22, 0.25),
+            0 0 60px rgba(34, 197, 94, 0.25),
             0 0 120px rgba(168, 85, 247, 0.15);
         }
 
@@ -479,11 +479,11 @@ function PromoContent() {
           height: 160px;
           border-radius: 50%;
           padding: 4px;
-          background: linear-gradient(135deg, #f97316, #a78bfa, #38bdf8, #f97316);
+          background: linear-gradient(135deg, #22C55E, #FACC15, #38bdf8, #22C55E);
           background-size: 300% 300%;
           animation: gradientShift 4s ease infinite;
           margin-bottom: 24px;
-          box-shadow: 0 0 40px rgba(249, 115, 22, 0.4), 0 0 80px rgba(167, 139, 250, 0.2);
+          box-shadow: 0 0 40px rgba(34, 197, 94, 0.4), 0 0 80px rgba(250, 204, 21, 0.2);
         }
 
         .ruby-photo {
@@ -590,7 +590,7 @@ function PromoContent() {
 
         .cta-domain:hover {
           transform: scale(1.05);
-          box-shadow: 0 0 20px rgba(249,115,22,0.4);
+          box-shadow: 0 0 20px rgba(34, 197, 94,0.4);
         }
 
         .ref-code {
@@ -704,9 +704,9 @@ function PromoContent() {
         }
 
         .copy-btn {
-          background: rgba(249, 115, 22, 0.15);
-          color: #f97316;
-          border: 1px solid rgba(249, 115, 22, 0.25);
+          background: rgba(34, 197, 94, 0.15);
+          color: #22C55E;
+          border: 1px solid rgba(34, 197, 94, 0.25);
         }
       `}</style>
     </div>

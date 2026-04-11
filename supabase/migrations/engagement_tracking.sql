@@ -8,9 +8,12 @@ CREATE TABLE IF NOT EXISTS engagement_log (
   sent_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- Separate date column for unique daily constraint (timestamptz::date is not immutable)
+ALTER TABLE engagement_log ADD COLUMN IF NOT EXISTS sent_date DATE DEFAULT CURRENT_DATE;
+
 -- One notification per type per user per day
 CREATE UNIQUE INDEX IF NOT EXISTS idx_engagement_unique_daily
-  ON engagement_log(user_id, trigger_type, (sent_at::date));
+  ON engagement_log(user_id, trigger_type, sent_date);
 
 CREATE INDEX IF NOT EXISTS idx_engagement_log_user
   ON engagement_log(user_id, sent_at DESC);

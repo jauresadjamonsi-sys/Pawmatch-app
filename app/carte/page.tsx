@@ -56,7 +56,7 @@ function MapInner({ animals, userPos, t }: { animals: any[]; userPos: [number, n
                   : <div style={{ fontSize: 28 }}>{EMOJI_MAP[a.species] || "🐾"}</div>}
                 <strong>{a.name}</strong>
                 <div style={{ fontSize: 11, color: "#6b7280" }}>{a.breed || a.species}</div>
-                <a href={"/animals/" + a.id} style={{ fontSize: 11, color: "#f97316", fontWeight: 700 }}>{t.mapSee}</a>
+                <a href={"/animals/" + a.id} style={{ fontSize: 11, color: "#22C55E", fontWeight: 700 }}>{t.mapSee}</a>
               </div>
             </Popup>
           </Marker>
@@ -98,7 +98,7 @@ export default function CartePage() {
           {[{ v: "", l: t.mapAll, e: "🐾" }, { v: "chien", l: t.mapDogs, e: "🐕" }, { v: "chat", l: t.mapCats, e: "🐱" }, { v: "lapin", l: t.mapRabbits, e: "🐰" }].map(s => (
             <button key={s.v} onClick={() => setFilter(s.v)}
               style={{ padding: "4px 10px", borderRadius: 50, border: "1px solid var(--c-border)", cursor: "pointer", fontSize: 10, fontWeight: 700,
-                background: filter === s.v ? "#f97316" : "var(--c-card)", color: filter === s.v ? "#fff" : "var(--c-text)" }}>
+                background: filter === s.v ? "#22C55E" : "var(--c-card)", color: filter === s.v ? "#fff" : "var(--c-text)" }}>
               {s.e} {s.l}
             </button>
           ))}

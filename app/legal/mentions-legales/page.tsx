@@ -68,7 +68,7 @@ export default function MentionsLegalesPage() {
 
           <section>
             <h2 className="text-lg font-semibold mb-2" style={{ color: "var(--c-text)" }}>9. Contact</h2>
-            <p>Pour toute question : <a href="mailto:contact@pawlyapp.ch" className="underline" style={{ color: "var(--c-accent, #f97316)" }}>contact@pawlyapp.ch</a></p>
+            <p>Pour toute question : <a href="mailto:contact@pawlyapp.ch" className="underline" style={{ color: "var(--c-accent, #22C55E)" }}>contact@pawlyapp.ch</a></p>
           </section>
         </div>
       </div>

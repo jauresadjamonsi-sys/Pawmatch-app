@@ -71,7 +71,7 @@ export default function DailyChallenges({ userId }: { userId: string }) {
           <span
             className="px-3 py-1 rounded-full text-xs font-bold text-white"
             style={{
-              background: "linear-gradient(135deg, #f97316, #eab308)",
+              background: "linear-gradient(135deg, #22C55E, #eab308)",
               boxShadow: "0 2px 12px rgba(249,115,22,0.4)",
             }}
           >
