@@ -167,7 +167,7 @@ function PromoContent() {
 
       const gifData = gif.bytes();
       const blob = new Blob([new Uint8Array(gifData)], { type: "image/gif" });
-      const file = new File([blob], "pawly-story.gif", { type: "image/gif" });
+      const file = new File([blob], "pawlyapp-story.gif", { type: "image/gif" });
 
       // Share or download
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
@@ -177,7 +177,7 @@ function PromoContent() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "pawly-story.gif";
+        a.download = "pawlyapp-story.gif";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -220,10 +220,13 @@ function PromoContent() {
             <p className="frame-subtitle">Rejoins Ruby et des milliers d&apos;animaux</p>
           </div>
 
-          {/* Frame 2: Tagline */}
+          {/* Frame 2: Dogs meeting + tagline */}
           <div className={`frame frame-2 ${frame === 1 ? "frame-active" : ""}`}>
+            <div className="dogs-photo-container">
+              <img src="/promo-dogs.jpg" alt="Deux Bergers Blancs Suisses se rencontrent" className="dogs-photo" />
+            </div>
             <h1 className="frame-title slide-text">
-              PawlyApp connecte les propriétaires d&apos;animaux en Suisse&nbsp;🇨🇭
+              Des rencontres entre compagnons en Suisse&nbsp;🇨🇭
             </h1>
           </div>
 
@@ -518,8 +521,29 @@ function PromoContent() {
           text-shadow: 0 3px 20px rgba(0,0,0,0.5);
         }
 
+        .dogs-photo-container {
+          width: 260px;
+          height: 160px;
+          border-radius: 20px;
+          overflow: hidden;
+          margin-bottom: 24px;
+          box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 60px rgba(251,191,36,0.2);
+          border: 3px solid rgba(255,255,255,0.2);
+        }
+
+        .dogs-photo {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .frame-2.frame-active .dogs-photo-container {
+          animation: zoomIn 0.6s ease forwards;
+        }
+
         .frame-2.frame-active .slide-text {
-          animation: slideInRight 0.7s ease forwards;
+          animation: slideInRight 0.7s ease 0.3s forwards;
+          opacity: 0;
         }
 
         .frame-3.frame-active .fact-icon {
