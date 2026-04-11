@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import Navbar from "@/lib/components/Navbar";
 import Footer from "@/lib/components/Footer";
@@ -42,6 +43,21 @@ const IOSBanner = dynamic(
 );
 
 export default function ClientShell({ children }: { children: React.ReactNode }) {
+  // Track visit once per session
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      if (sessionStorage.getItem("pawly_visit_tracked")) return;
+      fetch("/api/visit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ site: "pawlyapp" }),
+      }).then(() => {
+        sessionStorage.setItem("pawly_visit_tracked", "1");
+      }).catch(() => {});
+    } catch { /* SSR guard */ }
+  }, []);
+
   return (
     <PostHogProvider>
       <AchievementProvider>

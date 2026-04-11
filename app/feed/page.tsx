@@ -20,6 +20,7 @@ const PawScoreBadge = dynamic(() => import("@/lib/components/PawScoreBadge"), { 
 const StreakTracker = dynamic(() => import("@/lib/components/StreakTracker"), { ssr: false });
 const DailyRewards = dynamic(() => import("@/lib/components/DailyRewards"), { ssr: false });
 const SmartNotifCard = dynamic(() => import("@/lib/components/SmartNotifCard"), { ssr: false });
+const VisitCounter = dynamic(() => import("@/lib/components/VisitCounter"), { ssr: false });
 
 // Tiny 1x1 blurred placeholder for dynamic images
 const BLUR_PLACEHOLDER = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNlMmRkZDUiLz48L3N2Zz4=";
@@ -943,6 +944,11 @@ export default function FeedPage() {
               <span className="text-lg" style={{ color: "var(--c-accent)" }}>{"\u2192"}</span>
             </a>
           </section>
+
+          {/* ═══════ VISIT COUNTER ═══════ */}
+          <div className="flex justify-center pt-2 pb-4">
+            <VisitCounter />
+          </div>
 
         </div>
       </main>
