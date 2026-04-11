@@ -317,6 +317,15 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     // Chat
     chatTyping: "écrit...", chatSendPhoto: "Envoyer une photo", chatPhotoSending: "Envoi en cours...",
 
+    // Discussions page
+    msgTitle: "Discussions", msgUnread: "non lu", msgSearch: "Rechercher une discussion...",
+    msgManageMatches: "Mes matchs", msgYou: "Toi", msgVoice: "Message vocal", msgPhoto: "Photo",
+    msgStartConvo: "Commencez la conversation !", msgEmpty: "Pas encore de discussions",
+    msgEmptyDesc: "Matche avec des animaux pour commencer a discuter avec leurs proprietaires !",
+    msgStartMatching: "Trouver des copains", msgNoResults: "Aucune discussion trouvee",
+    msgLoginDesc: "Connecte-toi pour voir tes discussions.", msgJustNow: "A l'instant",
+    navMessages: "Discussions",
+
     // Presence
     presenceOnline: "En ligne", presenceOffline: "Hors ligne", presenceLastSeen: "Vu il y a",
 
@@ -675,6 +684,15 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     // Chat
     chatTyping: "schreibt...", chatSendPhoto: "Foto senden", chatPhotoSending: "Wird gesendet...",
 
+    // Discussions page
+    msgTitle: "Nachrichten", msgUnread: "ungelesen", msgSearch: "Unterhaltung suchen...",
+    msgManageMatches: "Meine Matches", msgYou: "Du", msgVoice: "Sprachnachricht", msgPhoto: "Foto",
+    msgStartConvo: "Starte die Unterhaltung!", msgEmpty: "Noch keine Unterhaltungen",
+    msgEmptyDesc: "Matche mit Tieren, um mit ihren Besitzern zu chatten!",
+    msgStartMatching: "Freunde finden", msgNoResults: "Keine Unterhaltung gefunden",
+    msgLoginDesc: "Melde dich an, um deine Nachrichten zu sehen.", msgJustNow: "Jetzt",
+    navMessages: "Nachrichten",
+
     // Presence
     presenceOnline: "Online", presenceOffline: "Offline", presenceLastSeen: "Zuletzt gesehen vor",
 
@@ -1031,6 +1049,15 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     // Chat
     chatTyping: "sta scrivendo...", chatSendPhoto: "Invia una foto", chatPhotoSending: "Invio in corso...",
 
+    // Discussions page
+    msgTitle: "Messaggi", msgUnread: "non letto", msgSearch: "Cerca una conversazione...",
+    msgManageMatches: "I miei match", msgYou: "Tu", msgVoice: "Messaggio vocale", msgPhoto: "Foto",
+    msgStartConvo: "Inizia la conversazione!", msgEmpty: "Ancora nessuna conversazione",
+    msgEmptyDesc: "Fai match con animali per chattare con i loro proprietari!",
+    msgStartMatching: "Trova amici", msgNoResults: "Nessuna conversazione trovata",
+    msgLoginDesc: "Accedi per vedere i tuoi messaggi.", msgJustNow: "Ora",
+    navMessages: "Messaggi",
+
     // Presence
     presenceOnline: "Online", presenceOffline: "Offline", presenceLastSeen: "Visto",
 
@@ -1386,6 +1413,15 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
 
     // Chat
     chatTyping: "typing...", chatSendPhoto: "Send a photo", chatPhotoSending: "Sending...",
+
+    // Discussions page
+    msgTitle: "Messages", msgUnread: "unread", msgSearch: "Search a conversation...",
+    msgManageMatches: "My matches", msgYou: "You", msgVoice: "Voice message", msgPhoto: "Photo",
+    msgStartConvo: "Start the conversation!", msgEmpty: "No conversations yet",
+    msgEmptyDesc: "Match with animals to start chatting with their owners!",
+    msgStartMatching: "Find friends", msgNoResults: "No conversation found",
+    msgLoginDesc: "Log in to see your messages.", msgJustNow: "Just now",
+    navMessages: "Messages",
 
     // Presence
     presenceOnline: "Online", presenceOffline: "Offline", presenceLastSeen: "Last seen",

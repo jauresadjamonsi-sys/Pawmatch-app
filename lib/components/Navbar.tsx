@@ -203,8 +203,9 @@ export default function Navbar() {
                     { href: "/concours", label: t.navContest, active: isActive("/concours") },
                     { href: "/search", label: t.navSearch, active: isActive("/search") },
                   ]} />
-                  <NavDropdown label={t.navSocial} light={isLight} activeInGroup={["/flairer","/matches","/groups"].some(p => isActive(p))} items={[
+                  <NavDropdown label={t.navSocial} light={isLight} activeInGroup={["/flairer","/messages","/matches","/groups"].some(p => isActive(p))} items={[
                     { href: "/flairer", label: t.navFlairer, active: isActive("/flairer") },
+                    { href: "/messages", label: t.navMessages || "Discussions", active: isActive("/messages") },
                     { href: "/matches", label: t.navMatches, active: isActive("/matches") },
                     { href: "/groups", label: t.navGroups, active: isActive("/groups") },
                     { href: "/stories", label: t.navStories, active: isActive("/stories") },
@@ -485,16 +486,16 @@ function MobileBottomNav({ user, loading, isActive, isLight, hasPendingSwipes, h
             <span aria-hidden="true" className="text-[9px] mt-0.5 font-medium">Explorer</span>
           </Link>
 
-          {/* 4. Messages (Matches) */}
-          <Link href="/matches" aria-label="Messages" aria-current={isActive("/matches") ? "page" : undefined}
-            className={"nav-living-item" + (isActive("/matches") ? " active" : "")}>
+          {/* 4. Messages (Discussions) */}
+          <Link href="/messages" aria-label={t.navMessages || "Messages"} aria-current={(isActive("/messages") || isActive("/matches")) ? "page" : undefined}
+            className={"nav-living-item" + ((isActive("/messages") || isActive("/matches")) ? " active" : "")}>
             <span className="text-xl relative">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive("/matches") ? 2.5 : 1.5}>
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={(isActive("/messages") || isActive("/matches")) ? 2.5 : 1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
               </svg>
-              {hasNewMatches && !isActive("/matches") && <span aria-label="Nouveaux messages" className="badge-pulse absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full" style={{ background: "linear-gradient(135deg, #ef4444, #FBBF24)", boxShadow: "0 0 8px rgba(239,68,68,0.6)" }} />}
+              {hasNewMatches && !isActive("/messages") && !isActive("/matches") && <span aria-label="Nouveaux messages" className="badge-pulse absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full" style={{ background: "linear-gradient(135deg, #ef4444, #FBBF24)", boxShadow: "0 0 8px rgba(239,68,68,0.6)" }} />}
             </span>
-            <span aria-hidden="true" className="text-[9px] mt-0.5 font-medium">Messages</span>
+            <span aria-hidden="true" className="text-[9px] mt-0.5 font-medium">{t.navMessages || "Messages"}</span>
           </Link>
 
           {/* 5. Profil */}
