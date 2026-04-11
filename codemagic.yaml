@@ -1,0 +1,75 @@
+workflows:
+  ios-build:
+    name: Pawly iOS Build
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: ch.pawlyapp
+      vars:
+        BUNDLE_ID: "ch.pawlyapp"
+        APP_NAME: "Pawly"
+      node: 20
+    scripts:
+      - name: Install dependencies
+        script: |
+          npm ci
+      - name: Add iOS platform
+        script: |
+          npx cap add ios || true
+          npx cap sync ios
+      - name: Set up code signing
+        script: |
+          xcode-project use-profiles
+      - name: Build iOS
+        script: |
+          cd ios/App
+          xcodebuild -workspace App.xcworkspace \
+            -scheme App \
+            -sdk iphoneos \
+            -configuration Release \
+            -archivePath build/App.xcarchive \
+            archive
+      - name: Export IPA
+        script: |
+          cd ios/App
+          xcodebuild -exportArchive \
+            -archivePath build/App.xcarchive \
+            -exportOptionsPlist exportOptions.plist \
+            -exportPath build/ipa
+    artifacts:
+      - ios/App/build/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+
+  android-build:
+    name: Pawly Android Build
+    max_build_duration: 60
+    instance_type: linux_x2
+    environment:
+      java: 17
+      node: 20
+      android_signing:
+        - pawly_keystore
+    scripts:
+      - name: Install dependencies
+        script: |
+          npm ci
+      - name: Add Android platform
+        script: |
+          npx cap add android || true
+          npx cap sync android
+      - name: Build Android
+        script: |
+          cd android
+          ./gradlew assembleRelease
+    artifacts:
+      - android/app/build/outputs/**/*.apk
+      - android/app/build/outputs/**/*.aab
+    publishing:
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal
