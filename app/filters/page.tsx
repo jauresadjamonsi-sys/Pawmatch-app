@@ -418,7 +418,7 @@ export default function FiltersPage() {
             </div>
             <p className="text-xs text-[var(--c-text-muted)] mt-0.5">Embellissez les photos de votre animal</p>
           </div>
-          <Link href="/stories/create" className="text-xs text-amber-400 hover:text-amber-300">
+          <Link href="/stories/create" className="text-xs text-amber-300 hover:text-amber-200">
             Creer Story →
           </Link>
         </div>
@@ -434,13 +434,13 @@ export default function FiltersPage() {
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={() => fileRef.current?.click()}
-                className="px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold text-sm shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all"
+                className="px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 text-white font-bold text-sm shadow-lg shadow-amber-400/25 hover:shadow-amber-400/40 transition-all"
               >
                 Galerie
               </button>
               <button
                 onClick={startCamera}
-                className="px-6 py-3 rounded-2xl bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text)] font-bold text-sm hover:border-amber-500/30 transition-all"
+                className="px-6 py-3 rounded-2xl bg-[var(--c-card)] border border-[var(--c-border)] text-[var(--c-text)] font-bold text-sm hover:border-amber-400/30 transition-all"
               >
                 Camera
               </button>
@@ -462,7 +462,7 @@ export default function FiltersPage() {
               </button>
               <button
                 onClick={capturePhoto}
-                className="w-16 h-16 rounded-full bg-white border-4 border-amber-500 shadow-lg shadow-amber-500/40"
+                className="w-16 h-16 rounded-full bg-white border-4 border-amber-400 shadow-lg shadow-amber-400/40"
               />
             </div>
           </div>
@@ -487,7 +487,7 @@ export default function FiltersPage() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-white text-sm font-bold shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all disabled:opacity-50"
+                className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 text-white text-sm font-bold shadow-lg shadow-amber-400/25 hover:shadow-amber-400/40 transition-all disabled:opacity-50"
               >
                 {saving ? "..." : saved ? "Sauvegarde!" : "Telecharger"}
               </button>
@@ -511,7 +511,7 @@ export default function FiltersPage() {
                   className={
                     "px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all " +
                     (category === c.key
-                      ? "bg-amber-500 text-white shadow-lg shadow-amber-500/25"
+                      ? "bg-amber-400 text-white shadow-lg shadow-amber-400/25"
                       : "bg-[var(--c-card)] text-[var(--c-text-muted)] border border-[var(--c-border)]")
                   }
                 >
@@ -529,8 +529,8 @@ export default function FiltersPage() {
                   className={
                     "p-3 rounded-2xl text-center transition-all " +
                     (selectedFilter === f.id
-                      ? "bg-amber-500/15 border-2 border-amber-500 shadow-lg shadow-amber-500/20 scale-105"
-                      : "bg-[var(--c-card)] border border-[var(--c-border)] hover:border-amber-500/30 hover:scale-102")
+                      ? "bg-amber-400/15 border-2 border-amber-400 shadow-lg shadow-amber-400/20 scale-105"
+                      : "bg-[var(--c-card)] border border-[var(--c-border)] hover:border-amber-400/30 hover:scale-102")
                   }
                 >
                   <p className="text-2xl mb-1">{f.icon}</p>

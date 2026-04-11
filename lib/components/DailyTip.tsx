@@ -66,14 +66,14 @@ export function DailyTip({ animal }: DailyTipProps) {
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
         <span style={{ fontSize: 24 }}>{tip.emoji}</span>
         <div>
-          <div style={{ fontSize: 9, fontWeight: 700, color: "#D97706", textTransform: "uppercase", letterSpacing: 1 }}>Conseil du jour</div>
+          <div style={{ fontSize: 9, fontWeight: 700, color: "#F59E0B", textTransform: "uppercase", letterSpacing: 1 }}>Conseil du jour</div>
           <h3 style={{ fontWeight: 800, fontSize: 15, margin: 0, color: "#1a1714" }}>{tip.title}</h3>
         </div>
       </div>
       <p style={{ fontSize: 13, color: "#374151", lineHeight: 1.7, margin: "0 0 12px" }}>{tip.body}</p>
       {tip.cta && (
         <a href={tip.cta.url} target={tip.cta.url.includes("pawdirectory") ? "_blank" : "_self"} rel="noopener"
-          style={{ display: "inline-block", padding: "8px 16px", background: "#D97706", color: "#fff", borderRadius: 50, fontSize: 12, fontWeight: 700, textDecoration: "none" }}>
+          style={{ display: "inline-block", padding: "8px 16px", background: "#F59E0B", color: "#fff", borderRadius: 50, fontSize: 12, fontWeight: 700, textDecoration: "none" }}>
           {tip.cta.label}
         </a>
       )}

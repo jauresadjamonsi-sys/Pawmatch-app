@@ -182,7 +182,7 @@ function AchievementCard({ achievement, t }: { achievement: Achievement; t: Reco
         </div>
       </div>
       {achievement.unlocked && (
-        <span className="text-amber-500 text-sm flex-shrink-0">&#10003;</span>
+        <span className="text-amber-400 text-sm flex-shrink-0">&#10003;</span>
       )}
     </div>
   );

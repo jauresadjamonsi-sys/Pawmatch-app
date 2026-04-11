@@ -108,7 +108,7 @@ export default function SuperFlairModal({
               <p className="text-xs mt-1" style={{ color: "var(--c-text-muted)" }}>
                 Envoie un coup de coeur special a <strong>{receiverName}</strong>
               </p>
-              <p className="text-[10px] mt-1 flex items-center justify-center gap-1" style={{ color: "#fbbf24" }}>
+              <p className="text-[10px] mt-1 flex items-center justify-center gap-1" style={{ color: "#FCD34D" }}>
                 <span>🪙</span> 15 PawCoins
               </p>
             </div>
@@ -121,13 +121,13 @@ export default function SuperFlairModal({
                   onClick={() => { setSelected(i); setCustom(""); }}
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all"
                   style={{
-                    background: selected === i && !custom ? "rgba(245,158,11,0.1)" : "transparent",
-                    border: selected === i && !custom ? "1px solid rgba(245,158,11,0.3)" : "1px solid transparent",
+                    background: selected === i && !custom ? "rgba(251,191,36,0.1)" : "transparent",
+                    border: selected === i && !custom ? "1px solid rgba(251,191,36,0.3)" : "1px solid transparent",
                   }}
                 >
                   <span className="text-xl">{msg.emoji}</span>
                   <span className="text-sm font-medium" style={{ color: "var(--c-text)" }}>{msg.text}</span>
-                  {selected === i && !custom && <span className="ml-auto text-amber-400 text-xs">✓</span>}
+                  {selected === i && !custom && <span className="ml-auto text-amber-300 text-xs">✓</span>}
                 </button>
               ))}
             </div>
@@ -163,8 +163,8 @@ export default function SuperFlairModal({
                 disabled={sending}
                 className="flex-1 py-2.5 rounded-full text-sm font-bold text-white transition-all"
                 style={{
-                  background: "linear-gradient(135deg, #F59E0B, #a78bfa)",
-                  boxShadow: "0 4px 15px rgba(245,158,11,0.3)",
+                  background: "linear-gradient(135deg, #FBBF24, #a78bfa)",
+                  boxShadow: "0 4px 15px rgba(251,191,36,0.3)",
                   cursor: sending ? "wait" : "pointer",
                   opacity: sending ? 0.7 : 1,
                 }}

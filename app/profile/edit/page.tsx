@@ -83,26 +83,26 @@ export default function EditProfilePage() {
 
         <div className="bg-[var(--c-card)] border border-[var(--c-border)] rounded-2xl p-6">
           {error && <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-sm">{error}</div>}
-          {success && <div className="mb-4 p-3 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-lg text-sm">Profil mis à jour !</div>}
+          {success && <div className="mb-4 p-3 bg-amber-400/10 border border-amber-400/20 text-amber-300 rounded-lg text-sm">Profil mis à jour !</div>}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">Nom complet</label>
               <input name="full_name" type="text" defaultValue={profile.full_name || ""}
-                className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition" />
+                className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-amber-400 focus:border-transparent outline-none transition" />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">Téléphone</label>
               <input name="phone" type="tel" defaultValue={profile.phone || ""}
-                className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
+                className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-amber-400 focus:border-transparent outline-none transition"
                 placeholder="+41 79 123 45 67" />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">Canton</label>
               <select value={selectedCanton} onChange={(e) => { setSelectedCanton(e.target.value); setCustomCity(false); }}
-                className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-amber-500 outline-none appearance-none">
+                className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-amber-400 outline-none appearance-none">
                 <option value="" className="bg-[var(--c-deep)]">Sélectionner un canton</option>
                 {CANTONS.map((c) => (
                   <option key={c.code} value={c.code} className="bg-[var(--c-deep)]">{c.name} ({c.code})</option>
@@ -114,13 +114,13 @@ export default function EditProfilePage() {
               <label className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">Ville</label>
               {customCity ? (
                 <input name="city_custom" type="text" defaultValue={profile.city || ""}
-                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
+                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text)] placeholder-[var(--c-text-muted)] focus:ring-2 focus:ring-amber-400 focus:border-transparent outline-none transition"
                   placeholder="Votre ville" />
               ) : (
                 <select name="city"
                   defaultValue={profile.city || ""}
                   onChange={(e) => { if (e.target.value === "__other") setCustomCity(true); }}
-                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-amber-500 outline-none appearance-none">
+                  className="w-full px-4 py-3 bg-[var(--c-card)] border border-[var(--c-border)] rounded-xl text-[var(--c-text-muted)] focus:ring-2 focus:ring-amber-400 outline-none appearance-none">
                   <option value="" className="bg-[var(--c-deep)]">Sélectionner</option>
                   {cantonCities.map((city) => (
                     <option key={city} value={city} className="bg-[var(--c-deep)]">{city}</option>
@@ -132,7 +132,7 @@ export default function EditProfilePage() {
 
             <div className="flex gap-3">
               <button type="submit" disabled={saving}
-                className="flex-1 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl transition disabled:opacity-50">
+                className="flex-1 py-3 bg-amber-400 hover:bg-amber-500 text-white font-semibold rounded-xl transition disabled:opacity-50">
                 {saving ? "Sauvegarde..." : "Sauvegarder"}
               </button>
               <button type="button" onClick={() => router.push("/profile")}

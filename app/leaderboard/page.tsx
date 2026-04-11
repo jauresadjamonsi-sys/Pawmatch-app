@@ -73,9 +73,9 @@ const SPECIES_CHIPS = [
 ];
 
 const MEDAL_COLORS = [
-  { bg: "linear-gradient(135deg, #fbbf24, #f59e0b)", border: "rgba(251,191,36,0.5)", shadow: "rgba(251,191,36,0.3)", label: "1er" },
+  { bg: "linear-gradient(135deg, #FCD34D, #FBBF24)", border: "rgba(252,211,77,0.5)", shadow: "rgba(252,211,77,0.3)", label: "1er" },
   { bg: "linear-gradient(135deg, #d1d5db, #9ca3af)", border: "rgba(156,163,175,0.5)", shadow: "rgba(156,163,175,0.3)", label: "2e" },
-  { bg: "linear-gradient(135deg, #d97706, #b45309)", border: "rgba(217,119,6,0.5)", shadow: "rgba(217,119,6,0.3)", label: "3e" },
+  { bg: "linear-gradient(135deg, #F59E0B, #D97706)", border: "rgba(245,158,11,0.5)", shadow: "rgba(245,158,11,0.3)", label: "3e" },
 ];
 
 export default function LeaderboardPage() {
@@ -194,7 +194,7 @@ export default function LeaderboardPage() {
             onClick={() => setTab(t.key as "global" | "canton")}
             className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ease-out"
             style={{
-              background: tab === t.key ? "linear-gradient(135deg, #F59E0B, #4ADE80)" : "var(--c-glass)",
+              background: tab === t.key ? "linear-gradient(135deg, #FBBF24, #4ADE80)" : "var(--c-glass)",
               color: tab === t.key ? "#fff" : "var(--c-text-muted)",
               border: tab === t.key ? "none" : "1px solid var(--c-border)",
               transform: tab === t.key ? "scale(1.02)" : "scale(1)",
@@ -215,7 +215,7 @@ export default function LeaderboardPage() {
             className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ease-out"
             style={{
               background: speciesFilter === sp.key ? "rgba(34, 197, 94,0.15)" : "var(--c-glass)",
-              color: speciesFilter === sp.key ? "#F59E0B" : "var(--c-text-muted)",
+              color: speciesFilter === sp.key ? "#FBBF24" : "var(--c-text-muted)",
               border: speciesFilter === sp.key ? "1.5px solid rgba(34, 197, 94,0.3)" : "1px solid var(--c-border)",
               transform: speciesFilter === sp.key ? "scale(1.08)" : "scale(1)",
             }}
@@ -326,12 +326,12 @@ export default function LeaderboardPage() {
                   ❤️ {entry.like_count}
                 </span>
                 <AnimatedScore value={entry.score} className="text-xs font-black px-2 py-0.5 rounded-full" style={{
-                  background: "rgba(251,191,36,0.1)",
-                  color: "#fbbf24",
+                  background: "rgba(252,211,77,0.1)",
+                  color: "#FCD34D",
                   /* override score-number gradient for inline use */
                   backgroundClip: "unset",
                   WebkitBackgroundClip: "unset",
-                  WebkitTextFillColor: "#fbbf24",
+                  WebkitTextFillColor: "#FCD34D",
                   fontSize: "inherit",
                   fontWeight: "inherit",
                   lineHeight: "inherit",

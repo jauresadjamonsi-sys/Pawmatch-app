@@ -119,7 +119,7 @@ function computeScore(animal: ScoreProps["animal"]): { score: number; label: str
   score = Math.max(0, Math.min(100, score));
 
   const label = score >= 80 ? "Excellent" : score >= 60 ? "Bon" : score >= 40 ? "À surveiller" : "Attention";
-  const color = score >= 80 ? "#F59E0B" : score >= 60 ? "#84cc16" : score >= 40 ? "#f59e0b" : "#ef4444";
+  const color = score >= 80 ? "#FBBF24" : score >= 60 ? "#84cc16" : score >= 40 ? "#FBBF24" : "#ef4444";
 
   return { score, label, color, insights };
 }

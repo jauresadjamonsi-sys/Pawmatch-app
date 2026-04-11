@@ -11,10 +11,10 @@ type MoodProps = {
 };
 
 const MOODS = [
-  { value: "excellent", emoji: "🤩", label: "Super", color: "#F59E0B" },
+  { value: "excellent", emoji: "🤩", label: "Super", color: "#FBBF24" },
   { value: "happy", emoji: "😊", label: "Content", color: "#84cc16" },
-  { value: "neutral", emoji: "😐", label: "Normal", color: "#f59e0b" },
-  { value: "tired", emoji: "😴", label: "Fatigué", color: "#F59E0B" },
+  { value: "neutral", emoji: "😐", label: "Normal", color: "#FBBF24" },
+  { value: "tired", emoji: "😴", label: "Fatigué", color: "#FBBF24" },
   { value: "sick", emoji: "🤒", label: "Malade", color: "#ef4444" },
 ];
 
@@ -152,7 +152,7 @@ export function MoodTracker({ animalId, animalName, userId, isOwner }: MoodProps
         <button onClick={() => setShowForm(true)} disabled={todayDone}
           style={{
             width: "100%", padding: 12, borderRadius: 12, border: "none", cursor: todayDone ? "default" : "pointer",
-            background: todayDone ? "#F3F4F6" : "linear-gradient(135deg, #F59E0B, #D97706)",
+            background: todayDone ? "#F3F4F6" : "linear-gradient(135deg, #FBBF24, #F59E0B)",
             color: todayDone ? "#9ca3af" : "#fff", fontWeight: 700, fontSize: 13,
             opacity: todayDone ? 0.6 : 1,
           }}>
@@ -185,7 +185,7 @@ export function MoodTracker({ animalId, animalName, userId, isOwner }: MoodProps
               <span style={{ fontSize: 11, color: "#6b7280" }}>{ENERGY_LABELS[energy - 1]}</span>
             </div>
             <input type="range" min="1" max="5" value={energy} onChange={e => setEnergy(Number(e.target.value))}
-              style={{ width: "100%", accentColor: "#F59E0B" }} />
+              style={{ width: "100%", accentColor: "#FBBF24" }} />
           </div>
 
           {/* Note */}
@@ -196,7 +196,7 @@ export function MoodTracker({ animalId, animalName, userId, isOwner }: MoodProps
           {/* Actions */}
           <div style={{ display: "flex", gap: 8 }}>
             <button onClick={handleSubmit} disabled={!mood || sending}
-              style={{ flex: 1, padding: 10, background: "#F59E0B", color: "#fff", border: "none", borderRadius: 10, fontWeight: 700, fontSize: 13, cursor: "pointer", opacity: (!mood || sending) ? 0.5 : 1 }}>
+              style={{ flex: 1, padding: 10, background: "#FBBF24", color: "#fff", border: "none", borderRadius: 10, fontWeight: 700, fontSize: 13, cursor: "pointer", opacity: (!mood || sending) ? 0.5 : 1 }}>
               {sending ? "..." : "Enregistrer"}
             </button>
             <button onClick={() => setShowForm(false)}

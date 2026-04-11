@@ -89,7 +89,7 @@ export default function SignupPage() {
         <div className="text-center mb-8 animate-slide-up">
           <span className="text-4xl block mb-2" style={{ filter: "drop-shadow(0 0 12px rgba(34, 197, 94,0.2))" }}>🐾</span>
           <h1 className="text-4xl font-bold" style={{
-            background: "linear-gradient(135deg, #F59E0B, #FACC15)",
+            background: "linear-gradient(135deg, #FBBF24, #FACC15)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             backgroundClip: "text",
@@ -246,7 +246,7 @@ export default function SignupPage() {
               >
                 <p className="text-xs text-[var(--c-text-muted)] mb-1">Code parrainage</p>
                 <p className="text-sm font-bold" style={{
-                  background: "linear-gradient(135deg, #FACC15, #F59E0B)",
+                  background: "linear-gradient(135deg, #FACC15, #FBBF24)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -263,16 +263,16 @@ export default function SignupPage() {
                 id="acceptTerms"
                 checked={acceptedTerms}
                 onChange={(e) => setAcceptedTerms(e.target.checked)}
-                className="mt-1 accent-amber-500"
+                className="mt-1 accent-amber-400"
                 style={{ width: 16, height: 16, flexShrink: 0 }}
               />
               <label htmlFor="acceptTerms" className="text-xs text-[var(--c-text-muted)] leading-relaxed cursor-pointer">
                 J&apos;accepte les{" "}
-                <a href="/legal/cgu" target="_blank" className="underline text-amber-400 hover:text-amber-300">
+                <a href="/legal/cgu" target="_blank" className="underline text-amber-300 hover:text-amber-200">
                   Conditions Generales d&apos;Utilisation
                 </a>{" "}
                 et la{" "}
-                <a href="/legal/privacy" target="_blank" className="underline text-amber-400 hover:text-amber-300">
+                <a href="/legal/privacy" target="_blank" className="underline text-amber-300 hover:text-amber-200">
                   Politique de Confidentialite
                 </a>
                 . Je confirme avoir au moins 18 ans.

@@ -992,10 +992,10 @@ html {
   color: #047857 !important; /* emerald-700 */
 }
 
-[data-theme="clair"] .text-amber-400,
-[data-theme="aurore"] .text-amber-400,
-[data-theme="ocean"] .text-amber-400 {
-  color: #b45309 !important; /* amber-700 */
+[data-theme="clair"] .text-amber-300,
+[data-theme="aurore"] .text-amber-300,
+[data-theme="ocean"] .text-amber-300 {
+  color: #D97706 !important; /* amber-600 */
 }
 
 [data-theme="clair"] .text-blue-400,

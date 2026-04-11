@@ -118,13 +118,13 @@ export default async function CantonPage({ params }: Props) {
       <nav className="max-w-6xl mx-auto px-4 pt-6 text-sm text-gray-500" aria-label="Fil d'Ariane">
         <ol className="flex items-center gap-2">
           <li>
-            <Link href="/" className="hover:text-amber-600 transition-colors">
+            <Link href="/" className="hover:text-amber-500 transition-colors">
               Accueil
             </Link>
           </li>
           <li>/</li>
           <li>
-            <Link href="/animaux" className="hover:text-amber-600 transition-colors">
+            <Link href="/animaux" className="hover:text-amber-500 transition-colors">
               Animaux
             </Link>
           </li>
@@ -160,7 +160,7 @@ export default async function CantonPage({ params }: Props) {
             <Link
               key={city}
               href={`/animaux/${canton.slug}/${getCitySlug(city)}`}
-              className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm font-medium hover:border-amber-300 hover:text-amber-600 hover:bg-amber-50 transition-all"
+              className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm font-medium hover:border-amber-200 hover:text-amber-500 hover:bg-amber-50 transition-all"
             >
               {city}
             </Link>
@@ -197,7 +197,7 @@ export default async function CantonPage({ params }: Props) {
                   )}
                 </div>
                 <div className="p-4">
-                  <h3 className="font-semibold text-gray-900 group-hover:text-amber-600 transition-colors">
+                  <h3 className="font-semibold text-gray-900 group-hover:text-amber-500 transition-colors">
                     {animal.name}
                   </h3>
                   <p className="text-sm text-gray-500 mt-1">
@@ -229,7 +229,7 @@ export default async function CantonPage({ params }: Props) {
           </p>
           <Link
             href="/signup"
-            className="inline-block bg-amber-500 text-white font-semibold px-8 py-3 rounded-full hover:bg-amber-600 transition-colors"
+            className="inline-block bg-amber-400 text-white font-semibold px-8 py-3 rounded-full hover:bg-amber-500 transition-colors"
           >
             Inscrire mon animal
           </Link>
@@ -237,7 +237,7 @@ export default async function CantonPage({ params }: Props) {
       )}
 
       {/* CTA */}
-      <section className="bg-gradient-to-r from-amber-500 to-amber-600 py-14 px-4">
+      <section className="bg-gradient-to-r from-amber-400 to-amber-500 py-14 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
             Votre animal cherche un copain a {canton.name} ?
@@ -247,7 +247,7 @@ export default async function CantonPage({ params }: Props) {
           </p>
           <Link
             href="/signup"
-            className="inline-block bg-white text-amber-600 font-semibold px-8 py-3 rounded-full hover:bg-amber-50 transition-colors text-lg"
+            className="inline-block bg-white text-amber-500 font-semibold px-8 py-3 rounded-full hover:bg-amber-50 transition-colors text-lg"
           >
             Creer un compte gratuit
           </Link>

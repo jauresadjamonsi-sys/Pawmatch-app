@@ -22,15 +22,15 @@ const SPECIES_GLOW: Record<string, string> = {
 };
 
 const SPECIES_RING: Record<string, string> = {
-  chien: "ring-amber-500/60 shadow-[0_0_15px_rgba(245,158,11,0.3)]",
+  chien: "ring-amber-400/60 shadow-[0_0_15px_rgba(251,191,36,0.3)]",
   chat: "ring-purple-400/60 shadow-[0_0_15px_rgba(167,139,250,0.3)]",
   lapin: "ring-cyan-400/60 shadow-[0_0_15px_rgba(56,189,248,0.3)]",
   oiseau: "ring-cyan-400/60 shadow-[0_0_15px_rgba(56,189,248,0.3)]",
   rongeur: "ring-purple-400/60 shadow-[0_0_15px_rgba(167,139,250,0.3)]",
-  autre: "ring-amber-500/60 shadow-[0_0_15px_rgba(245,158,11,0.3)]",
+  autre: "ring-amber-400/60 shadow-[0_0_15px_rgba(251,191,36,0.3)]",
 };
 
-const CONFETTI_COLORS = ["#F59E0B","#4ADE80","#fbbf24","#34d399","#60a5fa","#f472b6","#a78bfa"];
+const CONFETTI_COLORS = ["#FBBF24","#4ADE80","#FCD34D","#34d399","#60a5fa","#f472b6","#a78bfa"];
 const CONFETTI_SHAPES = ["circle", "square", "star", "heart", "paw"];
 
 function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose: () => void; t: Record<string, string> }) {
@@ -126,7 +126,7 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
         <div className="absolute inset-0 rounded-[24px] gradient-border pointer-events-none" />
 
         {/* Background glow */}
-        <div className="absolute inset-0 rounded-[24px] bg-amber-500/5 blur-2xl" />
+        <div className="absolute inset-0 rounded-[24px] bg-amber-400/5 blur-2xl" />
 
         {/* Paw */}
         <div className="paw-beat text-7xl mb-4">🐾</div>
@@ -143,7 +143,7 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
         {/* Animals */}
         <div className="slide-up flex items-center justify-center gap-4 mb-6" style={{ animationDelay: "0.4s" }}>
           <div className="text-center">
-            <div className="w-16 h-16 rounded-full bg-amber-500/20 ring-2 ring-amber-500/50 flex items-center justify-center overflow-hidden mx-auto mb-1 ring-pulse relative">
+            <div className="w-16 h-16 rounded-full bg-amber-400/20 ring-2 ring-amber-400/50 flex items-center justify-center overflow-hidden mx-auto mb-1 ring-pulse relative">
               {match.sender_animal.photo_url
                 ? <Image src={match.sender_animal.photo_url} alt={match.sender_animal.name} fill className="object-cover" sizes="(max-width: 768px) 64px, 64px" />
                 : <span className="text-2xl">{EMOJI_MAP[match.sender_animal.species] || "🐾"}</span>}
@@ -233,7 +233,7 @@ export default function MatchesPage() {
         <div className="aurora-bg" />
         <div className="flex flex-col items-center gap-4">
           <div className="relative">
-            <div className="w-14 h-14 border-2 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
+            <div className="w-14 h-14 border-2 border-amber-400/30 border-t-amber-400 rounded-full animate-spin" />
             <div className="absolute inset-0 w-14 h-14 rounded-full neon-green animate-breathe" />
           </div>
           <p className="text-[var(--c-text-muted)] text-sm animate-breathe">{t.loading}</p>
@@ -367,7 +367,7 @@ export default function MatchesPage() {
                   glass px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap
                   transition-all duration-300 flex items-center gap-2
                   ${activeTab === tab.key
-                    ? "neon-green text-amber-300 border-amber-500/40 bg-amber-500/10"
+                    ? "neon-green text-amber-200 border-amber-400/40 bg-amber-400/10"
                     : "text-[var(--c-text-muted)] hover:text-[var(--c-text)] hover:bg-[var(--c-card)]"
                   }
                 `}
@@ -377,7 +377,7 @@ export default function MatchesPage() {
                 {tab.count > 0 && (
                   <span className={`
                     px-1.5 py-0.5 rounded-full text-xs font-bold
-                    ${activeTab === tab.key ? "bg-amber-500/30 text-amber-300" : "bg-[var(--c-card)] text-[var(--c-text-muted)]"}
+                    ${activeTab === tab.key ? "bg-amber-400/30 text-amber-200" : "bg-[var(--c-card)] text-[var(--c-text-muted)]"}
                   `}>
                     {tab.count}
                   </span>
@@ -392,10 +392,10 @@ export default function MatchesPage() {
           <div className="mb-8 animate-slide-up" style={{ animationDelay: "0.15s" }}>
             <h2 className="text-sm font-semibold text-[var(--c-text-muted)] uppercase tracking-widest mb-3 flex items-center gap-2">
               {t.matchesReceived}
-              <span className="px-2 py-0.5 bg-amber-500/20 text-amber-300 rounded-full normal-case text-xs neon-green">
+              <span className="px-2 py-0.5 bg-amber-400/20 text-amber-200 rounded-full normal-case text-xs neon-green">
                 {current.pendingReceived.length}
               </span>
-              <span className="w-2 h-2 rounded-full bg-amber-500 animate-breathe ml-1" />
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-breathe ml-1" />
             </h2>
             <div className="space-y-3 stagger-children">
               {current.pendingReceived.map((match) => (
@@ -403,7 +403,7 @@ export default function MatchesPage() {
                   <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-4">
                       <AnimalBadge animal={match.sender_animal} isNew userId={match.sender_user_id} />
-                      <span className="text-amber-500 font-bold animate-float">→</span>
+                      <span className="text-amber-400 font-bold animate-float">→</span>
                       <AnimalBadge animal={match.receiver_animal} userId={match.receiver_user_id} />
                     </div>
                     <p className="text-sm text-[var(--c-text-muted)] mb-4">
@@ -412,7 +412,7 @@ export default function MatchesPage() {
                     <div className="flex gap-3">
                       <button onClick={() => handleRespond(match.id, "accepted")}
                         className="flex-1 py-2.5 font-semibold rounded-xl transition-all duration-300 text-sm text-white
-                          bg-gradient-to-r from-amber-500 to-amber-600
+                          bg-gradient-to-r from-amber-400 to-amber-500
                           hover:shadow-[0_0_20px_rgba(52,211,153,0.4)] hover:scale-[1.02] active:scale-[0.98]">
                         {t.matchesAccept}
                       </button>
@@ -434,10 +434,10 @@ export default function MatchesPage() {
           <div className="mb-8 animate-slide-up" style={{ animationDelay: "0.2s" }}>
             <h2 className="text-sm font-semibold text-[var(--c-text-muted)] uppercase tracking-widest mb-3 flex items-center gap-2">
               {t.matchesConfirmed}
-              <span className="px-2 py-0.5 bg-amber-500/20 text-amber-400 rounded-full normal-case text-xs">
+              <span className="px-2 py-0.5 bg-amber-400/20 text-amber-300 rounded-full normal-case text-xs">
                 {current.accepted.length}
               </span>
-              <span className="w-2 h-2 rounded-full bg-amber-500 animate-breathe ml-1" />
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-breathe ml-1" />
             </h2>
             <div className="space-y-3 stagger-children">
               {current.accepted.map((match) => {
@@ -449,13 +449,13 @@ export default function MatchesPage() {
                     style={{ borderColor: "rgba(52,211,153,0.2)" }}>
                     <div className="flex items-center gap-3 mb-3">
                       <AnimalBadge animal={myAnimal} />
-                      <span className="text-amber-400 font-bold text-lg animate-breathe">♥</span>
+                      <span className="text-amber-300 font-bold text-lg animate-breathe">♥</span>
                       <AnimalBadge animal={theirAnimal} userId={isMe ? match.receiver_user_id : match.sender_user_id} />
                     </div>
                     <div className="flex gap-3 mt-3">
                       <button onClick={() => setCoupDeTruffe(match)}
-                        className="px-4 py-2 glass text-amber-300 rounded-xl text-xs font-semibold
-                          hover:neon-green hover:bg-amber-500/10 transition-all duration-300"
+                        className="px-4 py-2 glass text-amber-200 rounded-xl text-xs font-semibold
+                          hover:neon-green hover:bg-amber-400/10 transition-all duration-300"
                         style={{ borderColor: "rgba(34, 197, 94,0.3)" }}>
                         {"🐾 " + t.matchesCoup}
                       </button>
@@ -479,7 +479,7 @@ export default function MatchesPage() {
               <span className="px-2 py-0.5 bg-[var(--c-card)] text-[var(--c-text-muted)] rounded-full normal-case text-xs">
                 {current.pendingSent.length}
               </span>
-              <span className="w-2 h-2 rounded-full bg-amber-400 animate-breathe ml-1" />
+              <span className="w-2 h-2 rounded-full bg-amber-300 animate-breathe ml-1" />
             </h2>
             <div className="space-y-3 stagger-children">
               {current.pendingSent.map((match) => (
@@ -490,7 +490,7 @@ export default function MatchesPage() {
                     <AnimalBadge animal={match.receiver_animal} userId={match.receiver_user_id} />
                   </div>
                   <p className="text-xs text-[var(--c-text-muted)] mt-3 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-breathe" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-300 animate-breathe" />
                     {t.matchesWaiting} {match.receiver_profile.full_name || match.receiver_profile.email}
                   </p>
                 </div>

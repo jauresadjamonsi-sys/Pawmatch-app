@@ -29,7 +29,7 @@ function Particles({ count }: { count: number }) {
     x: Math.random() * 100,
     delay: Math.random() * 0.8,
     size: Math.random() * 6 + 3,
-    color: ["#F59E0B", "#fbbf24", "#34d399", "#60a5fa", "#f472b6", "#a78bfa"][i % 6],
+    color: ["#FBBF24", "#FCD34D", "#34d399", "#60a5fa", "#f472b6", "#a78bfa"][i % 6],
     angle: Math.random() * 360,
     distance: Math.random() * 60 + 30,
   }));

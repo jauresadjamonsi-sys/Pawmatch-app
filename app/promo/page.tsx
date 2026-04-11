@@ -39,7 +39,7 @@ const TEMPLATES: PromoTemplate[] = [
     title: "Le Match Parfait",
     whatsappText:
       "Et si ton chien trouvait son meilleur ami ? Pawly connecte les animaux et leurs proprios en Suisse. Inscris-toi gratuitement !",
-    gradient: "linear-gradient(135deg, #F59E0B 0%, #FACC15 50%, #F43F5E 100%)",
+    gradient: "linear-gradient(135deg, #FBBF24 0%, #FACC15 50%, #F43F5E 100%)",
     emoji: "💕",
   },
   {
@@ -47,7 +47,7 @@ const TEMPLATES: PromoTemplate[] = [
     title: "Communaute Suisse",
     whatsappText:
       "La plus grande communaute d'animaux de compagnie en Suisse est sur Pawly ! Rejoins-nous, c'est gratuit.",
-    gradient: "linear-gradient(135deg, #DC2626 0%, #FBBF24 50%, #DC2626 100%)",
+    gradient: "linear-gradient(135deg, #DC2626 0%, #FCD34D 50%, #DC2626 100%)",
     emoji: "🇨🇭",
   },
   {
@@ -63,7 +63,7 @@ const TEMPLATES: PromoTemplate[] = [
     title: "Le Tinder des Animaux",
     whatsappText:
       "Le Tinder des animaux existe et c'est suisse ! Ton compagnon merite de trouver son match. Essaie Pawly maintenant !",
-    gradient: "linear-gradient(135deg, #F43F5E 0%, #4ADE80 50%, #FBBF24 100%)",
+    gradient: "linear-gradient(135deg, #F43F5E 0%, #4ADE80 50%, #FCD34D 100%)",
     emoji: "🔥",
   },
   {
@@ -71,7 +71,7 @@ const TEMPLATES: PromoTemplate[] = [
     title: "100% Gratuit",
     whatsappText:
       "Pawly, l'app gratuite qui connecte les proprietaires d'animaux en Suisse. Inscris-toi en 30 secondes !",
-    gradient: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 50%, #F59E0B 100%)",
+    gradient: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 50%, #FBBF24 100%)",
     emoji: "🎉",
   },
 ];
@@ -168,7 +168,7 @@ export default function PromoPage() {
         <h1 className="text-3xl md:text-4xl font-black mb-2">
           <span
             style={{
-              background: "linear-gradient(135deg, #F59E0B, #FACC15)",
+              background: "linear-gradient(135deg, #FBBF24, #FACC15)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -308,7 +308,7 @@ export default function PromoPage() {
           </p>
           <div className="flex justify-center gap-8 mt-3">
             <div>
-              <p className="text-2xl font-black" style={{ color: "#F59E0B" }}>
+              <p className="text-2xl font-black" style={{ color: "#FBBF24" }}>
                 {stats.animals}+
               </p>
               <p className="text-xs" style={{ color: "var(--c-text-muted)" }}>
@@ -584,7 +584,7 @@ function MatchTemplate({
         <div
           className="promo-fade-up mb-6 px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase text-white"
           style={{
-            background: "linear-gradient(135deg, #F59E0B, #FACC15)",
+            background: "linear-gradient(135deg, #FBBF24, #FACC15)",
             animationDelay: "0.2s",
           }}
         >
@@ -599,7 +599,7 @@ function MatchTemplate({
           Et si ton chien trouvait son{" "}
           <span
             style={{
-              background: "linear-gradient(90deg, #F59E0B, #4ADE80)",
+              background: "linear-gradient(90deg, #FBBF24, #4ADE80)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -615,7 +615,7 @@ function MatchTemplate({
           style={{ animationDelay: "1s" }}
         >
           {/* Left pet */}
-          <div className="promo-glow rounded-full overflow-hidden w-28 h-28 border-4 border-amber-400">
+          <div className="promo-glow rounded-full overflow-hidden w-28 h-28 border-4 border-amber-300">
             {hero?.photo_url ? (
               <img
                 src={hero.photo_url}
@@ -664,7 +664,7 @@ function MatchTemplate({
         >
           <p className="text-white text-lg font-bold">
             {hero?.name || "Ruby"} & {friend?.name || "Max"}{" "}
-            <span className="text-amber-400">98% compatibles !</span>
+            <span className="text-amber-300">98% compatibles !</span>
           </p>
         </div>
 
@@ -674,7 +674,7 @@ function MatchTemplate({
           style={{ animationDelay: "2.3s" }}
         >
           <div className="text-center">
-            <p className="text-2xl font-black text-amber-400">
+            <p className="text-2xl font-black text-amber-300">
               {stats.animals || 150}+
             </p>
             <p className="text-xs opacity-70">animaux</p>
@@ -693,7 +693,7 @@ function MatchTemplate({
           <div
             className="py-4 px-6 rounded-2xl text-center"
             style={{
-              background: "linear-gradient(135deg, #F59E0B, #D97706)",
+              background: "linear-gradient(135deg, #FBBF24, #F59E0B)",
               boxShadow: "0 8px 32px rgba(34, 197, 94,0.4)",
             }}
           >
@@ -748,7 +748,7 @@ function CommunityTemplate({
         <div
           className="promo-fade-up px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase text-white mb-4"
           style={{
-            background: "linear-gradient(135deg, #DC2626, #FBBF24)",
+            background: "linear-gradient(135deg, #DC2626, #FCD34D)",
             animationDelay: "0.2s",
           }}
         >
@@ -819,7 +819,7 @@ function CommunityTemplate({
           <div
             className="py-4 px-6 rounded-2xl text-center"
             style={{
-              background: "linear-gradient(135deg, #DC2626, #FBBF24)",
+              background: "linear-gradient(135deg, #DC2626, #FCD34D)",
               boxShadow: "0 8px 32px rgba(220,38,38,0.3)",
             }}
           >
@@ -897,7 +897,7 @@ function BaladeTemplate({
           style={{ animationDelay: "0.8s" }}
         >
           Trouve un{" "}
-          <span className="text-amber-300">compagnon</span>
+          <span className="text-amber-200">compagnon</span>
           <br />
           de balade ! 🌿
         </h1>
@@ -909,7 +909,7 @@ function BaladeTemplate({
         >
           {/* Main photo */}
           <div
-            className="w-40 h-40 rounded-full overflow-hidden border-4 border-amber-300 mx-auto"
+            className="w-40 h-40 rounded-full overflow-hidden border-4 border-amber-200 mx-auto"
             style={{
               boxShadow: "0 0 40px rgba(16,185,129,0.4)",
             }}
@@ -1241,10 +1241,10 @@ function GratuitTemplate({
               width: 8 + Math.random() * 12,
               height: 8 + Math.random() * 12,
               background: [
-                "#F59E0B",
+                "#FBBF24",
                 "#FACC15",
                 "#F43F5E",
-                "#FBBF24",
+                "#FCD34D",
                 "#38BDF8",
                 "#10B981",
               ][i % 6],
@@ -1275,7 +1275,7 @@ function GratuitTemplate({
         >
           <span
             style={{
-              background: "linear-gradient(90deg, #FBBF24, #F59E0B, #F43F5E, #FACC15)",
+              background: "linear-gradient(90deg, #FCD34D, #FBBF24, #F43F5E, #FACC15)",
               backgroundSize: "300% 100%",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
@@ -1316,7 +1316,7 @@ function GratuitTemplate({
               <span className="text-white font-semibold text-sm">
                 {f.text}
               </span>
-              <span className="ml-auto text-amber-400 text-xs font-bold">
+              <span className="ml-auto text-amber-300 text-xs font-bold">
                 GRATUIT
               </span>
             </div>

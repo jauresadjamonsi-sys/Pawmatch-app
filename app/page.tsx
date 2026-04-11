@@ -49,7 +49,7 @@ export default function HomePage() {
               <span className="gradient-text">Transforme ses journées en aventures</span>
             </h1>
 
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4" style={{ color: "var(--c-accent, #F59E0B)" }}>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4" style={{ color: "var(--c-accent, #FBBF24)" }}>
               Trouve-lui des copains de balade
             </h2>
 
@@ -66,7 +66,7 @@ export default function HomePage() {
               <span className="px-4 py-2 text-xs font-medium rounded-full" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}>
                 🇨🇭 Conçu en Suisse
               </span>
-              <span className="px-4 py-2 text-xs font-bold rounded-full" style={{ background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.2)", color: "#F59E0B" }}>
+              <span className="px-4 py-2 text-xs font-bold rounded-full" style={{ background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.2)", color: "#FBBF24" }}>
                 Gratuit pour commencer
               </span>
               <span className="px-4 py-2 text-xs font-medium rounded-full" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}>
@@ -86,15 +86,15 @@ export default function HomePage() {
           <section className="mb-16" aria-label="Statistiques Pawly">
             <div className="flex justify-around items-center gap-4 p-6 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
               <div className="text-center">
-                <p className="text-3xl font-black" style={{ color: "var(--c-accent, #F59E0B)" }}>150+</p>
+                <p className="text-3xl font-black" style={{ color: "var(--c-accent, #FBBF24)" }}>150+</p>
                 <p className="text-xs uppercase tracking-widest mt-1" style={{ color: "var(--c-text-muted)" }}>Compagnons</p>
               </div>
               <div className="text-center">
-                <p className="text-3xl font-black" style={{ color: "var(--c-accent, #F59E0B)" }}>92%</p>
+                <p className="text-3xl font-black" style={{ color: "var(--c-accent, #FBBF24)" }}>92%</p>
                 <p className="text-xs uppercase tracking-widest mt-1" style={{ color: "var(--c-text-muted)" }}>Balades réussies</p>
               </div>
               <div className="text-center">
-                <p className="text-3xl font-black" style={{ color: "var(--c-accent, #F59E0B)" }}>26</p>
+                <p className="text-3xl font-black" style={{ color: "var(--c-accent, #FBBF24)" }}>26</p>
                 <p className="text-xs uppercase tracking-widest mt-1" style={{ color: "var(--c-text-muted)" }}>cantons couverts</p>
               </div>
             </div>
@@ -107,7 +107,7 @@ export default function HomePage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="p-6 text-center rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <span className="text-xs font-black tracking-widest" style={{ color: "var(--c-accent, #F59E0B)" }}>01</span>
+                <span className="text-xs font-black tracking-widest" style={{ color: "var(--c-accent, #FBBF24)" }}>01</span>
                 <div className="text-4xl my-4">📝</div>
                 <h3 className="font-bold text-lg mb-2">Décris ton compagnon</h3>
                 <p className="text-sm leading-relaxed" style={{ color: "var(--c-text-muted)" }}>
@@ -115,7 +115,7 @@ export default function HomePage() {
                 </p>
               </div>
               <div className="p-6 text-center rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <span className="text-xs font-black tracking-widest" style={{ color: "var(--c-accent, #F59E0B)" }}>02</span>
+                <span className="text-xs font-black tracking-widest" style={{ color: "var(--c-accent, #FBBF24)" }}>02</span>
                 <div className="text-4xl my-4">🧠</div>
                 <h3 className="font-bold text-lg mb-2">Découvre ses copains idéaux</h3>
                 <p className="text-sm leading-relaxed" style={{ color: "var(--c-text-muted)" }}>
@@ -123,7 +123,7 @@ export default function HomePage() {
                 </p>
               </div>
               <div className="p-6 text-center rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <span className="text-xs font-black tracking-widest" style={{ color: "var(--c-accent, #F59E0B)" }}>03</span>
+                <span className="text-xs font-black tracking-widest" style={{ color: "var(--c-accent, #FBBF24)" }}>03</span>
                 <div className="text-4xl my-4">🤝</div>
                 <h3 className="font-bold text-lg mb-2">Organisez votre balade</h3>
                 <p className="text-sm leading-relaxed" style={{ color: "var(--c-text-muted)" }}>
@@ -146,32 +146,32 @@ export default function HomePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <span className="text-3xl">💕</span>
-                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #F59E0B)" }}>Flairer</h3>
+                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #FBBF24)" }}>Flairer</h3>
                 <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Swipe et trouve des copains compatibles avec notre IA</p>
               </div>
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <span className="text-3xl">🎬</span>
-                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #F59E0B)" }}>PawReels</h3>
+                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #FBBF24)" }}>PawReels</h3>
                 <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Partage les meilleurs moments de ton animal en vidéo courte</p>
               </div>
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <span className="text-3xl">🔍</span>
-                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #F59E0B)" }}>Explorer</h3>
+                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #FBBF24)" }}>Explorer</h3>
                 <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Découvre les animaux les plus populaires et le contenu tendance</p>
               </div>
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <span className="text-3xl">⭐</span>
-                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #F59E0B)" }}>Super Flair</h3>
+                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #FBBF24)" }}>Super Flair</h3>
                 <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Envoie un coup de coeur spécial pour te démarquer</p>
               </div>
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <span className="text-3xl">🪙</span>
-                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #F59E0B)" }}>PawCoins</h3>
+                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #FBBF24)" }}>PawCoins</h3>
                 <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Gagne des coins, boost ton profil et débloque des avantages</p>
               </div>
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <span className="text-3xl">🏆</span>
-                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #F59E0B)" }}>Classement</h3>
+                <h3 className="font-bold text-lg mt-3 mb-1" style={{ color: "var(--c-accent, #FBBF24)" }}>Classement</h3>
                 <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Ton animal peut devenir la star de son canton</p>
               </div>
             </div>
@@ -185,32 +185,32 @@ export default function HomePage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <div className="flex gap-1 mb-3">
-                  <span style={{ color: "#F59E0B" }}>★★★★★</span>
+                  <span style={{ color: "#FBBF24" }}>★★★★★</span>
                 </div>
                 <p className="text-sm italic mb-3">
                   &ldquo;Depuis Pawly, mon chien a 3 copains de balade réguliers. Il est tellement plus épanoui !&rdquo;
                 </p>
-                <p className="text-xs font-bold" style={{ color: "var(--c-accent, #F59E0B)" }}>Sophie, Lausanne</p>
+                <p className="text-xs font-bold" style={{ color: "var(--c-accent, #FBBF24)" }}>Sophie, Lausanne</p>
                 <p className="text-[10px]" style={{ color: "var(--c-text-muted)" }}>Avec Kiko, Border Collie</p>
               </div>
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <div className="flex gap-1 mb-3">
-                  <span style={{ color: "#F59E0B" }}>★★★★★</span>
+                  <span style={{ color: "#FBBF24" }}>★★★★★</span>
                 </div>
                 <p className="text-sm italic mb-3">
                   &ldquo;J'ai déménagé à Genève et grâce à Pawly, j'ai trouvé des balades pour mon chat en 2 jours.&rdquo;
                 </p>
-                <p className="text-xs font-bold" style={{ color: "var(--c-accent, #F59E0B)" }}>Marc, Genève</p>
+                <p className="text-xs font-bold" style={{ color: "var(--c-accent, #FBBF24)" }}>Marc, Genève</p>
                 <p className="text-[10px]" style={{ color: "var(--c-text-muted)" }}>Avec Simba, Chat Européen</p>
               </div>
               <div className="p-6 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <div className="flex gap-1 mb-3">
-                  <span style={{ color: "#F59E0B" }}>★★★★★</span>
+                  <span style={{ color: "#FBBF24" }}>★★★★★</span>
                 </div>
                 <p className="text-sm italic mb-3">
                   &ldquo;Le test de personnalité est génial — ça a matché tout de suite avec un Golden du quartier.&rdquo;
                 </p>
-                <p className="text-xs font-bold" style={{ color: "var(--c-accent, #F59E0B)" }}>Anna, Zurich</p>
+                <p className="text-xs font-bold" style={{ color: "var(--c-accent, #FBBF24)" }}>Anna, Zurich</p>
                 <p className="text-[10px]" style={{ color: "var(--c-text-muted)" }}>Avec Bella, Labrador</p>
               </div>
             </div>
@@ -234,7 +234,7 @@ export default function HomePage() {
               </div>
               <div className="p-5 text-center rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <span className="text-2xl block mb-2">🐾</span>
-                <h3 className="font-bold text-sm mb-1" style={{ color: "var(--c-accent, #F59E0B)" }}>Pawly</h3>
+                <h3 className="font-bold text-sm mb-1" style={{ color: "var(--c-accent, #FBBF24)" }}>Pawly</h3>
                 <p className="text-xs font-medium">La seule app suisse dédiée aux rencontres entre animaux</p>
               </div>
             </div>
@@ -242,7 +242,7 @@ export default function HomePage() {
 
           {/* Final CTA */}
           <section className="mb-16 text-center" aria-label="Inscription">
-            <h2 className="text-2xl sm:text-3xl font-black mb-3" style={{ color: "var(--c-accent, #F59E0B)" }}>
+            <h2 className="text-2xl sm:text-3xl font-black mb-3" style={{ color: "var(--c-accent, #FBBF24)" }}>
               Ton compagnon mérite des amis
             </h2>
             <p className="text-sm mb-6 max-w-md mx-auto" style={{ color: "var(--c-text-muted)" }}>

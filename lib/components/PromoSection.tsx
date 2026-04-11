@@ -789,7 +789,7 @@ export default function PromoSection() {
               rel="noopener noreferrer"
               className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-extrabold text-white transition-transform active:scale-95"
               style={{
-                background: "linear-gradient(135deg, #F59E0B 0%, #F43F5E 50%, #A78BFA 100%)",
+                background: "linear-gradient(135deg, #FBBF24 0%, #F43F5E 50%, #A78BFA 100%)",
                 boxShadow: "0 4px 20px rgba(249,115,22,0.4)",
                 animation: "ctaPulse 2s ease-in-out infinite",
               }}
@@ -825,7 +825,7 @@ export default function PromoSection() {
                 width: i === currentIdx ? (s.isHero ? 22 : 16) : 5,
                 height: 5,
                 background: i === currentIdx
-                  ? (s.isHero ? "#F43F5E" : "#F59E0B")
+                  ? (s.isHero ? "#F43F5E" : "#FBBF24")
                   : s.isHero
                     ? "rgba(244,63,94,0.5)"
                     : "rgba(255,255,255,0.5)",
@@ -871,7 +871,7 @@ export default function PromoSection() {
             disabled={recording}
             className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-xs font-bold text-white transition-transform active:scale-95"
             style={{
-              background: recording ? "#6b7280" : "linear-gradient(135deg, #F59E0B, #EC4899)",
+              background: recording ? "#6b7280" : "linear-gradient(135deg, #FBBF24, #EC4899)",
               opacity: recording ? 0.7 : 1,
             }}
           >
@@ -891,7 +891,7 @@ export default function PromoSection() {
           <button
             onClick={() => shareWithImage("🐾 Pawly — Le Tinder des Animaux 🇨🇭\nRegarde la vidéo promo → https://pawlyapp.ch/promo\n\nConnecte ton compagnon avec d'autres animaux en Suisse ! Gratuit")}
             className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-xs font-bold text-white transition-transform active:scale-95"
-            style={{ background: "linear-gradient(135deg, #F59E0B, #F43F5E)" }}
+            style={{ background: "linear-gradient(135deg, #FBBF24, #F43F5E)" }}
           >
             📤 Partager
           </button>

@@ -241,7 +241,7 @@ export default function ConcoursPage() {
               );
             })}
             {countdown.isOver && (
-              <span className="self-center text-sm font-semibold text-amber-400">
+              <span className="self-center text-sm font-semibold text-amber-300">
                 Concours termine !
               </span>
             )}
@@ -263,7 +263,7 @@ export default function ConcoursPage() {
           {!countdown.isOver && (
             <button
               onClick={openParticipateModal}
-              className="btn-press px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white text-sm font-bold shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 transition-all"
+              className="btn-press px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-white text-sm font-bold shadow-lg shadow-amber-400/20 hover:shadow-amber-400/40 transition-all"
             >
               Participer au concours
             </button>
@@ -327,7 +327,7 @@ export default function ConcoursPage() {
                       <div className="flex items-center justify-between mb-1">
                         <Link
                           href={`/animals/${entry.animal_id}`}
-                          className="font-bold text-[var(--c-text)] hover:text-amber-400 transition-colors"
+                          className="font-bold text-[var(--c-text)] hover:text-amber-300 transition-colors"
                         >
                           {entry.animal?.name || "Animal"}
                         </Link>
@@ -491,7 +491,7 @@ export default function ConcoursPage() {
                     </p>
                     <Link
                       href="/profile/animals/new"
-                      className="text-sm text-amber-400 hover:underline"
+                      className="text-sm text-amber-300 hover:underline"
                     >
                       Ajouter un animal
                     </Link>
@@ -506,8 +506,8 @@ export default function ConcoursPage() {
                         className={
                           "flex items-center gap-2 p-3 rounded-xl transition-all text-left " +
                           (selectedAnimal === animal.id
-                            ? "bg-amber-500/20 ring-2 ring-amber-500 border-transparent"
-                            : "border border-[var(--c-border)] hover:border-amber-500/30")
+                            ? "bg-amber-400/20 ring-2 ring-amber-400 border-transparent"
+                            : "border border-[var(--c-border)] hover:border-amber-400/30")
                         }
                       >
                         <div className="relative w-10 h-10 rounded-full overflow-hidden bg-[var(--c-glass)] shrink-0">
@@ -574,7 +574,7 @@ export default function ConcoursPage() {
                     </button>
                   </div>
                 ) : (
-                  <label className="flex flex-col items-center justify-center gap-2 py-8 rounded-xl border-2 border-dashed border-[var(--c-border)] hover:border-amber-500/30 cursor-pointer transition-colors">
+                  <label className="flex flex-col items-center justify-center gap-2 py-8 rounded-xl border-2 border-dashed border-[var(--c-border)] hover:border-amber-400/30 cursor-pointer transition-colors">
                     <svg
                       className="w-8 h-8 text-[var(--c-text-muted)]"
                       fill="none"
@@ -619,7 +619,7 @@ export default function ConcoursPage() {
                 disabled={
                   submitting || !selectedAnimal || !photoFile || myAnimals.length === 0
                 }
-                className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-white font-bold shadow-lg shadow-amber-400/20 hover:shadow-amber-400/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 {submitting ? "Envoi en cours..." : "Soumettre ma participation"}
               </button>

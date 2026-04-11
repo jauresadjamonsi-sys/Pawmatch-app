@@ -226,7 +226,7 @@ export default function UrgencePage() {
       {sent && sentAnimal ? (
         <div className="glass-strong rounded-2xl p-6 text-center space-y-4 animate-bounce-in">
           {sentAnimal.photo_url && (
-            <div className="relative w-32 h-32 mx-auto rounded-2xl overflow-hidden border-2 border-amber-500/30">
+            <div className="relative w-32 h-32 mx-auto rounded-2xl overflow-hidden border-2 border-amber-400/30">
               <Image
                 src={sentAnimal.photo_url}
                 alt={sentAnimal.name}
@@ -266,7 +266,7 @@ export default function UrgencePage() {
             {animals.length === 0 ? (
               <p className="text-sm text-[var(--c-text-muted)]">
                 Aucun animal enregistre.{" "}
-                <Link href="/animals/new" className="text-amber-500 underline">
+                <Link href="/animals/new" className="text-amber-400 underline">
                   Ajoute ton animal
                 </Link>{" "}
                 d'abord.
@@ -281,8 +281,8 @@ export default function UrgencePage() {
                     className={
                       "flex items-center gap-3 p-3 rounded-xl border transition-all text-left " +
                       (selectedAnimalId === animal.id
-                        ? "border-amber-500 bg-amber-500/10"
-                        : "border-[var(--c-border)] hover:border-amber-500/40")
+                        ? "border-amber-400 bg-amber-400/10"
+                        : "border-[var(--c-border)] hover:border-amber-400/40")
                     }
                   >
                     {animal.photo_url ? (
@@ -327,7 +327,7 @@ export default function UrgencePage() {
               value={lastSeenLocation}
               onChange={(e) => setLastSeenLocation(e.target.value)}
               placeholder="Ex: Parc de Mon-Repos, Lausanne"
-              className="w-full px-4 py-2.5 rounded-xl bg-[var(--c-deep)] border border-[var(--c-border)] text-[var(--c-text)] placeholder:text-[var(--c-text-muted)] text-sm focus:outline-none focus:border-amber-500 transition"
+              className="w-full px-4 py-2.5 rounded-xl bg-[var(--c-deep)] border border-[var(--c-border)] text-[var(--c-text)] placeholder:text-[var(--c-text-muted)] text-sm focus:outline-none focus:border-amber-400 transition"
             />
           </div>
 
@@ -340,7 +340,7 @@ export default function UrgencePage() {
               type="datetime-local"
               value={lastSeenDate}
               onChange={(e) => setLastSeenDate(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl bg-[var(--c-deep)] border border-[var(--c-border)] text-[var(--c-text)] text-sm focus:outline-none focus:border-amber-500 transition"
+              className="w-full px-4 py-2.5 rounded-xl bg-[var(--c-deep)] border border-[var(--c-border)] text-[var(--c-text)] text-sm focus:outline-none focus:border-amber-400 transition"
             />
           </div>
 
@@ -354,7 +354,7 @@ export default function UrgencePage() {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Ex: Il s'est echappe pendant une promenade, portait un collier bleu..."
               rows={3}
-              className="w-full px-4 py-2.5 rounded-xl bg-[var(--c-deep)] border border-[var(--c-border)] text-[var(--c-text)] placeholder:text-[var(--c-text-muted)] text-sm focus:outline-none focus:border-amber-500 transition resize-none"
+              className="w-full px-4 py-2.5 rounded-xl bg-[var(--c-deep)] border border-[var(--c-border)] text-[var(--c-text)] placeholder:text-[var(--c-text-muted)] text-sm focus:outline-none focus:border-amber-400 transition resize-none"
             />
           </div>
 
@@ -439,7 +439,7 @@ export default function UrgencePage() {
                     </span>
                     <Link
                       href={`/matches/${alert.user_id}`}
-                      className="text-xs font-bold text-amber-500 hover:text-amber-400 transition px-3 py-1.5 rounded-full border border-amber-500/30 hover:bg-amber-500/10"
+                      className="text-xs font-bold text-amber-400 hover:text-amber-300 transition px-3 py-1.5 rounded-full border border-amber-400/30 hover:bg-amber-400/10"
                     >
                       Je l'ai vu !
                     </Link>

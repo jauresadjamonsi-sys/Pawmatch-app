@@ -288,7 +288,7 @@ export function SimulationRencontre({ myAnimal, otherAnimal, compatibilityScore,
 
             <div className="text-center">
               <div className="text-2xl sim-pulse">❤️</div>
-              <p className="text-lg font-black text-amber-500">{compatibilityScore}%</p>
+              <p className="text-lg font-black text-amber-400">{compatibilityScore}%</p>
             </div>
 
             <div className="text-center">
@@ -304,7 +304,7 @@ export function SimulationRencontre({ myAnimal, otherAnimal, compatibilityScore,
 
           {/* Progress bar */}
           <div className="h-1 bg-[var(--c-border)] rounded-full overflow-hidden">
-            <div className="h-full rounded-full transition-all duration-700" style={{ width: `${progressPercent}%`, background: "linear-gradient(to right, var(--c-accent, #F59E0B), #F59E0B)" }} />
+            <div className="h-full rounded-full transition-all duration-700" style={{ width: `${progressPercent}%`, background: "linear-gradient(to right, var(--c-accent, #FBBF24), #FBBF24)" }} />
           </div>
         </div>
 
@@ -343,7 +343,7 @@ export function SimulationRencontre({ myAnimal, otherAnimal, compatibilityScore,
               <div className="flex justify-center gap-1.5 mt-4">
                 {steps.map((_, i) => (
                   <div key={i} className="w-2 h-2 rounded-full transition-all" style={{
-                    background: i === currentStep ? "var(--c-accent, #F59E0B)" : i < currentStep ? "#F59E0B" : "var(--c-border)",
+                    background: i === currentStep ? "var(--c-accent, #FBBF24)" : i < currentStep ? "#FBBF24" : "var(--c-border)",
                     transform: i === currentStep ? "scale(1.3)" : "scale(1)",
                   }} />
                 ))}
@@ -368,7 +368,7 @@ export function SimulationRencontre({ myAnimal, otherAnimal, compatibilityScore,
                 </button>
               )}
             </div>
-            <button onClick={onClose} className="w-full py-3 rounded-xl text-sm font-bold text-white" style={{ background: "var(--c-accent, #F59E0B)" }}>
+            <button onClick={onClose} className="w-full py-3 rounded-xl text-sm font-bold text-white" style={{ background: "var(--c-accent, #FBBF24)" }}>
               {l.matchCta}
             </button>
           </div>

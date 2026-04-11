@@ -187,8 +187,8 @@ export function AIRecommendations({ animal, lang }: AIProps) {
 
   const priorityColors = {
     high: { bg: "#FEF2F2", border: "#FECACA", dot: "#EF4444" },
-    medium: { bg: "#FFFBEB", border: "#FDE68A", dot: "#F59E0B" },
-    low: { bg: "#F0FDF4", border: "#BBF7D0", dot: "#F59E0B" },
+    medium: { bg: "#FFFBEB", border: "#FDE68A", dot: "#FBBF24" },
+    low: { bg: "#F0FDF4", border: "#BBF7D0", dot: "#FBBF24" },
   };
 
   const displayed = expanded ? recs : recs.slice(0, 2);

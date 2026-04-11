@@ -84,14 +84,14 @@ export default function CompatibilityBadge({
     data && data.score >= 75
       ? "rgba(52,211,153,0.6)"
       : data && data.score >= 50
-        ? "rgba(251,191,36,0.5)"
+        ? "rgba(252,211,77,0.5)"
         : "rgba(156,163,175,0.4)";
 
   const ringColor =
     data && data.score >= 75
       ? "#34d399"
       : data && data.score >= 50
-        ? "#fbbf24"
+        ? "#FCD34D"
         : "#9ca3af";
 
   const circumference = 2 * Math.PI * 18;

@@ -174,7 +174,7 @@ export default function GroupDetailPage() {
       <main className="min-h-screen pb-32" style={{ background: "var(--c-deep)" }}>
         <div className="max-w-3xl mx-auto px-4 py-8">
           <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <div className="w-10 h-10 border-3 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
+            <div className="w-10 h-10 border-3 border-amber-400/30 border-t-amber-400 rounded-full animate-spin" />
             <p className="text-[var(--c-text-muted)] text-sm">Chargement...</p>
           </div>
         </div>
@@ -197,7 +197,7 @@ export default function GroupDetailPage() {
             </p>
             <Link
               href="/groups"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white text-sm font-bold shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 transition-all"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-white text-sm font-bold shadow-lg shadow-amber-400/20 hover:shadow-amber-400/40 transition-all"
             >
               <svg
                 className="w-4 h-4"
@@ -287,7 +287,7 @@ export default function GroupDetailPage() {
                 "px-6 py-2.5 rounded-xl text-sm font-semibold transition-all " +
                 (isMember
                   ? "border border-[var(--c-border)] text-[var(--c-text-muted)] hover:border-red-400/50 hover:text-red-400 hover:bg-red-500/10"
-                  : "bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-md shadow-amber-500/15 hover:shadow-amber-500/30")
+                  : "bg-gradient-to-r from-amber-400 to-amber-500 text-white shadow-md shadow-amber-400/15 hover:shadow-amber-400/30")
               }
             >
               {joining ? "..." : isMember ? "Quitter" : "Rejoindre"}
@@ -342,7 +342,7 @@ export default function GroupDetailPage() {
                     href={`/profile/${member.user_id}`}
                     className="flex flex-col items-center gap-2 group"
                   >
-                    <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-[var(--c-border)] group-hover:border-amber-500/50 transition-colors bg-[var(--c-glass)]">
+                    <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-[var(--c-border)] group-hover:border-amber-400/50 transition-colors bg-[var(--c-glass)]">
                       {avatar ? (
                         <Image
                           src={avatar}

@@ -191,7 +191,7 @@ function OverviewTab({ stats, onTabSwitch }: { stats: AdminStats; onTabSwitch: (
           label="Utilisateurs"
           value={stats.totalUsers}
           sub={stats.usersToday > 0 ? `+${stats.usersToday} aujourd'hui` : undefined}
-          subColor="#F59E0B"
+          subColor="#FBBF24"
           icon="U"
           iconBg="rgba(139,92,246,0.15)"
           iconColor="#A78BFA"
@@ -201,7 +201,7 @@ function OverviewTab({ stats, onTabSwitch }: { stats: AdminStats; onTabSwitch: (
           label="Animaux"
           value={stats.totalAnimals}
           sub={stats.animalsToday > 0 ? `+${stats.animalsToday} aujourd'hui` : undefined}
-          subColor="#F59E0B"
+          subColor="#FBBF24"
           icon="A"
           iconBg="rgba(56,189,248,0.15)"
           iconColor="#38BDF8"
@@ -211,29 +211,29 @@ function OverviewTab({ stats, onTabSwitch }: { stats: AdminStats; onTabSwitch: (
           label="Matchs"
           value={stats.totalMatches}
           sub={stats.matchesToday > 0 ? `+${stats.matchesToday} aujourd'hui` : undefined}
-          subColor="#F59E0B"
+          subColor="#FBBF24"
           icon="M"
-          iconBg="rgba(245,158,11,0.15)"
-          iconColor="#F59E0B"
+          iconBg="rgba(251,191,36,0.15)"
+          iconColor="#FBBF24"
         />
         <KPICard
           label="MRR estimé"
           value={`CHF ${stats.estimatedMRR.toFixed(2)}`}
           sub={`${stats.premiumCount} premium / ${stats.proCount} pro`}
-          subColor="#F59E0B"
+          subColor="#FBBF24"
           icon="$"
-          iconBg="rgba(245,158,11,0.15)"
-          iconColor="#F59E0B"
+          iconBg="rgba(251,191,36,0.15)"
+          iconColor="#FBBF24"
           onClick={() => onTabSwitch("revenue")}
         />
         <KPICard
           label="Croissance"
           value={`${stats.growthRate >= 0 ? "+" : ""}${stats.growthRate}%`}
           sub="vs semaine dernière"
-          subColor={stats.growthRate >= 0 ? "#F59E0B" : "#ef4444"}
+          subColor={stats.growthRate >= 0 ? "#FBBF24" : "#ef4444"}
           icon="G"
-          iconBg={stats.growthRate >= 0 ? "rgba(245,158,11,0.15)" : "rgba(239,68,68,0.15)"}
-          iconColor={stats.growthRate >= 0 ? "#F59E0B" : "#ef4444"}
+          iconBg={stats.growthRate >= 0 ? "rgba(251,191,36,0.15)" : "rgba(239,68,68,0.15)"}
+          iconColor={stats.growthRate >= 0 ? "#FBBF24" : "#ef4444"}
         />
         <KPICard
           label="Événements"
@@ -252,7 +252,7 @@ function OverviewTab({ stats, onTabSwitch }: { stats: AdminStats; onTabSwitch: (
         <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
           <MiniStat label="Nouvelles inscriptions" value={stats.usersToday} color="#A78BFA" />
           <MiniStat label="Nouveaux animaux" value={stats.animalsToday} color="#38BDF8" />
-          <MiniStat label="Nouveaux matchs" value={stats.matchesToday} color="#F59E0B" />
+          <MiniStat label="Nouveaux matchs" value={stats.matchesToday} color="#FBBF24" />
           <MiniStat label="Messages totaux" value={stats.totalMessages} color="#EC4899" />
         </div>
       </div>
@@ -321,7 +321,7 @@ function OverviewTab({ stats, onTabSwitch }: { stats: AdminStats; onTabSwitch: (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0" }}>
                 <div style={{
                   width: 28, height: 28, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0,
-                  background: a.type === "signup" ? "rgba(139,92,246,0.15)" : a.type === "animal" ? "rgba(56,189,248,0.15)" : "rgba(245,158,11,0.15)",
+                  background: a.type === "signup" ? "rgba(139,92,246,0.15)" : a.type === "animal" ? "rgba(56,189,248,0.15)" : "rgba(251,191,36,0.15)",
                 }}>
                   {a.type === "signup" ? "👤" : a.type === "animal" ? "🐾" : "💕"}
                 </div>
@@ -395,8 +395,8 @@ function MembersTab({ stats }: { stats: AdminStats }) {
   const getActivityColor = (lastSignIn: string | null): string => {
     if (!lastSignIn) return "#ef4444";
     const days = (Date.now() - new Date(lastSignIn).getTime()) / 86400000;
-    if (days <= 7) return "#F59E0B";
-    if (days <= 30) return "#F59E0B";
+    if (days <= 7) return "#FBBF24";
+    if (days <= 30) return "#FBBF24";
     return "#ef4444";
   };
 
@@ -513,7 +513,7 @@ function MembersTab({ stats }: { stats: AdminStats }) {
                             <div style={{ display: "flex", gap: 16, flexWrap: "wrap", padding: "8px 0" }}>
                               <MiniStat label="Abonnement" value={subLabel(u.subscription)} color="#A78BFA" />
                               <MiniStat label="Canton" value={u.canton || "Non renseigné"} color="#38BDF8" />
-                              <MiniStat label="Ville" value={u.city || "Non renseigné"} color="#F59E0B" />
+                              <MiniStat label="Ville" value={u.city || "Non renseigné"} color="#FBBF24" />
                               <MiniStat label="Animaux" value={u.animal_count} color="#EC4899" />
                             </div>
                             {animals.length > 0 && (
@@ -709,8 +709,8 @@ function RevenueTab({ stats }: { stats: AdminStats }) {
           label="MRR estimé"
           value={`CHF ${stats.estimatedMRR.toFixed(2)}`}
           icon="$"
-          iconBg="rgba(245,158,11,0.15)"
-          iconColor="#F59E0B"
+          iconBg="rgba(251,191,36,0.15)"
+          iconColor="#FBBF24"
         />
         <KPICard
           label="Abonnes payants"
@@ -718,8 +718,8 @@ function RevenueTab({ stats }: { stats: AdminStats }) {
           sub={`sur ${stats.totalUsers} utilisateurs`}
           subColor="var(--c-text-muted, #9b93b8)"
           icon="P"
-          iconBg="rgba(245,158,11,0.15)"
-          iconColor="#F59E0B"
+          iconBg="rgba(251,191,36,0.15)"
+          iconColor="#FBBF24"
         />
         <KPICard
           label="Taux conversion"
@@ -738,7 +738,7 @@ function RevenueTab({ stats }: { stats: AdminStats }) {
           </h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <SubBar label="Free" count={freeCount} max={maxSub} color="#6B7280" price="CHF 0" />
-            <SubBar label="Premium" count={stats.premiumCount} max={maxSub} color="#F59E0B" price="CHF 4.90/mois" />
+            <SubBar label="Premium" count={stats.premiumCount} max={maxSub} color="#FBBF24" price="CHF 4.90/mois" />
             <SubBar label="Pro" count={stats.proCount} max={maxSub} color="#A78BFA" price="CHF 9.90/mois" />
           </div>
         </div>
@@ -758,7 +758,7 @@ function RevenueTab({ stats }: { stats: AdminStats }) {
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0" }}>
               <span style={{ color: "var(--c-text, #f0eeff)", fontWeight: 700, fontSize: 15 }}>Total MRR</span>
-              <span style={{ color: "#F59E0B", fontWeight: 800, fontSize: 18 }}>CHF {stats.estimatedMRR.toFixed(2)}</span>
+              <span style={{ color: "#FBBF24", fontWeight: 800, fontSize: 18 }}>CHF {stats.estimatedMRR.toFixed(2)}</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderTop: "1px solid var(--c-border, #2d2545)" }}>
               <span style={{ color: "var(--c-text-muted, #9b93b8)", fontSize: 13 }}>ARR estimé</span>
@@ -867,7 +867,7 @@ function KPICard({ label, value, sub, subColor, icon, iconBg, iconColor, onClick
 
 function SubscriptionBadge({ sub }: { sub: string | null }) {
   const config: Record<string, { bg: string; color: string; label: string }> = {
-    premium: { bg: "rgba(245,158,11,0.15)", color: "#F59E0B", label: "Premium" },
+    premium: { bg: "rgba(251,191,36,0.15)", color: "#FBBF24", label: "Premium" },
     pro: { bg: "rgba(139,92,246,0.15)", color: "#A78BFA", label: "Pro" },
   };
   const c = config[sub || ""] || { bg: "rgba(255,255,255,0.05)", color: "var(--c-text-muted, #9b93b8)", label: "Free" };
@@ -1040,8 +1040,8 @@ function ReportsTab({ stats, onRefresh }: { stats: AdminStats; onRefresh: () => 
 
   const REASON_COLORS: Record<string, string> = {
     "Maltraitance animale": "#ef4444",
-    "Harcelement": "#F59E0B",
-    "Arnaque": "#f59e0b",
+    "Harcelement": "#FBBF24",
+    "Arnaque": "#FBBF24",
     "Contenu inapproprie": "#8b5cf6",
     "Faux profil": "#3b82f6",
     "Spam": "#6b7280",
@@ -1118,9 +1118,9 @@ function ReportsTab({ stats, onRefresh }: { stats: AdminStats; onRefresh: () => 
                           style={{
                             padding: "5px 12px",
                             borderRadius: 8,
-                            border: "1px solid rgba(245,158,11,0.3)",
-                            background: "rgba(245,158,11,0.1)",
-                            color: "#F59E0B",
+                            border: "1px solid rgba(251,191,36,0.3)",
+                            background: "rgba(251,191,36,0.1)",
+                            color: "#FBBF24",
                             fontSize: 11,
                             fontWeight: 700,
                             cursor: "pointer",
@@ -1243,14 +1243,14 @@ function FeedbackTab() {
 
   const FB_TYPE_COLORS: Record<string, string> = {
     bug: "#ef4444", suggestion: "#3b82f6", feature: "#8b5cf6",
-    praise: "#F59E0B", complaint: "#f59e0b",
+    praise: "#FBBF24", complaint: "#FBBF24",
   };
   const FB_TYPE_ICONS: Record<string, string> = {
     bug: "🐛", suggestion: "💡", feature: "✨", praise: "👏", complaint: "⚠️",
   };
   const FB_STATUS_COLORS: Record<string, string> = {
-    new: "#3b82f6", read: "#8b5cf6", in_progress: "#f59e0b",
-    done: "#F59E0B", rejected: "#6b7280",
+    new: "#3b82f6", read: "#8b5cf6", in_progress: "#FBBF24",
+    done: "#FBBF24", rejected: "#6b7280",
   };
   const FB_STATUS_LABELS: Record<string, string> = {
     new: "Nouveau", read: "Lu", in_progress: "En cours",
@@ -1274,11 +1274,11 @@ function FeedbackTab() {
           <p style={{ fontSize: 12, color: "var(--c-text-muted)", marginTop: 4 }}>Nouveaux</p>
         </div>
         <div style={{ ...cardStyle, padding: 20 }}>
-          <p style={{ fontSize: 28, fontWeight: 800, color: "#f59e0b" }}>{countInProgress}</p>
+          <p style={{ fontSize: 28, fontWeight: 800, color: "#FBBF24" }}>{countInProgress}</p>
           <p style={{ fontSize: 12, color: "var(--c-text-muted)", marginTop: 4 }}>En cours</p>
         </div>
         <div style={{ ...cardStyle, padding: 20 }}>
-          <p style={{ fontSize: 28, fontWeight: 800, color: "#F59E0B" }}>{feedbacks.filter(f => f.status === "done").length}</p>
+          <p style={{ fontSize: 28, fontWeight: 800, color: "#FBBF24" }}>{feedbacks.filter(f => f.status === "done").length}</p>
           <p style={{ fontSize: 12, color: "var(--c-text-muted)", marginTop: 4 }}>Terminés</p>
         </div>
       </div>
@@ -1381,7 +1381,7 @@ function FeedbackTab() {
                   />
                   <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
                     <button onClick={() => saveFbNotes(fb.id)} disabled={processingFbId === fb.id}
-                      style={{ padding: "5px 14px", borderRadius: 8, background: "rgba(245,158,11,0.15)", border: "1px solid rgba(245,158,11,0.3)", color: "#F59E0B", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
+                      style={{ padding: "5px 14px", borderRadius: 8, background: "rgba(251,191,36,0.15)", border: "1px solid rgba(251,191,36,0.3)", color: "#FBBF24", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
                       {processingFbId === fb.id ? "..." : "Sauver"}
                     </button>
                     <button onClick={() => setEditingNotes(null)}
@@ -1408,13 +1408,13 @@ function FeedbackTab() {
                 )}
                 {(fb.status === "new" || fb.status === "read") && (
                   <button onClick={() => updateFbStatus(fb.id, "in_progress")} disabled={processingFbId === fb.id}
-                    style={{ padding: "5px 12px", borderRadius: 8, background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.3)", color: "#f59e0b", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
+                    style={{ padding: "5px 12px", borderRadius: 8, background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.3)", color: "#FBBF24", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
                     🔧 En cours
                   </button>
                 )}
                 {fb.status !== "done" && (
                   <button onClick={() => updateFbStatus(fb.id, "done")} disabled={processingFbId === fb.id}
-                    style={{ padding: "5px 12px", borderRadius: 8, background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.3)", color: "#F59E0B", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
+                    style={{ padding: "5px 12px", borderRadius: 8, background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.3)", color: "#FBBF24", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
                     ✅ Fait
                   </button>
                 )}
@@ -1483,7 +1483,7 @@ function VerificationTab() {
   const statusColors: Record<string, string> = {
     pending: "#9ca3af",
     submitted: "#3b82f6",
-    approved: "#F59E0B",
+    approved: "#FBBF24",
     rejected: "#ef4444",
   };
   const statusLabels: Record<string, string> = {
@@ -1578,7 +1578,7 @@ function VerificationTab() {
                     disabled={processingId === p.id}
                     style={{
                       padding: "8px 16px", borderRadius: 8, fontSize: 12, fontWeight: 800,
-                      background: "#F59E0B", color: "#fff", border: "none", cursor: "pointer",
+                      background: "#FBBF24", color: "#fff", border: "none", cursor: "pointer",
                       opacity: processingId === p.id ? 0.5 : 1,
                     }}>
                     ✅ Approuver

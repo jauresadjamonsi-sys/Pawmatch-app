@@ -54,7 +54,7 @@ export function SharePersonalityCard({ animalName, personality, photoUrl, specie
 
     // Pawly branding
     ctx.font = "bold 16px -apple-system, sans-serif";
-    ctx.fillStyle = "#F59E0B";
+    ctx.fillStyle = "#FBBF24";
     ctx.fillText("pawlyapp.ch", 300, 340);
     ctx.font = "12px -apple-system, sans-serif";
     ctx.fillStyle = "#6b7280";

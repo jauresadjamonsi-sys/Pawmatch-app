@@ -7,13 +7,13 @@ export type AnimalSpecies = "chien" | "chat" | "lapin" | "oiseau" | "rongeur" | 
 export type Mood = { label: string; emoji: string; color: string };
 
 export const MOODS: Mood[] = [
-  { label: "\u00c9nergique", emoji: "\u26A1", color: "text-amber-400" },
-  { label: "Calme", emoji: "\uD83C\uDF3F", color: "text-amber-400" },
+  { label: "\u00c9nergique", emoji: "\u26A1", color: "text-amber-300" },
+  { label: "Calme", emoji: "\uD83C\uDF3F", color: "text-amber-300" },
   { label: "Joueur", emoji: "\uD83C\uDF89", color: "text-pink-400" },
   { label: "Endormi", emoji: "\uD83D\uDE34", color: "text-purple-300" },
   { label: "C\u00e2lin", emoji: "\uD83E\uDDF8", color: "text-red-300" },
   { label: "Curieux", emoji: "\uD83D\uDD0D", color: "text-cyan-400" },
-  { label: "Gourmand", emoji: "\uD83C\uDF56", color: "text-amber-400" },
+  { label: "Gourmand", emoji: "\uD83C\uDF56", color: "text-amber-300" },
   { label: "Aventurier", emoji: "\uD83C\uDFDE\uFE0F", color: "text-teal-300" },
 ];
 

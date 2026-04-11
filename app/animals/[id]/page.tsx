@@ -207,7 +207,7 @@ export default function AnimalDetailPage() {
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-4 mb-6">
           <BackButton fallback="/animals" />
-          <Link href="/animals" className="text-amber-400 hover:underline text-sm">{t.animalBackCatalog}</Link>
+          <Link href="/animals" className="text-amber-300 hover:underline text-sm">{t.animalBackCatalog}</Link>
           <div className="flex-1" />
           {!isOwner && isAuthenticated && animal.created_by && (
             <div className="flex items-center gap-2">
@@ -225,7 +225,7 @@ export default function AnimalDetailPage() {
             </div>
           )}
             {compatibility && (
-              <div className="mt-6 bg-gradient-to-br from-amber-500/10 to-amber-600/5 border border-amber-500/20 rounded-2xl p-5">
+              <div className="mt-6 bg-gradient-to-br from-amber-400/10 to-amber-500/5 border border-amber-400/20 rounded-2xl p-5">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <span className="text-xl">🤖</span>
@@ -324,7 +324,7 @@ export default function AnimalDetailPage() {
                           <div className="flex items-center gap-1.5 mt-1">
                             <div className="flex items-center gap-0.5">
                               {[1, 2, 3, 4, 5].map((star) => (
-                                <svg key={star} className="w-3.5 h-3.5" viewBox="0 0 20 20" fill={star <= Math.round(ownerRating) ? "#f59e0b" : "rgba(255,255,255,0.25)"}>
+                                <svg key={star} className="w-3.5 h-3.5" viewBox="0 0 20 20" fill={star <= Math.round(ownerRating) ? "#FBBF24" : "rgba(255,255,255,0.25)"}>
                                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                 </svg>
                               ))}
@@ -366,10 +366,10 @@ export default function AnimalDetailPage() {
           <div className="p-5 md:p-6">
             {/* ═══ COMPACT INFO GRID ═══ */}
             <div className="flex items-center gap-2 mb-4 flex-wrap">
-              <span className="bg-amber-500/15 text-amber-400 px-3 py-1 rounded-full text-xs font-semibold">
+              <span className="bg-amber-400/15 text-amber-300 px-3 py-1 rounded-full text-xs font-semibold">
                 {animal.status === "disponible" ? t.animalAvailable : animal.status === "en_cours" ? t.animalInProgress : t.animalMatched}
               </span>
-              {isOwner && <Link href={"/animals/" + animal.id + "/edit"} className="text-amber-400 hover:underline text-xs font-medium">{t.edit}</Link>}
+              {isOwner && <Link href={"/animals/" + animal.id + "/edit"} className="text-amber-300 hover:underline text-xs font-medium">{t.edit}</Link>}
             </div>
 
             <div className="grid grid-cols-4 gap-2 mb-5">
@@ -391,10 +391,10 @@ export default function AnimalDetailPage() {
             </div>
 
             <div className="flex gap-3 mb-4">
-              <span className={"px-3 py-1 rounded-full text-xs font-medium " + (animal.vaccinated ? "bg-amber-500/20 text-amber-300" : "bg-[var(--c-card)] text-[var(--c-text-muted)]")}>
+              <span className={"px-3 py-1 rounded-full text-xs font-medium " + (animal.vaccinated ? "bg-amber-400/20 text-amber-200" : "bg-[var(--c-card)] text-[var(--c-text-muted)]")}>
                 {animal.vaccinated ? "✓ " + t.animalVaccinated : t.animalNotVaccinated}
               </span>
-              <span className={"px-3 py-1 rounded-full text-xs font-medium " + (animal.sterilized ? "bg-amber-500/20 text-amber-300" : "bg-[var(--c-card)] text-[var(--c-text-muted)]")}>
+              <span className={"px-3 py-1 rounded-full text-xs font-medium " + (animal.sterilized ? "bg-amber-400/20 text-amber-200" : "bg-[var(--c-card)] text-[var(--c-text-muted)]")}>
                 {animal.sterilized ? "✓ " + t.animalSterilized : t.animalNotSterilized}
               </span>
             </div>
@@ -453,7 +453,7 @@ export default function AnimalDetailPage() {
               }}>
                 <div style={{
                   width: 48, height: 48, borderRadius: 14,
-                  background: "linear-gradient(135deg, #ef4444, #F59E0B)",
+                  background: "linear-gradient(135deg, #ef4444, #FBBF24)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontSize: 22, flexShrink: 0,
                 }}>
@@ -476,7 +476,7 @@ export default function AnimalDetailPage() {
                 <h2 className="text-sm font-semibold text-[var(--c-text-muted)] uppercase tracking-wider mb-3">{t.animalCharacter}</h2>
                 <div className="flex flex-wrap gap-2">
                   {traits.map((trait) => (
-                    <span key={trait} className="px-3 py-1.5 bg-amber-500/10 text-amber-300 rounded-full text-xs font-medium">{trait}</span>
+                    <span key={trait} className="px-3 py-1.5 bg-amber-400/10 text-amber-200 rounded-full text-xs font-medium">{trait}</span>
                   ))}
                 </div>
               </div>
@@ -497,7 +497,7 @@ export default function AnimalDetailPage() {
                 className="w-full py-3 mb-3 border-2 font-bold rounded-xl transition text-sm"
                 style={{
                   borderColor: "var(--c-accent, rgba(34, 197, 94,.4))",
-                  color: "var(--c-accent, #F59E0B)",
+                  color: "var(--c-accent, #FBBF24)",
                   background: "var(--c-accent, rgba(34, 197, 94,.05))"
                 }}
               >
@@ -585,7 +585,7 @@ export default function AnimalDetailPage() {
                 display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                 padding: 14, background: "linear-gradient(135deg, rgba(34, 197, 94,0.08), rgba(167,139,250,0.06))",
                 border: "1.5px solid rgba(34, 197, 94,0.2)", borderRadius: 14,
-                fontWeight: 700, fontSize: 13, color: "#F59E0B",
+                fontWeight: 700, fontSize: 13, color: "#FBBF24",
                 width: "100%", marginBottom: 12, cursor: "pointer",
               }}
             >
@@ -649,29 +649,29 @@ export default function AnimalDetailPage() {
             {!isOwner && (
               <>
                 {matchSuccess ? (
-                  <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-center">
-                    <p className="text-amber-300 font-semibold">{t.animalMatchSent}</p>
-                    <p className="text-amber-400/70 text-sm mt-1">{t.animalMatchNotify}</p>
-                    <Link href="/matches" className="inline-block mt-3 text-amber-400 hover:underline text-sm font-medium">{t.animalViewMatches}</Link>
+                  <div className="bg-amber-400/10 border border-amber-400/20 rounded-xl p-4 text-center">
+                    <p className="text-amber-200 font-semibold">{t.animalMatchSent}</p>
+                    <p className="text-amber-300/70 text-sm mt-1">{t.animalMatchNotify}</p>
+                    <Link href="/matches" className="inline-block mt-3 text-amber-300 hover:underline text-sm font-medium">{t.animalViewMatches}</Link>
                   </div>
                 ) : !isAuthenticated ? (
-                  <Link href="/login" className="block w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl transition text-center">
+                  <Link href="/login" className="block w-full py-3 bg-amber-400 hover:bg-amber-500 text-white font-semibold rounded-xl transition text-center">
                     {t.animalLoginToMatch}
                   </Link>
                 ) : myAnimals.length === 0 ? (
-                  <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-center">
-                    <p className="text-amber-300 font-medium">{t.animalAddFirst}</p>
-                    <Link href="/profile/animals/new" className="inline-block mt-2 text-amber-400 hover:underline text-sm font-medium">{t.animalAddMine}</Link>
+                  <div className="bg-amber-400/10 border border-amber-400/20 rounded-xl p-4 text-center">
+                    <p className="text-amber-200 font-medium">{t.animalAddFirst}</p>
+                    <Link href="/profile/animals/new" className="inline-block mt-2 text-amber-300 hover:underline text-sm font-medium">{t.animalAddMine}</Link>
                   </div>
                 ) : (
                   <div className="flex gap-3">
-                    <button onClick={() => setShowMatchModal(true)} className="flex-1 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl transition text-lg">
+                    <button onClick={() => setShowMatchModal(true)} className="flex-1 py-3 bg-amber-400 hover:bg-amber-500 text-white font-semibold rounded-xl transition text-lg">
                       {t.animalSniff} {animal.name}
                     </button>
                     <button
                       onClick={() => setShowSuperFlair(true)}
                       className="px-5 py-3 rounded-xl font-bold text-sm transition-all"
-                      style={{ background: "linear-gradient(135deg, rgba(167,139,250,0.15), rgba(245,158,11,0.1))", border: "1.5px solid rgba(167,139,250,0.3)", color: "#a78bfa" }}
+                      style={{ background: "linear-gradient(135deg, rgba(167,139,250,0.15), rgba(251,191,36,0.1))", border: "1.5px solid rgba(167,139,250,0.3)", color: "#a78bfa" }}
                     >
                       ⚡ Super Flair
                     </button>
@@ -700,8 +700,8 @@ export default function AnimalDetailPage() {
                   <div className="space-y-2 mb-4">
                     {myAnimals.map((myAnimal) => (
                       <button key={myAnimal.id} onClick={() => handleMatch(myAnimal.id)} disabled={matchSending}
-                        className="w-full flex items-center gap-3 p-3 bg-[var(--c-card)] hover:bg-amber-500/10 rounded-xl transition text-left disabled:opacity-50 border border-[var(--c-border)]">
-                        <div className="w-12 h-12 rounded-full bg-[var(--c-deep)] border-2 border-amber-400 flex items-center justify-center overflow-hidden flex-shrink-0 relative">
+                        className="w-full flex items-center gap-3 p-3 bg-[var(--c-card)] hover:bg-amber-400/10 rounded-xl transition text-left disabled:opacity-50 border border-[var(--c-border)]">
+                        <div className="w-12 h-12 rounded-full bg-[var(--c-deep)] border-2 border-amber-300 flex items-center justify-center overflow-hidden flex-shrink-0 relative">
                           {myAnimal.photo_url ? (
                             <Image src={myAnimal.photo_url} alt={myAnimal.name} fill className="object-cover" sizes="(max-width: 768px) 48px, 48px" />
                           ) : (
@@ -781,7 +781,7 @@ export default function AnimalDetailPage() {
                     onClick={() => setReviewRating(star)}
                     className="transition-transform hover:scale-110"
                   >
-                    <svg className="w-10 h-10" viewBox="0 0 20 20" fill={star <= reviewRating ? "#f59e0b" : "rgba(255,255,255,0.1)"} stroke={star <= reviewRating ? "#f59e0b" : "rgba(255,255,255,0.2)"} strokeWidth={0.5}>
+                    <svg className="w-10 h-10" viewBox="0 0 20 20" fill={star <= reviewRating ? "#FBBF24" : "rgba(255,255,255,0.1)"} stroke={star <= reviewRating ? "#FBBF24" : "rgba(255,255,255,0.2)"} strokeWidth={0.5}>
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   </button>
@@ -797,7 +797,7 @@ export default function AnimalDetailPage() {
                 onChange={(e) => setReviewComment(e.target.value.slice(0, 300))}
                 placeholder="Partagez votre experience (optionnel)..."
                 rows={3}
-                className="w-full bg-[var(--c-deep)] border border-[var(--c-border)] rounded-xl p-3 text-sm text-[var(--c-text)] placeholder:text-[var(--c-text-muted)] resize-none focus:outline-none focus:ring-2 focus:ring-amber-500/40 mb-1"
+                className="w-full bg-[var(--c-deep)] border border-[var(--c-border)] rounded-xl p-3 text-sm text-[var(--c-text)] placeholder:text-[var(--c-text-muted)] resize-none focus:outline-none focus:ring-2 focus:ring-amber-400/40 mb-1"
               />
               <p className="text-right text-xs text-[var(--c-text-muted)] mb-4">{reviewComment.length}/300</p>
 
@@ -834,7 +834,7 @@ export default function AnimalDetailPage() {
                   }
                   setReviewSubmitting(false);
                 }}
-                className="w-full py-3 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition text-sm mb-2"
+                className="w-full py-3 bg-amber-400 hover:bg-amber-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition text-sm mb-2"
               >
                 {reviewSubmitting ? "Envoi..." : "Envoyer mon avis (+5 PawCoins)"}
               </button>

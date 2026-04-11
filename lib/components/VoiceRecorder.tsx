@@ -227,7 +227,7 @@ export default function VoiceRecorder({ onRecordingComplete, onCancel }: VoiceRe
         <button
           onClick={stopRecording}
           disabled={!isRecording || elapsed < 1}
-          className="w-9 h-9 bg-gradient-to-br from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 disabled:opacity-30 rounded-full flex items-center justify-center transition active:scale-95 flex-shrink-0"
+          className="w-9 h-9 bg-gradient-to-br from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 disabled:opacity-30 rounded-full flex items-center justify-center transition active:scale-95 flex-shrink-0"
           title="Envoyer"
         >
           <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">

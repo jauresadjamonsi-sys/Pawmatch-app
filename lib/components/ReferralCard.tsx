@@ -123,7 +123,7 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
   const emailUrl = `mailto:?subject=${encodeURIComponent("Rejoins Pawly !")}&body=${shareText}`;
 
   return (
-    <div className="glass rounded-2xl p-6 mb-6" style={{ border: "1px solid rgba(245,158,11,0.2)", boxShadow: "0 0 20px rgba(245,158,11,0.05)" }}>
+    <div className="glass rounded-2xl p-6 mb-6" style={{ border: "1px solid rgba(251,191,36,0.2)", boxShadow: "0 0 20px rgba(251,191,36,0.05)" }}>
       <div className="flex items-center gap-3 mb-4">
         <span className="text-2xl">{"🎁"}</span>
         <div>
@@ -134,14 +134,14 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 mb-4">
-        <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(245,158,11,0.15)" }}>
-          <p className="text-2xl font-black" style={{ color: "#F59E0B", textShadow: "0 0 10px rgba(245,158,11,0.3)" }}>{referralCount}</p>
+        <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(251,191,36,0.15)" }}>
+          <p className="text-2xl font-black" style={{ color: "#FBBF24", textShadow: "0 0 10px rgba(251,191,36,0.3)" }}>{referralCount}</p>
           <p className="text-[10px] text-[var(--c-text-muted)] font-bold uppercase">
             {referralCount === 1 ? "Parrainage" : "Parrainages"}
           </p>
         </div>
-        <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(251,191,36,0.15)" }}>
-          <p className="text-2xl font-black" style={{ color: "#fbbf24", textShadow: "0 0 10px rgba(251,191,36,0.3)" }}>{coinsEarned}</p>
+        <div className="glass rounded-xl p-3 text-center" style={{ border: "1px solid rgba(252,211,77,0.15)" }}>
+          <p className="text-2xl font-black" style={{ color: "#FCD34D", textShadow: "0 0 10px rgba(252,211,77,0.3)" }}>{coinsEarned}</p>
           <p className="text-[10px] text-[var(--c-text-muted)] font-bold uppercase">PawCoins gagnes</p>
         </div>
       </div>
@@ -155,16 +155,16 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
             className="w-full flex items-center justify-between px-4 py-3 rounded-xl transition hover:scale-[1.01]"
             style={{
               background: "var(--c-glass)",
-              border: "1.5px dashed rgba(245,158,11,0.35)",
+              border: "1.5px dashed rgba(251,191,36,0.35)",
             }}
           >
             <span className="font-mono text-lg font-black tracking-widest" style={{ color: "var(--c-text)" }}>
               {referralCode.toUpperCase()}
             </span>
             <span className="text-xs font-bold px-2 py-1 rounded-lg" style={{
-              background: codeCopied ? "rgba(245,158,11,0.2)" : "rgba(245,158,11,0.15)",
-              color: codeCopied ? "#F59E0B" : "#F59E0B",
-              border: codeCopied ? "1px solid rgba(245,158,11,0.3)" : "1px solid rgba(245,158,11,0.25)",
+              background: codeCopied ? "rgba(251,191,36,0.2)" : "rgba(251,191,36,0.15)",
+              color: codeCopied ? "#FBBF24" : "#FBBF24",
+              border: codeCopied ? "1px solid rgba(251,191,36,0.3)" : "1px solid rgba(251,191,36,0.25)",
             }}>
               {codeCopied ? "Copie !" : "Copier"}
             </span>
@@ -191,9 +191,9 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
             onClick={copyLink}
             className="px-3 py-2 text-xs font-bold rounded-xl transition whitespace-nowrap"
             style={{
-              background: copied ? "rgba(245,158,11,0.2)" : "rgba(245,158,11,0.15)",
-              color: copied ? "#F59E0B" : "#F59E0B",
-              border: copied ? "1px solid rgba(245,158,11,0.3)" : "1px solid rgba(245,158,11,0.25)",
+              background: copied ? "rgba(251,191,36,0.2)" : "rgba(251,191,36,0.15)",
+              color: copied ? "#FBBF24" : "#FBBF24",
+              border: copied ? "1px solid rgba(251,191,36,0.3)" : "1px solid rgba(251,191,36,0.25)",
             }}
           >
             {copied ? "Copie !" : "Copier"}
@@ -206,9 +206,9 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
         onClick={handleShare}
         className="w-full py-2.5 rounded-xl font-bold text-sm mb-4 transition-all hover:scale-[1.02]"
         style={{
-          background: "linear-gradient(135deg, #F59E0B, #D97706)",
+          background: "linear-gradient(135deg, #FBBF24, #F59E0B)",
           color: "#fff",
-          boxShadow: "0 4px 16px rgba(245,158,11,0.25)",
+          boxShadow: "0 4px 16px rgba(251,191,36,0.25)",
         }}
       >
         {"📤"} Partager mon lien
@@ -222,9 +222,9 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
           rel="noopener noreferrer"
           className="flex-1 py-2 text-center text-xs font-bold rounded-xl transition"
           style={{
-            background: "rgba(245,158,11,0.12)",
-            color: "#F59E0B",
-            border: "1px solid rgba(245,158,11,0.2)",
+            background: "rgba(251,191,36,0.12)",
+            color: "#FBBF24",
+            border: "1px solid rgba(251,191,36,0.2)",
           }}
         >
           WhatsApp
@@ -289,7 +289,7 @@ export default function ReferralCard({ userId }: ReferralCardProps) {
           <p
             className="text-xs mt-2 font-medium"
             style={{
-              color: applyResult.success ? "#F59E0B" : "#f87171",
+              color: applyResult.success ? "#FBBF24" : "#f87171",
             }}
           >
             {applyResult.message}

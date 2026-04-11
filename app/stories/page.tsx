@@ -1208,7 +1208,7 @@ export default function StoriesPage() {
             </div>
             {/* Reply sent confirmation */}
             {replySent && (
-              <p className="text-center text-xs text-amber-400 mt-1.5 font-medium animate-pulse">
+              <p className="text-center text-xs text-amber-300 mt-1.5 font-medium animate-pulse">
                 Message envoye !
               </p>
             )}

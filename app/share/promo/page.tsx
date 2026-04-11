@@ -479,7 +479,7 @@ function PromoContent() {
           height: 160px;
           border-radius: 50%;
           padding: 4px;
-          background: linear-gradient(135deg, #F59E0B, #FACC15, #38bdf8, #F59E0B);
+          background: linear-gradient(135deg, #FBBF24, #FACC15, #38bdf8, #FBBF24);
           background-size: 300% 300%;
           animation: gradientShift 4s ease infinite;
           margin-bottom: 24px;
@@ -610,7 +610,7 @@ function PromoContent() {
           font-size: 18px;
           font-weight: 900;
           color: #0a0a0f;
-          background: linear-gradient(135deg, #fbbf24, #f59e0b, #fbbf24);
+          background: linear-gradient(135deg, #FCD34D, #FBBF24, #FCD34D);
           background-size: 200% auto;
           animation: shimmer 2s linear infinite;
           padding: 8px 32px;
@@ -705,7 +705,7 @@ function PromoContent() {
 
         .copy-btn {
           background: rgba(34, 197, 94, 0.15);
-          color: #F59E0B;
+          color: #FBBF24;
           border: 1px solid rgba(34, 197, 94, 0.25);
         }
       `}</style>

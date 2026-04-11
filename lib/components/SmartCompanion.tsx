@@ -237,7 +237,7 @@ function computeScore(data: {
 }
 
 function getStatus(score: number): { status: AnimalHealth["status"]; emoji: string; color: string; label: string } {
-  if (score >= 85) return { status: "excellent", emoji: "🟢", color: "#F59E0B", label: "Excellent" };
+  if (score >= 85) return { status: "excellent", emoji: "🟢", color: "#FBBF24", label: "Excellent" };
   if (score >= 65) return { status: "good", emoji: "🔵", color: "#3b82f6", label: "Bon" };
   if (score >= 45) return { status: "average", emoji: "🟡", color: "#eab308", label: "Moyen" };
   return { status: "low", emoji: "🔴", color: "#ef4444", label: "A ameliorer" };
@@ -392,11 +392,11 @@ export default function SmartCompanion({ userId }: { userId: string }) {
         {/* Health summary */}
         {animal.healthSummary && animal.healthSummary.healthLines.length > 0 && (
           <div className="glass animate-slide-up rounded-xl p-2.5 mb-3" style={{
-            border: `1px solid var(--c-accent, #F59E0B)20`,
+            border: `1px solid var(--c-accent, #FBBF24)20`,
           }}>
             <div className="flex items-center gap-1.5 mb-1.5">
               <span className="text-sm">🩺</span>
-              <span className="text-caption font-bold" style={{ color: "var(--c-accent, #F59E0B)" }}>
+              <span className="text-caption font-bold" style={{ color: "var(--c-accent, #FBBF24)" }}>
                 Bilan sante
               </span>
             </div>
@@ -405,7 +405,7 @@ export default function SmartCompanion({ userId }: { userId: string }) {
                 const isWarning = line.includes("retard") || line.includes("hausse") || line.includes("baisse") || line.includes("plus d'un an");
                 return (
                   <span key={i} className="text-caption flex items-center gap-1" style={{
-                    color: isWarning ? "#ef4444" : "var(--c-accent, #F59E0B)",
+                    color: isWarning ? "#ef4444" : "var(--c-accent, #FBBF24)",
                   }}>
                     {isWarning ? "⚠️" : "✓"} {line}
                   </span>

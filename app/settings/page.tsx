@@ -96,7 +96,7 @@ export default function SettingsPage() {
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center pb-32" style={{ background: "var(--c-deep)" }}>
-        <div className="w-10 h-10 border-3 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
+        <div className="w-10 h-10 border-3 border-amber-400/30 border-t-amber-400 rounded-full animate-spin" />
       </div>
     );
   }
@@ -105,7 +105,7 @@ export default function SettingsPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center pb-32" style={{ background: "var(--c-deep)" }}>
         <p className="text-lg font-semibold text-[var(--c-text)]">Connectez-vous pour acceder aux parametres</p>
-        <Link href="/login" className="mt-4 text-amber-400">Se connecter</Link>
+        <Link href="/login" className="mt-4 text-amber-300">Se connecter</Link>
       </div>
     );
   }
@@ -132,7 +132,7 @@ export default function SettingsPage() {
       <span className="text-sm text-[var(--c-text)]">{label}</span>
       <button
         onClick={() => onChange(!value)}
-        className={`w-11 h-6 rounded-full transition-all relative ${value ? "bg-amber-500" : "bg-[var(--c-border)]"}`}
+        className={`w-11 h-6 rounded-full transition-all relative ${value ? "bg-amber-400" : "bg-[var(--c-border)]"}`}
       >
         <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${value ? "translate-x-5.5 left-0.5" : "left-0.5"}`}
           style={{ transform: value ? "translateX(22px)" : "translateX(2px)" }} />
@@ -161,7 +161,7 @@ export default function SettingsPage() {
                 className={
                   "flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all " +
                   (section === s.key
-                    ? "bg-amber-500/15 text-amber-400 border border-amber-500/25"
+                    ? "bg-amber-400/15 text-amber-300 border border-amber-400/25"
                     : "text-[var(--c-text-muted)] hover:text-[var(--c-text)] hover:bg-[var(--c-card)]")
                 }
               >
@@ -179,7 +179,7 @@ export default function SettingsPage() {
                 <div className="space-y-4">
                   <h2 className="text-lg font-bold text-[var(--c-text)] mb-4">Compte & donnees</h2>
                   <p className="text-xs text-[var(--c-text-muted)] mb-3">
-                    Pour modifier votre profil, photo ou abonnement, rendez-vous sur votre <Link href="/profile" className="text-amber-400 hover:underline">page Profil</Link>.
+                    Pour modifier votre profil, photo ou abonnement, rendez-vous sur votre <Link href="/profile" className="text-amber-300 hover:underline">page Profil</Link>.
                   </p>
                   <div className="space-y-3">
                     <button
@@ -199,7 +199,7 @@ export default function SettingsPage() {
                           }
                         } catch { alert("Erreur reseau"); }
                       }}
-                      className="w-full flex items-center justify-between p-3 rounded-xl bg-[var(--c-card)] border border-[var(--c-border)] hover:border-amber-500/30 transition-all text-left"
+                      className="w-full flex items-center justify-between p-3 rounded-xl bg-[var(--c-card)] border border-[var(--c-border)] hover:border-amber-400/30 transition-all text-left"
                     >
                       <div>
                         <p className="text-sm font-medium text-[var(--c-text)]">Exporter mes donnees</p>
@@ -284,7 +284,7 @@ export default function SettingsPage() {
                           className={
                             "px-3 py-1.5 rounded-full text-xs font-medium transition-all " +
                             (matchPrefs.preferredSpecies.includes(s)
-                              ? "bg-amber-500 text-white"
+                              ? "bg-amber-400 text-white"
                               : "bg-[var(--c-card)] text-[var(--c-text-muted)] border border-[var(--c-border)]")
                           }
                         >
@@ -304,7 +304,7 @@ export default function SettingsPage() {
                           className={
                             "px-4 py-2.5 rounded-xl text-sm font-medium transition-all " +
                             (matchPrefs.activityLevel === l.value
-                              ? "bg-amber-500/15 text-amber-400 border border-amber-500/25"
+                              ? "bg-amber-400/15 text-amber-300 border border-amber-400/25"
                               : "bg-[var(--c-card)] text-[var(--c-text-muted)] border border-[var(--c-border)]")
                           }
                         >
@@ -321,18 +321,18 @@ export default function SettingsPage() {
                     <div className="flex gap-3 items-center">
                       <input type="range" min="0" max="20" value={matchPrefs.ageMin}
                         onChange={e => setMatchPrefs(p => ({...p, ageMin: Number(e.target.value)}))}
-                        className="flex-1 accent-amber-500" />
+                        className="flex-1 accent-amber-400" />
                       <span className="text-xs text-[var(--c-text-muted)]">a</span>
                       <input type="range" min="0" max="20" value={matchPrefs.ageMax}
                         onChange={e => setMatchPrefs(p => ({...p, ageMax: Number(e.target.value)}))}
-                        className="flex-1 accent-amber-500" />
+                        className="flex-1 accent-amber-400" />
                     </div>
                   </div>
 
                   <button
                     onClick={saveMatchPrefs}
                     disabled={saving}
-                    className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold text-sm shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all disabled:opacity-50"
+                    className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-white font-bold text-sm shadow-lg shadow-amber-400/25 hover:shadow-amber-400/40 transition-all disabled:opacity-50"
                   >
                     {saving ? "Sauvegarde..." : saved ? "Sauvegarde!" : "Sauvegarder"}
                   </button>
@@ -368,19 +368,19 @@ export default function SettingsPage() {
                     <p className="text-xs text-[var(--c-text-muted)] mt-2">Le reseau social #1 pour les animaux en Suisse</p>
                   </div>
                   <div className="space-y-2">
-                    <Link href="/legal/cgu" className="flex items-center justify-between p-3 rounded-xl bg-[var(--c-card)] border border-[var(--c-border)] hover:border-amber-500/30 transition-all">
+                    <Link href="/legal/cgu" className="flex items-center justify-between p-3 rounded-xl bg-[var(--c-card)] border border-[var(--c-border)] hover:border-amber-400/30 transition-all">
                       <span className="text-sm text-[var(--c-text)]">Conditions d&apos;utilisation</span>
                       <svg className="w-4 h-4 text-[var(--c-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                       </svg>
                     </Link>
-                    <Link href="/legal/privacy" className="flex items-center justify-between p-3 rounded-xl bg-[var(--c-card)] border border-[var(--c-border)] hover:border-amber-500/30 transition-all">
+                    <Link href="/legal/privacy" className="flex items-center justify-between p-3 rounded-xl bg-[var(--c-card)] border border-[var(--c-border)] hover:border-amber-400/30 transition-all">
                       <span className="text-sm text-[var(--c-text)]">Politique de confidentialite</span>
                       <svg className="w-4 h-4 text-[var(--c-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                       </svg>
                     </Link>
-                    <Link href="/legal/mentions-legales" className="flex items-center justify-between p-3 rounded-xl bg-[var(--c-card)] border border-[var(--c-border)] hover:border-amber-500/30 transition-all">
+                    <Link href="/legal/mentions-legales" className="flex items-center justify-between p-3 rounded-xl bg-[var(--c-card)] border border-[var(--c-border)] hover:border-amber-400/30 transition-all">
                       <span className="text-sm text-[var(--c-text)]">Mentions legales</span>
                       <svg className="w-4 h-4 text-[var(--c-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />

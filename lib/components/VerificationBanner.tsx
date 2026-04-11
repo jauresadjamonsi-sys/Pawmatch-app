@@ -152,11 +152,11 @@ export default function VerificationBanner() {
   if (done) {
     return (
       <div className="mx-4 mt-2 p-3 rounded-xl text-sm flex items-center gap-3" style={{
-        background: "rgba(245,158,11,0.08)",
-        border: "1px solid rgba(245,158,11,0.2)",
+        background: "rgba(251,191,36,0.08)",
+        border: "1px solid rgba(251,191,36,0.2)",
       }}>
         <span className="text-lg">✅</span>
-        <span style={{ color: "#F59E0B" }} className="font-semibold">Photo envoyee ! Verification sous 24h.</span>
+        <span style={{ color: "#FBBF24" }} className="font-semibold">Photo envoyee ! Verification sous 24h.</span>
       </div>
     );
   }
@@ -164,8 +164,8 @@ export default function VerificationBanner() {
   // Pending (never submitted)
   return (
     <div className="mx-4 mt-2 rounded-xl overflow-hidden" style={{
-      background: "rgba(245,158,11,0.06)",
-      border: "1px solid rgba(245,158,11,0.2)",
+      background: "rgba(251,191,36,0.06)",
+      border: "1px solid rgba(251,191,36,0.2)",
     }}>
       <div className="p-3 flex items-center gap-3">
         <span className="text-lg">📸</span>
@@ -182,9 +182,9 @@ export default function VerificationBanner() {
         <button onClick={() => setShowUpload(true)}
           className="w-full py-2.5 text-sm font-bold transition"
           style={{
-            background: "rgba(245,158,11,0.1)",
+            background: "rgba(251,191,36,0.1)",
             color: "var(--c-accent)",
-            borderTop: "1px solid rgba(245,158,11,0.15)",
+            borderTop: "1px solid rgba(251,191,36,0.15)",
           }}>
           Envoyer ma photo
         </button>
@@ -217,7 +217,7 @@ function UploadZone({ preview, onChange, onSubmit, uploading, file }: {
   file: File | null;
 }) {
   return (
-    <div className="p-3 pt-0" style={{ borderTop: "1px solid rgba(245,158,11,0.1)" }}>
+    <div className="p-3 pt-0" style={{ borderTop: "1px solid rgba(251,191,36,0.1)" }}>
       <div className="mt-3 flex gap-3 items-center">
         <div className="w-20 h-20 rounded-xl bg-[var(--c-bg)] border-2 border-dashed border-[var(--c-border)] flex items-center justify-center overflow-hidden flex-shrink-0 relative">
           {preview ? (

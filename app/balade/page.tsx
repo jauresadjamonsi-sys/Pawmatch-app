@@ -201,7 +201,7 @@ export default function BaladePage() {
           <div className="glass rounded-2xl p-5 mb-4">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/15 flex items-center justify-center text-xl">
+                <div className="w-10 h-10 rounded-xl bg-amber-400/15 flex items-center justify-center text-xl">
                   {sharing ? "\uD83D\uDCCD" : "\uD83D\uDEB6"}
                 </div>
                 <div>
@@ -217,7 +217,7 @@ export default function BaladePage() {
                 onClick={() => (sharing ? stopSharing() : startSharing())}
                 className={
                   "btn-press relative w-14 h-7 rounded-full transition-colors duration-300 " +
-                  (sharing ? "bg-amber-500 animate-pulse-glow" : "bg-[var(--c-border)]")
+                  (sharing ? "bg-amber-400 animate-pulse-glow" : "bg-[var(--c-border)]")
                 }
               >
                 <div
@@ -245,7 +245,7 @@ export default function BaladePage() {
                   <div className="glass-strong rounded-xl p-4">
                     <div className="text-xs text-[var(--c-text-muted)] mb-2">Position actuelle</div>
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-amber-500 animate-pulse" />
+                      <div className="w-3 h-3 rounded-full bg-amber-400 animate-pulse" />
                       <div className="text-sm text-[var(--c-text)] font-mono">
                         {currentPosition.lat.toFixed(6)}, {currentPosition.lng.toFixed(6)}
                       </div>
@@ -262,7 +262,7 @@ export default function BaladePage() {
                     </div>
                     <button
                       onClick={copyLink}
-                      className="px-3 py-2 bg-amber-500 text-white text-xs font-bold rounded-lg shrink-0"
+                      className="px-3 py-2 bg-amber-400 text-white text-xs font-bold rounded-lg shrink-0"
                     >
                       Copier
                     </button>
@@ -362,7 +362,7 @@ export default function BaladePage() {
               "En cas d'urgence, utilisez le bouton SOS",
             ].map((tip, i) => (
               <div key={i} className="flex items-start gap-2 text-xs text-[var(--c-text-muted)]">
-                <span className="text-amber-400 mt-0.5">{"\u2713"}</span>
+                <span className="text-amber-300 mt-0.5">{"\u2713"}</span>
                 <span>{tip}</span>
               </div>
             ))}

@@ -42,7 +42,7 @@ export function HealthDashboard({ animal, isOwner, editUrl, lang }: HealthProps)
   const vaccineStatus = vaccineDays === null ? "none" : vaccineDays < 0 ? "danger" : vaccineDays <= 14 ? "warning" : "ok";
   const vetStatus = vetMonths === null ? "none" : vetMonths > 12 ? "danger" : vetMonths > 6 ? "warning" : "ok";
 
-  const statusColors = { ok: "#F59E0B", warning: "#f59e0b", danger: "#ef4444", none: "#9ca3af" };
+  const statusColors = { ok: "#FBBF24", warning: "#FBBF24", danger: "#ef4444", none: "#9ca3af" };
   const statusLabels = { ok: l.ok, warning: l.warning, danger: l.danger, none: l.noData };
 
   // Generate tips
@@ -54,14 +54,14 @@ export function HealthDashboard({ animal, isOwner, editUrl, lang }: HealthProps)
   const hasAnyData = animal.weight_kg || animal.next_vaccine_date || animal.last_vet_visit;
 
   return (
-    <div style={{ background: "#fff", borderRadius: 20, border: "1.5px solid rgba(245,158,11,0.15)", padding: 20, marginBottom: 16 }}>
+    <div style={{ background: "#fff", borderRadius: 20, border: "1.5px solid rgba(251,191,36,0.15)", padding: 20, marginBottom: 16 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <span style={{ fontSize: 18 }}>💚</span>
           <h3 style={{ fontWeight: 800, fontSize: 15, margin: 0 }}>{l.title} — {animal.name}</h3>
         </div>
         {isOwner && (
-          <a href={editUrl} style={{ fontSize: 11, color: "#F59E0B", fontWeight: 700, textDecoration: "none" }}>
+          <a href={editUrl} style={{ fontSize: 11, color: "#FBBF24", fontWeight: 700, textDecoration: "none" }}>
             ✏️ {l.edit}
           </a>
         )}

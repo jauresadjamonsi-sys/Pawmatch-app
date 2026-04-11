@@ -54,13 +54,13 @@ const RECORD_TYPES: { value: HealthRecord["type"]; label: string; emoji: string;
   { value: "weight", label: "Poids", emoji: "\u2696\uFE0F", color: "#3b82f6" },
   { value: "vaccine", label: "Vaccin", emoji: "\uD83D\uDC89", color: "#8b5cf6" },
   { value: "vet_visit", label: "Visite veto", emoji: "\uD83C\uDFE5", color: "#06b6d4" },
-  { value: "medication", label: "Medicament", emoji: "\uD83D\uDC8A", color: "#f59e0b" },
+  { value: "medication", label: "Medicament", emoji: "\uD83D\uDC8A", color: "#FBBF24" },
   { value: "allergy", label: "Allergie", emoji: "\u26A0\uFE0F", color: "#ef4444" },
-  { value: "note", label: "Note", emoji: "\uD83D\uDCDD", color: "#F59E0B" },
+  { value: "note", label: "Note", emoji: "\uD83D\uDCDD", color: "#FBBF24" },
 ];
 
 const STATUS_CONFIG: Record<string, { label: string; bg: string; text: string }> = {
-  active: { label: "Actif", bg: "rgba(245,158,11,0.15)", text: "#F59E0B" },
+  active: { label: "Actif", bg: "rgba(251,191,36,0.15)", text: "#FBBF24" },
   completed: { label: "Termine", bg: "rgba(59,130,246,0.15)", text: "#3b82f6" },
   missed: { label: "Manque", bg: "rgba(239,68,68,0.15)", text: "#ef4444" },
   cancelled: { label: "Annule", bg: "rgba(156,163,175,0.15)", text: "#9ca3af" },
@@ -351,7 +351,7 @@ export default function HealthTrackerPage() {
               const prev = weightRecords[weightRecords.length - 2];
               const diff = (latestWeight.value || 0) - (prev.value || 0);
               const sign = diff > 0 ? "+" : "";
-              const color = Math.abs(diff) < 0.1 ? "var(--c-text-muted)" : diff > 0 ? "#f59e0b" : "#3b82f6";
+              const color = Math.abs(diff) < 0.1 ? "var(--c-text-muted)" : diff > 0 ? "#FBBF24" : "#3b82f6";
               return (
                 <p style={{ fontSize: 12, fontWeight: 700, color, marginTop: 2 }}>
                   {sign}{diff.toFixed(1)} {latestWeight.unit || "kg"} vs precedent
@@ -380,7 +380,7 @@ export default function HealthTrackerPage() {
                     borderRadius: 8,
                     background: isLatest
                       ? "linear-gradient(to top, var(--c-accent), #4ade80)"
-                      : "rgba(245,158,11,0.2)",
+                      : "rgba(251,191,36,0.2)",
                     transition: "height 0.5s ease",
                   }}
                 />
@@ -398,7 +398,7 @@ export default function HealthTrackerPage() {
   function renderVaccineCard(record: HealthRecord) {
     const isOverdue = record.next_due && daysUntil(record.next_due) < 0;
     const isUpcoming = record.next_due && daysUntil(record.next_due) >= 0 && daysUntil(record.next_due) <= 30;
-    const borderColor = isOverdue ? "rgba(239,68,68,0.4)" : isUpcoming ? "rgba(245,158,11,0.4)" : "var(--c-border)";
+    const borderColor = isOverdue ? "rgba(239,68,68,0.4)" : isUpcoming ? "rgba(251,191,36,0.4)" : "var(--c-border)";
 
     return (
       <div
@@ -432,7 +432,7 @@ export default function HealthTrackerPage() {
                   style={{
                     fontSize: 11,
                     fontWeight: 700,
-                    color: isOverdue ? "#ef4444" : isUpcoming ? "#f59e0b" : "var(--c-text-muted)",
+                    color: isOverdue ? "#ef4444" : isUpcoming ? "#FBBF24" : "var(--c-text-muted)",
                   }}
                 >
                   {isOverdue
@@ -745,7 +745,7 @@ export default function HealthTrackerPage() {
             style={{ borderRadius: 16, padding: 16, textAlign: "center", border: "1.5px solid var(--c-border)" }}
           >
             <p style={{ fontSize: 11, color: "var(--c-text-muted)", fontWeight: 600, marginBottom: 4 }}>{"\uD83D\uDCDD"} Notes</p>
-            <p style={{ fontSize: 26, fontWeight: 900, color: "#F59E0B", margin: 0, lineHeight: 1 }}>
+            <p style={{ fontSize: 26, fontWeight: 900, color: "#FBBF24", margin: 0, lineHeight: 1 }}>
               {noteRecords.length}
             </p>
           </div>
@@ -778,14 +778,14 @@ export default function HealthTrackerPage() {
           <div
             className="animate-slide-up"
             style={{
-              background: "rgba(245,158,11,0.08)",
-              border: "1.5px solid rgba(245,158,11,0.25)",
+              background: "rgba(251,191,36,0.08)",
+              border: "1.5px solid rgba(251,191,36,0.25)",
               borderRadius: 16,
               padding: 16,
               marginBottom: 12,
             }}
           >
-            <p style={{ fontWeight: 800, fontSize: 13, color: "#f59e0b", margin: 0 }}>
+            <p style={{ fontWeight: 800, fontSize: 13, color: "#FBBF24", margin: 0 }}>
               {"\uD83D\uDC89"} Vaccins a prevoir
             </p>
             {upcomingVaccines.map((v) => (
@@ -1232,7 +1232,7 @@ export default function HealthTrackerPage() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              border: "3px solid rgba(245,158,11,0.3)",
+              border: "3px solid rgba(251,191,36,0.3)",
               position: "relative",
             }}
           >
@@ -1262,7 +1262,7 @@ export default function HealthTrackerPage() {
               width: 42,
               height: 42,
               borderRadius: "50%",
-              background: overdueVaccines.length > 0 ? "rgba(239,68,68,0.15)" : "rgba(245,158,11,0.15)",
+              background: overdueVaccines.length > 0 ? "rgba(239,68,68,0.15)" : "rgba(251,191,36,0.15)",
               flexShrink: 0,
             }}
           >
@@ -1290,7 +1290,7 @@ export default function HealthTrackerPage() {
                 padding: "8px 14px",
                 borderRadius: 14,
                 border: `1.5px solid ${activeTab === tab.key ? "var(--c-accent)" : "var(--c-border)"}`,
-                background: activeTab === tab.key ? "rgba(245,158,11,0.12)" : "var(--c-card)",
+                background: activeTab === tab.key ? "rgba(251,191,36,0.12)" : "var(--c-card)",
                 color: activeTab === tab.key ? "var(--c-accent)" : "var(--c-text-muted)",
                 fontSize: 12,
                 fontWeight: 700,
@@ -1409,7 +1409,7 @@ export default function HealthTrackerPage() {
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              boxShadow: "0 4px 20px rgba(245,158,11,0.4)",
+              boxShadow: "0 4px 20px rgba(251,191,36,0.4)",
               zIndex: 100,
             }}
           >

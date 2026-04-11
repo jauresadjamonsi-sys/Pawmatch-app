@@ -27,7 +27,7 @@ export default function Footer() {
           right: 0,
           height: 1,
           background:
-            "linear-gradient(90deg, transparent, rgba(245,158,11,0.4), rgba(167,139,250,0.4), transparent)",
+            "linear-gradient(90deg, transparent, rgba(251,191,36,0.4), rgba(167,139,250,0.4), transparent)",
           animation: "footerBorderShimmer 4s ease-in-out infinite alternate",
         }}
       />
@@ -41,7 +41,7 @@ export default function Footer() {
           width: 3,
           height: 3,
           borderRadius: "50%",
-          background: "rgba(245,158,11,0.3)",
+          background: "rgba(251,191,36,0.3)",
           animation: "footerParticleFloat 6s ease-in-out infinite",
           pointerEvents: "none",
         }}
@@ -98,12 +98,12 @@ export default function Footer() {
               borderRadius: 50,
               fontSize: 12,
               fontWeight: 700,
-              border: "1px solid rgba(245,158,11,0.15)",
+              border: "1px solid rgba(251,191,36,0.15)",
               color: "var(--c-text-muted)",
               background: "var(--c-card)",
               backdropFilter: "blur(10px)",
               WebkitBackdropFilter: "blur(10px)",
-              boxShadow: "0 0 12px rgba(245,158,11,0.06), inset 0 0 12px rgba(255,255,255,0.02)",
+              boxShadow: "0 0 12px rgba(251,191,36,0.06), inset 0 0 12px rgba(255,255,255,0.02)",
               transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
             }}
           >
@@ -230,18 +230,18 @@ export default function Footer() {
         }
         .footer-link:hover {
           color: var(--c-text) !important;
-          text-shadow: 0 0 12px rgba(13,148,136,0.4), 0 0 24px rgba(245,158,11,0.2);
+          text-shadow: 0 0 12px rgba(13,148,136,0.4), 0 0 24px rgba(251,191,36,0.2);
         }
         .footer-cross-promo:hover {
-          background: linear-gradient(135deg, #F59E0B, #a78bfa, #0d9488);
+          background: linear-gradient(135deg, #FBBF24, #a78bfa, #0d9488);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
           filter: brightness(1.2);
         }
         .footer-badge:hover {
-          border-color: rgba(245,158,11,0.3) !important;
-          box-shadow: 0 0 20px rgba(245,158,11,0.1), inset 0 0 16px rgba(255,255,255,0.03) !important;
+          border-color: rgba(251,191,36,0.3) !important;
+          box-shadow: 0 0 20px rgba(251,191,36,0.1), inset 0 0 16px rgba(255,255,255,0.03) !important;
         }
       `}</style>
     </footer>

@@ -29,7 +29,7 @@ interface StreakInfo {
 
 const STREAK_MILESTONES = [
   { min: 30, label: "Diamant", color: "#b9f2ff", bg: "rgba(185,242,255,0.15)", icon: "\uD83D\uDC8E" },
-  { min: 14, label: "Or", color: "#fbbf24", bg: "rgba(251,191,36,0.15)", icon: "\uD83E\uDD47" },
+  { min: 14, label: "Or", color: "#FCD34D", bg: "rgba(252,211,77,0.15)", icon: "\uD83E\uDD47" },
   { min: 7, label: "Argent", color: "#c0c0c0", bg: "rgba(192,192,192,0.15)", icon: "\uD83E\uDD48" },
   { min: 3, label: "Bronze", color: "#cd7f32", bg: "rgba(205,127,50,0.15)", icon: "\uD83E\uDD49" },
 ];
@@ -350,7 +350,7 @@ export default function PawCoinsWallet() {
         </p>
         <div className="flex items-center justify-center gap-2 mb-3">
           <span className="text-4xl">🪙</span>
-          <span className="text-5xl font-black" style={{ color: "#fbbf24" }}>{balance}</span>
+          <span className="text-5xl font-black" style={{ color: "#FCD34D" }}>{balance}</span>
         </div>
         <p className="text-xs" style={{ color: "var(--c-text-muted)" }}>PawCoins</p>
 
@@ -360,9 +360,9 @@ export default function PawCoinsWallet() {
           disabled={claiming}
           className="mt-4 px-6 py-2.5 rounded-full font-bold text-sm transition-all"
           style={{
-            background: claimResult?.startsWith("+") ? "rgba(52,211,153,0.15)" : "linear-gradient(135deg, #fbbf24, #F59E0B)",
+            background: claimResult?.startsWith("+") ? "rgba(52,211,153,0.15)" : "linear-gradient(135deg, #FCD34D, #FBBF24)",
             color: claimResult?.startsWith("+") ? "#34d399" : "#fff",
-            boxShadow: claimResult ? "none" : "0 4px 15px rgba(251,191,36,0.3)",
+            boxShadow: claimResult ? "none" : "0 4px 15px rgba(252,211,77,0.3)",
             cursor: claiming ? "wait" : "pointer",
           }}
         >
@@ -391,12 +391,12 @@ export default function PawCoinsWallet() {
                   animationDelay: `${idx * 0.08}s`,
                   animationFillMode: "backwards",
                   background:
-                    "linear-gradient(135deg, rgba(251,191,36,0.06), rgba(245,158,11,0.03))",
+                    "linear-gradient(135deg, rgba(252,211,77,0.06), rgba(251,191,36,0.03))",
                   border: pack.popular
-                    ? "2px solid rgba(251,191,36,0.5)"
+                    ? "2px solid rgba(252,211,77,0.5)"
                     : "1px solid var(--c-border)",
                   boxShadow: pack.popular
-                    ? "0 0 20px rgba(251,191,36,0.1), inset 0 1px 0 rgba(255,215,0,0.15)"
+                    ? "0 0 20px rgba(252,211,77,0.1), inset 0 1px 0 rgba(255,215,0,0.15)"
                     : "none",
                 }}
               >
@@ -405,8 +405,8 @@ export default function PawCoinsWallet() {
                     className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-3 py-0.5 text-[10px] font-bold uppercase tracking-wide rounded-full text-white"
                     style={{
                       background:
-                        "linear-gradient(135deg, #fbbf24, #f59e0b)",
-                      boxShadow: "0 2px 8px rgba(251,191,36,0.3)",
+                        "linear-gradient(135deg, #FCD34D, #FBBF24)",
+                      boxShadow: "0 2px 8px rgba(252,211,77,0.3)",
                     }}
                   >
                     Populaire
@@ -416,7 +416,7 @@ export default function PawCoinsWallet() {
                 <span className="text-3xl mb-1">{"\uD83E\uDE99"}</span>
                 <p
                   className="text-lg font-black mb-0.5"
-                  style={{ color: "#fbbf24" }}
+                  style={{ color: "#FCD34D" }}
                 >
                   {pack.coins}
                 </p>
@@ -433,9 +433,9 @@ export default function PawCoinsWallet() {
                   className="btn-press w-full py-2 rounded-xl font-bold text-xs transition-all disabled:opacity-50"
                   style={{
                     background:
-                      "linear-gradient(135deg, #fbbf24, #f59e0b)",
+                      "linear-gradient(135deg, #FCD34D, #FBBF24)",
                     color: "#fff",
-                    boxShadow: "0 3px 12px rgba(251,191,36,0.25)",
+                    boxShadow: "0 3px 12px rgba(252,211,77,0.25)",
                     cursor: buyingPack ? "wait" : "pointer",
                   }}
                 >
@@ -507,7 +507,7 @@ export default function PawCoinsWallet() {
                   className="w-8 h-8 rounded-full flex items-center justify-center transition-all"
                   style={{
                     background: isActive
-                      ? "linear-gradient(135deg, #F59E0B, #fbbf24)"
+                      ? "linear-gradient(135deg, #FBBF24, #FCD34D)"
                       : "var(--c-card)",
                     border: isToday && !isActive
                       ? "2px solid var(--c-accent)"
@@ -515,9 +515,9 @@ export default function PawCoinsWallet() {
                         ? "none"
                         : "1px solid var(--c-border)",
                     boxShadow: isActive && isToday
-                      ? "0 0 12px rgba(251,191,36,0.5), 0 0 24px rgba(249,115,22,0.25)"
+                      ? "0 0 12px rgba(252,211,77,0.5), 0 0 24px rgba(249,115,22,0.25)"
                       : isActive
-                        ? "0 0 8px rgba(251,191,36,0.3)"
+                        ? "0 0 8px rgba(252,211,77,0.3)"
                         : "none",
                   }}
                 >
@@ -573,7 +573,7 @@ export default function PawCoinsWallet() {
 
         {/* Streak bonus info */}
         {streak.count >= 3 && (
-          <p className="text-[10px] text-center mt-3 font-semibold" style={{ color: "#fbbf24" }}>
+          <p className="text-[10px] text-center mt-3 font-semibold" style={{ color: "#FCD34D" }}>
             Bonus streak actif : +{getStreakBonus(streak.count)} PawCoins
           </p>
         )}
@@ -592,7 +592,7 @@ export default function PawCoinsWallet() {
                 <p className="text-sm font-semibold" style={{ color: "var(--c-text)" }}>{opt.label}</p>
                 <p className="text-[10px]" style={{ color: "var(--c-text-muted)" }}>{opt.desc}</p>
               </div>
-              <span className="text-xs font-bold px-2 py-1 rounded-full" style={{ background: "rgba(251,191,36,0.1)", color: "#fbbf24" }}>
+              <span className="text-xs font-bold px-2 py-1 rounded-full" style={{ background: "rgba(252,211,77,0.1)", color: "#FCD34D" }}>
                 {opt.coins}
               </span>
             </div>
@@ -635,8 +635,8 @@ export default function PawCoinsWallet() {
                   <span
                     className="text-[11px] font-bold px-2.5 py-1 rounded-full whitespace-nowrap"
                     style={{
-                      background: completed ? "rgba(52,211,153,0.15)" : "rgba(251,191,36,0.1)",
-                      color: completed ? "#34d399" : "#fbbf24",
+                      background: completed ? "rgba(52,211,153,0.15)" : "rgba(252,211,77,0.1)",
+                      color: completed ? "#34d399" : "#FCD34D",
                     }}
                   >
                     {"\uD83E\uDE99"} +{ch.reward}
@@ -652,8 +652,8 @@ export default function PawCoinsWallet() {
                       style={{
                         width: `${pct}%`,
                         background: completed
-                          ? "linear-gradient(90deg, #34d399, #F59E0B)"
-                          : "linear-gradient(90deg, #F59E0B, #fbbf24)",
+                          ? "linear-gradient(90deg, #34d399, #FBBF24)"
+                          : "linear-gradient(90deg, #FBBF24, #FCD34D)",
                       }}
                     />
                   </div>
@@ -685,7 +685,7 @@ export default function PawCoinsWallet() {
                 onClick={() => handleShopBuy(item.label, item.cost)}
                 className="text-xs font-bold px-3 py-1.5 rounded-full transition-all"
                 style={{
-                  background: balance >= item.cost ? "linear-gradient(135deg, #fbbf24, #F59E0B)" : "var(--c-border)",
+                  background: balance >= item.cost ? "linear-gradient(135deg, #FCD34D, #FBBF24)" : "var(--c-border)",
                   color: balance >= item.cost ? "#fff" : "var(--c-text-muted)",
                   opacity: balance >= item.cost ? 1 : 0.5,
                   cursor: balance >= item.cost ? "pointer" : "not-allowed",
@@ -726,7 +726,7 @@ export default function PawCoinsWallet() {
                     {new Date(tx.created_at).toLocaleDateString("fr-CH", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                   </p>
                 </div>
-                <span className={`text-xs font-bold ${tx.amount > 0 ? "text-amber-400" : "text-red-400"}`}>
+                <span className={`text-xs font-bold ${tx.amount > 0 ? "text-amber-300" : "text-red-400"}`}>
                   {tx.amount > 0 ? "+" : ""}{tx.amount}
                 </span>
               </div>

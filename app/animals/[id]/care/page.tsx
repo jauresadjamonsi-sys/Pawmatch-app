@@ -31,10 +31,10 @@ type AnimalWithHealth = AnimalRow & {
 // --- Constants ---
 
 const MOODS = [
-  { value: "excellent", emoji: "🤩", label: "Super", color: "#F59E0B", score: 5 },
+  { value: "excellent", emoji: "🤩", label: "Super", color: "#FBBF24", score: 5 },
   { value: "happy", emoji: "😊", label: "Content", color: "#84cc16", score: 4 },
-  { value: "neutral", emoji: "😐", label: "Normal", color: "#f59e0b", score: 3 },
-  { value: "tired", emoji: "😴", label: "Fatigué", color: "#F59E0B", score: 2 },
+  { value: "neutral", emoji: "😐", label: "Normal", color: "#FBBF24", score: 3 },
+  { value: "tired", emoji: "😴", label: "Fatigué", color: "#FBBF24", score: 2 },
   { value: "sick", emoji: "🤒", label: "Malade", color: "#ef4444", score: 1 },
 ];
 
@@ -102,8 +102,8 @@ function computePawCareScore(animal: AnimalWithHealth, moodEntries: MoodEntry[])
 }
 
 function getScoreColor(score: number): string {
-  if (score >= 75) return "#F59E0B";
-  if (score >= 50) return "#f59e0b";
+  if (score >= 75) return "#FBBF24";
+  if (score >= 50) return "#FBBF24";
   return "#ef4444";
 }
 
@@ -412,9 +412,9 @@ export default function PawCareHubPage() {
   const circumference = 2 * Math.PI * 52;
   const scoreOffset = circumference - (pawCareScore / 100) * circumference;
 
-  const severityBg = { red: "rgba(239,68,68,0.08)", orange: "rgba(245,158,11,0.08)", green: "rgba(34,197,94,0.08)" };
-  const severityBorder = { red: "rgba(239,68,68,0.2)", orange: "rgba(245,158,11,0.2)", green: "rgba(34,197,94,0.2)" };
-  const severityText = { red: "#dc2626", orange: "#d97706", green: "#16a34a" };
+  const severityBg = { red: "rgba(239,68,68,0.08)", orange: "rgba(251,191,36,0.08)", green: "rgba(34,197,94,0.08)" };
+  const severityBorder = { red: "rgba(239,68,68,0.2)", orange: "rgba(251,191,36,0.2)", green: "rgba(34,197,94,0.2)" };
+  const severityText = { red: "#dc2626", orange: "#F59E0B", green: "#16a34a" };
 
   return (
     <div style={{ minHeight: "100vh", padding: "24px 16px", background: "var(--c-deep)" }}>
@@ -531,7 +531,7 @@ export default function PawCareHubPage() {
             </h2>
             <span style={{
               fontSize: 18,
-              color: moodTrend === "up" ? "#F59E0B" : moodTrend === "down" ? "#ef4444" : "#f59e0b",
+              color: moodTrend === "up" ? "#FBBF24" : moodTrend === "down" ? "#ef4444" : "#FBBF24",
             }}>
               {moodTrend === "up" ? "↗️" : moodTrend === "down" ? "↘️" : "➡️"}
             </span>
@@ -577,7 +577,7 @@ export default function PawCareHubPage() {
           {!showMoodForm ? (
             <button onClick={() => setShowMoodForm(true)} style={{
               width: "100%", padding: 12, borderRadius: 12, border: "none", cursor: "pointer",
-              background: "linear-gradient(135deg, #F59E0B, #D97706)", color: "#fff",
+              background: "linear-gradient(135deg, #FBBF24, #F59E0B)", color: "#fff",
               fontWeight: 700, fontSize: 13,
             }}>
               Enregistrer l'humeur
@@ -615,7 +615,7 @@ export default function PawCareHubPage() {
                 </div>
                 <input type="range" min="1" max="5" value={moodEnergy}
                   onChange={e => setMoodEnergy(Number(e.target.value))}
-                  style={{ width: "100%", accentColor: "#F59E0B" }} />
+                  style={{ width: "100%", accentColor: "#FBBF24" }} />
               </div>
               <textarea value={moodNote} onChange={e => setMoodNote(e.target.value)}
                 placeholder="Note optionnelle..."
@@ -626,7 +626,7 @@ export default function PawCareHubPage() {
                 }} />
               <div style={{ display: "flex", gap: 8 }}>
                 <button onClick={handleMoodSubmit} disabled={!moodValue || moodSending} style={{
-                  flex: 1, padding: 10, background: "#F59E0B", color: "#fff", border: "none",
+                  flex: 1, padding: 10, background: "#FBBF24", color: "#fff", border: "none",
                   borderRadius: 10, fontWeight: 700, fontSize: 13, cursor: "pointer",
                   opacity: (!moodValue || moodSending) ? 0.5 : 1,
                 }}>
@@ -727,7 +727,7 @@ export default function PawCareHubPage() {
           <div style={{ marginBottom: 10 }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
               <span style={{ fontSize: 12, color: "var(--c-text-muted)" }}>Complétude</span>
-              <span style={{ fontSize: 12, fontWeight: 800, color: profileCompletion.percent >= 80 ? "#F59E0B" : profileCompletion.percent >= 50 ? "#f59e0b" : "#ef4444" }}>
+              <span style={{ fontSize: 12, fontWeight: 800, color: profileCompletion.percent >= 80 ? "#FBBF24" : profileCompletion.percent >= 50 ? "#FBBF24" : "#ef4444" }}>
                 {profileCompletion.percent}%
               </span>
             </div>
@@ -735,7 +735,7 @@ export default function PawCareHubPage() {
               <div style={{
                 height: "100%", borderRadius: 4, transition: "width 0.8s ease",
                 width: profileCompletion.percent + "%",
-                background: profileCompletion.percent >= 80 ? "#F59E0B" : profileCompletion.percent >= 50 ? "#f59e0b" : "#ef4444",
+                background: profileCompletion.percent >= 80 ? "#FBBF24" : profileCompletion.percent >= 50 ? "#FBBF24" : "#ef4444",
               }} />
             </div>
           </div>
@@ -748,8 +748,8 @@ export default function PawCareHubPage() {
                 {profileCompletion.missing.map((field, i) => (
                   <span key={i} style={{
                     fontSize: 11, padding: "3px 10px", borderRadius: 50,
-                    background: "rgba(245,158,11,0.1)", color: "#d97706", fontWeight: 600,
-                    border: "1px solid rgba(245,158,11,0.15)",
+                    background: "rgba(251,191,36,0.1)", color: "#F59E0B", fontWeight: 600,
+                    border: "1px solid rgba(251,191,36,0.15)",
                   }}>
                     {field}
                   </span>

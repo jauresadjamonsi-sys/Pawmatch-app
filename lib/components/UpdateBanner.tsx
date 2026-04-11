@@ -37,7 +37,7 @@ const ICONS: Record<string, string> = {
 
 const COLORS: Record<string, { bg: string; border: string; text: string }> = {
   maintenance: { bg: "rgba(250,204,21,0.08)", border: "rgba(250,204,21,0.25)", text: "#facc15" },
-  update: { bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.25)", text: "#F59E0B" },
+  update: { bg: "rgba(251,191,36,0.08)", border: "rgba(251,191,36,0.25)", text: "#FBBF24" },
   info: { bg: "rgba(59,130,246,0.08)", border: "rgba(59,130,246,0.25)", text: "#3b82f6" },
 };
 

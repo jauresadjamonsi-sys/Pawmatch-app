@@ -68,7 +68,7 @@ export default function PushPrompt() {
       className="rounded-2xl p-4 mb-4 transition-all duration-400"
       style={{
         background:
-          "linear-gradient(135deg, rgba(245,158,11,0.15), rgba(167,139,250,0.12))",
+          "linear-gradient(135deg, rgba(251,191,36,0.15), rgba(167,139,250,0.12))",
         border: "1px solid var(--c-border)",
         opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0)" : "translateY(-8px)",
@@ -78,7 +78,7 @@ export default function PushPrompt() {
         <div
           className="shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-lg"
           style={{
-            background: "linear-gradient(135deg, #F59E0B, #D97706)",
+            background: "linear-gradient(135deg, #FBBF24, #F59E0B)",
           }}
         >
           {"\uD83D\uDD14"}
@@ -112,8 +112,8 @@ export default function PushPrompt() {
         className="mt-3 w-full py-2 rounded-xl text-sm font-bold text-white transition-all duration-200"
         style={{
           background: loading
-            ? "rgba(245,158,11,0.4)"
-            : "linear-gradient(135deg, #F59E0B, #D97706)",
+            ? "rgba(251,191,36,0.4)"
+            : "linear-gradient(135deg, #FBBF24, #F59E0B)",
           cursor: loading ? "wait" : "pointer",
         }}
       >

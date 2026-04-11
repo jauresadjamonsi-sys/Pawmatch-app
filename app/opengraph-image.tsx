@@ -31,7 +31,7 @@ export default async function Image() {
             width: "500px",
             height: "500px",
             borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(245,158,11,0.25) 0%, rgba(245,158,11,0.08) 40%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(251,191,36,0.25) 0%, rgba(251,191,36,0.08) 40%, transparent 70%)",
             display: "flex",
           }}
         />
@@ -58,7 +58,7 @@ export default async function Image() {
             width: "800px",
             height: "400px",
             borderRadius: "50%",
-            background: "radial-gradient(ellipse, rgba(245,158,11,0.06) 0%, transparent 70%)",
+            background: "radial-gradient(ellipse, rgba(251,191,36,0.06) 0%, transparent 70%)",
             display: "flex",
           }}
         />
@@ -120,7 +120,7 @@ export default async function Image() {
             style={{
               fontSize: "80px",
               display: "flex",
-              filter: "drop-shadow(0 0 40px rgba(245,158,11,0.4))",
+              filter: "drop-shadow(0 0 40px rgba(251,191,36,0.4))",
               marginBottom: "8px",
             }}
           >
@@ -133,7 +133,7 @@ export default async function Image() {
               fontSize: "82px",
               fontWeight: 900,
               letterSpacing: "-3px",
-              background: "linear-gradient(135deg, #F59E0B 0%, #FBBF24 30%, #F59E0B 60%, #D97706 100%)",
+              background: "linear-gradient(135deg, #FBBF24 0%, #FCD34D 30%, #FBBF24 60%, #F59E0B 100%)",
               backgroundClip: "text",
               color: "transparent",
               display: "flex",
@@ -179,8 +179,8 @@ export default async function Image() {
                   width: "36px",
                   height: "36px",
                   borderRadius: "10px",
-                  background: "rgba(245,158,11,0.15)",
-                  border: "1px solid rgba(245,158,11,0.3)",
+                  background: "rgba(251,191,36,0.15)",
+                  border: "1px solid rgba(251,191,36,0.3)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -207,8 +207,8 @@ export default async function Image() {
                   width: "36px",
                   height: "36px",
                   borderRadius: "10px",
-                  background: "rgba(245,158,11,0.15)",
-                  border: "1px solid rgba(245,158,11,0.3)",
+                  background: "rgba(251,191,36,0.15)",
+                  border: "1px solid rgba(251,191,36,0.3)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -235,8 +235,8 @@ export default async function Image() {
                   width: "36px",
                   height: "36px",
                   borderRadius: "10px",
-                  background: "rgba(245,158,11,0.15)",
-                  border: "1px solid rgba(245,158,11,0.3)",
+                  background: "rgba(251,191,36,0.15)",
+                  border: "1px solid rgba(251,191,36,0.3)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -261,7 +261,7 @@ export default async function Image() {
             right: "0",
             height: "56px",
             background: "rgba(0,0,0,0.3)",
-            borderTop: "1px solid rgba(245,158,11,0.15)",
+            borderTop: "1px solid rgba(251,191,36,0.15)",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -292,7 +292,7 @@ export default async function Image() {
             style={{
               fontSize: "18px",
               fontWeight: 700,
-              color: "#F59E0B",
+              color: "#FBBF24",
               display: "flex",
               letterSpacing: "-0.5px",
             }}

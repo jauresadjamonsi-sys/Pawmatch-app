@@ -15,7 +15,7 @@ const TRAIT_COLORS = [
   { bg: "rgba(168,85,247,0.15)", text: "#a78bfa", border: "rgba(168,85,247,0.3)" },
   { bg: "rgba(56,189,248,0.15)", text: "#38bdf8", border: "rgba(56,189,248,0.3)" },
   { bg: "rgba(52,211,153,0.15)", text: "#34d399", border: "rgba(52,211,153,0.3)" },
-  { bg: "rgba(251,191,36,0.15)", text: "#fbbf24", border: "rgba(251,191,36,0.3)" },
+  { bg: "rgba(252,211,77,0.15)", text: "#FCD34D", border: "rgba(252,211,77,0.3)" },
   { bg: "rgba(244,114,182,0.15)", text: "#f472b6", border: "rgba(244,114,182,0.3)" },
 ];
 
@@ -168,7 +168,7 @@ export default function AnimalCardPage() {
           className="absolute inset-0 rounded-3xl pointer-events-none"
           style={{
             padding: "1.5px",
-            background: "linear-gradient(135deg, #F59E0B, #A78BFA, #38BDF8, #F59E0B)",
+            background: "linear-gradient(135deg, #FBBF24, #A78BFA, #38BDF8, #FBBF24)",
             backgroundSize: "300% 300%",
             animation: "aurora 6s ease infinite",
             WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
@@ -308,7 +308,7 @@ export default function AnimalCardPage() {
                     height: "100%",
                     borderRadius: 3,
                     width: `${(energyLevel / 5) * 100}%`,
-                    background: "linear-gradient(90deg, #F59E0B, #FBBF24)",
+                    background: "linear-gradient(90deg, #FBBF24, #FCD34D)",
                     transition: "width 0.6s ease",
                   }}
                 />
@@ -355,7 +355,7 @@ export default function AnimalCardPage() {
               style={{
                 fontSize: 13,
                 fontWeight: 800,
-                background: "linear-gradient(135deg, #F59E0B, #A78BFA)",
+                background: "linear-gradient(135deg, #FBBF24, #A78BFA)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -378,7 +378,7 @@ export default function AnimalCardPage() {
             onClick={handleShare}
             className="w-full py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition"
             style={{
-              background: "linear-gradient(135deg, #F59E0B, #EA580C)",
+              background: "linear-gradient(135deg, #FBBF24, #EA580C)",
               color: "#fff",
               boxShadow: "0 4px 24px rgba(249,115,22,0.3)",
             }}

@@ -81,7 +81,7 @@ export default function VerifyProfilePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[var(--c-bg,var(--c-deep))] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-amber-300 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -135,12 +135,12 @@ export default function VerifyProfilePage() {
                   style={{
                     left: `${Math.random() * 100}%`,
                     animationDelay: `${Math.random() * 0.5}s`,
-                    backgroundColor: ["#F59E0B", "#3b82f6", "#F59E0B", "#a78bfa", "#fbbf24"][i % 5],
+                    backgroundColor: ["#FBBF24", "#3b82f6", "#FBBF24", "#a78bfa", "#FCD34D"][i % 5],
                   }}
                 />
               ))}
             </div>
-            <div className="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center animate-bounce" style={{ background: "rgba(245,158,11,0.15)", border: "2px solid rgba(245,158,11,0.4)" }}>
+            <div className="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center animate-bounce" style={{ background: "rgba(251,191,36,0.15)", border: "2px solid rgba(251,191,36,0.4)" }}>
               <span className="text-4xl">&#x1F389;</span>
             </div>
             <h1 className="gradient-text-warm text-2xl font-black mb-2">Verification reussie !</h1>
@@ -221,7 +221,7 @@ export default function VerifyProfilePage() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(251,191,36,0.15)", border: "1px solid rgba(251,191,36,0.25)" }}>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(252,211,77,0.15)", border: "1px solid rgba(252,211,77,0.25)" }}>
                 <span style={{ fontSize: "16px" }}>&#x1FA99;</span>
               </div>
               <div>
@@ -230,7 +230,7 @@ export default function VerifyProfilePage() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(245,158,11,0.15)", border: "1px solid rgba(245,158,11,0.25)" }}>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(251,191,36,0.15)", border: "1px solid rgba(251,191,36,0.25)" }}>
                 <span style={{ fontSize: "16px" }}>&#x1F91D;</span>
               </div>
               <div>

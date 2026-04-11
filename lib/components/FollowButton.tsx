@@ -84,9 +84,9 @@ export default function FollowButton({ userId, initialIsFollowing, size = "md" }
       onClick={toggle}
       className={`rounded-full font-bold transition-all duration-200 ${sm ? "px-3 py-1 text-[10px]" : "px-4 py-1.5 text-xs"}`}
       style={{
-        background: "linear-gradient(135deg, #F59E0B, #D97706)",
+        background: "linear-gradient(135deg, #FBBF24, #F59E0B)",
         color: "#fff",
-        boxShadow: "0 2px 8px rgba(245,158,11,0.3)",
+        boxShadow: "0 2px 8px rgba(251,191,36,0.3)",
       }}
     >
       Suivre

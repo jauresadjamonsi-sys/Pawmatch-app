@@ -25,12 +25,12 @@ export default function PawCoinsBadge() {
       href="/wallet"
       className="flex items-center gap-1 px-2.5 py-1 rounded-full transition-all hover:scale-105"
       style={{
-        background: "linear-gradient(135deg, rgba(251,191,36,0.12), rgba(249,115,22,0.08))",
-        border: "1px solid rgba(251,191,36,0.2)",
+        background: "linear-gradient(135deg, rgba(252,211,77,0.12), rgba(249,115,22,0.08))",
+        border: "1px solid rgba(252,211,77,0.2)",
       }}
     >
       <span className="text-sm">🪙</span>
-      <span className="text-xs font-bold" style={{ color: "#fbbf24" }}>{balance}</span>
+      <span className="text-xs font-bold" style={{ color: "#FCD34D" }}>{balance}</span>
     </Link>
   );
 }

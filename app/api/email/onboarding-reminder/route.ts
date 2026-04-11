@@ -60,18 +60,18 @@ export async function POST(request: Request) {
             to: email,
             subject: "🐾 Ton compagnon t'attend sur Pawly !",
             html: `<div style="max-width:500px;margin:0 auto;font-family:-apple-system,sans-serif;background:#1a1225;color:#fff;border-radius:16px;overflow:hidden">
-              <div style="background:linear-gradient(135deg,#F59E0B,#D97706);padding:32px;text-align:center">
+              <div style="background:linear-gradient(135deg,#FBBF24,#F59E0B);padding:32px;text-align:center">
                 <h1 style="margin:0;font-size:24px">🐾 ${firstName}, ton animal t'attend !</h1>
               </div>
               <div style="padding:24px">
                 <p style="font-size:15px;line-height:1.6;color:#e0e0e0">Salut ${firstName} ! Tu as créé ton compte Pawly mais tu n'as pas encore ajouté ton compagnon.</p>
-                <p style="font-size:15px;line-height:1.6;color:#e0e0e0">En <strong style="color:#F59E0B">2 minutes</strong>, présente-le à la communauté et trouve des copains de balade près de chez toi.</p>
+                <p style="font-size:15px;line-height:1.6;color:#e0e0e0">En <strong style="color:#FBBF24">2 minutes</strong>, présente-le à la communauté et trouve des copains de balade près de chez toi.</p>
                 <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:16px;margin:20px 0">
                   <p style="margin:0;font-size:14px;color:#9ca3af">🐕 <strong style="color:#fff">+500 animaux</strong> inscrits en Suisse</p>
                   <p style="margin:8px 0 0;font-size:14px;color:#9ca3af">📍 <strong style="color:#fff">14 cantons</strong> couverts</p>
                   <p style="margin:8px 0 0;font-size:14px;color:#9ca3af">💬 <strong style="color:#fff">Matchs gratuits</strong> pour commencer</p>
                 </div>
-                <a href="https://pawlyapp.ch/profile/animals/new" style="display:block;padding:14px;background:#F59E0B;color:#fff;text-align:center;border-radius:12px;font-weight:700;font-size:15px;text-decoration:none">Ajouter mon animal →</a>
+                <a href="https://pawlyapp.ch/profile/animals/new" style="display:block;padding:14px;background:#FBBF24;color:#fff;text-align:center;border-radius:12px;font-weight:700;font-size:15px;text-decoration:none">Ajouter mon animal →</a>
                 <p style="margin-top:16px;font-size:12px;color:#6b7280;text-align:center">Ça prend moins de 2 minutes, promis 🐾</p>
               </div>
               <div style="padding:16px;text-align:center;border-top:1px solid rgba(255,255,255,0.05)">

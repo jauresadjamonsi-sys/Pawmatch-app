@@ -175,7 +175,7 @@ export default function BlockReportModal({
                   tab === t
                     ? t === "block"
                       ? "#ef4444"
-                      : "#F59E0B"
+                      : "#FBBF24"
                     : "var(--c-text-muted, #9b93b8)",
                 background:
                   tab === t
@@ -185,7 +185,7 @@ export default function BlockReportModal({
                     : "transparent",
                 borderBottom:
                   tab === t
-                    ? `2px solid ${t === "block" ? "#ef4444" : "#F59E0B"}`
+                    ? `2px solid ${t === "block" ? "#ef4444" : "#FBBF24"}`
                     : "2px solid transparent",
               }}
             >
@@ -341,7 +341,7 @@ export default function BlockReportModal({
                 style={{
                   background: !reportReason
                     ? "var(--c-border, #2d2545)"
-                    : "#F59E0B",
+                    : "#FBBF24",
                   color: !reportReason
                     ? "var(--c-text-muted, #9b93b8)"
                     : "#fff",

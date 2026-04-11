@@ -423,7 +423,7 @@ export default function FeedPage() {
               className="px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300"
               style={{
                 background: feedMode === "algo"
-                  ? "linear-gradient(135deg, #F59E0B, #D97706)"
+                  ? "linear-gradient(135deg, #FBBF24, #F59E0B)"
                   : "transparent",
                 color: feedMode === "algo" ? "#fff" : "var(--c-text-muted)",
                 boxShadow: feedMode === "algo" ? "0 2px 8px rgba(34, 197, 94,0.3)" : "none",
@@ -436,7 +436,7 @@ export default function FeedPage() {
               className="px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300"
               style={{
                 background: feedMode === "chrono"
-                  ? "linear-gradient(135deg, #F59E0B, #D97706)"
+                  ? "linear-gradient(135deg, #FBBF24, #F59E0B)"
                   : "transparent",
                 color: feedMode === "chrono" ? "#fff" : "var(--c-text-muted)",
                 boxShadow: feedMode === "chrono" ? "0 2px 8px rgba(34, 197, 94,0.3)" : "none",

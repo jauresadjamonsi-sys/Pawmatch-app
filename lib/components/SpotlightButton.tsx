@@ -108,12 +108,12 @@ export default function SpotlightButton({ animalId, animalName, hasPhoto }: Spot
     return (
       <div style={{
         display: "flex", alignItems: "center", gap: 14, padding: 18,
-        background: "linear-gradient(135deg, rgba(245,158,11,0.12), rgba(168,85,247,0.08))",
-        border: "2px solid rgba(245,158,11,0.3)", borderRadius: 16, marginBottom: 16,
+        background: "linear-gradient(135deg, rgba(251,191,36,0.12), rgba(168,85,247,0.08))",
+        border: "2px solid rgba(251,191,36,0.3)", borderRadius: 16, marginBottom: 16,
       }}>
         <div style={{
           width: 48, height: 48, borderRadius: 14,
-          background: "linear-gradient(135deg, #F59E0B, #a855f7)",
+          background: "linear-gradient(135deg, #FBBF24, #a855f7)",
           display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: 22, flexShrink: 0, animation: "pulse 2s ease-in-out infinite",
         }}>
@@ -143,10 +143,10 @@ export default function SpotlightButton({ animalId, animalName, hasPhoto }: Spot
           width: "100%", textAlign: "left",
           background: occupied
             ? "linear-gradient(135deg, rgba(107,114,128,0.08), rgba(107,114,128,0.04))"
-            : "linear-gradient(135deg, rgba(245,158,11,0.1), rgba(168,85,247,0.06))",
+            : "linear-gradient(135deg, rgba(251,191,36,0.1), rgba(168,85,247,0.06))",
           border: occupied
             ? "2px solid rgba(107,114,128,0.2)"
-            : "2px solid rgba(245,158,11,0.25)",
+            : "2px solid rgba(251,191,36,0.25)",
           borderRadius: 16,
           cursor: occupied ? "not-allowed" : "pointer",
           opacity: loading ? 0.6 : 1,
@@ -157,7 +157,7 @@ export default function SpotlightButton({ animalId, animalName, hasPhoto }: Spot
           width: 48, height: 48, borderRadius: 14,
           background: occupied
             ? "linear-gradient(135deg, #6b7280, #9ca3af)"
-            : "linear-gradient(135deg, #F59E0B, #a855f7)",
+            : "linear-gradient(135deg, #FBBF24, #a855f7)",
           display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: 22, flexShrink: 0,
         }}>
@@ -184,12 +184,12 @@ export default function SpotlightButton({ animalId, animalName, hasPhoto }: Spot
         <div style={{
           display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
           marginTop: 8, padding: "8px 12px",
-          background: "rgba(245,158,11,0.05)",
+          background: "rgba(251,191,36,0.05)",
           borderRadius: 10, fontSize: 11, color: "var(--c-text-muted)",
         }}>
           <span>💎</span>
           <span>{t.spotlightUpgrade}</span>
-          <Link href="/pricing" style={{ color: "#F59E0B", fontWeight: 700, textDecoration: "none", marginLeft: 4 }}>
+          <Link href="/pricing" style={{ color: "#FBBF24", fontWeight: 700, textDecoration: "none", marginLeft: 4 }}>
             Premium →
           </Link>
         </div>
