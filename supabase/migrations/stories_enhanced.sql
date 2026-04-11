@@ -23,6 +23,7 @@ $$;
 
 -- 2. Replace stories SELECT policy: only matched users + self
 DROP POLICY IF EXISTS "Authenticated users read non-expired stories" ON stories;
+DROP POLICY IF EXISTS "Matched users or owner read non-expired stories" ON stories;
 
 CREATE POLICY "Matched users or owner read non-expired stories"
   ON stories FOR SELECT
@@ -37,6 +38,7 @@ CREATE POLICY "Matched users or owner read non-expired stories"
 
 -- 3. Update story_views policies
 DROP POLICY IF EXISTS "Authenticated users read story views" ON story_views;
+DROP POLICY IF EXISTS "Story owner or viewer reads story views" ON story_views;
 
 CREATE POLICY "Story owner or viewer reads story views"
   ON story_views FOR SELECT
@@ -53,6 +55,7 @@ CREATE POLICY "Story owner or viewer reads story views"
   );
 
 DROP POLICY IF EXISTS "Users insert own views" ON story_views;
+DROP POLICY IF EXISTS "Matched users insert own views" ON story_views;
 
 CREATE POLICY "Matched users insert own views"
   ON story_views FOR INSERT
@@ -84,6 +87,7 @@ CREATE INDEX IF NOT EXISTS idx_story_reactions_user ON story_reactions(user_id);
 ALTER TABLE story_reactions ENABLE ROW LEVEL SECURITY;
 
 -- Story poster sees all reactions on their stories; reactors see their own
+DROP POLICY IF EXISTS "Story owner or reactor reads reactions" ON story_reactions;
 CREATE POLICY "Story owner or reactor reads reactions"
   ON story_reactions FOR SELECT
   USING (
@@ -99,6 +103,7 @@ CREATE POLICY "Story owner or reactor reads reactions"
   );
 
 -- Only matched users can react
+DROP POLICY IF EXISTS "Matched users insert own reactions" ON story_reactions;
 CREATE POLICY "Matched users insert own reactions"
   ON story_reactions FOR INSERT
   WITH CHECK (
@@ -111,12 +116,14 @@ CREATE POLICY "Matched users insert own reactions"
   );
 
 -- Users can update their own reaction (change emoji)
+DROP POLICY IF EXISTS "Users update own reactions" ON story_reactions;
 CREATE POLICY "Users update own reactions"
   ON story_reactions FOR UPDATE
   USING (auth.uid() = user_id)
   WITH CHECK (auth.uid() = user_id);
 
 -- Users can delete their own reaction
+DROP POLICY IF EXISTS "Users delete own reactions" ON story_reactions;
 CREATE POLICY "Users delete own reactions"
   ON story_reactions FOR DELETE
   USING (auth.uid() = user_id);
