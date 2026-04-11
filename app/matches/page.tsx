@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { useAppContext } from "@/lib/contexts/AppContext";
@@ -35,6 +35,8 @@ const CONFETTI_SHAPES = ["circle", "square", "star", "heart", "paw"];
 
 function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose: () => void; t: Record<string, string> }) {
   const [confetti, setConfetti] = useState<Array<{id:number;x:number;color:string;size:number;delay:number;duration:number;shape:string;rotation:number}>>([]);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   useEffect(() => {
     const items = Array.from({ length: 50 }, (_, i) => ({
@@ -59,9 +61,9 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
       cleanAudio = () => { clearTimeout(stopTimer); audio.pause(); };
     } catch {}
 
-    const timer = setTimeout(onClose, 5000);
+    const timer = setTimeout(() => onCloseRef.current(), 5000);
     return () => { clearTimeout(timer); if (cleanAudio) cleanAudio(); };
-  }, [onClose]);
+  }, []); // stable — no dependency on onClose
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md"
