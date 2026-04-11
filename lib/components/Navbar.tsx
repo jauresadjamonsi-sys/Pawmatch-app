@@ -243,7 +243,7 @@ export default function Navbar() {
               {!loading && user && (
                 <>
                   <PawCoinsBadge />
-                  <PawScoreBadge />
+                  <PawScoreBadge useApi />
                   <div className={hasNewMatches ? "bell-pulse" : ""}><NotificationBell /></div>
                 </>
               )}

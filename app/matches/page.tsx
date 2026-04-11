@@ -50,16 +50,17 @@ function CoupDeTruffe({ match, onClose, t }: { match: MatchWithAnimals; onClose:
     setConfetti(items);
 
     // Play match celebration sound (first 6 seconds)
+    let cleanAudio: (() => void) | null = null;
     try {
       const audio = new Audio("/match-sound.mp3");
       audio.volume = 0.6;
       audio.play().catch(() => {});
       const stopTimer = setTimeout(() => { audio.pause(); audio.currentTime = 0; }, 6000);
-      var cleanAudio = () => { clearTimeout(stopTimer); audio.pause(); };
+      cleanAudio = () => { clearTimeout(stopTimer); audio.pause(); };
     } catch {}
 
     const timer = setTimeout(onClose, 5000);
-    return () => { clearTimeout(timer); if (typeof cleanAudio === "function") cleanAudio(); };
+    return () => { clearTimeout(timer); if (cleanAudio) cleanAudio(); };
   }, [onClose]);
 
   return (

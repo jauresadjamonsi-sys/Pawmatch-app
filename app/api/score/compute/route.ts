@@ -7,7 +7,7 @@ export async function GET() {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   // Compute score from multiple signals (handle missing tables gracefully)
-  let profileScore = 0, activityScore = 0, socialScore = 0, streakScore = 0, contentScore = 0;
+  let profileScore = 0, socialScore = 0, streakScore = 0, contentScore = 0;
 
   try {
     // 1. Profile completeness (0-25 pts)
@@ -20,7 +20,7 @@ export async function GET() {
     }
 
     // 2. Animals registered (0-15 pts)
-    const { count: animalCount } = await supabase.from("animals").select("id", { count: "exact", head: true }).eq("owner_id", user.id);
+    const { count: animalCount } = await supabase.from("animals").select("id", { count: "exact", head: true }).eq("created_by", user.id);
     profileScore += Math.min((animalCount || 0) * 5, 15);
   } catch {}
 
@@ -38,7 +38,7 @@ export async function GET() {
   try {
     // 4. Social interactions (0-25 pts)
     const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
-    const { count: matchCount } = await supabase.from("matches").select("id", { count: "exact", head: true }).or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`);
+    const { count: matchCount } = await supabase.from("matches").select("id", { count: "exact", head: true }).or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`);
     socialScore += Math.min((matchCount || 0) * 3, 15);
 
     // Messages sent
@@ -71,7 +71,7 @@ export async function GET() {
     streakScore = Math.min(streak * 3, 15);
   } catch {}
 
-  const totalScore = profileScore + activityScore + socialScore + streakScore + contentScore;
+  const totalScore = profileScore + socialScore + streakScore + contentScore;
   const maxScore = 100;
   const score = Math.min(totalScore, maxScore);
 

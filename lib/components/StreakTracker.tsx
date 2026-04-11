@@ -9,23 +9,28 @@ export default function StreakTracker() {
 
   useEffect(() => {
     setMounted(true);
-    const data = localStorage.getItem("pawly_streak");
-    if (data) {
-      const parsed = JSON.parse(data);
-      const today = new Date().toISOString().split("T")[0];
-      const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
+    try {
+      const data = localStorage.getItem("pawly_streak");
+      if (data) {
+        const parsed = JSON.parse(data);
+        const today = new Date().toISOString().split("T")[0];
+        const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
 
-      if (parsed.lastDate === today) {
-        setStreak(parsed.count);
-        setTodayClaimed(true);
-      } else if (parsed.lastDate === yesterday) {
-        setStreak(parsed.count);
-        // Streak alive but not claimed today
-      } else {
-        // Streak broken
-        setStreak(0);
-        localStorage.setItem("pawly_streak", JSON.stringify({ count: 0, lastDate: "" }));
+        if (parsed.lastDate === today) {
+          setStreak(parsed.count);
+          setTodayClaimed(true);
+        } else if (parsed.lastDate === yesterday) {
+          setStreak(parsed.count);
+          // Streak alive but not claimed today
+        } else {
+          // Streak broken
+          setStreak(0);
+          localStorage.setItem("pawly_streak", JSON.stringify({ count: 0, lastDate: "" }));
+        }
       }
+    } catch {
+      // Corrupt data — reset streak
+      localStorage.removeItem("pawly_streak");
     }
   }, []);
 

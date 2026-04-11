@@ -19,16 +19,15 @@ export default function EditProfilePage() {
 
   useEffect(() => {
     if (profile?.city) {
-      const cantonEntry = CANTONS.find(() => {
-        for (const [code, cities] of Object.entries(CITIES)) {
-          if (cities.includes(profile.city || "")) {
-            setSelectedCanton(code);
-            return true;
-          }
+      let found = false;
+      for (const [code, cities] of Object.entries(CITIES)) {
+        if (cities.includes(profile.city || "")) {
+          setSelectedCanton(code);
+          found = true;
+          break;
         }
-        return false;
-      });
-      if (!cantonEntry) setCustomCity(true);
+      }
+      if (!found) setCustomCity(true);
     }
   }, [profile]);
 

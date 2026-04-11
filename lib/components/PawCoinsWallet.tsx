@@ -102,6 +102,7 @@ const TX_ICONS: Record<PawCoinTxType, string> = {
   match_made: "🐾", super_flair_sent: "⚡", super_flair_received: "💫",
   boost_purchased: "🔝", boost_used: "📣",
   referral_bonus: "🤝", challenge_completed: "🎯",
+  review_posted: "📝", marketplace_listing: "🏪",
   purchase: "💳", admin_grant: "👑",
 };
 
@@ -244,7 +245,7 @@ export default function PawCoinsWallet() {
     const supabase = createClient();
     const result = await getDailyLoginBonus(supabase, userId);
     if (result.claimed) {
-      setBalance(result.balance ?? balance + 5);
+      setBalance("balance" in result && result.balance != null ? result.balance : balance + 5);
       setClaimResult("+ 5 PawCoins !");
       const [wallet, streakInfo] = await Promise.all([
         getWallet(supabase, userId),

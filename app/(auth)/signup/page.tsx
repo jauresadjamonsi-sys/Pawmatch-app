@@ -194,7 +194,7 @@ export default function SignupPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <input type="hidden" name="referred_by" value={typeof window !== "undefined" ? localStorage.getItem("pawly_referral") || "" : ""} />
+            <input type="hidden" name="referred_by" value={referralCode} />
 
             <div className="animate-slide-up" style={{ animationDelay: "0.15s" }}>
               <label htmlFor="fullName" className="block text-sm font-medium text-[var(--c-text-muted)] mb-1">{t.signupName}</label>
@@ -269,11 +269,11 @@ export default function SignupPage() {
               <label htmlFor="acceptTerms" className="text-xs text-[var(--c-text-muted)] leading-relaxed cursor-pointer">
                 J&apos;accepte les{" "}
                 <a href="/legal/cgu" target="_blank" className="underline text-amber-300 hover:text-amber-200">
-                  Conditions Generales d&apos;Utilisation
+                  Conditions G&eacute;n&eacute;rales d&apos;Utilisation
                 </a>{" "}
                 et la{" "}
                 <a href="/legal/privacy" target="_blank" className="underline text-amber-300 hover:text-amber-200">
-                  Politique de Confidentialite
+                  Politique de Confidentialit&eacute;
                 </a>
                 . Je confirme avoir au moins 18 ans.
               </label>

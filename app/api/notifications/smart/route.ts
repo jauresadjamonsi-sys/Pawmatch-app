@@ -17,7 +17,7 @@ export async function GET() {
     const { count: newMatches } = await supabase
       .from("matches")
       .select("id", { count: "exact", head: true })
-      .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`)
+      .or(`sender_user_id.eq.${user.id},receiver_user_id.eq.${user.id}`)
       .gte("created_at", dayAgo);
 
     if (newMatches && newMatches > 0) {
@@ -47,8 +47,8 @@ export async function GET() {
       });
     }
 
-    // 4. New animals in user's canton (weekly)
-    const { data: profile } = await supabase.from("profiles").select("city").eq("id", user.id).single();
+    // 4. New animals in user's canton (weekly) + 5. Profile completion
+    const { data: profile } = await supabase.from("profiles").select("full_name, avatar_url, bio, city").eq("id", user.id).single();
     if (profile?.city) {
       const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
       const { count: newAnimals } = await supabase
@@ -67,10 +67,9 @@ export async function GET() {
       }
     }
 
-    // 5. Profile completion reminder
-    const { data: prof } = await supabase.from("profiles").select("full_name, avatar_url, bio, city").eq("id", user.id).single();
-    if (prof) {
-      const fields = [prof.full_name, prof.avatar_url, prof.bio, prof.city];
+    // 5. Profile completion reminder (reuse profile fetched above)
+    if (profile) {
+      const fields = [profile.full_name, profile.avatar_url, profile.bio, profile.city];
       const complete = fields.filter(Boolean).length;
       if (complete < 4) {
         notifications.push({

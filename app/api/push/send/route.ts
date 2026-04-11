@@ -6,7 +6,10 @@ export async function POST(req: Request) {
   try {
     // Allow system calls with CRON_SECRET, otherwise require auth
     const authHeader = req.headers.get('authorization');
-    const isCronCall = authHeader === `Bearer ${process.env.CRON_SECRET}`;
+    const cronSecret = process.env.CRON_SECRET;
+    const isCronCall = !!cronSecret && authHeader === `Bearer ${cronSecret}`;
+
+    const { user_id, title, body, url } = await req.json();
 
     if (!isCronCall) {
       const supabaseAuth = await createServerClient();
@@ -15,13 +18,10 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Non autorise' }, { status: 401 });
       }
       // Authenticated users can only send push notifications to themselves
-      const body = await req.clone().json();
-      if (body.user_id !== user.id) {
+      if (user_id !== user.id) {
         return NextResponse.json({ error: 'Non autorise' }, { status: 403 });
       }
     }
-
-    const { user_id, title, body, url } = await req.json();
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -51,15 +51,16 @@ export async function POST(req: Request) {
           payload
         );
         sent++;
-      } catch (err: any) {
-        if (err.statusCode === 410) {
+      } catch (err: unknown) {
+        if (err && typeof err === 'object' && 'statusCode' in err && (err as { statusCode: number }).statusCode === 410) {
           await supabase.from('push_subscriptions').delete().eq('endpoint', sub.endpoint);
         }
       }
     }
 
     return NextResponse.json({ sent });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

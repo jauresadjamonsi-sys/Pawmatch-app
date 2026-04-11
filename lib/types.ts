@@ -156,6 +156,7 @@ export interface StoryRow {
   /** @deprecated Use media_url instead */
   image_url?: string | null;
   media_url: string | null;
+  media_type: string | null;
   caption: string | null;
   template: string;
   bg_gradient: string | null;

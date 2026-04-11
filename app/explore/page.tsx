@@ -164,24 +164,27 @@ export default function ExplorePage() {
       if (error || !eventsData) { setEventsLoading(false); return; }
 
       const eventIds = eventsData.map(e => e.id);
-      const { data: allParticipants } = await supabase
-        .from("event_participants")
-        .select("event_id")
-        .in("event_id", eventIds);
-
-      const countMap: Record<string, number> = {};
-      for (const p of allParticipants || []) {
-        countMap[p.event_id] = (countMap[p.event_id] || 0) + 1;
-      }
-
+      let countMap: Record<string, number> = {};
       const joinedSet = new Set<string>();
-      if (user) {
-        const { data: userParts } = await supabase
+
+      if (eventIds.length > 0) {
+        const { data: allParticipants } = await supabase
           .from("event_participants")
           .select("event_id")
-          .eq("user_id", user.id)
           .in("event_id", eventIds);
-        for (const p of userParts || []) joinedSet.add(p.event_id);
+
+        for (const p of allParticipants || []) {
+          countMap[p.event_id] = (countMap[p.event_id] || 0) + 1;
+        }
+
+        if (user) {
+          const { data: userParts } = await supabase
+            .from("event_participants")
+            .select("event_id")
+            .eq("user_id", user.id)
+            .in("event_id", eventIds);
+          for (const p of userParts || []) joinedSet.add(p.event_id);
+        }
       }
 
       setEvents(eventsData.map(e => ({
@@ -253,8 +256,8 @@ export default function ExplorePage() {
     { key: "trending", label: "Tendance", icon: "🔥" },
     { key: "new", label: "Nouveaux", icon: "✨" },
     { key: "nearby", label: "Proches", icon: "📍" },
-    { key: "species", label: "Espece", icon: "🐾" },
-    { key: "events", label: "Evenements", icon: "📅" },
+    { key: "species", label: "Esp\u00e8ce", icon: "🐾" },
+    { key: "events", label: "\u00c9v\u00e9nements", icon: "📅" },
   ];
 
   return (
@@ -268,7 +271,7 @@ export default function ExplorePage() {
           </button>
           <h1 className="text-2xl font-black" style={{ color: "var(--c-text)" }}>Explorer</h1>
         </div>
-        <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>Decouvre animaux, profils et evenements</p>
+        <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>D&eacute;couvre animaux, profils et &eacute;v&eacute;nements</p>
       </div>
 
       {/* Top Pawly leaderboard mini-widget */}
@@ -416,7 +419,7 @@ export default function ExplorePage() {
                 className="px-4 py-2.5 rounded-xl text-sm font-bold text-white flex-shrink-0"
                 style={{ background: "linear-gradient(135deg, #FBBF24, #4ADE80)" }}
               >
-                + Creer
+                + Cr&eacute;er
               </button>
             ) : (
               <button
@@ -453,9 +456,9 @@ export default function ExplorePage() {
                   {new Date().getDate()}
                 </span>
               </div>
-              <h2 className="text-lg font-bold mb-2" style={{ color: "var(--c-text)" }}>Aucun evenement a venir</h2>
+              <h2 className="text-lg font-bold mb-2" style={{ color: "var(--c-text)" }}>Aucun &eacute;v&eacute;nement &agrave; venir</h2>
               <p className="text-sm mb-4" style={{ color: "var(--c-text-muted)" }}>
-                {filterCanton ? "Aucun evenement dans ce canton." : "Sois le premier a organiser une sortie !"}
+                {filterCanton ? "Aucun \u00e9v\u00e9nement dans ce canton." : "Sois le premier \u00e0 organiser une sortie !"}
               </p>
               {currentUserId ? (
                 <button
@@ -463,7 +466,7 @@ export default function ExplorePage() {
                   className="px-6 py-3 text-white font-bold rounded-xl text-sm"
                   style={{ background: "linear-gradient(135deg, #FBBF24, #4ADE80)" }}
                 >
-                  Creer un evenement
+                  Cr&eacute;er un &eacute;v&eacute;nement
                 </button>
               ) : (
                 <button
@@ -526,7 +529,7 @@ export default function ExplorePage() {
 
                     {/* Info badges */}
                     <div className="flex flex-wrap gap-1.5 mb-2">
-                      <span className="text-[11px]" style={{ color: "var(--c-text-muted)" }}>📅 {date.day} a {date.time}</span>
+                      <span className="text-[11px]" style={{ color: "var(--c-text-muted)" }}>{"\uD83D\uDCC5"} {date.day} &agrave; {date.time}</span>
                     </div>
                     <div className="flex flex-wrap gap-1.5 mb-2">
                       <span className="px-2 py-0.5 rounded-full text-[10px]" style={{ background: "var(--c-glass)", color: "var(--c-text-muted)" }}>📍 {event.location}</span>
@@ -567,7 +570,7 @@ export default function ExplorePage() {
             <div className="text-center py-16">
               <div className="text-5xl mb-4">🔍</div>
               <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>
-                {search ? "Aucun resultat pour cette recherche" : "Aucun animal trouve"}
+                {search ? "Aucun r\u00e9sultat pour cette recherche" : "Aucun animal trouv\u00e9"}
               </p>
             </div>
           ) : (
@@ -608,7 +611,7 @@ export default function ExplorePage() {
           {tab === "nearby" && (
             <div className="mt-6">
               <h2 className="text-sm font-bold mb-3" style={{ color: "var(--c-text)" }}>
-                Decouvre par canton
+                D&eacute;couvre par canton
               </h2>
               <div className="flex flex-wrap gap-2 stagger-children">
                 {CANTONS.map((canton, i) => (
@@ -642,7 +645,7 @@ export default function ExplorePage() {
         <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-4">
           <div className="rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6" style={{ background: "var(--c-card)", border: "1px solid var(--c-border)" }}>
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-lg font-bold" style={{ color: "var(--c-text)" }}>Creer un evenement</h2>
+              <h2 className="text-lg font-bold" style={{ color: "var(--c-text)" }}>Cr&eacute;er un &eacute;v&eacute;nement</h2>
               <button onClick={() => setShowCreate(false)} style={{ color: "var(--c-text-muted)" }}>✕</button>
             </div>
 
@@ -692,7 +695,7 @@ export default function ExplorePage() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--c-text-muted)" }}>Animaux acceptes</label>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--c-text-muted)" }}>Animaux accept&eacute;s</label>
                 <div className="flex flex-wrap gap-2">
                   {Object.entries(SPECIES_EMOJI).map(([s, emoji]) => (
                     <button key={s} type="button" onClick={() => toggleSpeciesForm(s)}
@@ -719,7 +722,7 @@ export default function ExplorePage() {
               <div>
                 <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--c-text-muted)" }}>Description</label>
                 <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                  placeholder="Decris l'evenement, le point de rendez-vous..."
+                  placeholder="D&eacute;cris l'&eacute;v&eacute;nement, le point de rendez-vous..."
                   rows={3}
                   className="w-full px-4 py-2.5 rounded-xl text-sm outline-none resize-none"
                   style={{ background: "var(--c-deep)", border: "1px solid var(--c-border)", color: "var(--c-text)" }} />

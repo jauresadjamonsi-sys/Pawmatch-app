@@ -459,12 +459,12 @@ export default function FlairerPage() {
           </div>
           <h2 className="text-2xl font-bold gradient-text-warm mb-2">Ajoute ton premier compagnon !</h2>
           <p className="text-[var(--c-text-muted)] mb-6 text-sm leading-relaxed">
-            Pour commencer a flairer et trouver des compagnons compatibles, cree le profil de ton animal.
+            Pour commencer &agrave; flairer et trouver des compagnons compatibles, cr&eacute;e le profil de ton animal.
           </p>
           <Link href="/profile/animals/new" className="inline-block btn-futuristic animate-pulse-glow">
             Ajouter mon compagnon
           </Link>
-          <p className="mt-4 text-xs text-[var(--c-text-muted)]">Ca prend moins de 30 secondes !</p>
+          <p className="mt-4 text-xs text-[var(--c-text-muted)]">&Ccedil;a prend moins de 30 secondes !</p>
         </div>
       </div>
     );
@@ -620,14 +620,14 @@ export default function FlairerPage() {
               {"🎉"} Coup de Truffe !
             </h2>
             <p className="text-[var(--c-text-muted)] text-sm mb-4">
-              {activeMyAnimal?.name || "Ton compagnon"} et {animal?.name} se sont mutuellement flaires !
+              {activeMyAnimal?.name || "Ton compagnon"} et {animal?.name} se sont mutuellement flair&eacute;s !
             </p>
             <div className="text-left text-xs text-[var(--c-text-muted)] bg-[var(--c-bg)]/40 rounded-xl p-3 mb-5 space-y-1.5">
               <p className="font-semibold text-[var(--c-text)] text-sm mb-1">{"🤝"} Charte Pawly</p>
               <p>{"🐶"} Respecte les animaux et leurs humains</p>
               <p>{"💬"} Sois bienveillant(e) dans tes messages</p>
               <p>{"📍"} Organise vos rencontres dans des lieux publics</p>
-              <p>{"🚫"} Signale tout comportement inapproprie</p>
+              <p>{"🚫"} Signale tout comportement inappropri&eacute;</p>
             </div>
             <div className="flex gap-3">
               {mutualMatchData && (
@@ -877,13 +877,13 @@ export default function FlairerPage() {
                     )}
                     {smartMode && (compat as any).breakdown && (
                       <div className="border-t border-white/10 pt-2 mt-1">
-                        <div className="text-[9px] font-semibold text-[var(--c-text-muted)] uppercase mb-1.5">Detail du score</div>
+                        <div className="text-[9px] font-semibold text-[var(--c-text-muted)] uppercase mb-1.5">D&eacute;tail du score</div>
                         {[
-                          { label: "Espece", value: (compat as any).breakdown.species, max: 30 },
+                          { label: "Esp\u00e8ce", value: (compat as any).breakdown.species, max: 30 },
                           { label: "Canton", value: (compat as any).breakdown.canton, max: 25 },
-                          { label: "Activite", value: (compat as any).breakdown.activity, max: 15 },
-                          { label: "Age", value: (compat as any).breakdown.age, max: 10 },
-                          { label: "Affinites", value: (compat as any).breakdown.collaborative, max: 20 },
+                          { label: "Activit\u00e9", value: (compat as any).breakdown.activity, max: 15 },
+                          { label: "\u00c2ge", value: (compat as any).breakdown.age, max: 10 },
+                          { label: "Affinit\u00e9s", value: (compat as any).breakdown.collaborative, max: 20 },
                         ].map((item) => (
                           <div key={item.label} className="flex items-center gap-2 mb-1">
                             <span className="text-[9px] text-white/50 w-14 flex-shrink-0">{item.label}</span>
@@ -923,7 +923,7 @@ export default function FlairerPage() {
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-[10px] text-white/70 uppercase tracking-wider flex items-center gap-1">
                       {smartMode && <span className="px-1 py-0 rounded text-[8px] font-bold" style={{ background: "linear-gradient(135deg, #a78bfa, #60a5fa)", color: "#fff" }}>IA</span>}
-                      Compatibilite avec {activeMyAnimal.name}
+                      Compatibilit&eacute; avec {activeMyAnimal.name}
                     </span>
                     <span className="text-xs font-bold" style={{ color: compat.color, textShadow: `0 0 10px ${compat.color}60` }}>{compat.score}%</span>
                   </div>
@@ -949,7 +949,7 @@ export default function FlairerPage() {
                   <span className="text-lg font-semibold text-white/70">{animal.age_months < 12 ? `${animal.age_months}m` : `${Math.floor(animal.age_months / 12)}a`}</span>
                 )}
                 {animal.created_by && verifiedOwners.has(animal.created_by) && (
-                  <span title="Profil verifie" className="inline-flex items-center" style={{ filter: "drop-shadow(0 0 4px rgba(59,130,246,0.5))" }}>
+                  <span title="Profil v\u00e9rifi\u00e9" className="inline-flex items-center" style={{ filter: "drop-shadow(0 0 4px rgba(59,130,246,0.5))" }}>
                     <svg className="w-5 h-5 text-blue-400" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -964,7 +964,7 @@ export default function FlairerPage() {
                   {SPECIES[animal.species] || animal.species}{animal.breed ? " · " + animal.breed : ""}
                 </span>
                 <span className="px-2.5 py-1 rounded-full text-xs text-white/60 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.1)" }}>
-                  {animal.gender === "male" ? "Male" : animal.gender === "femelle" ? "Femelle" : "Inconnu"}
+                  {animal.gender === "male" ? "M\u00e2le" : animal.gender === "femelle" ? "Femelle" : "Inconnu"}
                 </span>
               </div>
 

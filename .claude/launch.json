@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "pawly-dev",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["next", "dev", "-p", "3000"],
       "port": 3000
     }
   ]

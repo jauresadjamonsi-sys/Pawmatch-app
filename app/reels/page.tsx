@@ -94,7 +94,7 @@ export default function ReelsPage() {
           <div className="text-6xl mb-4">🎬</div>
           <h1 className="text-xl font-bold mb-2" style={{ color: "var(--c-text)" }}>PawReels</h1>
           <p className="text-sm mb-6" style={{ color: "var(--c-text-muted)" }}>
-            Aucun Reel pour le moment. Sois le premier a partager une video de ton animal !
+            Aucun Reel pour le moment. Sois le premier &agrave; partager une vid&eacute;o de ton animal !
           </p>
           <Link
             href="/reels/create"

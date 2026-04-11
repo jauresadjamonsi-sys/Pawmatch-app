@@ -16,9 +16,13 @@ export default function DailyRewards() {
 
   useEffect(() => {
     setMounted(true);
-    const today = new Date().toISOString().split("T")[0];
-    const stored = localStorage.getItem("pawly_daily_" + today);
-    if (stored) setCompleted(JSON.parse(stored));
+    try {
+      const today = new Date().toISOString().split("T")[0];
+      const stored = localStorage.getItem("pawly_daily_" + today);
+      if (stored) setCompleted(JSON.parse(stored));
+    } catch {
+      // Corrupt data — ignore
+    }
   }, []);
 
   if (!mounted) return null;

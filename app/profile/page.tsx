@@ -8,8 +8,6 @@ import ProfileClient from "@/lib/components/ProfileClient";
 
 export const dynamic = "force-dynamic";
 
-const SPECIES: Record<string, string> = { chien: "Chien", chat: "Chat", lapin: "Lapin", oiseau: "Oiseau", rongeur: "Rongeur", autre: "Autre" };
-
 export async function generateMetadata(): Promise<Metadata> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

@@ -463,7 +463,7 @@ export default function FeedPage() {
               </h1>
               {profile?.id && <PawScoreBadge userId={profile.id} size="sm" />}
             </div>
-            {profile.city && (
+            {profile?.city && (
               <p className="text-xs mt-1" style={{ color: "var(--c-text-muted)" }}>{"\uD83D\uDCCD"} {profile.city}</p>
             )}
           </section>

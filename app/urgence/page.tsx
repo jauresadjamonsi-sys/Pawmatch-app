@@ -438,7 +438,7 @@ export default function UrgencePage() {
                       {timeAgo(alert.created_at)}
                     </span>
                     <Link
-                      href={`/matches/${alert.user_id}`}
+                      href={`/profile/${alert.user_id}`}
                       className="text-xs font-bold text-amber-400 hover:text-amber-300 transition px-3 py-1.5 rounded-full border border-amber-400/30 hover:bg-amber-400/10"
                     >
                       Je l'ai vu !
