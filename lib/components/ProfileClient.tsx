@@ -12,6 +12,7 @@ import ReferralCard from "./ReferralCard";
 import { EMOJI_MAP } from "@/lib/constants";
 import ImageCropper from "./ImageCropper";
 import FollowersList from "./FollowersList";
+import PawScoreBadge from "./PawScoreBadge";
 
 interface Props {
   profile: any;
@@ -340,15 +341,18 @@ export default function ProfileClient({ profile: initialProfile, animals: initia
               </div>
             </button>
             <div className="flex-1 min-w-0">
-              <h1
-                className="text-xl font-bold text-[var(--c-text)] truncate profile-name-hover"
-                style={{ transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)" }}
-              >
-                {profile?.full_name || "Utilisateur"}
-                {profile?.verification_status === "approved" && (
-                  <span className="inline-flex items-center justify-center ml-1.5 w-5 h-5 rounded-full text-[11px] align-middle" style={{ background: "linear-gradient(135deg, #FBBF24, #F59E0B)", color: "#fff", boxShadow: "0 0 8px rgba(251,191,36,0.4)" }} title="Profil verifie">✓</span>
-                )}
-              </h1>
+              <div className="flex items-center gap-2">
+                <h1
+                  className="text-xl font-bold text-[var(--c-text)] truncate profile-name-hover"
+                  style={{ transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)" }}
+                >
+                  {profile?.full_name || "Utilisateur"}
+                  {profile?.verification_status === "approved" && (
+                    <span className="inline-flex items-center justify-center ml-1.5 w-5 h-5 rounded-full text-[11px] align-middle" style={{ background: "linear-gradient(135deg, #FBBF24, #F59E0B)", color: "#fff", boxShadow: "0 0 8px rgba(251,191,36,0.4)" }} title="Profil verifie">✓</span>
+                  )}
+                </h1>
+                <PawScoreBadge userId={user.id} size="sm" />
+              </div>
               <p className="text-sm text-[var(--c-text-muted)] truncate">{user.email}</p>
               <span
                 className={"inline-block mt-1 text-xs px-3 py-1 rounded-full font-semibold " + subColor}

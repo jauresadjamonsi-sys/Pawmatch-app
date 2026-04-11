@@ -56,7 +56,35 @@ export default function SettingsPage() {
   }, [profile]);
 
   async function loadSettings() {
-    // Load matching preferences from localStorage (no DB table needed)
+    // Try loading from API first, fallback to localStorage
+    try {
+      const res = await fetch("/api/preferences");
+      if (res.ok) {
+        const { preferences } = await res.json();
+        if (preferences) {
+          setMatchPrefs(prev => ({
+            ...prev,
+            preferredSpecies: preferences.preferred_species || [],
+            preferredCantons: preferences.canton ? [preferences.canton] : [],
+            ageMin: Math.floor((preferences.min_age_months || 0) / 12),
+            ageMax: Math.floor((preferences.max_age_months || 240) / 12),
+            activityLevel: preferences.preferred_energy || "moderate",
+            smartMatchEnabled: prev.smartMatchEnabled,
+          }));
+          // Also sync to localStorage as backup
+          localStorage.setItem("pawly_match_prefs", JSON.stringify({
+            preferredSpecies: preferences.preferred_species || [],
+            preferredCantons: preferences.canton ? [preferences.canton] : [],
+            ageMin: Math.floor((preferences.min_age_months || 0) / 12),
+            ageMax: Math.floor((preferences.max_age_months || 240) / 12),
+            activityLevel: preferences.preferred_energy || "moderate",
+          }));
+          return;
+        }
+      }
+    } catch { /* API unavailable, fall through to localStorage */ }
+
+    // Fallback: load from localStorage
     try {
       const raw = localStorage.getItem("pawly_match_prefs");
       if (raw) {
@@ -69,9 +97,27 @@ export default function SettingsPage() {
   async function saveMatchPrefs() {
     if (!profile) return;
     setSaving(true);
+
+    // Always save to localStorage as backup
     try {
       localStorage.setItem("pawly_match_prefs", JSON.stringify(matchPrefs));
     } catch { /* ignore */ }
+
+    // Try syncing to API (DB) as well
+    try {
+      await fetch("/api/preferences", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          preferred_species: matchPrefs.preferredSpecies,
+          preferred_energy: matchPrefs.activityLevel,
+          min_age_months: matchPrefs.ageMin * 12,
+          max_age_months: matchPrefs.ageMax * 12,
+          canton: matchPrefs.preferredCantons?.[0] || "",
+        }),
+      });
+    } catch { /* API unavailable, localStorage already saved */ }
+
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);

@@ -9,6 +9,7 @@ import {
   type NotificationFilter,
 } from "@/lib/hooks/useNotifications";
 import NotificationPermission from "@/lib/components/NotificationPermission";
+import SmartNotifCard from "@/lib/components/SmartNotifCard";
 
 const TYPE_ICONS: Record<string, string> = {
   match: "🤝",
@@ -224,6 +225,11 @@ export default function NotificationsPage() {
       {/* Push permission banner */}
       <div className="max-w-2xl mx-auto pt-4">
         <NotificationPermission />
+      </div>
+
+      {/* Smart contextual notifications */}
+      <div className="max-w-2xl mx-auto px-4 pt-3">
+        <SmartNotifCard />
       </div>
 
       {/* Notifications list */}

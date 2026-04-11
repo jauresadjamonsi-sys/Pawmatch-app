@@ -557,12 +557,20 @@ export default function FlairerPage() {
         @keyframes scoreGrow { from{width:0} to{width:var(--score-w)} }
         @keyframes shimmerBar { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
         @keyframes cardEntrance { 0%{transform:scale(0.85);opacity:0} 100%{transform:scale(1);opacity:1} }
+        @keyframes badgePulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+        @keyframes dotBlink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        @keyframes btnPress { 0%{transform:scale(1)} 50%{transform:scale(0.85)} 100%{transform:scale(1)} }
+        @keyframes swipeTintLeft { from{opacity:0} to{opacity:1} }
+        @keyframes swipeTintRight { from{opacity:0} to{opacity:1} }
         .particle{animation:particleFly 0.8s ease-out forwards}
         .streak-pop{animation:streakPop 1.8s ease-in-out forwards}
         .compat-in{animation:compatIn 0.4s ease-out forwards}
         .score-bar{animation:scoreGrow 0.8s 0.2s ease-out forwards;width:0}
         .shimmer-bar{background:linear-gradient(90deg,transparent 40%,rgba(255,255,255,0.15) 50%,transparent 60%);background-size:200% 100%;animation:shimmerBar 2.5s linear infinite}
         .card-enter{animation:cardEntrance 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards}
+        .compat-badge-circle{animation:badgePulse 2s ease-in-out infinite}
+        .activity-dot-online{animation:dotBlink 2s ease-in-out infinite}
+        .action-btn-press:active{animation:btnPress 0.25s ease-in-out}
       `}} />
 
       {/* Particules */}
@@ -700,7 +708,7 @@ export default function FlairerPage() {
       </div>
 
       {/* Card stack - 3 cards for depth effect */}
-      <div className="w-full max-w-md relative" style={{ height: "62vh" }}>
+      <div className="w-full max-w-md relative" style={{ aspectRatio: "4/5", maxHeight: "68vh" }}>
         {/* Third card (deepest) */}
         {animals[currentIndex + 2] && (
           <div className="absolute inset-0 rounded-3xl overflow-hidden glass"
@@ -764,55 +772,93 @@ export default function FlairerPage() {
 
         {/* Main card with glassmorphism */}
         <div ref={cardRef}
-          className={`absolute inset-0 glass-strong rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing z-10 ${cardEntering ? "card-enter animate-fade-in-scale" : ""}`}
-          style={cardStyle}
+          className={`absolute inset-0 rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing z-10 ${cardEntering ? "card-enter animate-fade-in-scale" : ""}`}
+          style={{
+            ...cardStyle,
+            boxShadow: (cardStyle as any).boxShadow || "0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06)",
+            border: "1px solid rgba(255,255,255,0.08)",
+          }}
           onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
           onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}
           onMouseLeave={() => { if (isDragging) { setIsDragging(false); setDragX(0); setDragY(0); } }}>
 
-          {/* Photo — FULL card with overlay info at bottom */}
-          <div className="absolute inset-0 relative overflow-hidden bg-[var(--c-deep,#1a1225)]">
+          {/* Photo -- FULL card with overlay info at bottom */}
+          <div className="absolute inset-0 overflow-hidden bg-[var(--c-deep,#1a1225)]">
             {animal.photo_url
               ? <Image src={animal.photo_url} alt={animal.name} fill className="object-cover" draggable={false} sizes="(max-width: 768px) 100vw, 448px" />
               : <div className="w-full h-full flex items-center justify-center text-6xl font-bold text-[var(--c-text-muted)]">{animal.name?.charAt(0)}</div>}
 
-            {/* Gradient overlay — stronger at bottom for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+            {/* Gradient overlay -- stronger at bottom for text readability */}
+            <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 35%, rgba(0,0,0,0.05) 55%, transparent 100%)" }} />
+
+            {/* Swipe direction tint overlays */}
+            {likeOpacity > 0 && (
+              <div className="absolute inset-0 transition-opacity duration-150" style={{
+                opacity: likeOpacity,
+                background: "linear-gradient(135deg, rgba(52,211,153,0.15) 0%, rgba(34,197,94,0.08) 50%, transparent 100%)",
+                borderColor: `rgba(52,211,153,${0.3 * likeOpacity})`,
+              }} />
+            )}
+            {passOpacity > 0 && (
+              <div className="absolute inset-0 transition-opacity duration-150" style={{
+                opacity: passOpacity,
+                background: "linear-gradient(225deg, rgba(239,68,68,0.15) 0%, rgba(220,38,38,0.08) 50%, transparent 100%)",
+              }} />
+            )}
+            {superOpacity > 0 && (
+              <div className="absolute inset-0 transition-opacity duration-150" style={{
+                opacity: superOpacity,
+                background: "linear-gradient(to bottom, rgba(167,139,250,0.2) 0%, rgba(96,165,250,0.1) 40%, transparent 100%)",
+              }} />
+            )}
 
             {/* Report button */}
             {animal.created_by && (
               <button
                 onClick={(e) => { e.stopPropagation(); setShowBlockReport(true); }}
-                className="absolute top-3 left-3 z-20 p-2 rounded-full glass transition-all duration-300 hover:bg-red-500/20 hover:shadow-[0_0_15px_rgba(239,68,68,0.3)]"
+                className="absolute top-3 left-3 z-20 p-2 rounded-full transition-all duration-300 hover:bg-red-500/20 hover:shadow-[0_0_15px_rgba(239,68,68,0.3)]"
+                style={{ background: "rgba(0,0,0,0.3)", backdropFilter: "blur(8px)" }}
                 title="Signaler"
               >
-                <svg className="w-4 h-4 text-[var(--c-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="w-4 h-4 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
                 </svg>
               </button>
             )}
 
-            {/* Compatibility badge with neon glow + Pourquoi tooltip */}
-            {compat && activeMyAnimal && (
-              <div className="compat-in animate-badge-bounce absolute top-3 right-3 z-10">
+            {/* Activity indicator dot (simulated based on animal creation recency) */}
+            <div className="absolute top-4 left-14 z-20 flex items-center gap-1.5"
+              style={{ background: "rgba(0,0,0,0.35)", backdropFilter: "blur(8px)", borderRadius: "9999px", padding: "3px 8px 3px 5px" }}>
+              <div
+                className={`w-2 h-2 rounded-full flex-shrink-0 ${animal.created_by ? "activity-dot-online" : ""}`}
+                style={{ backgroundColor: "#4ade80", boxShadow: "0 0 6px rgba(74,222,128,0.6)" }}
+              />
+              <span className="text-[9px] text-white/70 font-medium">En ligne</span>
+            </div>
+
+            {/* Compatibility percentage badge -- circular, top-right */}
+            {compat && activeMyAnimal ? (
+              <div className="compat-in absolute top-3 right-3 z-20 flex flex-col items-end gap-2">
                 <div
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass font-bold cursor-pointer"
+                  className="compat-badge-circle flex items-center justify-center rounded-full cursor-pointer"
                   style={{
-                    boxShadow: `0 0 15px ${compat.color}40, 0 0 30px ${compat.color}15`,
-                    borderColor: compat.color + "50",
+                    width: 52, height: 52,
+                    background: `var(--c-accent, ${compat.color})`,
+                    boxShadow: `0 0 20px ${compat.color}50, 0 4px 12px rgba(0,0,0,0.3)`,
+                    border: "2px solid rgba(255,255,255,0.2)",
                   }}
                   onClick={(e) => { e.stopPropagation(); setShowScoreTooltip(!showScoreTooltip); }}
                 >
-                  {smartMode && <span className="text-[8px] font-bold px-1 py-0.5 rounded" style={{ background: "linear-gradient(135deg, #a78bfa, #60a5fa)", color: "#fff" }}>IA</span>}
-                  <div className="w-2 h-2 rounded-full animate-breathe" style={{ backgroundColor: compat.color, boxShadow: `0 0 8px ${compat.color}` }} />
-                  <span className="text-[var(--c-text)] font-bold text-xs">{compat.score}%</span>
-                  <span className="text-xs font-medium" style={{ color: compat.color }}>{compat.label}</span>
+                  <div className="text-center leading-none">
+                    <div className="text-white font-extrabold text-sm">{compat.score}%</div>
+                    {smartMode && <div className="text-[7px] font-bold text-white/80 mt-0.5">IA</div>}
+                  </div>
                 </div>
                 {/* Pourquoi? tooltip */}
                 {showScoreTooltip && (
                   <div
                     className="absolute top-full right-0 mt-2 w-56 p-3 rounded-2xl backdrop-blur-xl z-30"
-                    style={{ background: "rgba(15,10,25,0.9)", border: "1px solid rgba(255,255,255,0.1)", boxShadow: `0 8px 32px rgba(0,0,0,0.5), 0 0 15px ${compat.color}20` }}
+                    style={{ background: "rgba(15,10,25,0.92)", border: "1px solid rgba(255,255,255,0.1)", boxShadow: `0 8px 32px rgba(0,0,0,0.5), 0 0 15px ${compat.color}20` }}
                     onClick={(e) => e.stopPropagation()}
                   >
                     <div className="flex items-center justify-between mb-2">
@@ -852,17 +898,28 @@ export default function FlairerPage() {
                   </div>
                 )}
               </div>
+            ) : (
+              /* No compatibility data -- show "?" badge */
+              <div className="absolute top-3 right-3 z-20">
+                <div
+                  className="flex items-center justify-center rounded-full"
+                  style={{
+                    width: 44, height: 44,
+                    background: "rgba(255,255,255,0.1)",
+                    backdropFilter: "blur(8px)",
+                    border: "2px solid rgba(255,255,255,0.15)",
+                  }}
+                >
+                  <span className="text-white/50 font-bold text-sm">?</span>
+                </div>
+              </div>
             )}
 
-            {likeOpacity > 0 && <div className="absolute inset-0 bg-amber-400/10 mix-blend-overlay" style={{ opacity:likeOpacity }} />}
-            {passOpacity > 0 && <div className="absolute inset-0 bg-red-500/10 mix-blend-overlay" style={{ opacity:passOpacity }} />}
-            {superOpacity > 0 && <div className="absolute inset-0 bg-purple-500/15 mix-blend-overlay" style={{ opacity:superOpacity }} />}
-
-            {/* Info overlay at bottom of card — all info ON the photo */}
+            {/* Info overlay at bottom of card -- all info ON the photo */}
             <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
-              {/* Compatibility meter */}
+              {/* Compatibility meter bar */}
               {compat && activeMyAnimal && (
-                <div className="mb-3 p-2.5 rounded-xl backdrop-blur-md" style={{ background: "rgba(0,0,0,0.35)" }}>
+                <div className="mb-3 p-2.5 rounded-xl" style={{ background: "rgba(0,0,0,0.4)", backdropFilter: "blur(12px)" }}>
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-[10px] text-white/70 uppercase tracking-wider flex items-center gap-1">
                       {smartMode && <span className="px-1 py-0 rounded text-[8px] font-bold" style={{ background: "linear-gradient(135deg, #a78bfa, #60a5fa)", color: "#fff" }}>IA</span>}
@@ -885,29 +942,68 @@ export default function FlairerPage() {
                 </div>
               )}
 
-              <div className="flex items-center gap-1">
-                <h2 className="text-2xl font-extrabold text-white drop-shadow-lg">{animal.name}</h2>
+              {/* Name + verification badge + age */}
+              <div className="flex items-center gap-2 mb-1">
+                <h2 className="text-2xl font-extrabold text-white" style={{ textShadow: "0 2px 8px rgba(0,0,0,0.5)" }}>{animal.name}</h2>
+                {animal.age_months != null && (
+                  <span className="text-lg font-semibold text-white/70">{animal.age_months < 12 ? `${animal.age_months}m` : `${Math.floor(animal.age_months / 12)}a`}</span>
+                )}
                 {animal.created_by && verifiedOwners.has(animal.created_by) && (
-                  <span title="Profil verifie" className="inline-flex items-center">
-                    <svg className="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                  <span title="Profil verifie" className="inline-flex items-center" style={{ filter: "drop-shadow(0 0 4px rgba(59,130,246,0.5))" }}>
+                    <svg className="w-5 h-5 text-blue-400" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </span>
                 )}
               </div>
-              <p className="text-sm text-white/70 mb-2">{SPECIES[animal.species] || animal.species}{animal.breed ? " · " + animal.breed : ""}</p>
 
-              <div className="flex flex-wrap gap-1.5">
-                {animal.canton && <span className="px-2.5 py-1 rounded-full text-xs font-medium text-amber-200 backdrop-blur-sm" style={{ background: "rgba(251,191,36,0.2)" }}>{cantonName || animal.canton}</span>}
-                {userCanton && animal.canton && <span className="px-2.5 py-1 rounded-full text-xs font-bold text-amber-300 backdrop-blur-sm" style={{ background: "rgba(52,211,153,0.15)" }}>{getProximityLabel(userCanton, animal.canton)}</span>}
-                {animal.city && <span className="px-2.5 py-1 rounded-full text-xs text-white/60 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.1)" }}>{animal.city}</span>}
-                <span className="px-2.5 py-1 rounded-full text-xs text-white/60 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.1)" }}>{formatAge(animal.age_months)}</span>
-              <span className="px-2.5 py-1 rounded-full text-xs text-white/60 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.1)" }}>{animal.gender === "male" ? "Male" : animal.gender === "femelle" ? "Femelle" : "Inconnu"}</span>
+              {/* Species & breed tag */}
+              <div className="flex items-center gap-2 mb-2">
+                <span className="px-2.5 py-1 rounded-full text-xs font-semibold text-amber-300 backdrop-blur-sm"
+                  style={{ background: "rgba(251,191,36,0.2)", border: "1px solid rgba(251,191,36,0.25)" }}>
+                  {SPECIES[animal.species] || animal.species}{animal.breed ? " · " + animal.breed : ""}
+                </span>
+                <span className="px-2.5 py-1 rounded-full text-xs text-white/60 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.1)" }}>
+                  {animal.gender === "male" ? "Male" : animal.gender === "femelle" ? "Femelle" : "Inconnu"}
+                </span>
               </div>
+
+              {/* Location & distance pills */}
+              <div className="flex flex-wrap gap-1.5 mb-1.5">
+                {/* Distance indicator */}
+                {userCanton && animal.canton && (
+                  <span className="px-2.5 py-1 rounded-full text-xs font-bold text-emerald-300 backdrop-blur-sm flex items-center gap-1"
+                    style={{ background: "rgba(52,211,153,0.15)", border: "1px solid rgba(52,211,153,0.2)" }}>
+                    {getProximityLabel(userCanton, animal.canton)}
+                  </span>
+                )}
+                {animal.canton && (
+                  <span className="px-2.5 py-1 rounded-full text-xs font-medium text-amber-200 backdrop-blur-sm"
+                    style={{ background: "rgba(251,191,36,0.15)" }}>
+                    {cantonName || animal.canton}
+                  </span>
+                )}
+                {animal.city && (
+                  <span className="px-2.5 py-1 rounded-full text-xs text-white/60 backdrop-blur-sm"
+                    style={{ background: "rgba(255,255,255,0.1)" }}>
+                    {animal.city}
+                  </span>
+                )}
+                {/* Age pill */}
+                <span className="px-2.5 py-1 rounded-full text-xs text-white/60 backdrop-blur-sm"
+                  style={{ background: "rgba(255,255,255,0.1)" }}>
+                  {formatAge(animal.age_months)}
+                </span>
+              </div>
+
+              {/* Traits */}
               {animal.traits?.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-1.5">
+                <div className="flex flex-wrap gap-1 mt-1">
                   {animal.traits.slice(0, 4).map(t => (
-                    <span key={t} className="px-2 py-0.5 rounded-full text-[10px] text-purple-300 backdrop-blur-sm" style={{ background: "rgba(167,139,250,0.15)" }}>{t}</span>
+                    <span key={t} className="px-2 py-0.5 rounded-full text-[10px] text-purple-300 backdrop-blur-sm"
+                      style={{ background: "rgba(167,139,250,0.15)", border: "1px solid rgba(167,139,250,0.1)" }}>
+                      {t}
+                    </span>
                   ))}
                 </div>
               )}
@@ -917,64 +1013,73 @@ export default function FlairerPage() {
       </div>
 
       {/* Action buttons with neon glows */}
-      <div className="flex items-center gap-5 mt-5 relative z-10">
-        {/* Pass button - red neon glow on hover */}
+      <div className="flex items-center justify-center gap-4 mt-4 relative z-10">
+        {/* Pass button */}
         <button onClick={handlePass}
-          className="w-14 h-14 glass rounded-full flex items-center justify-center
-            transition-all duration-300 group btn-press
+          className="action-btn-press w-14 h-14 rounded-full flex items-center justify-center
+            transition-all duration-300 group
             hover:shadow-[0_0_25px_rgba(239,68,68,0.4),0_0_50px_rgba(239,68,68,0.15)]
-            hover:border-red-500/40 hover:scale-110"
-          style={{ borderColor: "var(--c-border)" }}>
-          <svg className="w-6 h-6 text-[var(--c-text-muted)] group-hover:text-red-400 transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-
-        {/* Super like button - purple neon glow on hover */}
-        <button onClick={() => handleLike(true)}
-          className="w-12 h-12 glass rounded-full flex items-center justify-center
-            transition-all duration-300 group btn-press
-            hover:shadow-[0_0_25px_rgba(167,139,250,0.4),0_0_50px_rgba(167,139,250,0.15)]
-            hover:border-purple-500/40 hover:scale-110"
-          style={{ borderColor: "rgba(167,139,250,0.3)", background: "rgba(167,139,250,0.08)" }}>
-          <span className="text-xl group-hover:scale-110 transition-transform duration-300">{"⚡"}</span>
-        </button>
-
-        {/* Like button - green neon glow */}
-        <button onClick={() => handleLike()}
-          className="w-16 h-16 rounded-full flex items-center justify-center
-            transition-all duration-300 btn-press
-            hover:scale-110 animate-pulse-glow"
+            hover:scale-110 active:scale-90"
           style={{
-            background: "linear-gradient(135deg, #FBBF24, #F59E0B)",
-            boxShadow: "0 0 20px rgba(251,191,36,0.3), 0 0 60px rgba(251,191,36,0.1)",
+            background: "rgba(239,68,68,0.1)",
+            border: "2px solid rgba(239,68,68,0.3)",
+            backdropFilter: "blur(8px)",
           }}>
-          <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
-          </svg>
+          <span className="text-xl group-hover:scale-110 transition-transform duration-300">{"❌"}</span>
+        </button>
+
+        {/* Super like button */}
+        <button onClick={() => handleLike(true)}
+          className="action-btn-press w-12 h-12 rounded-full flex items-center justify-center
+            transition-all duration-300 group
+            hover:shadow-[0_0_25px_rgba(251,191,36,0.5),0_0_50px_rgba(251,191,36,0.2)]
+            hover:scale-110 active:scale-90"
+          style={{
+            background: "rgba(251,191,36,0.1)",
+            border: "2px solid rgba(251,191,36,0.35)",
+            backdropFilter: "blur(8px)",
+          }}>
+          <span className="text-lg group-hover:scale-125 transition-transform duration-300" style={{ filter: "drop-shadow(0 0 4px rgba(251,191,36,0.5))" }}>{"💛"}</span>
+        </button>
+
+        {/* Like button -- primary, largest */}
+        <button onClick={() => handleLike()}
+          className="action-btn-press w-16 h-16 rounded-full flex items-center justify-center
+            transition-all duration-300
+            hover:scale-110 active:scale-90"
+          style={{
+            background: "linear-gradient(135deg, var(--c-accent, #FBBF24), #F59E0B)",
+            boxShadow: "0 0 24px rgba(251,191,36,0.35), 0 0 60px rgba(251,191,36,0.12), 0 4px 12px rgba(0,0,0,0.3)",
+            border: "2px solid rgba(255,255,255,0.15)",
+          }}>
+          <span className="text-2xl" style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))" }}>{"✅"}</span>
         </button>
 
         {/* Undo button */}
         <button onClick={() => { if (currentIndex > 0) { setCurrentIndex(i => i - 1); setStreak(0); } }}
-          className="w-12 h-12 glass rounded-full flex items-center justify-center
+          className="action-btn-press w-11 h-11 rounded-full flex items-center justify-center
             transition-all duration-300 group
-            hover:bg-[var(--c-card)] hover:scale-110 active:scale-95"
-          style={{ borderColor: "var(--c-border)" }}>
-          <svg className="w-4 h-4 text-[var(--c-text-muted)] group-hover:text-[var(--c-text-muted)] transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            hover:scale-110 active:scale-90"
+          style={{
+            background: "rgba(255,255,255,0.06)",
+            border: "1.5px solid rgba(255,255,255,0.12)",
+            backdropFilter: "blur(8px)",
+          }}>
+          <svg className="w-4 h-4 text-white/40 group-hover:text-white/70 transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
           </svg>
         </button>
       </div>
 
-      <div className="flex items-center gap-3 mt-3 relative z-10">
-        <p className="text-[var(--c-text-muted)] text-[10px]">{"←"} Passer {"·"} {"❤️"} Flairer {"·"} {"⚡"} Super Flair</p>
+      <div className="flex items-center gap-3 mt-2.5 relative z-10">
+        <p className="text-[var(--c-text-muted)] text-[10px]">{"❌"} Passer {"·"} {"💛"} Super {"·"} {"✅"} Flairer</p>
         {isAuthenticated && myAnimals.length > 0 && animal && (
           <button
             onClick={() => setShowSuperFlairModal(true)}
-            className="text-[10px] font-bold px-2.5 py-1 rounded-full transition-all"
+            className="text-[10px] font-bold px-2.5 py-1 rounded-full transition-all duration-300 hover:scale-105 active:scale-95"
             style={{ background: "rgba(167,139,250,0.15)", border: "1px solid rgba(167,139,250,0.3)", color: "#a78bfa" }}
           >
-            ⚡ 15 🪙
+            {"⚡"} 15 {"🪙"}
           </button>
         )}
       </div>

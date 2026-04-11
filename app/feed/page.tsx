@@ -16,6 +16,10 @@ const EmotionalFeedback = dynamic(() => import("@/lib/components/EmotionalFeedba
 const ReactionBar = dynamic(() => import("@/lib/components/ReactionBar"), { ssr: false });
 const CommentSheet = dynamic(() => import("@/lib/components/CommentSheet"), { ssr: false });
 const DailyChallenges = dynamic(() => import("@/lib/components/DailyChallenges"), { ssr: false });
+const PawScoreBadge = dynamic(() => import("@/lib/components/PawScoreBadge"), { ssr: false });
+const StreakTracker = dynamic(() => import("@/lib/components/StreakTracker"), { ssr: false });
+const DailyRewards = dynamic(() => import("@/lib/components/DailyRewards"), { ssr: false });
+const SmartNotifCard = dynamic(() => import("@/lib/components/SmartNotifCard"), { ssr: false });
 
 // Tiny 1x1 blurred placeholder for dynamic images
 const BLUR_PLACEHOLDER = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNlMmRkZDUiLz48L3N2Zz4=";
@@ -403,6 +407,9 @@ export default function FeedPage() {
           {/* ═══════ STORIES ═══════ */}
           <StoriesRing />
 
+          {/* ═══════ SMART NOTIFICATIONS ═══════ */}
+          <SmartNotifCard />
+
           {/* ═══════ SMART COMPANION — Pet Wellbeing Score ═══════ */}
           {profile?.id && animals.length > 0 && (
             <SmartCompanion userId={profile.id} />
@@ -450,13 +457,22 @@ export default function FeedPage() {
           <section className="glass rounded-2xl p-5 relative overflow-hidden">
             <div className="absolute -top-6 -right-6 text-[80px] opacity-10 pointer-events-none select-none animate-paw-drift">{"\uD83D\uDC3E"}</div>
             <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: "var(--c-text-muted)" }}>{mounted ? formatDate() : "\u00A0"}</p>
-            <h1 className="text-2xl font-extrabold gradient-text-animated">
-              {mounted ? `${greetingWord()} ${firstName}` : "\u00A0"} {"\uD83D\uDC3E"}
-            </h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-extrabold gradient-text-animated">
+                {mounted ? `${greetingWord()} ${firstName}` : "\u00A0"} {"\uD83D\uDC3E"}
+              </h1>
+              {profile?.id && <PawScoreBadge userId={profile.id} size="sm" />}
+            </div>
             {profile.city && (
               <p className="text-xs mt-1" style={{ color: "var(--c-text-muted)" }}>{"\uD83D\uDCCD"} {profile.city}</p>
             )}
           </section>
+
+          {/* ═══════ STREAKS & MICRO-REWARDS ═══════ */}
+          <div className="grid grid-cols-1 gap-3 mb-4">
+            <StreakTracker />
+            <DailyRewards />
+          </div>
 
           {/* ═══════ PROMO VIDEO ═══════ */}
           <PromoSection />

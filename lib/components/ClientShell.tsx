@@ -32,6 +32,10 @@ const InstallPrompt = dynamic(
   () => import("@/lib/components/InstallPrompt"),
   { ssr: false }
 );
+const NativeInit = dynamic(
+  () => import("@/lib/components/NativeInit"),
+  { ssr: false }
+);
 
 export default function ClientShell({ children }: { children: React.ReactNode }) {
   return (
@@ -49,6 +53,7 @@ export default function ClientShell({ children }: { children: React.ReactNode })
         <WelcomeModal />
         <FeedbackWidget />
         <InstallPrompt />
+        <NativeInit />
       </AchievementProvider>
     </PostHogProvider>
   );

@@ -29,20 +29,74 @@ function useCountUp(target: number, duration = 800, enabled = false) {
 
 type PawScoreBadgeProps = {
   userId?: string;
-  size?: "sm" | "md";
+  size?: "sm" | "md" | "lg";
+  /** When true, fetches from /api/score/compute instead of usePawScore hook */
+  useApi?: boolean;
 };
 
-export default function PawScoreBadge({ userId, size = "sm" }: PawScoreBadgeProps) {
-  const { score, levelEmoji, nextLevelAt, currentLevelMin, loading } = usePawScore(userId);
+export default function PawScoreBadge({ userId, size = "sm", useApi = false }: PawScoreBadgeProps) {
+  const hookResult = usePawScore(useApi ? undefined : userId);
   const [mounted, setMounted] = useState(false);
-  const animatedScore = useCountUp(score, 800, mounted && !loading);
+
+  // API-based score state
+  const [apiScore, setApiScore] = useState<number | null>(null);
+  const [apiEmoji, setApiEmoji] = useState("");
+  const [apiLevel, setApiLevel] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 100);
     return () => clearTimeout(timer);
   }, []);
 
-  if (loading || !userId) return null;
+  // Fetch from API when useApi is true
+  useEffect(() => {
+    if (!useApi) return;
+    fetch("/api/score/compute")
+      .then(r => r.json())
+      .then(d => {
+        if (d.score !== undefined) {
+          setApiScore(d.score);
+          setApiEmoji(d.levelEmoji);
+          setApiLevel(d.level);
+        }
+      })
+      .catch(() => {});
+  }, [useApi]);
+
+  // Determine which score source to use
+  const score = useApi ? (apiScore ?? 0) : hookResult.score;
+  const levelEmoji = useApi ? apiEmoji : hookResult.levelEmoji;
+  const loading = useApi ? (apiScore === null) : hookResult.loading;
+  const nextLevelAt = useApi ? 100 : hookResult.nextLevelAt;
+  const currentLevelMin = useApi ? 0 : hookResult.currentLevelMin;
+
+  const animatedScore = useCountUp(score, 800, mounted && !loading);
+
+  if (loading || (!useApi && !userId)) return null;
+
+  // Inline badge variant for sm size with API mode
+  if (useApi && size !== "md") {
+    const sizes = {
+      sm: "text-xs px-2 py-0.5",
+      md: "text-sm px-3 py-1",
+      lg: "text-base px-4 py-1.5",
+    };
+
+    return (
+      <Link href="/score" className="no-underline">
+        <span
+          className={`inline-flex items-center gap-1 rounded-full font-semibold ${sizes[size]}`}
+          style={{
+            background: "rgba(251,191,36,0.15)",
+            border: "1px solid rgba(251,191,36,0.3)",
+            color: "#fbbf24",
+          }}
+        >
+          {levelEmoji} {animatedScore}
+        </span>
+      </Link>
+    );
+  }
 
   // Progress within current level (0-1)
   const levelRange = nextLevelAt - currentLevelMin;
@@ -82,7 +136,7 @@ export default function PawScoreBadge({ userId, size = "sm" }: PawScoreBadgeProp
             cy={ringSize / 2}
             r={radius}
             fill="none"
-            stroke="var(--c-accent)"
+            stroke="#fbbf24"
             strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeDasharray={circumference}
@@ -107,12 +161,12 @@ export default function PawScoreBadge({ userId, size = "sm" }: PawScoreBadgeProp
       <span
         className={`font-bold tabular-nums group-hover:opacity-80 transition-opacity score-number${mounted ? " animate-score-reveal" : ""}`}
         style={{
-          color: "var(--c-accent)",
+          color: "#fbbf24",
           fontSize: isSm ? 12 : 14,
           /* override score-number defaults for badge context */
           background: "none",
           WebkitBackgroundClip: "unset",
-          WebkitTextFillColor: "var(--c-accent)",
+          WebkitTextFillColor: "#fbbf24",
           backgroundClip: "unset",
         }}
       >

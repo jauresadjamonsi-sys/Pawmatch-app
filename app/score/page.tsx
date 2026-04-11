@@ -5,6 +5,17 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import { useAppContext } from "@/lib/contexts/AppContext";
 import { usePawScore, type Achievement, type ScoreBreakdown } from "@/lib/hooks/usePawScore";
 import Link from "next/link";
+import BackButton from "@/lib/components/BackButton";
+
+// ═══ Daily API score (living score) ═══
+type DailyScore = {
+  score: number;
+  level: string;
+  levelEmoji: string;
+  breakdown: { profile: number; content: number; social: number; streak: number };
+  streak: number;
+  maxScore: number;
+};
 
 // ═══ Animated circular progress ring ═══
 function ScoreRing({ score, maxScore }: { score: number; maxScore: number }) {
@@ -43,7 +54,7 @@ function ScoreRing({ score, maxScore }: { score: number; maxScore: number }) {
       {/* Outer glow */}
       <div
         className="absolute inset-0 rounded-full blur-xl opacity-30"
-        style={{ background: "var(--c-accent)" }}
+        style={{ background: "#fbbf24" }}
       />
 
       <svg width={size} height={size} className="absolute inset-0" style={{ transform: "rotate(-90deg)" }}>
@@ -55,13 +66,13 @@ function ScoreRing({ score, maxScore }: { score: number; maxScore: number }) {
         {/* Progress arc */}
         <circle
           cx={size / 2} cy={size / 2} r={radius}
-          fill="none" stroke="var(--c-accent)" strokeWidth={strokeWidth}
+          fill="none" stroke="#fbbf24" strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
           style={{
             transition: "stroke-dashoffset 1.8s cubic-bezier(0.4, 0, 0.2, 1)",
-            filter: "drop-shadow(0 0 8px var(--c-accent))",
+            filter: "drop-shadow(0 0 8px rgba(251,191,36,0.6))",
           }}
         />
       </svg>
@@ -91,15 +102,15 @@ function LevelBadge({ label, emoji, active }: { label: string; emoji: string; ac
     <div
       className="relative flex items-center gap-2 rounded-full px-4 py-2"
       style={{
-        background: active ? "var(--c-accent)" : "var(--c-card)",
-        border: `1.5px solid ${active ? "var(--c-accent)" : "var(--c-border)"}`,
+        background: active ? "#fbbf24" : "var(--c-card)",
+        border: `1.5px solid ${active ? "#fbbf24" : "var(--c-border)"}`,
         color: active ? "#fff" : "var(--c-text-muted)",
       }}
     >
       {active && (
         <div
           className="absolute inset-0 rounded-full blur-md opacity-40"
-          style={{ background: "var(--c-accent)" }}
+          style={{ background: "#fbbf24" }}
         />
       )}
       <span className="relative text-lg">{emoji}</span>
@@ -136,7 +147,7 @@ function BreakdownRow({ label, icon, points, maxPoints }: {
           <div
             className="h-full rounded-full"
             style={{
-              background: "var(--c-accent)",
+              background: "linear-gradient(90deg, #fcd34d, #fbbf24)",
               width: mounted ? `${pct}%` : "0%",
               transition: "width 1.2s cubic-bezier(0.4, 0, 0.2, 1)",
             }}
@@ -219,12 +230,138 @@ function NextLevelBar({ score, currentMin, nextAt, t }: {
         <div
           className="h-full rounded-full"
           style={{
-            background: `linear-gradient(90deg, var(--c-accent), var(--c-accent))`,
+            background: "linear-gradient(90deg, #fcd34d, #fbbf24)",
             width: mounted ? `${progress * 100}%` : "0%",
             transition: "width 1.4s cubic-bezier(0.4, 0, 0.2, 1)",
-            boxShadow: "0 0 10px var(--c-accent)",
+            boxShadow: "0 0 10px rgba(251,191,36,0.5)",
           }}
         />
+      </div>
+    </div>
+  );
+}
+
+// ═══ Streak display ═══
+function StreakCounter({ streak }: { streak: number }) {
+  return (
+    <div
+      className="rounded-2xl p-4 flex items-center gap-4"
+      style={{ background: "var(--c-card)", border: "1px solid var(--c-border)" }}
+    >
+      <div
+        className="w-14 h-14 rounded-xl flex items-center justify-center text-3xl flex-shrink-0"
+        style={{ background: "rgba(251,191,36,0.12)" }}
+      >
+        {"🔥"}
+      </div>
+      <div className="flex-1">
+        <div className="text-2xl font-black tabular-nums" style={{ color: "var(--c-text)" }}>
+          {streak} <span className="text-sm font-semibold" style={{ color: "var(--c-text-muted)" }}>jours</span>
+        </div>
+        <div className="text-xs" style={{ color: "var(--c-text-muted)" }}>
+          Streak d{"'"}activite consecutive
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══ Tips section ═══
+function TipsSection({ dailyBreakdown, t }: {
+  dailyBreakdown: DailyScore["breakdown"] | null;
+  t: Record<string, string>;
+}) {
+  const tips: { icon: string; text: string; priority: number }[] = [];
+
+  if (dailyBreakdown) {
+    if (dailyBreakdown.profile < 20) {
+      tips.push({ icon: "👤", text: t.tipProfile || "Complete ton profil (photo, bio, ville) pour gagner jusqu'a 25 pts", priority: 1 });
+    }
+    if (dailyBreakdown.content < 10) {
+      tips.push({ icon: "🎬", text: t.tipContent || "Publie un reel ou une story cette semaine pour +5 a +15 pts", priority: 2 });
+    }
+    if (dailyBreakdown.social < 10) {
+      tips.push({ icon: "💬", text: t.tipSocial || "Envoie des messages et fais des matchs pour booster ton score social", priority: 3 });
+    }
+    if (dailyBreakdown.streak < 6) {
+      tips.push({ icon: "🔥", text: t.tipStreak || "Connecte-toi chaque jour pour augmenter ton streak (+3 pts/jour)", priority: 4 });
+    }
+  }
+
+  if (tips.length === 0) {
+    tips.push({ icon: "🌟", text: t.tipPerfect || "Tu es au top ! Continue comme ca pour maintenir ton score", priority: 0 });
+  }
+
+  tips.sort((a, b) => a.priority - b.priority);
+
+  return (
+    <div
+      className="rounded-2xl p-5"
+      style={{ background: "var(--c-card)", border: "1px solid var(--c-border)" }}
+    >
+      <h2 className="text-base font-bold mb-3 flex items-center gap-2" style={{ color: "var(--c-text)" }}>
+        {"💡"} {t.scoreTips || "Astuces pour progresser"}
+      </h2>
+      <div className="flex flex-col gap-3">
+        {tips.map((tip, i) => (
+          <div key={i} className="flex items-start gap-3">
+            <span className="text-lg flex-shrink-0 mt-0.5">{tip.icon}</span>
+            <p className="text-sm" style={{ color: "var(--c-text-muted)" }}>
+              {tip.text}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ═══ Living Score Card (daily API-based) ═══
+function LivingScoreCard({ daily, t }: { daily: DailyScore | null; t: Record<string, string> }) {
+  if (!daily) return null;
+
+  return (
+    <div
+      className="rounded-2xl p-5 relative overflow-hidden"
+      style={{
+        background: "linear-gradient(135deg, rgba(251,191,36,0.08), rgba(252,211,77,0.04))",
+        border: "1.5px solid rgba(251,191,36,0.25)",
+      }}
+    >
+      <div className="absolute -top-4 -right-4 text-[60px] opacity-[0.06] pointer-events-none select-none">{"⚡"}</div>
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-lg">{"⚡"}</span>
+        <h2 className="text-base font-bold" style={{ color: "var(--c-text)" }}>
+          {t.scoreLiving || "Score du jour"}
+        </h2>
+        <span
+          className="ml-auto text-xs px-2 py-0.5 rounded-full font-semibold"
+          style={{ background: "rgba(251,191,36,0.15)", color: "#fbbf24" }}
+        >
+          {daily.levelEmoji} {daily.level}
+        </span>
+      </div>
+      <div className="flex items-baseline gap-1 mb-3">
+        <span className="text-3xl font-black tabular-nums" style={{ color: "#fbbf24" }}>
+          {daily.score}
+        </span>
+        <span className="text-sm" style={{ color: "var(--c-text-muted)" }}>/ {daily.maxScore}</span>
+      </div>
+
+      {/* Mini breakdown */}
+      <div className="grid grid-cols-2 gap-2">
+        {[
+          { label: "Profil", value: daily.breakdown.profile, icon: "👤" },
+          { label: "Contenu", value: daily.breakdown.content, icon: "🎬" },
+          { label: "Social", value: daily.breakdown.social, icon: "💬" },
+          { label: "Streak", value: daily.breakdown.streak, icon: "🔥" },
+        ].map(item => (
+          <div key={item.label} className="flex items-center gap-2 text-xs" style={{ color: "var(--c-text-muted)" }}>
+            <span>{item.icon}</span>
+            <span>{item.label}</span>
+            <span className="ml-auto font-semibold tabular-nums" style={{ color: "var(--c-text)" }}>{item.value}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -248,6 +385,23 @@ export default function ScorePage() {
     breakdown, achievements, loading,
   } = usePawScore(profile?.id);
 
+  const [mounted, setMounted] = useState(false);
+  const [daily, setDaily] = useState<DailyScore | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Fetch daily living score from API
+  useEffect(() => {
+    fetch("/api/score/compute")
+      .then(r => r.json())
+      .then(d => {
+        if (d.score !== undefined) setDaily(d);
+      })
+      .catch(() => {});
+  }, []);
+
   // Category breakdown config
   const categories: { key: keyof ScoreBreakdown; icon: string; tKey: string; max: number }[] = [
     { key: "animals",  icon: "🐾", tKey: "scoreAnimals",  max: 250 },
@@ -257,6 +411,8 @@ export default function ScorePage() {
     { key: "streak",   icon: "🔥", tKey: "scoreStreak",   max: 100 },
     { key: "events",   icon: "🎉", tKey: "scoreEvents",   max: 150 },
   ];
+
+  if (!mounted) return null;
 
   if (authLoading || loading) {
     return (
@@ -276,7 +432,7 @@ export default function ScorePage() {
     return (
       <main className="min-h-screen px-4 md:px-6 pb-28 pt-24">
         <div className="max-w-md mx-auto text-center">
-          <div className="text-5xl mb-4">🐾</div>
+          <div className="text-5xl mb-4">{"🐾"}</div>
           <h1 className="text-xl font-bold mb-2" style={{ color: "var(--c-text)" }}>
             {t.matchesLoginRequired || "Connexion requise"}
           </h1>
@@ -286,7 +442,7 @@ export default function ScorePage() {
           <Link
             href="/auth"
             className="inline-flex items-center gap-2 rounded-full px-6 py-3 font-semibold text-white"
-            style={{ background: "var(--c-accent)" }}
+            style={{ background: "#fbbf24" }}
           >
             {t.navLogin || "Connexion"}
           </Link>
@@ -304,9 +460,7 @@ export default function ScorePage() {
         {/* ── Header ── */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-1">
-            <button onClick={() => window.history.length > 1 ? window.history.back() : (window.location.href = "/feed")} aria-label="Retour" className="inline-flex items-center justify-center w-9 h-9 rounded-full transition-all active:scale-90 flex-shrink-0" style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.1)", color: "var(--c-text)" }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
-            </button>
+            <BackButton fallback="/feed" />
             <h1 className="text-2xl font-bold" style={{ color: "var(--c-text)" }}>
               {t.scoreTitle || "PawScore"}
             </h1>
@@ -333,6 +487,18 @@ export default function ScorePage() {
           ))}
         </div>
 
+        {/* ── Streak Counter ── */}
+        {daily && daily.streak > 0 && (
+          <div className="mb-6">
+            <StreakCounter streak={daily.streak} />
+          </div>
+        )}
+
+        {/* ── Living Score (daily) ── */}
+        <div className="mb-6">
+          <LivingScoreCard daily={daily} t={t} />
+        </div>
+
         {/* ── Next level progress ── */}
         {levelIndex < LEVELS_DISPLAY.length - 1 && (
           <div className="mb-8">
@@ -347,7 +513,7 @@ export default function ScorePage() {
 
         {/* ── Breakdown ── */}
         <div
-          className="rounded-2xl p-5 mb-8"
+          className="rounded-2xl p-5 mb-6"
           style={{ background: "var(--c-card)", border: "1px solid var(--c-border)" }}
         >
           <h2 className="text-base font-bold mb-4" style={{ color: "var(--c-text)" }}>
@@ -366,6 +532,11 @@ export default function ScorePage() {
           </div>
         </div>
 
+        {/* ── Tips ── */}
+        <div className="mb-6">
+          <TipsSection dailyBreakdown={daily?.breakdown || null} t={t} />
+        </div>
+
         {/* ── Achievements ── */}
         <div
           className="rounded-2xl p-5"
@@ -376,7 +547,7 @@ export default function ScorePage() {
               {t.scoreAchievements || "Succes"}
             </h2>
             <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{
-              background: "var(--c-accent)",
+              background: "#fbbf24",
               color: "#fff",
             }}>
               {unlockedCount}/{achievements.length}
@@ -394,7 +565,7 @@ export default function ScorePage() {
           <Link
             href="/profile"
             className="text-sm font-medium hover:opacity-70 transition-opacity"
-            style={{ color: "var(--c-accent)" }}
+            style={{ color: "#fbbf24" }}
           >
             &larr; {t.back || "Retour"}
           </Link>
