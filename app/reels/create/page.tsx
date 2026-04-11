@@ -4,8 +4,15 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
 import type { AnimalRow } from "@/lib/types";
+import { getVideoMeta, formatSize } from "@/lib/media/videoProcessor";
+
+const VideoCompressProgress = dynamic(
+  () => import("@/lib/components/VideoCompressProgress"),
+  { ssr: false }
+);
 
 type TaggedAnimal = { id: string; name: string; photo_url: string | null };
 
@@ -20,6 +27,11 @@ export default function CreateReelPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [compressStage, setCompressStage] = useState<"loading" | "analyzing" | "compressing" | "thumbnail" | "uploading" | "done">("loading");
+  const [compressProgress, setCompressProgress] = useState(0);
+  const [isCompressing, setIsCompressing] = useState(false);
+  const [videoMeta, setVideoMeta] = useState<{ duration: number; width: number; height: number; sizeMB: number } | null>(null);
+  const [compressedMB, setCompressedMB] = useState<number | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const supabase = createClient();
@@ -138,24 +150,44 @@ export default function CreateReelPage() {
     load();
   }, []);
 
-  function handleVideoSelect(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleVideoSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("video/")) { setError("Seuls les fichiers video sont acceptes"); return; }
-    if (file.size > 100 * 1024 * 1024) { setError("Fichier trop lourd (max 100 MB)"); return; }
+    if (file.size > 200 * 1024 * 1024) { setError("Fichier trop lourd (max 200 MB)"); return; }
+
     setVideoFile(file);
     setVideoPreview(URL.createObjectURL(file));
     setError(null);
+
+    // Analyze video metadata
+    try {
+      const meta = await getVideoMeta(file);
+      setVideoMeta({
+        duration: meta.duration,
+        width: meta.width,
+        height: meta.height,
+        sizeMB: file.size / (1024 * 1024),
+      });
+
+      if (meta.duration > 61) {
+        setError(`Video trop longue: ${Math.round(meta.duration)}s (max 60s pour un Reel)`);
+      }
+    } catch {
+      // Continue without metadata
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!videoFile || !userId) return;
     setUploading(true);
+    setIsCompressing(true);
+    setCompressProgress(0);
     setError(null);
 
     try {
-      // Check caption for inappropriate content
+      // 1. Moderate caption
       if (caption.trim()) {
         const modRes = await fetch("/api/moderate", {
           method: "POST",
@@ -166,35 +198,80 @@ export default function CreateReelPage() {
         if (!modResult.safe) {
           setError(modResult.reason);
           setUploading(false);
+          setIsCompressing(false);
           return;
         }
       }
 
-      // Upload video to Supabase Storage
-      const ext = videoFile.name.split(".").pop() || "mp4";
-      const path = `reels/${userId}/${Date.now()}.${ext}`;
-      const { error: uploadErr } = await supabase.storage.from("photos").upload(path, videoFile, { upsert: true });
-      if (uploadErr) throw new Error(uploadErr.message);
+      // 2. Compress video to 1080x1920 H.264
+      setCompressStage("loading");
+      setCompressProgress(0.05);
 
-      const { data: urlData } = supabase.storage.from("photos").getPublicUrl(path);
+      const { processVideo, REEL_OPTIONS } = await import("@/lib/media/videoProcessor");
+
+      setCompressStage("analyzing");
+      setCompressProgress(0.1);
+
+      setCompressStage("compressing");
+      const result = await processVideo(videoFile, {
+        ...REEL_OPTIONS,
+        onProgress: (ratio) => setCompressProgress(0.1 + ratio * 0.7),
+      });
+
+      setCompressStage("thumbnail");
+      setCompressProgress(0.85);
+
+      const finalVideo = result.compressedBlob;
+      const thumbnailBlob = result.thumbnailBlob;
+      setCompressedMB(result.compressedSizeMB);
+
+      // 3. Upload compressed video
+      setCompressStage("uploading");
+      setCompressProgress(0.9);
+
+      const ts = Date.now();
+      const videoPath = `reels/${userId}/${ts}.mp4`;
+      const thumbPath = `reels/${userId}/${ts}_thumb.jpg`;
+
+      const [videoUpload, thumbUpload] = await Promise.all([
+        supabase.storage.from("photos").upload(videoPath, finalVideo, {
+          upsert: true,
+          contentType: "video/mp4",
+        }),
+        supabase.storage.from("photos").upload(thumbPath, thumbnailBlob, {
+          upsert: true,
+          contentType: "image/jpeg",
+        }),
+      ]);
+
+      if (videoUpload.error) throw new Error(videoUpload.error.message);
+
+      const { data: urlData } = supabase.storage.from("photos").getPublicUrl(videoPath);
       const video_url = urlData.publicUrl;
 
-      // Parse hashtags
+      const thumbnail_url = thumbUpload.error
+        ? null
+        : supabase.storage.from("photos").getPublicUrl(thumbPath).data.publicUrl;
+
+      setCompressProgress(0.95);
+
+      // 4. Parse hashtags
       const tags = hashtags
         .split(/[,\s#]+/)
         .map(t => t.trim().toLowerCase())
         .filter(Boolean);
 
-      // Create reel via API
+      // 5. Create reel via API
       const res = await fetch("/api/reels", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           video_url,
+          thumbnail_url,
           caption: caption.trim() || null,
           hashtags: tags,
           animal_id: selectedAnimal,
-          duration_seconds: 0,
+          duration_seconds: Math.round(result.durationSeconds),
           tagged_animals: taggedAnimals.map((t) => t.id),
         }),
       });
@@ -202,12 +279,16 @@ export default function CreateReelPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur lors de la creation");
 
+      setCompressStage("done");
+      setCompressProgress(1);
+
       setSuccess(true);
       setTimeout(() => router.push("/reels"), 2000);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Erreur inattendue");
     }
     setUploading(false);
+    setIsCompressing(false);
   }
 
   if (success) {
@@ -268,9 +349,41 @@ export default function CreateReelPage() {
               </div>
               <div className="text-center">
                 <p className="text-sm font-semibold" style={{ color: "var(--c-text)" }}>Ajouter une video</p>
-                <p className="text-[10px] mt-1" style={{ color: "var(--c-text-muted)" }}>MP4, MOV — Max 100 MB</p>
+                <p className="text-[10px] mt-1" style={{ color: "var(--c-text-muted)" }}>MP4, MOV — Max 60s — Compression auto HD</p>
               </div>
             </button>
+          )}
+
+          {/* Video metadata badge */}
+          {videoMeta && !isCompressing && (
+            <div className="flex flex-wrap gap-2 mt-2">
+              <span className="text-[10px] px-2 py-1 rounded-full font-semibold" style={{ background: "rgba(251,191,36,0.1)", color: "#FBBF24", border: "1px solid rgba(251,191,36,0.2)" }}>
+                {Math.round(videoMeta.duration)}s
+              </span>
+              <span className="text-[10px] px-2 py-1 rounded-full font-semibold" style={{ background: "rgba(56,189,248,0.1)", color: "#38BDF8", border: "1px solid rgba(56,189,248,0.2)" }}>
+                {videoMeta.width}x{videoMeta.height}
+              </span>
+              <span className="text-[10px] px-2 py-1 rounded-full font-semibold" style={{ background: "rgba(139,92,246,0.1)", color: "#A78BFA", border: "1px solid rgba(139,92,246,0.2)" }}>
+                {formatSize(videoMeta.sizeMB * 1024 * 1024)}
+              </span>
+              {(videoMeta.width > 1080 || videoMeta.height > 1920 || videoMeta.sizeMB > 10) && (
+                <span className="text-[10px] px-2 py-1 rounded-full font-semibold" style={{ background: "rgba(16,185,129,0.1)", color: "#10B981", border: "1px solid rgba(16,185,129,0.2)" }}>
+                  Sera compresse en 1080p
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* Compression progress */}
+          {isCompressing && (
+            <div className="mt-4">
+              <VideoCompressProgress
+                progress={compressProgress}
+                stage={compressStage}
+                originalMB={videoMeta?.sizeMB}
+                compressedMB={compressedMB ?? undefined}
+              />
+            </div>
           )}
         </div>
 
@@ -463,7 +576,7 @@ export default function CreateReelPage() {
             cursor: !videoFile || uploading ? "not-allowed" : "pointer",
           }}
         >
-          {uploading ? "Publication en cours..." : "🎬 Publier le Reel (+10 🪙)"}
+          {uploading ? (isCompressing ? "Optimisation HD..." : "Publication...") : "🎬 Publier en qualite HD (+10 🪙)"}
         </button>
       </form>
     </main>

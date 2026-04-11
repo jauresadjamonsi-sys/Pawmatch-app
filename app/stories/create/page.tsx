@@ -525,6 +525,23 @@ export default function StoryCreatePage() {
         }
       }
 
+      // Compress video to 1080x1920 H.264 if needed
+      if (mediaType === "video" && mediaFile.size > 5 * 1024 * 1024) {
+        try {
+          const { processVideo, STORY_OPTIONS } = await import("@/lib/media/videoProcessor");
+          const result = await processVideo(mediaFile, {
+            ...STORY_OPTIONS,
+            onProgress: (ratio) => setUploadProgress(Math.round(ratio * 70)),
+          });
+          fileToUpload = result.compressedBlob;
+          contentType = "video/mp4";
+          ext = "mp4";
+        } catch (compressErr) {
+          console.warn("[StoryCreate] compression skipped:", compressErr);
+          // Continue with original file if compression fails
+        }
+      }
+
       const mediaFolder = mediaType === "video" ? "videos" : "photos";
       const storagePath = `${mediaFolder}/${user.id}/${Date.now()}.${ext}`;
 
