@@ -14,21 +14,14 @@ export const metadata: Metadata = {
     siteName: "Pawly",
     locale: "fr_CH",
     type: "website",
-    images: [
-      {
-        url: `${BASE_URL}/promo-hero.jpg`,
-        width: 1200,
-        height: 630,
-        alt: "Pawly — Connecte ton animal avec d'autres en Suisse",
-      },
-    ],
+    // OG image inherited from root opengraph-image.tsx (1200x630)
   },
   twitter: {
     card: "summary_large_image",
     title: "Rejoins Pawly — L'app des animaux en Suisse 🐾",
     description:
       "Trouve des copains de balade pour ton animal. Gratuit et concu en Suisse.",
-    images: [`${BASE_URL}/promo-hero.jpg`],
+    // Twitter image inherited from root twitter-image.tsx
   },
 };
 

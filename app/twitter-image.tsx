@@ -48,22 +48,8 @@ export default async function Image() {
             display: "flex",
           }}
         />
-        {/* Ambient glow center amber subtle */}
-        <div
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "800px",
-            height: "400px",
-            borderRadius: "50%",
-            background: "radial-gradient(ellipse, rgba(245,158,11,0.06) 0%, transparent 70%)",
-            display: "flex",
-          }}
-        />
 
-        {/* Top bar with Swiss badge */}
+        {/* Swiss badge top-left */}
         <div
           style={{
             position: "absolute",
@@ -115,7 +101,7 @@ export default async function Image() {
             marginTop: "10px",
           }}
         >
-          {/* Paw icon with glow */}
+          {/* Paw icon */}
           <div
             style={{
               fontSize: "80px",
@@ -143,7 +129,7 @@ export default async function Image() {
             PAWLY
           </div>
 
-          {/* Main tagline */}
+          {/* Tagline */}
           <div
             style={{
               fontSize: "26px",
@@ -157,23 +143,16 @@ export default async function Image() {
             Le reseau social des animaux en Suisse
           </div>
 
-          {/* Features row */}
+          {/* Features */}
           <div
             style={{
               display: "flex",
-              gap: "32px",
+              gap: "24px",
               alignItems: "center",
               marginTop: "28px",
             }}
           >
-            {/* Feature 1 */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-              }}
-            >
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <div
                 style={{
                   width: "36px",
@@ -189,19 +168,9 @@ export default async function Image() {
               >
                 💛
               </div>
-              <span style={{ color: "#b5aad0", fontSize: "15px", fontWeight: 500, display: "flex" }}>
-                Matching IA
-              </span>
+              <span style={{ color: "#b5aad0", fontSize: "15px", fontWeight: 500, display: "flex" }}>Matching IA</span>
             </div>
-
-            {/* Feature 2 */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-              }}
-            >
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <div
                 style={{
                   width: "36px",
@@ -217,19 +186,9 @@ export default async function Image() {
               >
                 📍
               </div>
-              <span style={{ color: "#b5aad0", fontSize: "15px", fontWeight: 500, display: "flex" }}>
-                26 cantons
-              </span>
+              <span style={{ color: "#b5aad0", fontSize: "15px", fontWeight: 500, display: "flex" }}>26 cantons</span>
             </div>
-
-            {/* Feature 3 */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-              }}
-            >
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <div
                 style={{
                   width: "36px",
@@ -245,9 +204,7 @@ export default async function Image() {
               >
                 🎉
               </div>
-              <span style={{ color: "#b5aad0", fontSize: "15px", fontWeight: 500, display: "flex" }}>
-                Gratuit
-              </span>
+              <span style={{ color: "#b5aad0", fontSize: "15px", fontWeight: 500, display: "flex" }}>Gratuit</span>
             </div>
           </div>
         </div>
@@ -268,91 +225,15 @@ export default async function Image() {
             padding: "0 40px",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-            }}
-          >
-            <div
-              style={{
-                width: "8px",
-                height: "8px",
-                borderRadius: "50%",
-                background: "#22c55e",
-                display: "flex",
-              }}
-            />
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#22c55e", display: "flex" }} />
             <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "14px", fontWeight: 500, display: "flex" }}>
               Disponible maintenant
             </span>
           </div>
-          <div
-            style={{
-              fontSize: "18px",
-              fontWeight: 700,
-              color: "#F59E0B",
-              display: "flex",
-              letterSpacing: "-0.5px",
-            }}
-          >
+          <div style={{ fontSize: "18px", fontWeight: 700, color: "#F59E0B", display: "flex", letterSpacing: "-0.5px" }}>
             pawlyapp.ch
           </div>
-        </div>
-
-        {/* Decorative paw prints scattered */}
-        <div
-          style={{
-            position: "absolute",
-            top: "45px",
-            right: "55px",
-            fontSize: "32px",
-            opacity: 0.08,
-            transform: "rotate(25deg)",
-            display: "flex",
-          }}
-        >
-          🐾
-        </div>
-        <div
-          style={{
-            position: "absolute",
-            bottom: "90px",
-            left: "50px",
-            fontSize: "28px",
-            opacity: 0.06,
-            transform: "rotate(-15deg)",
-            display: "flex",
-          }}
-        >
-          🐾
-        </div>
-        <div
-          style={{
-            position: "absolute",
-            top: "160px",
-            left: "120px",
-            fontSize: "22px",
-            opacity: 0.05,
-            transform: "rotate(40deg)",
-            display: "flex",
-          }}
-        >
-          🐾
-        </div>
-        <div
-          style={{
-            position: "absolute",
-            bottom: "130px",
-            right: "100px",
-            fontSize: "24px",
-            opacity: 0.05,
-            transform: "rotate(-30deg)",
-            display: "flex",
-          }}
-        >
-          🐾
         </div>
       </div>
     ),

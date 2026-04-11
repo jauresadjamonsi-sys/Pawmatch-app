@@ -14,21 +14,14 @@ export const metadata: Metadata = {
     siteName: "Pawly",
     locale: "fr_CH",
     type: "website",
-    images: [
-      {
-        url: "/promo-hero.jpg",
-        width: 2026,
-        height: 893,
-        alt: "Pawly — Mes matchs entre animaux",
-      },
-    ],
+    // OG image inherited from root opengraph-image.tsx (1200x630)
   },
   twitter: {
     card: "summary_large_image",
     title: "Mes matchs | Pawly",
     description:
       "Retrouve tous tes matchs et demandes de rencontre entre animaux sur Pawly.",
-    images: ["/promo-hero.jpg"],
+    // Twitter image inherited from root twitter-image.tsx
   },
   alternates: {
     canonical: `${BASE_URL}/matches`,
