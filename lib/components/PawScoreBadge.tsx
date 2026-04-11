@@ -1,8 +1,31 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePawScore } from "@/lib/hooks/usePawScore";
 import Link from "next/link";
+
+/** Animate a number from 0 to `target` over `duration` ms using rAF */
+function useCountUp(target: number, duration = 800, enabled = false) {
+  const [display, setDisplay] = useState(0);
+  const rafRef = useRef<number>(0);
+
+  useEffect(() => {
+    if (!enabled || target <= 0) { setDisplay(target); return; }
+    let start: number | null = null;
+    const step = (ts: number) => {
+      if (!start) start = ts;
+      const progress = Math.min((ts - start) / duration, 1);
+      // ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(Math.round(eased * target));
+      if (progress < 1) rafRef.current = requestAnimationFrame(step);
+    };
+    rafRef.current = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [target, duration, enabled]);
+
+  return display;
+}
 
 type PawScoreBadgeProps = {
   userId?: string;
@@ -12,6 +35,7 @@ type PawScoreBadgeProps = {
 export default function PawScoreBadge({ userId, size = "sm" }: PawScoreBadgeProps) {
   const { score, levelEmoji, nextLevelAt, currentLevelMin, loading } = usePawScore(userId);
   const [mounted, setMounted] = useState(false);
+  const animatedScore = useCountUp(score, 800, mounted && !loading);
 
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 100);
@@ -81,13 +105,18 @@ export default function PawScoreBadge({ userId, size = "sm" }: PawScoreBadgeProp
       </div>
       {/* Score number */}
       <span
-        className="font-bold tabular-nums group-hover:opacity-80 transition-opacity"
+        className={`font-bold tabular-nums group-hover:opacity-80 transition-opacity score-number${mounted ? " animate-score-reveal" : ""}`}
         style={{
           color: "var(--c-accent)",
           fontSize: isSm ? 12 : 14,
+          /* override score-number defaults for badge context */
+          background: "none",
+          WebkitBackgroundClip: "unset",
+          WebkitTextFillColor: "var(--c-accent)",
+          backgroundClip: "unset",
         }}
       >
-        {score}
+        {animatedScore}
       </span>
     </Link>
   );

@@ -338,64 +338,150 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* ═══ MOBILE BOTTOM NAV ═══ */}
+      {/* ═══ MOBILE BOTTOM NAV — 4 tabs ═══ */}
+      <MobileBottomNav
+        user={user}
+        loading={loading}
+        isActive={isActive}
+        isLight={isLight}
+        hasPendingSwipes={hasPendingSwipes}
+        t={t}
+      />
+    </>
+  );
+}
+
+/* ═══ SERVICES MENU ITEMS ═══ */
+const SERVICES_ITEMS = [
+  { href: "/carte", label: "Carte", emoji: "🗺️" },
+  { href: "/wallet", label: "PawCoins", emoji: "🪙" },
+  { href: "/marketplace", label: "Marketplace", emoji: "🛒" },
+  { href: "/urgence", label: "SOS Animal", emoji: "🚨" },
+  { href: "/balade", label: "Balade", emoji: "🐕" },
+];
+
+function MobileBottomNav({ user, loading, isActive, isLight, hasPendingSwipes, t }: {
+  user: any; loading: boolean;
+  isActive: (p: string) => boolean;
+  isLight: boolean; hasPendingSwipes: boolean;
+  t: any;
+}) {
+  const [servicesOpen, setServicesOpen] = useState(false);
+  const servicesRef = useRef<HTMLDivElement>(null);
+
+  // Close on click outside
+  useEffect(() => {
+    if (!servicesOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (servicesRef.current && !servicesRef.current.contains(e.target as Node)) setServicesOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [servicesOpen]);
+
+  const isServicesActive = ["/carte", "/wallet", "/marketplace", "/urgence", "/balade"].some(p => isActive(p));
+
+  return (
+    <>
+      {/* Services overlay panel */}
+      {servicesOpen && (
+        <div className="md:hidden fixed inset-0 z-40" onClick={() => setServicesOpen(false)}>
+          <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.4)", backdropFilter: "blur(4px)" }} />
+        </div>
+      )}
+      {servicesOpen && (
+        <div
+          ref={servicesRef}
+          className="md:hidden fixed bottom-[68px] left-4 right-4 z-50 rounded-2xl p-3 drop-in safe-area-bottom"
+          style={{
+            background: isLight ? "rgba(255,255,255,0.96)" : "rgba(20,16,32,0.96)",
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            border: "1px solid",
+            borderColor: isLight ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.08)",
+            boxShadow: "0 -8px 32px rgba(0,0,0,0.2), 0 0 20px rgba(34,197,94,0.1)",
+          }}
+        >
+          <div className="text-center mb-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--c-text-muted)" }}>Services</span>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            {SERVICES_ITEMS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setServicesOpen(false)}
+                className={"flex flex-col items-center gap-1 py-3 px-2 rounded-xl transition-all duration-200 " +
+                  (isActive(item.href)
+                    ? "bg-green-500/15"
+                    : isLight ? "hover:bg-gray-50 active:bg-gray-100" : "hover:bg-white/5 active:bg-white/10")}
+                style={{ textDecoration: "none" }}
+              >
+                <span className="text-xl">{item.emoji}</span>
+                <span className={"text-[11px] font-semibold " + (isActive(item.href) ? "text-green-400" : "")}
+                  style={{ color: isActive(item.href) ? undefined : "var(--c-text)" }}>
+                  {item.label}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Bottom nav bar */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 safe-area-bottom" role="navigation" aria-label="Navigation mobile" style={{
         background: isLight ? "rgba(255,255,255,0.92)" : "rgba(15,12,26,0.9)",
         backdropFilter: "blur(20px) saturate(1.2)", WebkitBackdropFilter: "blur(20px) saturate(1.2)",
       }}>
         <div className="bottom-nav-glow-line" />
         <div className="flex items-center justify-around h-[58px] px-1 relative">
+          {/* 1. Home */}
           <BT href={user ? "/feed" : "/"} active={isActive("/feed") || isActive("/")} label={t.navHome} light={isLight}>
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={(isActive("/feed") || isActive("/")) ? 2.5 : 1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
             </svg>
           </BT>
-          <BT href="/reels" active={isActive("/reels")} label="Reels" light={isLight}>
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive("/reels") ? 2.5 : 1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h1.5C5.496 19.5 6 18.996 6 18.375m-3.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-1.5A1.125 1.125 0 0118 18.375M20.625 4.5H3.375m17.25 0c.621 0 1.125.504 1.125 1.125M20.625 4.5h-1.5C18.504 4.5 18 5.004 18 5.625m3.75 0v1.5c0 .621-.504 1.125-1.125 1.125M3.375 4.5c-.621 0-1.125.504-1.125 1.125M3.375 4.5h1.5C5.496 4.5 6 5.004 6 5.625m-3.75 0v1.5c0 .621.504 1.125 1.125 1.125m0 0h1.5m-1.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m1.5-3.75C5.496 8.25 6 7.746 6 7.125v-1.5M4.875 8.25C5.496 8.25 6 8.754 6 9.375v1.5m0-5.25v5.25m0-5.25C6 5.004 6.504 4.5 7.125 4.5h9.75c.621 0 1.125.504 1.125 1.125m1.125 2.625h1.5m-1.5 0A1.125 1.125 0 0118 7.125v-1.5m1.125 2.625c-.621 0-1.125.504-1.125 1.125v1.5m2.625-2.625c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125M18 5.625v5.25M7.125 12h9.75m-9.75 0A1.125 1.125 0 016 10.875M7.125 12C6.504 12 6 12.504 6 13.125m0-2.25C6 11.496 5.496 12 4.875 12M18 10.875c0 .621-.504 1.125-1.125 1.125M18 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125m-12 5.25v-5.25m0 5.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125m-12 0v-1.5c0-.621-.504-1.125-1.125-1.125M18 18.375v-5.25m0 5.25v-1.5c0-.621.504-1.125 1.125-1.125M18 13.125v1.5c0 .621.504 1.125 1.125 1.125M18 13.125c0-.621.504-1.125 1.125-1.125M6 13.125v1.5c0 .621-.504 1.125-1.125 1.125M6 13.125C6 12.504 5.496 12 4.875 12m-1.5 0h1.5m-1.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125M19.125 12h1.5m0 0c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h1.5m14.25 0h1.5" />
-            </svg>
-          </BT>
-          <BT href="/flairer" active={isActive("/flairer")} label={t.navFlairer} featured pulse={hasPendingSwipes && !isActive("/flairer")} light={isLight}>
+
+          {/* 2. Pet (featured heart) */}
+          <BT href="/flairer" active={isActive("/flairer")} label="Pet" featured pulse={hasPendingSwipes && !isActive("/flairer")} light={isLight}>
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
             </svg>
           </BT>
-          <BT href="/explore" active={isActive("/explore")} label="Explorer" light={isLight}>
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive("/explore") ? 2.5 : 1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
-            </svg>
-          </BT>
-          <BT href="/leaderboard" active={isActive("/leaderboard")} label="Top" light={isLight}>
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive("/leaderboard") ? 2.5 : 1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-4.5A3.375 3.375 0 0012.75 11h-.5A3.375 3.375 0 009 14.25v4.5m7.5 0h-6M12 3.75l2.25 2.25L12 8.25 9.75 6 12 3.75z" />
-            </svg>
-          </BT>
+
+          {/* 3. Services (popup) */}
+          <button
+            onClick={() => setServicesOpen(o => !o)}
+            aria-label="Services"
+            aria-expanded={servicesOpen}
+            className={"bottom-nav-item flex flex-col items-center py-1 px-2 relative group bottom-nav-touch"}
+          >
+            {(isServicesActive || servicesOpen) && <span className="absolute -top-0 left-1/2 -translate-x-1/2 w-6 h-[3px] rounded-full" style={{ background: "linear-gradient(90deg, #22C55E, #FACC15)", boxShadow: "0 0 8px rgba(34,197,94,0.5)" }} />}
+            <span className={"transition-all duration-300 " + ((isServicesActive || servicesOpen) ? "text-green-400 scale-110 glow-float" : isLight ? "text-gray-500 group-hover:text-gray-700" : "text-gray-500 group-hover:text-gray-300")}
+              style={(isServicesActive || servicesOpen) ? { filter: "drop-shadow(0 0 6px rgba(34,197,94,0.4))" } : undefined}
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={(isServicesActive || servicesOpen) ? 2.5 : 1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+              </svg>
+            </span>
+            {(isServicesActive || servicesOpen) && <div className="bottom-tab-active-glow" />}
+            {(isServicesActive || servicesOpen) && <span className="bottom-nav-active-dot" />}
+            <span aria-hidden="true" className={"text-[9px] mt-0.5 " + ((isServicesActive || servicesOpen) ? "text-green-400 font-bold" : isLight ? "text-gray-400" : "text-gray-500")}>Services</span>
+          </button>
+
+          {/* 4. Profil */}
           {!loading && user ? (
-            <>
-              <BT href="/matches" active={isActive("/matches")} label={t.navMatches} badge={hasNewMatches} light={isLight}>
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive("/matches") ? 2.5 : 1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
-                </svg>
-              </BT>
-              <BT href="/profile" active={isActive("/profile")} label={t.navProfil} light={isLight}>
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive("/profile") ? 2.5 : 1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                </svg>
-              </BT>
-            </>
+            <BT href="/profile" active={isActive("/profile")} label={t.navProfil} light={isLight}>
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive("/profile") ? 2.5 : 1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+              </svg>
+            </BT>
           ) : (
-            <>
-              <BT href="/pricing" active={isActive("/pricing")} label={t.navPricing} light={isLight}>
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive("/pricing") ? 2.5 : 1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-                </svg>
-              </BT>
-              <BT href="/login" active={isActive("/login")} label={t.navLogin} light={isLight}>
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive("/login") ? 2.5 : 1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
-                </svg>
-              </BT>
-            </>
+            <BT href="/login" active={isActive("/login")} label={t.navLogin} light={isLight}>
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive("/login") ? 2.5 : 1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+              </svg>
+            </BT>
           )}
         </div>
       </nav>

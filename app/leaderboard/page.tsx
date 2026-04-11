@@ -1,10 +1,52 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
 import Link from "next/link";
 import { EMOJI_MAP } from "@/lib/constants";
+
+/** Inline animated score component using rAF count-up */
+function AnimatedScore({ value, duration = 800, className, style }: {
+  value: number; duration?: number;
+  className?: string; style?: React.CSSProperties;
+}) {
+  const [display, setDisplay] = useState(0);
+  const rafRef = useRef<number>(0);
+  const [started, setStarted] = useState(false);
+  const elRef = useRef<HTMLSpanElement>(null);
+
+  // Start animation when element enters viewport
+  useEffect(() => {
+    const el = elRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setStarted(true); obs.disconnect(); }
+    }, { threshold: 0.3 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!started || value <= 0) { setDisplay(value); return; }
+    let start: number | null = null;
+    const step = (ts: number) => {
+      if (!start) start = ts;
+      const progress = Math.min((ts - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      setDisplay(Math.round(eased * value));
+      if (progress < 1) rafRef.current = requestAnimationFrame(step);
+    };
+    rafRef.current = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [value, duration, started]);
+
+  return (
+    <span ref={elRef} className={`animate-score-reveal score-number ${className || ""}`} style={style}>
+      {display}
+    </span>
+  );
+}
 
 type LeaderEntry = {
   id: string;
@@ -278,12 +320,18 @@ export default function LeaderboardPage() {
                 <span className="text-[10px] font-semibold" style={{ color: "var(--c-text-muted)" }}>
                   ❤️ {entry.like_count}
                 </span>
-                <span className="text-xs font-black px-2 py-0.5 rounded-full animate-count-up" style={{
+                <AnimatedScore value={entry.score} className="text-xs font-black px-2 py-0.5 rounded-full" style={{
                   background: "rgba(251,191,36,0.1)",
                   color: "#fbbf24",
-                }}>
-                  {entry.score}
-                </span>
+                  /* override score-number gradient for inline use */
+                  backgroundClip: "unset",
+                  WebkitBackgroundClip: "unset",
+                  WebkitTextFillColor: "#fbbf24",
+                  fontSize: "inherit",
+                  fontWeight: "inherit",
+                  lineHeight: "inherit",
+                  letterSpacing: "inherit",
+                }} />
               </div>
             </Link>
           ))}
@@ -336,11 +384,20 @@ function PodiumCard({ entry, rank, isFirst }: { entry: LeaderEntry; rank: number
       </p>
 
       {/* Score badge */}
-      <span className="mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full animate-count-up" style={{
+      <span className="mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full animate-score-reveal" style={{
         background: medal.bg,
         color: "#fff",
       }}>
-        {entry.score} pts
+        <AnimatedScore value={entry.score} className="" style={{
+          background: "none",
+          backgroundClip: "unset",
+          WebkitBackgroundClip: "unset",
+          WebkitTextFillColor: "#fff",
+          fontSize: "inherit",
+          fontWeight: "inherit",
+          lineHeight: "inherit",
+          letterSpacing: "inherit",
+        }} /> pts
       </span>
     </Link>
   );

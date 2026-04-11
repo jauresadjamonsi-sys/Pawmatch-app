@@ -5,6 +5,26 @@ import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import Image from "next/image";
 
+type HealthRecord = {
+  id: string;
+  type: "vaccine" | "vet_visit" | "medication" | "weight" | "allergy" | "note";
+  title: string;
+  date: string;
+  next_due: string | null;
+  value: number | null;
+  unit: string | null;
+  status: string;
+};
+
+type HealthSummary = {
+  overdueVaccines: number;
+  upcomingVaccines: number;
+  lastVetVisitDaysAgo: number | null;
+  weightTrend: "stable" | "rising" | "falling" | "unknown";
+  lastWeight: number | null;
+  healthLines: string[];
+};
+
 type AnimalHealth = {
   id: string;
   name: string;
@@ -18,16 +38,93 @@ type AnimalHealth = {
   insights: string[];
   recommendation: string;
   cta: { label: string; href: string };
+  healthSummary: HealthSummary | null;
 };
 
-// Compute a "wellbeing score" based on activity data
+// Analyze health records into a summary
+function analyzeHealthRecords(records: HealthRecord[]): HealthSummary {
+  const now = new Date();
+  const todayStr = now.toISOString().split("T")[0];
+  const healthLines: string[] = [];
+
+  // --- Overdue & upcoming vaccines ---
+  const vaccines = records.filter((r) => r.type === "vaccine");
+  const overdueVaccines = vaccines.filter(
+    (r) => r.next_due && r.next_due < todayStr && r.status === "active"
+  ).length;
+  const upcomingVaccines = vaccines.filter((r) => {
+    if (!r.next_due || r.status !== "active") return false;
+    const dueDate = new Date(r.next_due);
+    const diffDays = (dueDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
+    return diffDays >= 0 && diffDays <= 30;
+  }).length;
+
+  if (overdueVaccines > 0) {
+    healthLines.push(`Vaccin en retard ! (${overdueVaccines})`);
+  } else if (upcomingVaccines > 0) {
+    healthLines.push(`Vaccin prevu bientot (${upcomingVaccines})`);
+  } else if (vaccines.length > 0) {
+    healthLines.push("Vaccins a jour");
+  }
+
+  // --- Last vet visit ---
+  const vetVisits = records
+    .filter((r) => r.type === "vet_visit")
+    .sort((a, b) => b.date.localeCompare(a.date));
+  let lastVetVisitDaysAgo: number | null = null;
+  if (vetVisits.length > 0) {
+    lastVetVisitDaysAgo = Math.floor(
+      (now.getTime() - new Date(vetVisits[0].date).getTime()) / (1000 * 60 * 60 * 24)
+    );
+    if (lastVetVisitDaysAgo > 365) {
+      healthLines.push("Visite veto il y a plus d'un an");
+    } else if (lastVetVisitDaysAgo > 180) {
+      healthLines.push("Visite veto il y a plus de 6 mois");
+    } else {
+      healthLines.push("Visite veto recente");
+    }
+  }
+
+  // --- Weight trend ---
+  const weights = records
+    .filter((r) => r.type === "weight" && r.value != null)
+    .sort((a, b) => a.date.localeCompare(b.date));
+  let weightTrend: HealthSummary["weightTrend"] = "unknown";
+  let lastWeight: number | null = null;
+
+  if (weights.length >= 2) {
+    const recent = weights.slice(-3);
+    lastWeight = recent[recent.length - 1].value;
+    const first = recent[0].value!;
+    const last = recent[recent.length - 1].value!;
+    const changePct = ((last - first) / first) * 100;
+    if (Math.abs(changePct) < 3) {
+      weightTrend = "stable";
+      healthLines.push("Poids stable");
+    } else if (changePct > 0) {
+      weightTrend = "rising";
+      healthLines.push("Poids en hausse");
+    } else {
+      weightTrend = "falling";
+      healthLines.push("Poids en baisse");
+    }
+  } else if (weights.length === 1) {
+    lastWeight = weights[0].value;
+  }
+
+  return { overdueVaccines, upcomingVaccines, lastVetVisitDaysAgo, weightTrend, lastWeight, healthLines };
+}
+
+// Compute a "wellbeing score" based on activity + health data
 function computeScore(data: {
+  animalId: string;
   matchesThisWeek: number;
   reelsThisWeek: number;
   daysActive: number;
   hasPhoto: boolean;
   ageMonths: number | null;
   totalMatches: number;
+  healthSummary: HealthSummary | null;
 }): { score: number; insights: string[]; recommendation: string; cta: { label: string; href: string } } {
   let score = 50; // base
   const insights: string[] = [];
@@ -73,13 +170,53 @@ function computeScore(data: {
     score += 4;
   }
 
+  // --- Health factors ---
+  const hs = data.healthSummary;
+  if (hs) {
+    // Vaccine status
+    if (hs.overdueVaccines > 0) {
+      score -= 15;
+      insights.push("Vaccin en retard !");
+    } else if (hs.upcomingVaccines > 0) {
+      score += 3;
+    } else {
+      score += 5;
+    }
+
+    // Vet visit recency
+    if (hs.lastVetVisitDaysAgo != null) {
+      if (hs.lastVetVisitDaysAgo <= 180) {
+        score += 8;
+      } else if (hs.lastVetVisitDaysAgo <= 365) {
+        score += 3;
+      } else {
+        score -= 5;
+        insights.push("Visite veto il y a plus d'un an");
+      }
+    }
+
+    // Weight trend
+    if (hs.weightTrend === "stable") {
+      score += 5;
+    } else if (hs.weightTrend === "rising" || hs.weightTrend === "falling") {
+      score -= 3;
+      insights.push(hs.weightTrend === "rising" ? "Poids en hausse" : "Poids en baisse");
+    }
+  }
+
   score = Math.min(100, Math.max(10, score));
 
-  // Recommendation based on lowest factor
+  // Recommendation based on lowest factor — health takes priority
   let recommendation = "Continuez comme ca, votre compagnon est actif !";
   let cta = { label: "Explorer les Reels", href: "/reels" };
 
-  if (data.matchesThisWeek === 0) {
+  if (hs && hs.overdueVaccines > 0) {
+    recommendation = "Un vaccin est en retard, pensez a prendre rendez-vous !";
+    cta = { label: "Voir le carnet sante", href: `/animals/${data.animalId}/health` };
+  } else if (hs && hs.lastVetVisitDaysAgo != null && hs.lastVetVisitDaysAgo > 365) {
+    recommendation = "Planifiez une visite chez le veterinaire";
+    cta = { label: "Voir le carnet sante", href: `/animals/${data.animalId}/health` };
+  } else if (data.matchesThisWeek === 0) {
     recommendation = "Trouvez un copain de balade pour votre animal !";
     cta = { label: "Trouver un copain", href: "/flairer" };
   } else if (data.reelsThisWeek === 0) {
@@ -135,8 +272,8 @@ export default function SmartCompanion({ userId }: { userId: string }) {
       const now = new Date();
       const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-      // Fetch activity data in parallel
-      const [matchesRes, reelsRes, totalMatchesRes] = await Promise.all([
+      // Fetch activity data + health records in parallel
+      const [matchesRes, reelsRes, totalMatchesRes, healthRes] = await Promise.all([
         supabase.from("matches")
           .select("id", { count: "exact", head: true })
           .or(`sender_user_id.eq.${userId},receiver_user_id.eq.${userId}`)
@@ -148,18 +285,27 @@ export default function SmartCompanion({ userId }: { userId: string }) {
         supabase.from("matches")
           .select("id", { count: "exact", head: true })
           .or(`sender_user_id.eq.${userId},receiver_user_id.eq.${userId}`),
+        fetch(`/api/animals/${pet.id}/health`).then((r) =>
+          r.ok ? r.json() : { records: [] }
+        ),
       ]);
+
+      // Analyze health records
+      const healthRecords: HealthRecord[] = healthRes.records || [];
+      const healthSummary = healthRecords.length > 0 ? analyzeHealthRecords(healthRecords) : null;
 
       // Estimate active days (simplified: check if there are recent actions)
       const daysActive = Math.min(7, (matchesRes.count || 0) + (reelsRes.count || 0));
 
       const { score, insights, recommendation, cta } = computeScore({
+        animalId: pet.id,
         matchesThisWeek: matchesRes.count || 0,
         reelsThisWeek: reelsRes.count || 0,
         daysActive,
         hasPhoto: !!pet.photo_url,
         ageMonths: pet.age_months,
         totalMatches: totalMatchesRes.count || 0,
+        healthSummary,
       });
 
       const { status, emoji, color, label } = getStatus(score);
@@ -177,6 +323,7 @@ export default function SmartCompanion({ userId }: { userId: string }) {
         insights,
         recommendation,
         cta,
+        healthSummary,
       });
     } catch (err) {
       console.error("[SmartCompanion] error:", err);
@@ -241,6 +388,37 @@ export default function SmartCompanion({ userId }: { userId: string }) {
             boxShadow: `0 0 8px ${animal.statusColor}50`,
           }} />
         </div>
+
+        {/* Health summary */}
+        {animal.healthSummary && animal.healthSummary.healthLines.length > 0 && (
+          <div className="glass animate-slide-up rounded-xl p-2.5 mb-3" style={{
+            border: `1px solid var(--c-accent, #22C55E)20`,
+          }}>
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <span className="text-sm">🩺</span>
+              <span className="text-caption font-bold" style={{ color: "var(--c-accent, #22C55E)" }}>
+                Bilan sante
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-x-3 gap-y-1">
+              {animal.healthSummary.healthLines.map((line, i) => {
+                const isWarning = line.includes("retard") || line.includes("hausse") || line.includes("baisse") || line.includes("plus d'un an");
+                return (
+                  <span key={i} className="text-caption flex items-center gap-1" style={{
+                    color: isWarning ? "#ef4444" : "var(--c-accent, #22C55E)",
+                  }}>
+                    {isWarning ? "⚠️" : "✓"} {line}
+                  </span>
+                );
+              })}
+            </div>
+            {animal.healthSummary.lastWeight != null && (
+              <p className="text-caption mt-1" style={{ color: "var(--c-text-muted)" }}>
+                Dernier poids : {animal.healthSummary.lastWeight} kg
+              </p>
+            )}
+          </div>
+        )}
 
         {/* Insights */}
         {animal.insights.length > 0 && (
